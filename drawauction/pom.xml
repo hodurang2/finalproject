@@ -9,14 +9,20 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.gdu</groupId>
-	<artifactId>petmall</artifactId>
+	<artifactId>drawauction</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>petmall</name>
-	<description>Pet Goods Shop</description>
+	<name>drawauction</name>
+	<description>Art Auction</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
 	<dependencies>
+    
+    <!-- WebSocket -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-websocket</artifactId>
+    </dependency>
     
     <!-- jasypt(Java Simplified Encryption) -->
     <dependency>
