@@ -1,0 +1,51 @@
+@charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css');
+
+.header_wrap {
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 50px; 
+}
+.logo {
+  width: 176px;
+  height: 46px;
+  background-image: url(../../image/goodee.png);
+  background-size: 100%;
+  margin: 50px auto;
+  cursor: pointer;
+}
+.login_wrap {
+  width: 100%;
+  height: 64px;
+}
+.ico_user_group {
+  position: absolute;
+  right: 0;
+}
+.ico_user_group i {
+  width: 24px;
+}
+.gnb_wrap {
+  width: 100%;
+  height: 48px;
+}
+.gnb {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid gray;
+  border-bottom: 1px solid gray;
+}
+.gnb li {
+  width: 100%;
+}
+.gnb a {
+  display: block;
+  width: 100%;
+  text-align: center;
+  line-height: 48px;
+  cursor: pointer;
+}
