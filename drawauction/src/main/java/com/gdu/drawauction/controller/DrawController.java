@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +46,12 @@ public class DrawController {
     boolean addResult = drawService.addDraw(multipartRequest);
     redirectAttributes.addFlashAttribute("addResult", addResult);
     return "redirect:/draw/list.do";
+  }
+  
+  @GetMapping("/detail.do")
+  public String detail(HttpServletRequest request, Model model) {
+    drawService.loadDraw(request, model);
+    return "draw/detail";
   }
   
   

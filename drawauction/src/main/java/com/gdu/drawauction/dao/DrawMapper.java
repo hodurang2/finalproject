@@ -14,4 +14,6 @@ public interface DrawMapper {
 	public int getDrawCount();
 	public int insertDraw(DrawDto draw);
 	public int insertImage(DrawImageDto image);
+	public DrawDto getDraw(int drawNo);
+	public List<DrawImageDto> getImageList(int drawNo);
 }

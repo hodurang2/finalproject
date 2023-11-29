@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -54,6 +55,7 @@ public class DrawServiceImpl implements DrawService{
 	                , "totalPage", myPageUtils.getTotalPage());
 	}
 	
+	// 그려드림 게시글 작성
 	@Override
 	public boolean addDraw(MultipartHttpServletRequest multipartRequest) throws Exception {
 	    
@@ -115,7 +117,7 @@ public class DrawServiceImpl implements DrawService{
 	        if(hasThumbnail == 1) {
 	          File thumbnail = new File(dir, "s_" + filesystemName);  // small 이미지를 의미하는 s_을 덧붙임
 	          Thumbnails.of(file)
-	                    .size(100, 100)      // 가로 100px, 세로 100px
+	                    .size(250, 250)      // 가로 100px, 세로 100px
 	                    .toFile(thumbnail);
 	        }
 	        
@@ -128,14 +130,23 @@ public class DrawServiceImpl implements DrawService{
 	                            .build();
 	        
 	        imageCount += drawMapper.insertImage(image);
-	        
 	      }  // if
-	      
 	    }  // for
-	    
 	    return (drawCount == 1) && (files.size() == imageCount);
 	    
-	  }
+	 }
+	
+	@Transactional(readOnly=true)
+	@Override
+	public void loadDraw(HttpServletRequest request, Model model) {
+	    
+	  Optional<String> opt = Optional.ofNullable(request.getParameter("drawNo"));
+	  int drawNo = Integer.parseInt(opt.orElse("0"));
+	
+	  model.addAttribute("draw", drawMapper.getDraw(drawNo));
+	  model.addAttribute("imageList", drawMapper.getImageList(drawNo));
+	    
+	}
 	
 	
 	
