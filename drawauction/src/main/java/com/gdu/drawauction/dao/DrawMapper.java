@@ -10,5 +10,5 @@ import com.gdu.drawauction.dto.DrawDto;
 @Mapper
 public interface DrawMapper {
 	public List<DrawDto> getDrawList(Map<String, Object> map);
-
+	public int getDrawCount();
 }

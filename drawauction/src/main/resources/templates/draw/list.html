@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{/layout/header::head('업로드게시판')}"></head>
+<head th:replace="~{/layout/header::head('그려드림 게시판')}"></head>
 
 <style>
-  .upload_list {
+  .draw_list {
     margin: 10px auto;
     display: flex;
     flex-wrap: wrap;
    }
-  .upload {
+  .draw {
     width: 262px;
     height: 262px;
     border: 1px solid gray;
@@ -18,7 +18,7 @@
     padding-top: 80px;
     margin: 20px 15px;
   }
-  .upload:hover {
+  .draw:hover {
     background-color: silver;
     cursor: pointer;
   }
@@ -56,19 +56,20 @@
           data: 'page=' + page,
           // 응답
           dataType: 'json',
-          success: (resData) => {  // resData = {"uploadList": [], "totalPage": 10}
+          success: (resData) => {  
             totalPage = resData.totalPage;
-            $.each(resData.uploadList, (i, upload) => {
+            $.each(resData.drawList, (i, draw) => {
               let str = '<div class="draw" data-draw_no="' + draw.drawNo + '">';
               str += '<div>제목: ' + draw.title + '</div>';
+              str += '<div>카테고리: ' + draw.categoryDto.categoryName + '</div>';
               if(draw.userDto === null){
                 str += '<div>작가: 정보없음</div>';
               } else {            
-                str += '<div>작가: ' + draw.userDto.name + '</div>';
+                str += '<div>작가: ' + draw.userDto.nickname + '</div>';
               }
-              str += '<div>카테고리: ' + draw.categoryNo + '</div>';
+              str += '<div>가격: ' + draw.price + '</div>';
               str += '</div>';
-              $('#upload_list').append(str);
+              $('#draw_list').append(str);
             })
           }
         })
@@ -101,7 +102,7 @@
                 return;              // 마지막 페이지를 보여준 이후에는 아래 코드를 수행하지 말 것 
               }
               page++;
-              fnGetUploadList();
+              fnGetDrawList();
             }
             
           }, 200);  // 200밀리초(0.2초) 후 동작(시간은 임의로 조정 가능함)
