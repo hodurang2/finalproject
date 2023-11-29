@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 전체 공지 리스트 -->
+<mapper namespace="com.gdu.drawauction.dao.NoticeMapper">
+  <select id="getNoticeList" parameterType="Map" resultType="NoticeDto">
+    SELECT NOTICE_NO, TITLE, CONTENTS, CREATED_AT, NUM
+      FROM  (SELECT ROW_NUMBER() OVER(ORDER BY NOTICE_NO DESC) AS RN,  ROW_NUMBER() OVER(ORDER BY NOTICE_NO ASC) AS NUM, NOTICE_NO, TITLE, CONTENTS, CREATED_AT 
+               FROM NOTICE_T)
+     WHERE RN BETWEEN #{begin} AND #{end}
+  </select>
+  
+  <!-- 전체 공지 갯수 -->
+  <select id="getNoticeCount" resultType="int">
+    SELECT COUNT(*)
+      FROM NOTICE_T
+  </select>
+  
+  <!-- 개별 공지 조회 -->
+  <select id="getNotice" parameterType="int" resultType="NoticeDto">
+    SELECT NOTICE_NO, TITLE, CONTENTS, CREATED_AT
+      FROM NOTICE_T
+     WHERE NOTICE_NO = #{noticeNo}
+  </select>
+  
+  <!-- 공지 등록하기 -->
+  <insert id="insertNotice" parameterType="NoticeDto">
+    <selectKey order="BEFORE" keyProperty="noticeNo" resultType="int">
+      SELECT NOTICE_SEQ.NEXTVAL
+        FROM DUAL
+    </selectKey>
+    INSERT INTO NOTICE_T (
+        NOTICE_NO 
+      , TITLE
+      , CONTENTS
+      , CREATED_AT
+    ) VALUES (
+        #{noticeNo}
+      , #{title}
+      , #{contents}
+      , TO_DATE(#{createdAt}, 'YYYY-MM-DD HH24:MI:SS')
+    )
+  </insert>
+  
+  <!-- 공지 첨부 파일 추가 -->
+  <insert id="insertNoticeAttach" parameterType="NoticeAttachDto">
+    <selectKey order="BEFORE" keyProperty="attachNo" resultType="int">
+        SELECT NOTICE_ATTACH_SEQ.NEXTVAL
+          FROM DUAL
+      </selectKey>
+    INSERT INTO NOTICE_ATTACH (
+      ATTACH_NO,
+      NOTICE_NO,
+      PATH,
+      FILESYSTEM_NAME
+    ) VALUES (
+      #{attachNo},
+      #{noticeNo},
+      #{path},
+      #{filesystemName}
+    )
+  </insert>
+  
+  <!-- 공지 수정하기 -->
+  <update id="updateNotice" parameterType="NoticeDto">
+    UPDATE NOTICE
+       SET TITLE = #{title},
+           CONTENTS = #{contents}
+     WHERE NOTICE_NO = #{noticeNo}
+  </update>
+  
+  <!-- 공지 삭제하기 -->
+  <delete id="deleteNotice" parameterType="int">
+    DELETE 
+      FROM NOTICE
+     WHERE NOTICE_NO = #{noticeNo}  
+  </delete>
+  
+</mapper>
