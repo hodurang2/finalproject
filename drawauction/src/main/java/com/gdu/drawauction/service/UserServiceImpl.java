@@ -142,7 +142,8 @@ public class UserServiceImpl implements UserService {
     String postcode = request.getParameter("postcode");
     String roadAddress = request.getParameter("roadAddress");
     String jibunAddress = request.getParameter("jibunAddress");
-    String detailAddress = request.getParameter("detailAddress");
+    String detailAddress = mySecurityUtils.preventXSS(request.getParameter("detailAddress"));
+    
     String nickname = request.getParameter("nickname");
     String introduction = request.getParameter("introduction");
     String event = request.getParameter("event");
@@ -153,11 +154,11 @@ public class UserServiceImpl implements UserService {
     			   .name(name)
     			   .mobile(mobile)
     			   .gender(gender)
-    			   .agree(event.equals("on") ? 1 : 0)
     			   .postcode(postcode)
     			   .roadAddress(roadAddress)
     			   .jibunAddress(jibunAddress)
     			   .detailAddress(detailAddress)
+    			   .agree(event.equals("on") ? 1 : 0)
     			   .nickname(nickname)
     			   .introduction(introduction)
     			   .build();    			   
