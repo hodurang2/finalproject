@@ -12,6 +12,7 @@
 
   <typeAliases>
     <typeAlias alias="DrawDto"         type="com.gdu.drawauction.dto.DrawDto"/>
+    <typeAlias alias="UserDto"         type="com.gdu.drawauction.dto.UserDto"/>
   </typeAliases>
 
 
