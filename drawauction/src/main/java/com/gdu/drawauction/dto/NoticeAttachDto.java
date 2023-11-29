@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class NoticeAttachDto {
   private int noticeAttachNo;
-  private NoticeDto noticeDto;
+  private int noticeNo;
   private String path;
   private String originalFilename;
   private String filesystemName;

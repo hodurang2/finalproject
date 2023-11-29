@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class AnswerDto {
-  private InquiryDto inquiryDto;
+  private int inquiryNo;
   private String contents;
   private Date createdAt;
   private int status;
