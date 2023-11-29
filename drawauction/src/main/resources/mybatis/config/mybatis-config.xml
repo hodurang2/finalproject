@@ -26,6 +26,7 @@
     <typeAlias alias="InquiryDto"         type="com.gdu.drawauction.dto.InquiryDto"/>
     <typeAlias alias="InquiryAttachDto"   type="com.gdu.drawauction.dto.InquiryAttachDto"/>
     <typeAlias alias="AnswerDto"          type="com.gdu.drawauction.dto.AnswerDto"/>
+    <typeAlias alias="DrawImageDto"       type="com.gdu.drawauction.dto.DrawImageDto"/>
   </typeAliases>
 
 

@@ -22,9 +22,6 @@ public class MyFileUtils {
     return "/blog/" + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(date);
   }
   
-<<<<<<< HEAD
-  //업로드 게시판 작성시 첨부한 파일이 저장될 경로 반환하기
-=======
   // 공지 작성시 사용된 이미지가 저장될 경로 반환하기
   public String getNoticeImagePath() {
     LocalDate today = LocalDate.now();
@@ -38,10 +35,15 @@ public class MyFileUtils {
   }
   
   // 업로드 게시판 작성시 첨부한 파일이 저장될 경로 반환하기
->>>>>>> main
   public String getUploadPath() {
     LocalDate today = LocalDate.now();
     return "/upload/" + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(today);
+  }
+  
+  //그려드림 게시판 작성시 첨부한 파일이 저장될 경로 반환하기
+  public String getDrawImagePath() {
+    LocalDate today = LocalDate.now();
+    return "/draw/" + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(today);
   }
   
   // 임시 파일이 저장될 경로 반환하기 (zip 파일)
