@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BidDto {
   private int bidNo;
-  private AuctionDto auctionDto;
   private UserDto bidderDto;
   private int price;
   private Date bidAt;
@@ -21,4 +20,5 @@ public class BidDto {
   private String roadAddress;
   private String jibunAddress;
   private String detailAddress;
+  private AuctionDto auctionDto;
 }

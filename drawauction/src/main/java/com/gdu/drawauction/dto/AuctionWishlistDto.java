@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AuctionWishlistDto {
   private int auctionWishNo;
+  private Date wishedAt;
   private AuctionDto auctionDto;
   private UserDto userDto;
-  private Date wishedAt;
 }

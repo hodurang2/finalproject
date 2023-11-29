@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AuctionDto {
   private int auctionNo;
-  private ArtDto artDto;
   private int startPrice;
   private int buyPrice;
   private Date startAt;
   private Date endAt;
   private int status;
+  private ArtDto artDto;
 }

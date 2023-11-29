@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gdu.drawauction.dao.AuctionMapper">
+
+<!-- AuctionDto에 대한 resultMap -->
+<resultMap type="AuctionDto" id="AuctionMap">
+    <id column="AUCTION_NO"       property="auctionNo"/>
+    <result column="START_PRICE"  property="startPrice"/>
+    <result column="BUY_PRICE"    property="buyPrice"/>
+    <result column="START_AT"     property="startAt"/>
+    <result column="END_AT"       property="endAt"/>
+    <result column="STATUS"       property="status"/>
+    <association javaType="ArtDto"      property="artDto">
+      <id column="ART_NO"         property="artNo"/>
+      <result column="TITLE"      property="title"/>
+      <result column="CONTENTS"   property="contents"/>
+      <result column="ART_TYPE"   property="artType"/>
+      <result column="WIDTH"      property="width"/>
+      <result column="HEIGHT"     property="height"/>
+      <association javaType="UserDto"    property="sellerDto">
+        <id column="USER_NO"              property="userNo"/>
+        <result column="EMAIL"            property="email"/>
+        <result column="PW"               property="pw"/>
+        <result column="NAME"             property="name"/>
+        <result column="MOBILE"           property="mobile"/>
+        <result column="GENDER"           property="gender"/>
+        <result column="AGREE"            property="agree"/>
+        <result column="STATE"            property="state"/>
+        <result column="JOINED_AT"        property="joinedAt"/>
+        <result column="POSTCODE"         property="postcode"/>
+        <result column="ROAD_ADDRESS"     property="roadAddress"/>
+        <result column="JIBUN_ADDRESS"    property="jibunAddress"/>
+        <result column="DETAIL_ADDRESS"   property="detailAddress"/>
+        <result column="NICKNAME"         property="nickname"/>
+        <result column="INTRODUCTION"     property="introduction"/>
+      </association>
+      <association javaType="CategoryDto" property="categoryDto">
+        <id        column="CATEGORY_NO"     property="categoryNo"/>
+        <result    column="CATEGORY_NAME"   property="categoryName" />
+      </association>
+    </association>
+</resultMap>
+  
+  
+  
+
+ 
+  
+</mapper>
