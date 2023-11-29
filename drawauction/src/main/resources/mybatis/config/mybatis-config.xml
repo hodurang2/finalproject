@@ -21,6 +21,11 @@
     <typeAlias alias="AuctionImageDto"    type="com.gdu.drawauction.dto.AuctionImageDto"/>
     <typeAlias alias="AuctionWishlistDto" type="com.gdu.drawauction.dto.AuctionWishlistDto"/>
     <typeAlias alias="BidDto"             type="com.gdu.drawauction.dto.BidDto"/>
+    <typeAlias alias="NoticeDto"          type="com.gdu.drawauction.dto.NoticeDto"/>
+    <typeAlias alias="NoticeAttachDto"    type="com.gdu.drawauction.dto.NoticeAttachDto"/>
+    <typeAlias alias="InquiryDto"         type="com.gdu.drawauction.dto.InquiryDto"/>
+    <typeAlias alias="InquiryAttachDto"   type="com.gdu.drawauction.dto.InquiryAttachDto"/>
+    <typeAlias alias="AnswerDto"          type="com.gdu.drawauction.dto.AnswerDto"/>
   </typeAliases>
 
 

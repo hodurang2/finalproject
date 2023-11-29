@@ -51,21 +51,21 @@
           FROM DUAL
       </selectKey>
     INSERT INTO NOTICE_ATTACH (
-      ATTACH_NO,
-      NOTICE_NO,
-      PATH,
-      FILESYSTEM_NAME
+        ATTACH_NO
+      , NOTICE_NO
+      , PATH
+      , FILESYSTEM_NAME
     ) VALUES (
-      #{attachNo},
-      #{noticeNo},
-      #{path},
-      #{filesystemName}
+        #{attachNo}
+      , #{noticeNo}
+      , #{path}
+      , #{filesystemName}
     )
   </insert>
   
   <!-- 공지 수정하기 -->
   <update id="updateNotice" parameterType="NoticeDto">
-    UPDATE NOTICE
+    UPDATE NOTICE_T
        SET TITLE = #{title},
            CONTENTS = #{contents}
      WHERE NOTICE_NO = #{noticeNo}
@@ -74,7 +74,7 @@
   <!-- 공지 삭제하기 -->
   <delete id="deleteNotice" parameterType="int">
     DELETE 
-      FROM NOTICE
+      FROM NOTICE_T
      WHERE NOTICE_NO = #{noticeNo}  
   </delete>
   

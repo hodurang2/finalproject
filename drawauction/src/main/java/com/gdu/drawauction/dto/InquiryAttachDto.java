@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class InquiryAttachDto {
   private int inquiryAttachNo;
-  private InquiryDto inquiryDto;
+  private int inquiryNo;
   private String path;
   private String originalFilename;
   private String filesystemName;
