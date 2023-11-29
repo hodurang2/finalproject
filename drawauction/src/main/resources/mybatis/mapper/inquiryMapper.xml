@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gdu.drawauction.dao.InquiryMapper">
+  
+  <resultMap type="InquiryDto" id="InquiryMap">
+    <id     column="INQUIRY_NO"           property="inquiryNo" />
+    <result column="TITLE"        property="title"/>
+    <result column="CONTENT"      property="content"/>
+    <result column="INQUIRY_CREATED_AT"   property="inquiryCreatedAt"/>
+    <result column="INQUIRY_TYPE"         property="inquiryType"/>
+    <association  javaType="UserDto"          property="userDto">
+      <id         column="USER_NO"            property="userNo" />
+      <result     column="EMAIL"              property="email" />
+      <result     column="PW"                 property="pw" />
+      <result     column="NAME"               property="name" />
+      <result     column="MOBILE"             property="mobile" />
+      <result     column="GENDER"             property="gender" />
+      <result     column="AGREE"              property="agree" />
+      <result     column="STATE"              property="state" />
+      <result     column="JOINED_AT"          property="joinedAt" />
+      <result     column="POSTCODE"           property="postcode" />
+      <result     column="ROAD_ADDRESS"       property="road_address" />
+      <result     column="JIBUN_ADDRESS"      property="jibun_address" />
+      <result     column="DETAIL_ADDRESS"     property="detail_address" />
+      <result     column="NICKNAME"           property="nickname" />
+      <result     column="INTRODUCTION"       property="introduction" />
+    </association>
+    <association  javaType="AuctionDto"     property="auctionDto">
+      <id         column="AUCTION_NO"       property="auctionNo" />
+      <result     column="ART_NO"             property="artNo" />
+      <result     column="START_PRICE"        property="startPrice" />
+      <result     column="BUY_PRICE"          property="buyPrice" />
+      <result     column="START_AT"           property="startAt" />
+      <result     column="END_AT"             property="endAt" />
+      <result     column="STATUS"             property="status" />
+    </association>
+    <association  javaType="DrawDto"        property="drawDto">
+      <id         column="DRAW_NO"          property="drawNo" />
+      <result     column="SELLER_NO"          property="sellerNo" />
+      <result     column="CATEGORY_NO"        property="categoryNo" />
+      <result     column="TITLE"              property="title" />
+      <result     column="PRICE"              property="price" />
+      <result     column="CONTENTS"           property="contents" />
+      <result     column="WIDTH"              property="width" />
+      <result     column="HEIGHT"             property="height" />
+    </association>
+  </resultMap>
+  
+  <!-- 1:1문의 갯수 -->
+  <select id="getInquiryCount" resultType="int">
+    SELECT COUNT(*)
+      FROM INQUIRY_T
+  </select>
+
+  <!-- 1:1문의 리스트 -->
+  <select id="getInquiryList" parameterType="Map" resultMap="InquiryMap">
+    SELECT INQUIRY_NO, USER_NO, AUCTION_NO, DRAW_NO, TITLE, CONTENT, INQUIRY_CREATED_AT, INQUIRY_TYPE
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY INQUIRY_NO DESC) AS RN, INQUIRY_NO, U.USER_NO, AUCTION_NO, DRAW_NO, TITLE, CONTENT, INQUIRY_CREATED_AT, INQUIRY_TYPE
+              FROM INQUIRY_T I INNER JOIN USER_T U
+                ON I.USER_NO = U.USER_NO)
+     WHERE RN BETWEEN #{begin} AND #{end}
+  </select>
+  
+  <!-- 개별 1:1문의 조회 -->
+  <select id="getInquiry" parameterType="int" resultMap="InquiryMap">
+    SELECT INQUIRY_NO, USER_NO, AUCTION_NO, DRAW_NO, TITLE, CONTENT, INQUIRY_CREATED_AT, INQUIRY_TYPE
+      FROM (SELECT INQUIRY_NO, I.USER_NO, AUCTION_NO, DRAW_NO, TITLE, CONTENT, INQUIRY_CREATED_AT, INQUIRY_TYPE
+              FROM INQUIRY_T I INNER JOIN USER_T U
+                ON I.USER_NO = U.USER_NO)
+     WHERE INQUIRY_NO = #{inquiryNo}
+  </select>
+  
+  <!-- 1:1문의 등록하기 -->
+  <insert id="insertInquiry" parameterType="InquiryDto">
+    <selectKey order="BEFORE" keyProperty="inquiryNo" resultType="int">
+      SELECT INQUIRY_SEQ.NEXTVAL
+        FROM DUAL
+    </selectKey>
+    INSERT INTO INQUIRY_T(
+        INQUIRY_NO
+      , USER_NO
+      , AUCTION_NO
+      , DRAW_NO
+      , TITLE
+      , CONTENT
+      , INQUIRY_CREATED_AT
+      , INQUIRY_TYPE
+    ) VALUES (
+        #{inquiryNo}
+      , #{userDto.userNo}
+      , #{auctionDto.auctionNo}
+      , #{drawDto.drawNo}
+      , #{title}
+      , #{content}
+      , TO_DATE(#{inquiryCreatedAt}, 'YYYY-MM-DD HH24:MI:SS')
+      , #{inquiryType}
+    )
+  </insert>
+  
+  <!-- 1:1문의 답변 등록하기 -->
+  <insert id="insertAnswer" parameterType="AnswerDto">
+    INSERT INTO ANSWER_T (
+        INQUIRY_NO
+      , CONTENTS
+      , CREATED_AT
+      , STATUS
+    ) VALUES (
+        #{inquiryNo}
+      , #{contents}
+      , TO_DATE(#{status}, 'YYYY-MM-DD HH24:MI:SS')
+      , #{status}
+    )
+  </insert>
+  
+  <!-- 1:1문의 답변 갯수 -->
+  <select id="getAnswerCount" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+      FROM ANSWER_T
+     WHERE INQUIRY_NO = #{inquiryNo}
+  </select>
+  
+  <!-- 1:1문의 답변 리스트 -->
+  <select id="getAnswerList" parameterType="Map" resultType="AnswerDto">
+    SELECT INQUIRY_NO, CONTENTS, CREATED_AT, STATUS
+      FROM ANSWER_T
+     WHERE INQUIRY_NO = #{inquiryNo};
+  </select>
+  
+  <!-- 1:1문의 답변 댓글 등록하기 -->
+  <insert id="insertAnswerReply" parameterType="AnswerDto">
+    INSERT INTO ANSWER_T (
+        INQUIRY_NO
+      , CONTENTS
+      , CREATED_AT
+      , STATUS
+    ) VALUES (
+        #{inquiryNo}
+      , #{contents}
+      , TO_DATE(#{createdAt}, 'YYYY-MM-DD HH24:MI:SS')
+      , #{status}
+    )
+  </insert>
+  
+  <!-- 1:1문의 첨부파일 추가하기 -->
+  <insert id="insertInquiryAttach" parameterType="InquiryAttachDto">
+    <selectKey order="BEFORE" keyProperty="inquiryAttachNo" resultType="int">
+        SELECT INQUIRY_ATTACH_SEQ.NEXTVAL
+          FROM DUAL
+      </selectKey>
+    INSERT INTO INQUIRY_ATTACH_T (
+        INQUIRY_ATTACH_NO
+      , INQUIRY_NO
+      , PATH
+      , ORIGINAL_FILENAME
+      , FILESYSTEM_NAME
+    ) VALUES (
+        INQUIRY_ATTACH_SEQ.NEXTVAL
+      , #{inquiryAttachNo}
+      , #{inquiryNo}
+      , #{path}
+      , #{originalFilename}
+      , #{filesystemName}
+    )
+  </insert>
+  
+</mapper>

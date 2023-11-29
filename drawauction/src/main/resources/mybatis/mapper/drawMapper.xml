@@ -36,6 +36,51 @@
     </association>
   </resultMap>
   
+  <insert id="insertDraw" parameterType="DrawDto">
+    <!-- INSERT 수행 이전에 파라미터 UploadDto의 uploadNo 필드에 UPLOAD_SEQ.NEXTVAL값을 저장한다. -->
+    <selectKey order="BEFORE" resultType="int" keyProperty="drawNo">
+      SELECT DRAW_SEQ.NEXTVAL
+        FROM DUAL
+    </selectKey>
+    INSERT INTO DRAW_T (
+        DRAW_NO
+      , SELLER_NO
+      , CATEGORY_NO
+      , TITLE
+      , CONTENTS
+      , WIDTH
+      , HEIGHT
+      , PRICE
+    ) VALUES (
+        #{drawNo}
+      , #{userDto.userNo}
+      , #{categoryDto.categoryNo}
+      , #{title}
+      , #{contents}
+      , #{width}
+      , #{height}
+      , #{price}
+    )
+  </insert>
+  
+  <insert id="insertImage" parameterType="DrawImageDto">
+    INSERT INTO DRAW_IMAGE_T (
+        DRAW_IMAGE_NO
+      , DRAW_NO
+      , PATH
+      , FILESYSTEM_NAME
+      , IMAGE_ORIGINAL_NAME
+      , HAS_THUMBNAIL
+    ) VALUES (
+        ATTACH_SEQ.NEXTVAL
+      , #{drawNo}
+      , #{path}
+      , #{filesystemName}
+      , #{imageOriginalName}
+      , #{hasThumbnail}
+    )
+  </insert>
+  
   <select id="getDrawCount" resultType="int">
     SELECT COUNT(*)
       FROM DRAW_T
@@ -49,6 +94,22 @@
                 ON D.SELLER_NO = USR.USER_NO) A INNER JOIN CATEGORY_T C
         ON A.CATEGORY_NO = C.CATEGORY_NO
      WHERE A.RN BETWEEN #{begin} AND #{end}
+  </select>
+  
+  <select id="getDraw" parameterType="int" resultMap="DrawMap">
+    SELECT A.DRAW_NO, A.SELLER_NO, A.CATEGORY_NO, A.TITLE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.PRICE, C.CATEGORY_NAME, A.NICKNAME
+  	  FROM (SELECT D.DRAW_NO, D.SELLER_NO, D.CATEGORY_NO ,D.TITLE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.PRICE
+              	   , USR.USER_NO, USR.EMAIL, USR.NAME, USR.NICKNAME
+         	  FROM USER_T USR RIGHT OUTER JOIN DRAW_T D
+                ON USR.USER_NO = D.SELLER_NO) A INNER JOIN CATEGORY_T C
+    	ON A.CATEGORY_NO = C.CATEGORY_NO
+ 	 WHERE A.DRAW_NO = #{drawNo}
+  </select>
+  
+  <select id="getImageList" parameterType="int" resultType="DrawImageDto">
+    SELECT DRAW_IMAGE_NO, DRAW_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+ 	  FROM DRAW_IMAGE_T
+ 	 WHERE DRAW_NO = #{drawNo}
   </select>
 
  
