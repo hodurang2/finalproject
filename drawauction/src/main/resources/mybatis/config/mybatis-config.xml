@@ -11,13 +11,16 @@
   </settings>
 
   <typeAliases>
-    <typeAlias alias="DrawDto"           type="com.gdu.drawauction.dto.DrawDto"/>
-    
-    <typeAlias alias="UserDto"           type="com.gdu.drawauction.dto.UserDto"/>
-    <typeAlias alias="InactiveUserDto"   type="com.gdu.drawauction.dto.InactiveUserDto"/>
-	<typeAlias alias="LeaveUserDto"      type="com.gdu.drawauction.dto.LeaveUserDto"/>
-
-    <typeAlias alias="CategoryDto"       type="com.gdu.drawauction.dto.CategoryDto"/>
+    <typeAlias alias="DrawDto"            type="com.gdu.drawauction.dto.DrawDto"/>
+    <typeAlias alias="CategoryDto"        type="com.gdu.drawauction.dto.CategoryDto"/>
+    <typeAlias alias="UserDto"            type="com.gdu.drawauction.dto.UserDto"/>
+    <typeAlias alias="InactiveUserDto"    type="com.gdu.drawauction.dto.InactiveUserDto"/>
+	  <typeAlias alias="LeaveUserDto"       type="com.gdu.drawauction.dto.LeaveUserDto"/>
+    <typeAlias alias="ArtDto"             type="com.gdu.drawauction.dto.ArtDto"/>
+    <typeAlias alias="AuctionDto"         type="com.gdu.drawauction.dto.AuctionDto"/>
+    <typeAlias alias="AuctionImageDto"    type="com.gdu.drawauction.dto.AuctionImageDto"/>
+    <typeAlias alias="AuctionWishlistDto" type="com.gdu.drawauction.dto.AuctionWishlistDto"/>
+    <typeAlias alias="BidDto"             type="com.gdu.drawauction.dto.BidDto"/>
   </typeAliases>
 
 
