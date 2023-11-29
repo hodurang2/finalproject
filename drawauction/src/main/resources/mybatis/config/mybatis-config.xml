@@ -11,6 +11,7 @@
   </settings>
 
   <typeAliases>
+    <typeAlias alias="DrawDto"         type="com.gdu.drawauction.dto.DrawDto"/>
   </typeAliases>
 
 
