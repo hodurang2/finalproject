@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class UserDto {
+public class InactiveUserDto {
 	
 	private int userNo;
 	private String email;
@@ -28,6 +28,6 @@ public class UserDto {
 	private String detailAddress;
 	private String nickname;
 	private String introduction;
-	
+	private Date inactivedAt;
 	
 }
