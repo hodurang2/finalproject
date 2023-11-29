@@ -22,10 +22,10 @@ public class MyFileUtils {
     return "/blog/" + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(date);
   }
   
-  // 업로드 게시판 작성시 첨부한 파일이 저장될 경로 반환하기
-  public String getUploadPath() {
+  // 그려드림 게시판 작성시 첨부한 파일이 저장될 경로 반환하기
+  public String getDrawImagePath() {
     LocalDate today = LocalDate.now();
-    return "/upload/" + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(today);
+    return "/draw/" + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(today);
   }
   
   // 임시 파일이 저장될 경로 반환하기 (zip 파일)

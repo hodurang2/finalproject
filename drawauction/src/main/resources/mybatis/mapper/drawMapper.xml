@@ -36,6 +36,51 @@
     </association>
   </resultMap>
   
+  <insert id="insertDraw" parameterType="DrawDto">
+    <!-- INSERT 수행 이전에 파라미터 UploadDto의 uploadNo 필드에 UPLOAD_SEQ.NEXTVAL값을 저장한다. -->
+    <selectKey order="BEFORE" resultType="int" keyProperty="drawNo">
+      SELECT DRAW_SEQ.NEXTVAL
+        FROM DUAL
+    </selectKey>
+    INSERT INTO DRAW_T (
+        DRAW_NO
+      , SELLER_NO
+      , CATEGORY_NO
+      , TITLE
+      , CONTENTS
+      , WIDTH
+      , HEIGHT
+      , PRICE
+    ) VALUES (
+        #{drawNo}
+      , #{userDto.userNo}
+      , #{categoryDto.categoryNo}
+      , #{title}
+      , #{contents}
+      , #{width}
+      , #{height}
+      , #{price}
+    )
+  </insert>
+  
+  <insert id="insertImage" parameterType="DrawImageDto">
+    INSERT INTO DRAW_IMAGE_T (
+        DRAW_IMAGE_NO
+      , DRAW_NO
+      , PATH
+      , FILESYSTEM_NAME
+      , IMAGE_ORIGINAL_NAME
+      , HAS_THUMBNAIL
+    ) VALUES (
+        ATTACH_SEQ.NEXTVAL
+      , #{drawNo}
+      , #{path}
+      , #{filesystemName}
+      , #{imageOriginalName}
+      , #{hasThumbnail}
+    )
+  </insert>
+  
   <select id="getDrawCount" resultType="int">
     SELECT COUNT(*)
       FROM DRAW_T

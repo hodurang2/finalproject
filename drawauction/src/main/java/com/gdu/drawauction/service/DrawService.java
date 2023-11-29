@@ -8,6 +8,5 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 public interface DrawService {
 	public Map<String, Object> getDrawList(HttpServletRequest request);
-	//public Map<String, Object> imageUpload(MultipartHttpServletRequest multipartRequest);
-
+	public boolean addDraw(MultipartHttpServletRequest multipartRequest) throws Exception;
 }
