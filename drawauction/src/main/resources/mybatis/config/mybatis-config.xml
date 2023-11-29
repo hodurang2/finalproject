@@ -11,8 +11,9 @@
   </settings>
 
   <typeAliases>
-    <typeAlias alias="DrawDto"         type="com.gdu.drawauction.dto.DrawDto"/>
-    <typeAlias alias="UserDto"         type="com.gdu.drawauction.dto.UserDto"/>
+    <typeAlias alias="DrawDto"           type="com.gdu.drawauction.dto.DrawDto"/>
+    <typeAlias alias="UserDto"           type="com.gdu.drawauction.dto.UserDto"/>
+    <typeAlias alias="CategoryDto"       type="com.gdu.drawauction.dto.CategoryDto"/>
   </typeAliases>
 
 

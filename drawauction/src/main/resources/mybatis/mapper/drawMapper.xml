@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gdu.drawauction.dao.DrawMapper">
+
+  <!-- DrawDto에는 UserDto가 포함되어 있으므로 resultMap을 만들어서 DrawDto의 설명을 넣어줌 -->
+  <resultMap type="DrawDto"      id="DrawMap">
+    <id      column="DRAW_NO"    property="drawNo"/>
+    <result  column="TITLE"        property="title"/>
+    <result  column="PRICE"        property="price"/>
+    <result  column="CONTENTS"     property="contents"/>
+    <result  column="WIDTH"  property="width"/>
+    <result  column="HEIGHT" property="height"/>
+    <association javaType="CategoryDto" property="categoryDto">
+	  <id        column="CATEGORY_NO"   property="categoryNo"/>
+	  <result    column="CATEGORY_NAME"          property="categoryName" />
+	</association>
+    <association javaType="UserDto"      property="userDto">
+      <id        column="USER_NO"        property="userNo"/>
+      <result    column="EMAIL"          property="email" />
+      <result    column="PW"             property="pw" />
+      <result    column="NAME"           property="name" />
+      <result    column="MOBILE"         property="mobile" />
+      <result    column="GENDER"         property="gender" />
+      <result    column="AGREE"          property="agree" />
+      <result    column="STATE"          property="state" />
+      <result    column="JOINED_AT"      property="joinedAt" />
+      <result    column="POSTCODE"       property="postcode" />
+      <result    column="ROAD_ADDRESS"   property="roadAddress" />
+      <result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      <result    column="DETAIL_ADDRESS" property="detailAddress" />
+      <result    column="NICKNAME" property="nickname" />
+      <result    column="INTRODUCTION" property="introduction" />
+    </association>
+  </resultMap>
+  
+  <select id="getDrawCount" resultType="int">
+    SELECT COUNT(*)
+      FROM DRAW_T
+  </select>
+  
+  <select id="getDrawList" parameterType="Map" resultMap="DrawMap">
+    SELECT A.DRAW_NO, A.CATEGORY_NO, A.TITLE, A.PRICE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.USER_NO, A.NICKNAME, A.NAME, A.EMAIL, C.CATEGORY_NAME
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY DRAW_NO DESC) AS RN,
+                   D.DRAW_NO, D.CATEGORY_NO, D.TITLE, D.PRICE, D.CONTENTS, D.WIDTH, D.HEIGHT, USR.USER_NO, USR.NICKNAME, USR.NAME, USR.EMAIL
+              FROM DRAW_T D LEFT OUTER JOIN USER_T USR
+                ON D.SELLER_NO = USR.USER_NO) A INNER JOIN CATEGORY_T C
+        ON A.CATEGORY_NO = C.CATEGORY_NO
+     WHERE A.RN BETWEEN #{begin} AND #{end}
+  </select>
+
+ 
+  
+</mapper>
