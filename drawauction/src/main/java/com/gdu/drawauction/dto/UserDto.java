@@ -21,7 +21,7 @@ public class UserDto {
 	private String gender;
 	private int agree;
 	private int state;
-	private Date joinedAt;
+	private String joinedAt;
 	private String postcode;
 	private String roadAddress;
 	private String jibunAddress;

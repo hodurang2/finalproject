@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import com.gdu.drawauction.dto.UserDto;
 
 public interface UserService {
-  public UserDto getUser(String email);
   public void login(HttpServletRequest request, HttpServletResponse response) throws Exception;
   public void logout(HttpServletRequest request, HttpServletResponse response);
   public ResponseEntity<Map<String, Object>> checkEmail(String email);
@@ -22,6 +21,7 @@ public interface UserService {
   public String getNaverLoginURL(HttpServletRequest request) throws Exception;
   public String getNaverLoginAccessToken(HttpServletRequest request) throws Exception;
   public UserDto getNaverProfile(String accessToken) throws Exception;
+  public UserDto getUser(String email);
   public void naverJoin(HttpServletRequest request, HttpServletResponse response);
   public void naverLogin(HttpServletRequest request, HttpServletResponse response, UserDto naveProfile) throws Exception;
   public void leave(HttpServletRequest request, HttpServletResponse response);
