@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+</head>
+<body>
+
+<style>
+  .bid_list_wrap {
+    margin-left: 300px;
+  }
+</style>
+ 
+  <div th:replace="~{/mypage/menu}"></div>
+    
+  <div class="bid_list_wrap">
+    
+    <h1>입찰작품목록</h1>
+    
+    <div>
+      <div id="bid_list" class="bid_list"></div>
+    </div>
+    
+  </div>
+  
+</body>
+
+<!--/*
+<script>
+  
+  $(() => {
+    
+    fnGetBidList();
+    
+  })
+
+  // 전역 변수
+  var page = 1;
+  var totalPage = 0;
+  
+  const fnGetBidList = () => {
+    $.ajax({
+      // 요청
+      type: 'get',
+      url: '${contextPath}/mypage/getBidList.do',
+      data: 'page=' + page + '&bidderNo=${sessionScope.user.userNo}',
+      // 응답
+      dataType: 'json',
+      success: (resData) => {   // resData = {"buyerNo": 1, "purchaseList": [], "totalPage" : 10}
+        totalPage = resData.totalPage;
+        $.each(resData.purchaseList, (i, pp) => {
+          let str = '<div class="purchase_product" data-product-no="' + pp.productNo + '">';
+          str += '<div>상품명: ' + pp.productName + '</div>';
+          if(pp.buyerNo === null) {
+            str += '<div>탈퇴한 판매자</div>';
+          } else {
+            str += '<div>판매자: ' + pp.sellerNo + '</div>';
+          }
+          str += '<div>등록일: ' + pp.productCreatedAt + '</div>';
+          str += '</div>';
+    
+          if(pp.reviewContents === null) {
+            // 작성한 리뷰가 없을 때만 버튼 생성
+            str += '<button type="button" class="btn_review">리뷰작성</button>';
+          } else if(pp.reviewContents !== null) {
+            // 작성한 리뷰가 있을 때만 버튼 생성
+            str += '<button type="button" class="btn_view_review">내가 쓴 리뷰보기</button>';
+          }
+          
+          $('#purchase_list').append(str);
+        
+        })
+      }
+    })
+  }
+  
+</script>
+
+*/-->
+
+
+</html>

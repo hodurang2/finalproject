@@ -5,4 +5,18 @@
 
 <mapper namespace="com.gdu.drawauction.dao.MypageMapper">
   
+  <update id="updateUser" parameterType="UserDto">
+    UPDATE USER_T
+       SET NAME = #{name}
+         , NICKNAME = #{nickname}
+         , GENDER = #{gender}
+         , MOBILE = #{mobile}
+         , POSTCODE = #{postcode}
+         , ROAD_ADDRESS = #{roadAddress}
+         , JIBUN_ADDRESS = #{jibunAddress}
+         , DETAIL_ADDRESS = #{detailAddress}
+         , AGREE = #{agree}
+     WHERE USER_NO = #{userNo};
+  </update>
+  
 </mapper>

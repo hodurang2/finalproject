@@ -5,7 +5,82 @@
 </head>
 <body>
   
-  <h1>파이널 화이팅</h1>
+<style>
+  
+  .my_info {
+    overflow: auto;
+    position: fixed;
+    margin-left: 100px;
+    margin-top: 100px;
+  } 
+  
+  .profile {
+    border: 1px solid gray;
+    width: 250px;
+  }
+  .my_menu {
+    width: 250px;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 250px;
+    height: 290px;
+    border: 1px solid gray;
+  }
+  
+  li a {
+    text-decoration: none;
+    padding: 10px 10px 10px;
+    display: block;
+    color: #000;
+    font-weight: bold;
+  }
+  
+  li a:hover {
+    background: #333;
+    color: #fff;
+  }
+  
+  li a:active {
+    color: rgb(0, 128, 128);
+  }
+
+  
+</style>
+  
+  
+  <aside class="my_info">
+    
+    <div class="profile">    
+      <div>
+        <h1>프로필사진</h1>       <!--/* 사용자 프로필 사진 넣어야 함 */-->
+      </div>
+<!--  <div>
+        ${session.user.nickName}  /* 사용자 닉네임 */
+      </div>
+      <div>
+        <textarea type="text" cols="15" th:name="introduction" placeholder="최대 100자" th:value="${session.user.introduction}"></textarea>
+        <button id="btn_modify_introduction">수정</button>
+      </div>-->
+    </div>
+    
+    
+    <div class="my_menu">
+      <ul>
+        <li><a th:href="@{/mypage/auctionBidList.do}">경매 이용 내역</a></li>
+        <li><a th:href="@{/mypage/myDrawList.do}">드려드림 내역</a></li>
+        <li><a th:href="@{/mypage/emoneyList.do}">E-MONEY</a></li>
+        <li><a th:href="@{/mypage/wishList.do}">찜목록</a></li>
+        <li><a th:href="@{/mypage/inquiryList.do}">1:1 문의</a></li>
+        <li><a th:href="@{/mypage/reviewList.do}">리뷰</a></li>
+        <li><a th:href="@{/mypage/modify.form}">회원정보</a></li>
+      </ul>
+    </div>     
+    
+  </aside>
   
 </body>
 </html>
