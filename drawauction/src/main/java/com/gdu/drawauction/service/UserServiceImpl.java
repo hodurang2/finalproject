@@ -46,7 +46,6 @@ public class UserServiceImpl implements UserService {
   @Override
   public void login(HttpServletRequest request, HttpServletResponse response) throws Exception {
     
-	int userNo = Integer.parseInt(request.getParameter("userNo"));
     String email = request.getParameter("email");
     String pw = mySecurityUtils.getSHA256(request.getParameter("pw"));
     
@@ -67,7 +66,7 @@ public class UserServiceImpl implements UserService {
     if(user != null) {
       request.getSession().setAttribute("user", user);
       userMapper.insertAccess(email);
-      response.sendRedirect(request.getParameter("referer"));
+      response.sendRedirect(request.getContextPath() + "/main.do");
     } else {
       response.setContentType("text/html; charset=UTF-8");
       PrintWriter out = response.getWriter();
@@ -159,7 +158,7 @@ public class UserServiceImpl implements UserService {
     
     // 네이버 로그인-3
     // 접근 토큰을 전달한 뒤 사용자의 프로필 정보(이름, 이메일, 성별, 휴대전화번호) 받아오기
-    // 요청 헤더에 Authorization: Bearer accessToken 정보를 저장하고 요청함
+    // 요청 헤더에 Authorization: Bearer sToken 정보를 저장하고 요청함
     
     // 요청
     String apiURL = "https://openapi.naver.com/v1/nid/me";
@@ -315,7 +314,6 @@ public class UserServiceImpl implements UserService {
   @Override
   public void join(HttpServletRequest request, HttpServletResponse response) {
     
-	int userNo = Integer.parseInt(request.getParameter("userNo"));
     String email = request.getParameter("email");
     String pw = mySecurityUtils.getSHA256(request.getParameter("pw"));
     String name = mySecurityUtils.preventXSS(request.getParameter("name"));

@@ -67,7 +67,7 @@
   </insert>
   
   <!--/* 접속기록 넣기 */-->
-  <insert id="insertAccess" parameterType="Map">
+  <insert id="insertAccess" parameterType="String">
     INSERT INTO ACCESS_T (
     	EMAIL, LOGIN_AT
     ) VALUES (
