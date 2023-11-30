@@ -55,7 +55,10 @@
       <th:block th:if="${session.user != null}">
         <ul class="ico_user_group">
           <li th:text="|${session.user.name}님 환영합니다|"></li>
-          <li><a th:href="@{/user/logout.do}"><i class="fa-solid fa-arrow-left"></i> 로그아웃</a></li>
+          <li>
+           <a th:href="@{/user/logout.do}"><i class="fa-solid fa-arrow-left"></i> 로그아웃</a>
+           <a th:href="@{/notice/list.do}"> 고객센터</a>  
+          </li>
         </ul>
       </th:block>
     </div>
