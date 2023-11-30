@@ -1,5 +1,9 @@
 package com.gdu.drawauction.service;
 
-public interface AuctionService {
+import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+public interface AuctionService {
+  public Map<String, Object> getAuctionList(HttpServletRequest request); 
 }
