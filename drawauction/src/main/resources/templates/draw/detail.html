@@ -3,7 +3,7 @@
 
 <head th:replace="~{/layout/header::head(|${draw.drawNo}번 게시글|)}"></head>
 <style>
-  .fa-regular{
+  #wishlist{
 	cursor: pointer;
   }
 </style>
@@ -36,6 +36,7 @@
       <div th:text="|작품 가로길이(px) : ${draw.width}|"></div>
       <div th:text="|작품 세로길이(px) : ${draw.height}|"></div>
       <div th:text="|작업기간 : 결제일로부터 ${draw.workTerm} 일|"></div>
+      <input type="hidden" id="drawNo2" name="drawNo2" th:value="${draw.drawNo}">
       <div>내용</div>
       <th:block th:if="${#strings.isEmpty(draw.contents)}">
         <div>내용없음</div>
@@ -66,7 +67,7 @@
       </div>
       
       <hr>
-	  <i class="wishist fa-regular fa-heart fa-2xl" style="color: #ff0000;"></i>      
+	  <i id="wishlist" class="fa-regular fa-heart fa-2xl" style="color: #ff0000;"></i>      
     </div>
       
     <script th:inline="javascript">
@@ -110,22 +111,48 @@
         }
       }
       
-      const fnAddWishList = () => {
-		$('#wishist').click(() => {
+      var drawNo = $('#drawNo2').val();
+      
+      const fnWishListControll = () => {
+		$('#wishlist').click(() => {
 		  $.ajax({
 			type: 'post',
-		    url: '/draw/addWishList.do',
+		    url: '/draw/WishListControll.do',
 		    data: { 
-					drwaNo: $('#drawNo').val(),
-					userNo: session.user.userNo
+					drawNo: drawNo,
+					userNo: 3
 			  	  },
 		    dataType: 'json',
 		    success: (resData) => {
-			  $('#wishist').removeClass('fa-regular');
-			  $('#wishist').addClass('fa-solid');
+			  if(resData.addWishResult == 1) {
+			    $('#wishlist').removeClass('fa-regular fa-heart fa-2xl');
+			    $('#wishlist').addClass('fa-solid fa-heart fa-2xl');
+			  } else if(resData.removeWishResult == 1) {
+			    $('#wishlist').removeClass('fa-solid fa-heart fa-2xl');
+				$('#wishlist').addClass('fa-regular fa-heart fa-2xl');
+			  }
 		    }
 			
 		  })
+		})
+	  }
+	  
+	  const fnWishCheck = () => {
+		$.ajax({
+		  type: 'get',
+		  url: '/draw/WishCheck.do',
+		  data: { 
+				  drawNo: drawNo,
+				  userNo: 3
+			  	},
+		  dataType: 'json',
+		  success: (resData) => {
+			if(!resData.wishCheckResult == 0) {
+			  $('#wishlist').removeClass('fa-regular fa-heart fa-2xl');
+			  $('#wishlist').addClass('fa-solid fa-heart fa-2xl');
+			}
+		  }
+			
 		})
 	  }
       
@@ -133,7 +160,8 @@
       fnRemove();
       fnDownload();
       fnModifyResult();
-      
+      fnWishListControll();
+      fnWishCheck();
     </script>
       
   </div>
