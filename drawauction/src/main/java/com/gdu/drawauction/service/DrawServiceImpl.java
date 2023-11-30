@@ -8,6 +8,8 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -138,6 +140,7 @@ public class DrawServiceImpl implements DrawService{
 	    
 	 }
 	
+	// 그려드림 상세보기
 	@Transactional(readOnly=true)
 	@Override
 	public void loadDraw(HttpServletRequest request, Model model) {
@@ -150,16 +153,43 @@ public class DrawServiceImpl implements DrawService{
 	    
 	}
 	
+	// 그려드림 찜목록 insert, delete
 	@Override
-	public void addWishList(HttpServletRequest request) {
+	public ResponseEntity<Map<String, Object>> WishListControll(HttpServletRequest request) {
 	  
 	  int drawNo = Integer.parseInt(request.getParameter("drawNo")); 
 	  int userNo = Integer.parseInt(request.getParameter("userNo"));
+	  Map<String, Object> map = Map.of("drawNo", drawNo, "userNo", userNo);
 	  
+	  int wishCheckResult = drawMapper.wishCheck(map);
+	  
+	  if(wishCheckResult == 0) {
+		int addWishResult = drawMapper.addWishList(map);
+		return new ResponseEntity<>(Map.of("addWishResult", addWishResult), HttpStatus.OK);
+	  } else {
+		int removeWishResult =drawMapper.removeWishList(map);
+		return new ResponseEntity<>(Map.of("removeWishResult", removeWishResult), HttpStatus.OK);
+	  }
 	  
 	  
 		
 	}
+	
+	@Override
+	public ResponseEntity<Map<String, Object>> wishCheck(HttpServletRequest request) {
+	  
+	  int drawNo = Integer.parseInt(request.getParameter("drawNo")); 
+	  int userNo = Integer.parseInt(request.getParameter("userNo"));
+	  
+	  Map<String, Object> map = Map.of("drawNo", drawNo, "userNo", userNo);
+	  
+	  int wishCheckResult = drawMapper.wishCheck(map);
+	  
+	  return new ResponseEntity<>(Map.of("wishCheckResult", wishCheckResult), HttpStatus.OK);
+	  
+		
+	}
+	
 	
 	
 	
