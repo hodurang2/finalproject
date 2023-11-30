@@ -2,6 +2,11 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{/layout/header::head(|${draw.drawNo}번 게시글|)}"></head>
+<style>
+  .fa-regular{
+	cursor: pointer;
+  }
+</style>
 
 <body>
   
@@ -17,7 +22,7 @@
         <th:block th:if="${session.user != null}">
           <th:block th:if="${session.user.userNo == draw.userDto.userNo}">
             <form id="frm_btn">
-              <input type="hidden" name="drawNo" th:value="${draw.drawNo}">
+              <input type="hidden" id="drawNo" name="drawNo" th:value="${draw.drawNo}">
               <button type="button" id="btn_edit" class="btn btn-warning btn-sm">편집</button>
               <button type="button" id="btn_remove" class="btn btn-danger btn-sm">삭제</button>
             </form>
@@ -30,6 +35,7 @@
       <div th:text="|가격 : ${#numbers.formatInteger(draw.price, 0, 'COMMA')}P|"></div>
       <div th:text="|작품 가로길이(px) : ${draw.width}|"></div>
       <div th:text="|작품 세로길이(px) : ${draw.height}|"></div>
+      <div th:text="|작업기간 : 결제일로부터 ${draw.workTerm} 일|"></div>
       <div>내용</div>
       <th:block th:if="${#strings.isEmpty(draw.contents)}">
         <div>내용없음</div>
@@ -59,6 +65,8 @@
         </th:block>
       </div>
       
+      <hr>
+	  <i class="wishist fa-regular fa-heart fa-2xl" style="color: #ff0000;"></i>      
     </div>
       
     <script th:inline="javascript">
@@ -101,6 +109,25 @@
           }
         }
       }
+      
+      const fnAddWishList = () => {
+		$('#wishist').click(() => {
+		  $.ajax({
+			type: 'post',
+		    url: '/draw/addWishList.do',
+		    data: { 
+					drwaNo: $('#drawNo').val(),
+					userNo: session.user.userNo
+			  	  },
+		    dataType: 'json',
+		    success: (resData) => {
+			  $('#wishist').removeClass('fa-regular');
+			  $('#wishist').addClass('fa-solid');
+		    }
+			
+		  })
+		})
+	  }
       
       fnEdit();
       fnRemove();
