@@ -3,7 +3,7 @@
 
 <head th:replace="~{/layout/header::head(|${draw.drawNo}번 게시글|)}"></head>
 <style>
-  #wishlist{
+  #wish_list{
 	cursor: pointer;
   }
 </style>
@@ -67,7 +67,13 @@
       </div>
       
       <hr>
-	  <i id="wishlist" class="fa-regular fa-heart fa-2xl" style="color: #ff0000;"></i>      
+      
+	  <i id="wish_list" class="fa-regular fa-heart fa-2xl" style="color: #ff0000;"></i>
+	  
+	  <hr>
+	  
+	  <div id="review_list"></div>
+	        
     </div>
       
     <script th:inline="javascript">
@@ -114,7 +120,7 @@
       var drawNo = $('#drawNo2').val();
       
       const fnWishListControll = () => {
-		$('#wishlist').click(() => {
+		$('#wish_list').click(() => {
 		  $.ajax({
 			type: 'post',
 		    url: '/draw/WishListControll.do',
@@ -125,11 +131,11 @@
 		    dataType: 'json',
 		    success: (resData) => {
 			  if(resData.addWishResult == 1) {
-			    $('#wishlist').removeClass('fa-regular fa-heart fa-2xl');
-			    $('#wishlist').addClass('fa-solid fa-heart fa-2xl');
+			    $('#wish_list').removeClass('fa-regular fa-heart fa-2xl');
+			    $('#wish_list').addClass('fa-solid fa-heart fa-2xl');
 			  } else if(resData.removeWishResult == 1) {
-			    $('#wishlist').removeClass('fa-solid fa-heart fa-2xl');
-				$('#wishlist').addClass('fa-regular fa-heart fa-2xl');
+			    $('#wish_list').removeClass('fa-solid fa-heart fa-2xl');
+				$('#wish_list').addClass('fa-regular fa-heart fa-2xl');
 			  }
 		    }
 			
@@ -148,13 +154,83 @@
 		  dataType: 'json',
 		  success: (resData) => {
 			if(!resData.wishCheckResult == 0) {
-			  $('#wishlist').removeClass('fa-regular fa-heart fa-2xl');
-			  $('#wishlist').addClass('fa-solid fa-heart fa-2xl');
+			  $('#wish_list').removeClass('fa-regular fa-heart fa-2xl');
+			  $('#wish_list').addClass('fa-solid fa-heart fa-2xl');
 			}
 		  }
 			
 		})
 	  }
+	  
+	  var page = 1;
+        
+	    const fnCommentList = () => {
+	      $.ajax({
+	        // 요청
+	        type: 'get',
+	        url: '/draw/reviewList.do',
+	        data: 'page=' + page + '&blogNo=[[${blog.blogNo}]]',
+	        // 응답
+	        dataType: 'json',
+	        success: (resData) => {  // resData = {"commentList": [], "paging": "<div>...</div>"}
+	          $('#comment_list').empty();
+	          $('#paging').empty();
+	          if(resData.commentList.length === 0){
+	            $('#comment_list').html('<div class="text-center my-3">첫 번째 댓글의 주인공이 되어 보세요</div>');
+	            $('#paging').text('');
+	            return;
+	          }
+	          $.each(resData.commentList, (i, c) => {
+	            let str = '';
+	            if(c.depth === 0){
+	              str += '<div>';
+	            } else {
+	              str += '<div style="padding-left: 32px;">';
+	            }
+	            if(c.status === 0){
+	              str += '<div>삭제된 댓글입니다.</div>';
+	            } else {
+	              str += '  <div>' + c.userDto.name + '</div>';
+	              str += '  <div>' + c.contents + '</div>';
+	              str += '  <div style="font-size: 12px;">' + c.createdAt + '</div>';
+	              str += '  <div>';
+	              if(c.depth === 0){
+	                str += '  <button type="button" class="btn btn-outline-primary btn-sm btn_open_reply">답글달기</button>';
+	              }
+	              // 로그인 유저
+	              let user = /*[[${session.user}]]*/ null;
+	              if(user !== null && user.userNo === c.userDto.userNo){
+	                str += '  <input type="hidden" value="' + c.commentNo + '">';
+	                str += '  <i class="fa-regular fa-circle-xmark ico_remove_comment"></i>';
+	              }
+	              str += '  </div>';
+	              /************************** 답글 입력 창 **************************/
+	              str += '  <div class="blind frm_add_reply_wrap">';
+	              str += '    <form class="frm_add_reply">';
+	              // 로그인 여부 점검
+	              if(user === null){                    
+	                str += '      <input type="hidden" name="userNo" value="0">';
+	              } else {
+	                str += '      <input type="hidden" name="userNo" value="' + user.userNo + '">';
+	              }
+	              str += '      <input type="hidden" name="blogNo" value="[[${blog.blogNo}]]">';
+	              str += '      <input type="hidden" name="groupNo" value="' + c.groupNo + '">';
+	              str += '      <div class="input-group mb-3">';
+	              str += '        <textarea rows="2" name="contents" class="form-control" placeholder="답글을 입력하세요"></textarea>';
+	              str += '        <button type="button" class="btn btn-success btn-sm btn_add_reply">답글작성완료</button>';
+	              str += '      </div>';
+	              str += '    </form>';
+	              str += '  </div>';
+	              /******************************************************************/
+	            }
+	            str += '</div>';
+	            str += '<hr class="my-3">';
+	            $('#comment_list').append(str);
+	          })
+	          $('#paging').append(resData.paging);  // fnAjaxPaging() 함수가 호출되는 곳
+	        }
+	      })
+	    }
       
       fnEdit();
       fnRemove();
