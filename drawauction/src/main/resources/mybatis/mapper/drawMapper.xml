@@ -5,14 +5,14 @@
 
 <mapper namespace="com.gdu.drawauction.dao.DrawMapper">
 
-  <!-- DrawDto에는 UserDto가 포함되어 있으므로 resultMap을 만들어서 DrawDto의 설명을 넣어줌 -->
-  <resultMap type="DrawDto"      id="DrawMap">
+    <resultMap type="DrawDto"      id="DrawMap">
     <id      column="DRAW_NO"    property="drawNo"/>
     <result  column="TITLE"        property="title"/>
     <result  column="PRICE"        property="price"/>
     <result  column="CONTENTS"     property="contents"/>
     <result  column="WIDTH"  property="width"/>
     <result  column="HEIGHT" property="height"/>
+    <result  column="WORK_TERM" property="workTerm"/>
     <association javaType="CategoryDto" property="categoryDto">
 	  <id        column="CATEGORY_NO"   property="categoryNo"/>
 	  <result    column="CATEGORY_NAME"          property="categoryName" />
@@ -36,6 +36,43 @@
     </association>
   </resultMap>
   
+  <resultMap type="DrawWishListDto"    id="DrawWishListMap">
+    <id      column="DRAW_WISH_NO"     property="drawWishNo"/>
+    <result  column="USER_NO"          property="userNo"/>
+    <result  column="WISHED_AT"        property="wishedAt"/>
+    <association javaType="DrawDto"    property="drawMap">
+	  <id      column="DRAW_NO"      property="drawNo"/>
+	  <result  column="TITLE"        property="title"/>
+	  <result  column="PRICE"        property="price"/>
+	  <result  column="CONTENTS"     property="contents"/>
+	  <result  column="WIDTH"  		 property="width"/>
+	  <result  column="HEIGHT" 		 property="height"/>
+	  <result  column="WORK_TERM" 	 property="workTerm"/>
+	  <association javaType="CategoryDto" property="categoryDto">
+	  	<id        column="CATEGORY_NO"   property="categoryNo"/>
+	  	<result    column="CATEGORY_NAME"          property="categoryName" />
+	  </association>
+      <association javaType="UserDto"      property="userDto">
+      	<id        column="USER_NO"        property="userNo"/>
+      	<result    column="EMAIL"          property="email" />
+      	<result    column="PW"             property="pw" />
+      	<result    column="NAME"           property="name" />
+      	<result    column="MOBILE"         property="mobile" />
+      	<result    column="GENDER"         property="gender" />
+      	<result    column="AGREE"          property="agree" />
+      	<result    column="STATE"          property="state" />
+      	<result    column="JOINED_AT"      property="joinedAt" />
+      	<result    column="POSTCODE"       property="postcode" />
+      	<result    column="ROAD_ADDRESS"   property="roadAddress" />
+      	<result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      	<result    column="DETAIL_ADDRESS" property="detailAddress" />
+      	<result    column="NICKNAME"	   property="nickname" />
+      	<result    column="INTRODUCTION"   property="introduction" />
+      </association>
+	</association>
+  </resultMap>
+  
+  
   <insert id="insertDraw" parameterType="DrawDto">
     <!-- INSERT 수행 이전에 파라미터 UploadDto의 uploadNo 필드에 UPLOAD_SEQ.NEXTVAL값을 저장한다. -->
     <selectKey order="BEFORE" resultType="int" keyProperty="drawNo">
@@ -51,6 +88,7 @@
       , WIDTH
       , HEIGHT
       , PRICE
+      , WORK_TERM
     ) VALUES (
         #{drawNo}
       , #{userDto.userNo}
@@ -60,6 +98,7 @@
       , #{width}
       , #{height}
       , #{price}
+      , #{workTerm}
     )
   </insert>
   
@@ -87,9 +126,9 @@
   </select>
   
   <select id="getDrawList" parameterType="Map" resultMap="DrawMap">
-    SELECT A.DRAW_NO, A.CATEGORY_NO, A.TITLE, A.PRICE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.USER_NO, A.NICKNAME, A.NAME, A.EMAIL, C.CATEGORY_NAME
+    SELECT A.DRAW_NO, A.CATEGORY_NO, A.TITLE, A.PRICE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.WORK_TERM, A.USER_NO, A.NICKNAME, A.NAME, A.EMAIL, C.CATEGORY_NAME
       FROM (SELECT ROW_NUMBER() OVER(ORDER BY DRAW_NO DESC) AS RN,
-                   D.DRAW_NO, D.CATEGORY_NO, D.TITLE, D.PRICE, D.CONTENTS, D.WIDTH, D.HEIGHT, USR.USER_NO, USR.NICKNAME, USR.NAME, USR.EMAIL
+                   D.DRAW_NO, D.CATEGORY_NO, D.TITLE, D.PRICE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.WORK_TERM,USR.USER_NO, USR.NICKNAME, USR.NAME, USR.EMAIL
               FROM DRAW_T D LEFT OUTER JOIN USER_T USR
                 ON D.SELLER_NO = USR.USER_NO) A INNER JOIN CATEGORY_T C
         ON A.CATEGORY_NO = C.CATEGORY_NO
@@ -97,8 +136,8 @@
   </select>
   
   <select id="getDraw" parameterType="int" resultMap="DrawMap">
-    SELECT A.DRAW_NO, A.SELLER_NO, A.CATEGORY_NO, A.TITLE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.PRICE, C.CATEGORY_NAME, A.NICKNAME
-  	  FROM (SELECT D.DRAW_NO, D.SELLER_NO, D.CATEGORY_NO ,D.TITLE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.PRICE
+    SELECT A.DRAW_NO, A.USER_NO, A.CATEGORY_NO, A.TITLE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.PRICE, A.WORK_TERM, C.CATEGORY_NAME, A.NICKNAME
+  	  FROM (SELECT D.DRAW_NO, D.SELLER_NO, D.CATEGORY_NO ,D.TITLE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.PRICE, D.WORK_TERM
               	   , USR.USER_NO, USR.EMAIL, USR.NAME, USR.NICKNAME
          	  FROM USER_T USR RIGHT OUTER JOIN DRAW_T D
                 ON USR.USER_NO = D.SELLER_NO) A INNER JOIN CATEGORY_T C
@@ -111,6 +150,34 @@
  	  FROM DRAW_IMAGE_T
  	 WHERE DRAW_NO = #{drawNo}
   </select>
+  
+  <insert id="addWishList" parameterType="Map">
+	INSERT INTO DRAW_WISHLIST_T (
+	  DRAW_WISH_NO
+	, DRAW_NO
+    , USER_NO
+	, WISHED_AT
+    ) VALUES (
+	  DRAW_WISHLIST_SEQ.NEXTVAL
+	, #{drawNo}
+	, #{userNo}
+	, SYSDATE
+	)
+  </insert>
+  
+  <select id="wishCheck" parameterType="Map">
+	SELECT COUNT(*)
+  	  FROM DRAW_WISHLIST_T
+ 	 WHERE DRAW_NO = #{drawNo}
+   	   AND USER_NO = #{userNo}
+  </select>
+  
+  <delete id="removeWishList" parameterType="Map">
+	DELETE
+	  FROM DRAW_WISHLIST_T
+	 WHERE DRAW_NO = #{drawNo}
+   	   AND USER_NO = #{userNo}  
+  </delete>
 
  
   

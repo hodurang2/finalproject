@@ -1,17 +1,19 @@
 package com.gdu.drawauction.dto;
 
+import java.sql.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Builder
-public class AuctionWishlistDto {
-  private int auctionWishNo;
-  private String wishedAt;
-  private AuctionDto auctionDto;
-  private UserDto userDto;
+public class DrawWishListDto {
+	private int drawWishNo;
+	private int userNo;
+	private Date wishedAt;
+	private DrawDto drawDto;
 }

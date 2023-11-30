@@ -8,6 +8,8 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -59,11 +61,12 @@ public class DrawServiceImpl implements DrawService{
 	@Override
 	public boolean addDraw(MultipartHttpServletRequest multipartRequest) throws Exception {
 	    
-		int width = Integer.parseInt(multipartRequest.getParameter("width"));
-		int height = Integer.parseInt(multipartRequest.getParameter("height"));
 		int categoryNo = Integer.parseInt(multipartRequest.getParameter("categoryNo")); 
 	    String title = multipartRequest.getParameter("title");
 	    int price = Integer.parseInt(multipartRequest.getParameter("price")); 
+	    int width = Integer.parseInt(multipartRequest.getParameter("width"));
+	    int height = Integer.parseInt(multipartRequest.getParameter("height"));
+	    int workTerm = Integer.parseInt(multipartRequest.getParameter("workTerm"));
 	    String contents = multipartRequest.getParameter("contents");
 	    int sellerNo = Integer.parseInt(multipartRequest.getParameter("sellerNo"));
 	    
@@ -75,6 +78,7 @@ public class DrawServiceImpl implements DrawService{
 	                        .price(price)
 	                        .width(width)
 	                        .height(height)
+	                        .workTerm(workTerm)
 	                        .contents(contents)
 	                        .userDto(UserDto.builder()
 	                                  .userNo(sellerNo)
@@ -136,6 +140,7 @@ public class DrawServiceImpl implements DrawService{
 	    
 	 }
 	
+	// 그려드림 상세보기
 	@Transactional(readOnly=true)
 	@Override
 	public void loadDraw(HttpServletRequest request, Model model) {
@@ -147,6 +152,44 @@ public class DrawServiceImpl implements DrawService{
 	  model.addAttribute("imageList", drawMapper.getImageList(drawNo));
 	    
 	}
+	
+	// 그려드림 찜목록 insert, delete
+	@Override
+	public ResponseEntity<Map<String, Object>> WishListControll(HttpServletRequest request) {
+	  
+	  int drawNo = Integer.parseInt(request.getParameter("drawNo")); 
+	  int userNo = Integer.parseInt(request.getParameter("userNo"));
+	  Map<String, Object> map = Map.of("drawNo", drawNo, "userNo", userNo);
+	  
+	  int wishCheckResult = drawMapper.wishCheck(map);
+	  
+	  if(wishCheckResult == 0) {
+		int addWishResult = drawMapper.addWishList(map);
+		return new ResponseEntity<>(Map.of("addWishResult", addWishResult), HttpStatus.OK);
+	  } else {
+		int removeWishResult =drawMapper.removeWishList(map);
+		return new ResponseEntity<>(Map.of("removeWishResult", removeWishResult), HttpStatus.OK);
+	  }
+	  
+	  
+		
+	}
+	
+	@Override
+	public ResponseEntity<Map<String, Object>> wishCheck(HttpServletRequest request) {
+	  
+	  int drawNo = Integer.parseInt(request.getParameter("drawNo")); 
+	  int userNo = Integer.parseInt(request.getParameter("userNo"));
+	  
+	  Map<String, Object> map = Map.of("drawNo", drawNo, "userNo", userNo);
+	  
+	  int wishCheckResult = drawMapper.wishCheck(map);
+	  
+	  return new ResponseEntity<>(Map.of("wishCheckResult", wishCheckResult), HttpStatus.OK);
+	  
+		
+	}
+	
 	
 	
 	

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,6 +55,15 @@ public class DrawController {
     return "draw/detail";
   }
   
+  @PostMapping(value="/WishListControll.do", produces="application/json")
+  public ResponseEntity<Map<String, Object>> addWishList(HttpServletRequest request) {
+	return drawService.WishListControll(request);
+  }
+  
+  @GetMapping(value="/WishCheck.do", produces="application/json")
+  public ResponseEntity<Map<String, Object>> wishCheck(HttpServletRequest request) {
+	return drawService.wishCheck(request);
+  }
   
 
 }

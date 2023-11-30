@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{/layout/header::head('그려드림 게시판')}"></head>
+<head th:replace="~{/layout/header::head('경매 게시판')}"></head>
 
 <style>
-  .draw_list {
+  .auction_list {
     margin: 10px auto;
     display: flex;
     flex-wrap: wrap;
    }
-  .draw {
+  .auction {
     width: 262px;
     height: 262px;
     border: 1px solid gray;
@@ -18,7 +18,7 @@
     padding-top: 80px;
     margin: 20px 15px;
   }
-  .draw:hover {
+  .auction:hover {
     background-color: silver;
     cursor: pointer;
   }
@@ -33,12 +33,12 @@
     <div class="wrap wrap_9">
     
       <div class="text-center">
-        <a th:href="@{/draw/write.form}">
+        <a th:href="@{/auction/write.form}">
           <button type="button" class="btn btn-outline-primary">새글작성</button>
         </a>
       </div>
       
-      <div id="draw_list" class="draw_list"></div>
+      <div id="auction_list" class="auction_list"></div>
     
     </div>
     
@@ -48,36 +48,37 @@
       var page = 1;
       var totalPage = 0;
     
-      const fnGetDrawList = () => {
+      const fnGetAuctionList = () => {
         $.ajax({
           // 요청
           type: 'get',
-          url: '/draw/getList.do',
+          url: '/auction/getList.do',
           data: 'page=' + page,
           // 응답
           dataType: 'json',
           success: (resData) => {  
             totalPage = resData.totalPage;
-            $.each(resData.drawList, (i, draw) => {
-              let str = '<div class="draw" data-draw_no="' + draw.drawNo + '">';
-              str += '<div>제목: ' + draw.title + '</div>';
-              str += '<div>카테고리: ' + draw.categoryDto.categoryName + '</div>';
-              if(draw.userDto === null){
-                str += '<div>작가: 정보없음</div>';
-              } else {            
-                str += '<div>작가: ' + draw.userDto.nickname + '</div>';
-              }
-              str += '<div>가격: ' + draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</div>'; // 상품가격 1000단위 콤마찍기
+            $.each(resData.auctionList, (i, auction) => {
+              let str = '<div class="auction" data-auction_no="' + auction.auctionNo + '">';
+              str += '<div class="auction_image">' + '</div>';
+              str += '<div class="auction_heart">' + '</div>';
+              str += '<div><span>' + auction.artDto.categoryDto.categoryName + '</span></div>';
+              str += '<div><span>' + auction.artDto.title                    + '</span></div>';
+              str += '<div><span>' + auction.artDto.sellerDto.nickname       + '</span></div>';
+              str += '<div><span>시작가</span><span>'         + auction.startPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+              str += '<div><span>현재입찰가</span><span>'     + auction.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+              str += '<div><span>즉시 구매가</span><span>'    + auction.buyPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+              str += '<div><span>마감일</span><span> '        + auction.endAt + '</span></div>'; // 상품가격 1000단위 콤마찍기
               str += '</div>';
-              $('#draw_list').append(str);
+              $('#auction_list').append(str);
             })
           }
         })
       }
       
-      const fnDrawDetail = () => {
-        $(document).on('click', '.draw', function(){
-          location.href = '/draw/detail.do?drawNo=' + $(this).data('draw_no');
+      const fnAuctionDetail = () => {
+        $(document).on('click', '.auction', function(){
+          location.href = '/auction/detail.do?auctionNo=' + $(this).data('auction_no');
         })
       }
     
@@ -102,7 +103,7 @@
                 return;              // 마지막 페이지를 보여준 이후에는 아래 코드를 수행하지 말 것 
               }
               page++;
-              fnGetDrawList();
+              fnGetAuctionList();
             }
             
           }, 200);  // 200밀리초(0.2초) 후 동작(시간은 임의로 조정 가능함)
@@ -116,7 +117,7 @@
         if(addResult !== null){
           if(addResult === true){
             alert('성공적으로 업로드 되었습니다.');
-            $('#draw_list').empty();
+            $('#auction_list').empty();
           } else {
             alert('업로드가 실패하였습니다.');
           }
@@ -128,16 +129,16 @@
         if(removeResult !== null){
           if(removeResult === 1){
             alert('게시글이 삭제되었습니다.');
-            $('#draw_list').empty();
+            $('#auction_list').empty();
           } else {
             alert('게시글 삭제가 실패했습니다.');
           }
         }
       }
+
       
-      
-      fnGetDrawList();
-      fnDrawDetail();
+      fnGetAuctionList();
+      fnAuctionDetail();
       fnScroll();
       fnAddResult();
       fnRemoveResult();
