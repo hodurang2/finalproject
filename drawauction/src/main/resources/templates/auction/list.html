@@ -4,6 +4,15 @@
 <head th:replace="~{/layout/header::head('경매 게시판')}"></head>
 
 <style>
+  #auction_heart_btn {
+    border: none;
+    background-color: white;
+  }
+  .auction_heart {
+    text-align: right;
+    padding-right: 10px;
+    padding-top: 10px;
+  }
   .auction_list {
     margin: 10px auto;
     display: flex;
@@ -15,7 +24,6 @@
     border: 1px solid gray;
     border-radius: 5px;
     text-align: center;
-    padding-top: 80px;
     margin: 20px 15px;
   }
   .auction:hover {
@@ -61,7 +69,9 @@
             $.each(resData.auctionList, (i, auction) => {
               let str = '<div class="auction" data-auction_no="' + auction.auctionNo + '">';
               str += '<div class="auction_image">' + '</div>';
-              str += '<div class="auction_heart">' + '</div>';
+              str += '<form id="auction_heart_frm">';
+              str += '<div class="auction_heart"><button type="button" id="auction_heart_btn" class="auction_heart_off"><i class="fa-regular fa-heart" style="color: #e11414;"></i></button></div>';
+              str += '</form>';
               str += '<div><span>' + auction.artDto.categoryDto.categoryName + '</span></div>';
               str += '<div><span>' + auction.artDto.title                    + '</span></div>';
               str += '<div><span>' + auction.artDto.sellerDto.nickname       + '</span></div>';
@@ -73,6 +83,75 @@
               $('#auction_list').append(str);
             })
           }
+        })
+      }
+      const fnRemoveWishlist = () => {
+         $.ajax({
+          // 요청
+          type: 'get',
+          url: '/auction/removeWish.do',
+          data: 'auctionNo=' + $('.auction').data('auction_no') + '&userNo=3',
+          // 응답
+          dataType: 'json',
+          success: (resData) => {  
+            document.location.reload(true);
+            alert('찜삭제됨');
+            }
+          })
+      }
+      
+      const fnAddWishlist = () => {
+        
+        $.ajax({
+          // 요청
+          type: 'get',
+          url: '/auction/addWish.do',
+          data: 'auctionNo=' + $('.auction').data('auction_no') + '&userNo=3',
+          // 응답
+          dataType: 'json',
+          success: (resData) => {  
+            document.location.reload(true);
+            alert('찜추가됨');
+            }
+          })
+      }
+      
+      const fnHeart = () => {
+        $(document).on('click', '#auction_heart_btn', function(){
+            if($(this).hasClass('auction_heart_off')){
+              $(this).removeClass('auction_heart_off');
+              $(this).addClass('auction_heart_on');
+              $(this).html('<i class="fa-solid fa-heart" style="color: #e11414;"></i>');
+              $.ajax({
+                  // 요청
+                  type: 'get',
+                  url: '/auction/addWish.do',
+                  data: 'auctionNo=' + $(this).closest('.auction').data('auction_no') + '&userNo=3',
+                  // 응답
+                  dataType: 'json',
+                  success: (resData) => {  
+                    document.location.reload(true);
+                    alert('찜추가됨');
+                    }
+                  })
+              return;
+            }
+            $(this).removeClass('auction_heart_on');
+            $(this).addClass('auction_heart_off');
+            $(this).html('<i class="fa-regular fa-heart" style="color: #e11414;"></i>');
+            $.ajax({
+                // 요청
+                type: 'get',
+                url: '/auction/removeWish.do',
+                data: 'auctionNo=' + $(this).closest('.auction').data('auction_no') + '&userNo=3',
+                // 응답
+                dataType: 'json',
+                success: (resData) => {  
+                  document.location.reload(true);
+                  alert('찜삭제됨');
+                  }
+                })
+            
         })
       }
       
@@ -138,11 +217,11 @@
 
       
       fnGetAuctionList();
-      fnAuctionDetail();
+      // fnAuctionDetail();
       fnScroll();
       fnAddResult();
       fnRemoveResult();
-    
+      fnHeart();
     </script>
 
   </div>

@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gdu.drawauction.dao.AuctionMapper;
 import com.gdu.drawauction.dto.AuctionDto;
-import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.util.MyFileUtils;
 import com.gdu.drawauction.util.MyPageUtils;
 
@@ -39,10 +38,23 @@ public class AuctionServiceImpl implements AuctionService {
                                    , "end", myPageUtils.getEnd());
     
     List<AuctionDto> auctionList = auctionMapper.getAuctionList(map);
-    System.out.println(auctionList.get(0).getEndAt());
-    System.out.println(auctionList.get(0).getEndAt());
-    System.out.println(auctionList.get(0).getEndAt());
     return Map.of("auctionList", auctionList
                 , "totalPage", myPageUtils.getTotalPage());
+  }
+  
+  @Override
+  public void addAuctionWishlist(HttpServletRequest request) {
+    int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    Map<String, Object> map = Map.of("auctionNo", auctionNo, "userNo", userNo);
+    auctionMapper.insertAuctionWishlist(map);
+  }
+  
+  @Override
+  public void removeAuctionWishlist(HttpServletRequest request) {
+    int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    Map<String, Object> map = Map.of("auctionNo", auctionNo, "userNo", userNo);
+    auctionMapper.deleteAuctionWishlist(map);
   }
 }
