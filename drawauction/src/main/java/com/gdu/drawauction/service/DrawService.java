@@ -11,4 +11,5 @@ public interface DrawService {
 	public Map<String, Object> getDrawList(HttpServletRequest request);
 	public boolean addDraw(MultipartHttpServletRequest multipartRequest) throws Exception;
 	public void loadDraw(HttpServletRequest request, Model model);
+	public void addWishList(HttpServletRequest request);
 }

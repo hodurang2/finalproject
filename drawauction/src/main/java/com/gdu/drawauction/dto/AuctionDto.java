@@ -1,7 +1,5 @@
 package com.gdu.drawauction.dto;
 
-import java.sql.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,10 +11,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AuctionDto {
   private int auctionNo;
-  private ArtDto artDto;
   private int startPrice;
   private int buyPrice;
-  private Date startAt;
-  private Date endAt;
+  private String startAt;
+  private String endAt;
   private int status;
+  private int price;
+  private ArtDto artDto;
 }

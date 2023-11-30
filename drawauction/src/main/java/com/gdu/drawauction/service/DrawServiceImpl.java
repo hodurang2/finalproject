@@ -59,11 +59,12 @@ public class DrawServiceImpl implements DrawService{
 	@Override
 	public boolean addDraw(MultipartHttpServletRequest multipartRequest) throws Exception {
 	    
-		int width = Integer.parseInt(multipartRequest.getParameter("width"));
-		int height = Integer.parseInt(multipartRequest.getParameter("height"));
 		int categoryNo = Integer.parseInt(multipartRequest.getParameter("categoryNo")); 
 	    String title = multipartRequest.getParameter("title");
 	    int price = Integer.parseInt(multipartRequest.getParameter("price")); 
+	    int width = Integer.parseInt(multipartRequest.getParameter("width"));
+	    int height = Integer.parseInt(multipartRequest.getParameter("height"));
+	    int workTerm = Integer.parseInt(multipartRequest.getParameter("workTerm"));
 	    String contents = multipartRequest.getParameter("contents");
 	    int sellerNo = Integer.parseInt(multipartRequest.getParameter("sellerNo"));
 	    
@@ -75,6 +76,7 @@ public class DrawServiceImpl implements DrawService{
 	                        .price(price)
 	                        .width(width)
 	                        .height(height)
+	                        .workTerm(workTerm)
 	                        .contents(contents)
 	                        .userDto(UserDto.builder()
 	                                  .userNo(sellerNo)
@@ -146,6 +148,17 @@ public class DrawServiceImpl implements DrawService{
 	  model.addAttribute("draw", drawMapper.getDraw(drawNo));
 	  model.addAttribute("imageList", drawMapper.getImageList(drawNo));
 	    
+	}
+	
+	@Override
+	public void addWishList(HttpServletRequest request) {
+	  
+	  int drawNo = Integer.parseInt(request.getParameter("drawNo")); 
+	  int userNo = Integer.parseInt(request.getParameter("userNo"));
+	  
+	  
+	  
+		
 	}
 	
 	
