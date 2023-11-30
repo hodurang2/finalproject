@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{/layout/header::head(|${auction.auctionNo}번 경매|)}"></head>
+<head th:replace="~{/layout/header::head(|번 경매|)}"></head>
 <style>
   .fa-regular{
 	cursor: pointer;
@@ -18,6 +18,7 @@
     
       <h1 class="title">경매 게시글</h1>
       
+      <!--/*
       <div class="text-center mb-5">
         <th:block th:if="${session.user != null}">
           <th:block th:if="${session.user.userNo == auction.artDto.sellerDto.userNo}">
@@ -29,10 +30,12 @@
           </th:block>
         </th:block>
       </div>
+      */-->
+      <!--/*
       <div th:text="|작가 : ${auction.artDto.sellerDto.nickname}|"></div>
       <div th:text="|카테고리 : ${auction.artDto.categoryDto.categoryName}|"></div>
-      <div th:text="|제목 : ${auction.title}|"></div>
-      <div th:text="|가격 : ${#numbers.formatInteger(auction.price, 0, 'COMMA')}P|"></div>
+      <div th:text="|제목 : ${auction.artDto.title}|"></div> 
+      <div th:text="|가격 : ${#numbers.formatInteger(auction.price, 1, 'COMMA')}P|"></div>
       <div th:text="|작품 가로길이(px) : ${auction.artDto.width}|"></div>
       <div th:text="|작품 세로길이(px) : ${auction.artDto.height}|"></div>
       <div>내용</div>
@@ -42,9 +45,9 @@
       <th:block th:if="${not #strings.isEmpty(auction.artDto.contents)}">
         <div th:text="${auction.artDto.contents}"></div>
       </th:block>
-      
+      */-->
       <h5>첨부 다운로드</h5>
-      <!--
+      <!--/*
       <div>
         <th:block th:if="${#lists.isEmpty(imageList)}">
           <div>첨부 없음</div>          
@@ -64,7 +67,7 @@
           <div><a th:href="@{/draw/downloadAll.do(drawNo=${draw.drawNo})}">모두 다운로드</a></div>
         </th:block>
       </div>
-      -->
+      */-->
       
       <hr>
 	  <i class="wishist fa-regular fa-heart fa-2xl" style="color: #ff0000;"></i>      
