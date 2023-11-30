@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gdu.drawauction.dao.AuctionMapper2">
+
+<!-- AuctionDto에 대한 resultMap -->
+<resultMap type="AuctionDto" id="AuctionMap">
+    <id column="AUCTION_NO"       property="auctionNo"/>
+    <result column="START_PRICE"  property="startPrice"/>
+    <result column="BUY_PRICE"    property="buyPrice"/>
+    <result column="START_AT"     property="startAt"/>
+    <result column="END_AT"       property="endAt"/>
+    <result column="STATUS"       property="status"/>
+    <result column="PRICE"        property="price"/>
+    <association javaType="ArtDto"      property="artDto">
+      <id column="ART_NO"         property="artNo"/>
+      <result column="TITLE"      property="title"/>
+      <result column="CONTENTS"   property="contents"/>
+      <result column="ART_TYPE"   property="artType"/>
+      <result column="WIDTH"      property="width"/>
+      <result column="HEIGHT"     property="height"/>
+      <association javaType="UserDto"    property="sellerDto">
+        <id column="USER_NO"              property="userNo"/>
+        <result column="EMAIL"            property="email"/>
+        <result column="PW"               property="pw"/>
+        <result column="NAME"             property="name"/>
+        <result column="MOBILE"           property="mobile"/>
+        <result column="GENDER"           property="gender"/>
+        <result column="AGREE"            property="agree"/>
+        <result column="STATE"            property="state"/>
+        <result column="JOINED_AT"        property="joinedAt"/>
+        <result column="POSTCODE"         property="postcode"/>
+        <result column="ROAD_ADDRESS"     property="roadAddress"/>
+        <result column="JIBUN_ADDRESS"    property="jibunAddress"/>
+        <result column="DETAIL_ADDRESS"   property="detailAddress"/>
+        <result column="NICKNAME"         property="nickname"/>
+        <result column="INTRODUCTION"     property="introduction"/>
+      </association>
+      <association javaType="CategoryDto" property="categoryDto">
+        <id        column="CATEGORY_NO"     property="categoryNo"/>
+        <result    column="CATEGORY_NAME"   property="categoryName" />
+      </association>
+    </association>
+</resultMap>
+
+  
+  <select id="getAuctionList" parameterType="Map" resultMap="AuctionMap">
+    SELECT D.AUCTION_NO, D.START_PRICE, D.BUY_PRICE, D.START_AT, D.END_AT, D.STATUS, 
+           D.ART_NO, D.TITLE, D.CONTENTS, D.ART_TYPE, D.WIDTH, D.HEIGHT,
+           D.USER_NO, D.NICKNAME,
+           D.CATEGORY_NO, D.CATEGORY_NAME,
+           D.PRICE, D.BID_NO       
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY AUC.AUCTION_NO DESC) AS RN,
+                   AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS, 
+                   A.ART_NO, A.TITLE, A.CONTENTS, A.ART_TYPE, A.WIDTH, A.HEIGHT,
+                   U.USER_NO, U.NICKNAME,
+                   C.CATEGORY_NO, C.CATEGORY_NAME,
+                   B.BID_NO, B.PRICE
+              FROM AUCTION_T AUC, ART_T A, USER_T U, CATEGORY_T C, BID_T B
+             WHERE AUC.ART_NO = A.ART_NO
+               AND A.SELLER_NO = U.USER_NO
+               AND A.CATEGORY_NO = C.CATEGORY_NO 
+               AND AUC.AUCTION_NO = B.AUCTION_NO(+)
+               AND (B.PRICE IS NULL OR B.PRICE = (SELECT MAX(PRICE) FROM BID_T WHERE AUCTION_NO = AUC.AUCTION_NO))) D 
+      WHERE RN BETWEEN #{begin} AND #{end}
+  </select>
+  
+  <select id="getAuctionCount" resultType="int">
+    SELECT COUNT(*)
+      FROM AUCTION_T
+  </select>
+  
+  <select id="getAuction" parameterType="int" resultMap="AuctionMap">
+    SELECT D.AUCTION_NO, D.START_PRICE, D.BUY_PRICE, D.START_AT, D.END_AT, D.STATUS, 
+           D.ART_NO, D.TITLE, D.CONTENTS, D.ART_TYPE, D.WIDTH, D.HEIGHT,
+           D.USER_NO, D.NICKNAME,
+           D.CATEGORY_NO, D.CATEGORY_NAME,
+           D.BID_NO, D.PRICE        
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY AUC.AUCTION_NO DESC) AS RN,
+                   AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS, 
+                   A.ART_NO, A.SELLER_NO, A.TITLE, A.CONTENTS, A.ART_TYPE, A.WIDTH, A.HEIGHT,
+                   U.USER_NO, U.NICKNAME,
+                   C.CATEGORY_NO, C.CATEGORY_NAME,
+                   B.BID_NO, B.PRICE
+              FROM AUCTION_T AUC, ART_T A, USER_T U, CATEGORY_T C, BID_T B
+             WHERE AUC.ART_NO = A.ART_NO
+               AND A.SELLER_NO = U.USER_NO
+               AND A.CATEGORY_NO = C.CATEGORY_NO 
+               AND AUC.AUCTION_NO = B.AUCTION_NO(+)
+               AND (B.PRICE IS NULL OR B.PRICE = (SELECT MAX(PRICE) FROM BID_T WHERE AUCTION_NO = AUC.AUCTION_NO))
+               AND AUC.AUCTION_NO = #{auctionNo}) D
+  </select>
+ 
+  
+</mapper>
