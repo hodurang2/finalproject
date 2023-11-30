@@ -67,15 +67,11 @@
   </insert>
   
   <!--/* 접속기록 넣기 */-->
-  <insert id="insertAccess" parameterType="String">
+  <insert id="insertAccess" parameterType="Map">
     INSERT INTO ACCESS_T (
-    	USER_NO
-      , EMAIL
-      , LOGIN_AT
+    	EMAIL, LOGIN_AT
     ) VALUES (
-    	#{userNo}
-        #{email}
-      , SYSDATE
+		#{email}, SYSDATE
     )
   </insert>
   
@@ -168,8 +164,7 @@
 		  FROM USER_T U LEFT OUTER JOIN ACCESS_T A
 		    ON U.EMAIL = A.EMAIL
 		 WHERE MONTHS_BETWEEN(SYSDATE, LOGIN_AT) >= 6
-		    OR (LOGIN_AT IS NULL AND MONTHS_BETWEEN(SYSDATE, LOGIN_AT) >= 6)
-    )
+		    OR (LOGIN_AT IS NULL AND MONTHS_BETWEEN(SYSDATE, LOGIN_AT) >= 6))
   </insert>
   
   <delete id="deleteUserForInactive">
