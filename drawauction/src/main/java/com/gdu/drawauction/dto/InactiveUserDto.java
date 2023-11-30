@@ -1,6 +1,6 @@
 package com.gdu.drawauction.dto;
 
-import java.sql.Date;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,13 +21,13 @@ public class InactiveUserDto {
 	private String gender;
 	private int agree;
 	private int state;
-	private Date joinedAt;
+	private String joinedAt;
 	private String postcode;
 	private String roadAddress;
 	private String jibunAddress;
 	private String detailAddress;
 	private String nickname;
 	private String introduction;
-	private Date inactivedAt;
+	private String inactivedAt;
 	
 }

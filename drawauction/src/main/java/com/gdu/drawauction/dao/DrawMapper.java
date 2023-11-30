@@ -16,4 +16,8 @@ public interface DrawMapper {
 	public int insertImage(DrawImageDto image);
 	public DrawDto getDraw(int drawNo);
 	public List<DrawImageDto> getImageList(int drawNo);
+	public int addWishList(Map<String, Object> map);
+	public int removeWishList(Map<String, Object> map);
+	public int wishCheck(Map<String, Object> map);
+	public int wishCheck2(Map<String, Object> map);
 }

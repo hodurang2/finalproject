@@ -12,7 +12,6 @@ $(() => {
   fnJoin();
 })
 
-
 /* 전역변수 선언 */
 var emailPassed = false;
 var pwPassed = false;
@@ -21,8 +20,7 @@ var namePassed = false;
 var mobilePassed = false;
 
 
-/* 함수 정의 */
-
+/* 이메일 중복 체크 */
 const fnCheckEmail = () => {
   $('#btn_get_code').click(() => {
     let email = $('#email').val();
@@ -86,6 +84,7 @@ const fnCheckEmail = () => {
   })
 }
 
+/* 비밀번호 입력 */
 const fnCheckPassword = () => {
   $('#pw').keyup((ev) => {
     let pw = $(ev.target).val();
@@ -103,6 +102,7 @@ const fnCheckPassword = () => {
   })
 }
 
+/* 비밀번호 재확인 */
 const fnCheckPassword2 = () => {
   $('#pw2').blur((ev) => {
     let pw = $('#pw').val();

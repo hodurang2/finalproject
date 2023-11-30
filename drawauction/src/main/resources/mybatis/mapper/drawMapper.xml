@@ -150,6 +150,34 @@
  	  FROM DRAW_IMAGE_T
  	 WHERE DRAW_NO = #{drawNo}
   </select>
+  
+  <insert id="addWishList" parameterType="Map">
+	INSERT INTO DRAW_WISHLIST_T (
+	  DRAW_WISH_NO
+	, DRAW_NO
+    , USER_NO
+	, WISHED_AT
+    ) VALUES (
+	  DRAW_WISHLIST_SEQ.NEXTVAL
+	, #{drawNo}
+	, #{userNo}
+	, SYSDATE
+	)
+  </insert>
+  
+  <select id="wishCheck" parameterType="Map">
+	SELECT COUNT(*)
+  	  FROM DRAW_WISHLIST_T
+ 	 WHERE DRAW_NO = #{drawNo}
+   	   AND USER_NO = #{userNo}
+  </select>
+  
+  <delete id="removeWishList" parameterType="Map">
+	DELETE
+	  FROM DRAW_WISHLIST_T
+	 WHERE DRAW_NO = #{drawNo}
+   	   AND USER_NO = #{userNo}  
+  </delete>
 
  
   

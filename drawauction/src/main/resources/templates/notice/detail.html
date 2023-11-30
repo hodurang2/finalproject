@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout/header::head(|${notice.noticeNo}번 게시글|)}"></head>
+
+<body>
+  
+  <div th:replace="~{/layout/header::header}"></div>
+  
+  <div class="main_wrap">
+
+  <div class="wrap wrap_1">
+    
+    <h1 class="title">공지 상세</h1>
+
+ <div>
+    <h1 th:text="${notice.title}"></h1>
+    <div th:text="|작성자  : 관리자|"></div>
+    <div th:text="|작성일  : ${#dates.format(notice.createdAt, 'yyyy-MM-dd HH:mm:ss')}|"></div>
+    <div>
+      <th:block th:if="${session.user.userNo == 1}">
+        <form id="frm_btn" method="post">
+          <input type="hidden" name="noticeNo" th:value="${notice.noticeNo}">
+          <input type="hidden" name="title"    th:value="${notice.title}">
+          <input type="hidden" name="contents" th:value='${notice.contents}'>
+          <button type="button" id="btn_edit" class="btn btn-primary">편집</button>
+          <button type="button" id="btn_rmv"  class="btn btn-danger">삭제</button>
+        </form>
+      </th:block>
+    </div>
+    <div th:utext="${notice.contents}"></div>
+  </div>
+  
+  <script th:inline="javascript">
+    
+    var frmBtn = $('#frm_btn');
+    
+    const fnEditNotice = () => {
+      $('#btn_edit').click(() => {
+        frmBtn.attr('action', '/notice/edit.form');
+        frmBtn.submit();
+      })
+    }
+    
+    const fnRemoveNotice = () => {
+  		$('#btn_rmv').click(() => {
+  			if(confirm('삭제할까요?')){
+  				alert('삭제되었습니다.');
+    			frmBtn.attr('action', '/notice/remove.do');
+    			frmBtn.submit();
+  			}
+  		})	
+  	}
+    fnEditNotice();
+    fnRemoveNotice();
+    
+  </script>
+  
+ </div>
+  
+<div th:replace="~{/layout/footer::footer}"></div>
+  
+</body>
+</html>
