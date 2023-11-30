@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ArtDto {
   private int artNo;
-  private UserDto sellerDto;
-  private CategoryDto categoryDto;
   private String title;
   private String contents;
   private int artType;
   private int width;
   private int height;
+  private UserDto sellerDto;
+  private CategoryDto categoryDto;
 }
