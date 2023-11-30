@@ -54,6 +54,11 @@ public class DrawController {
     return "draw/detail";
   }
   
+  @PostMapping("/addWishList.do")
+  public void addWishList(HttpServletRequest request) {
+	drawService.addWishList(request);
+  }
+  
   
 
 }
