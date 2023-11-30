@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout/header::head(|${inquiry.inquiryNo번 게시글|)}"></head>
+
+<style>
+  .blind {
+    display: none;
+  }
+  .ico_remove_comment {
+    cursor: pointer;
+  }
+</style>
+
+<body>
+  
+  <div th:replace="~{/layout/header::header}"></div>
+  
+  <div class="main_wrap">
+
+  <div class="wrap wrap_1">
+    
+    <h1 class="title">문의 상세</h1>
+    
+    <div>
+      <h1>${inquiry.inquiryTitle}</h1>
+      <div th:text="|작성자  : ${inquiry.userDto.email}|"></div>
+      <div th:text="|작성일  : <fmt:formatDate pattern="yyyy-MM-dd" th:value="${inquiry.inquiryCreatedAt}"/>|"></div>
+      <div>
+       <th:block th:if="${session.user != null}">
+        <th:block th:if="${sessionScope.user.userNo == inquiry.userDto.userNo}">
+          <form id="frm_btn" method="post">
+            <input type="hidden" name="inquiryNo" th:value="${inquiry.inquiryNo}">
+            <input type="hidden" name="title" th:value="${inquiry.title}">
+            <input type="hidden" name="contents" th:value="${inquiry.content}">
+            <button type="button" id="btn_edit" class="btn btn-primary">편집</button>
+            <button type="button" id="btn_rmv"  class="btn btn-danger">삭제</button>
+          </form>
+        </th:block>
+       </th:block>
+      </div>
+      <div th:text="${inquiry.content}"></div>
+      
+    </div>
+    
+    <div>
+      <form id="frm_answer_add">
+        <textarea rows="3" cols="50" name="contents" id="contents" placeholder="댓글을 작성해 주세요"></textarea>
+        <input type="hidden" name="inquiryNo" th:value="${inquiry.inquiryNo}">
+        <input type="hidden" name="inquiryNo" th:value="${answer.inquiryNo}">
+        <button type="button" id="btn_answer_add">작성완료</button>
+      </form>
+    </div>
+    <div style="width: 100%;border-bottom: 1px solid gray;"></div>
+    <div id="answer_list"></div>
+    <div id="paging"></div>
+    
+  </div>
+
+  <script th:inline="javascript">
+    
+    const fnAnswerAdd = () => {
+        $('#btn_answer_add').click(() => {
+          if('${sessionScope.user}' === ''){
+            if(confirm('로그인이 필요한 기능입니다. 로그인할까요?')){
+              location.href = '/user/login.form';
+            } else {
+              return;
+            }
+          }
+          $.ajax({
+            // 요청
+            type: 'post',
+            url: '/inquiry/addAnswer.do',
+            data: $('#frm_answer_add').serialize(),
+            // 응답
+            dataType: 'json',
+            success: (resData) => {  // {"addAnswerResult": 1}
+              if(resData.addAnswerResult === 1){
+                alert('댓글이 등록되었습니다.');
+                $('#contents').val('');
+                fnAnswerList();
+              }
+            }
+          })
+        })
+    }
+    
+    // 전역 변수
+    var page = 1;
+    
+    const fnAnswerList = () => {
+        $.ajax({
+          // 요청
+          type: 'get',
+          url: '/inquiry/answerList.do',
+          data: 'page=' + page + '&inquiryNo=${inquiry.inquiryNo}',
+          // 응답
+          dataType: 'json',
+          success: (resData) => {  // resData = {"answerList": [], "paging": "<div>...</div>"}
+            $('#answer_list').empty();
+            $('#paging').empty();
+            if(resData.answerList.length === 0){
+              $('#answer_list').text('첫 번째 댓글의 주인공이 되어 보세요');
+              $('#paging').text('');
+              return;
+            }
+            $.each(resData.answerList, (i, answer) => {
+              let str = '';
+              if(answer.depth === 0){
+                str += '<div style="width: 100%; border-bottom: 1px solid gray;">';
+              } else {
+                str += '<div style="width: 100%; border-bottom: 1px solid gray; margin-left: 32px;">';
+              }
+              if(answer.status === 0){
+                str += '<div>삭제된 댓글입니다.</div>';
+              } else {
+                str += '  <div>' + answer.contents + '</div>';
+                str += '  <div style="font-size: 12px;">' + answer.createdAt + '</div>';
+                if(answer.depth === 0){
+                  str += '  <div><button type="button" class="btn_open_reply">답글달기</button></div>';
+                }
+                /************************** 답글 입력 창 **************************/
+                str += '  <div class="blind frm_add_reply_wrap">';
+                str += '    <form class="frm_add_reply">';
+                str += '      <textarea rows="3" cols="50" name="contents" placeholder="답글을 입력하세요"></textarea>';
+                str += '      <input type="hidden" name="userNo" value="${sessionScope.user.userNo}">';
+                str += '      <input type="hidden" name="inquiryNo" value="${inquiry.inquiryNo}">';
+                str += '      <button type="button" class="btn_add_reply">답글작성완료</button>';
+                str += '    </form>';
+                str += '  </div>';
+                /******************************************************************/
+                if('${sessionScope.user.userNo}' == '${inquiry.userDto.userNo}'){                
+                  str += '  <div>';
+                  str += '  </div>';
+                }
+              }
+              str += '</div>';
+              $('#answer_list').append(str);
+            })
+            $('#paging').append(resData.paging);  // fnAjaxPaging() 함수가 호출되는 곳
+          }
+        })
+      }
+    
+    
+    const fnAjaxPaging = (p) => {
+      page = p;
+      fnAnswerList();
+    }
+    
+    const fnBlind = () => {
+      $(document).on('click', '.btn_open_reply', (ev) => {
+        if('${sessionScope.user}' === ''){
+          if(confirm('로그인이 필요한 기능입니다. 로그인할까요?')){
+            location.href = '/user/login.form';
+          } else {
+            return;
+          }
+        }
+        var blindTarget = $(ev.target).parent().next();
+        if(blindTarget.hasClass('blind')){
+          $('.frm_add_reply_wrap').addClass('blind');  // 모든 답글 입력화면 닫기
+          blindTarget.removeClass('blind');            // 답글 입력화면 열기
+        } else {
+          blindTarget.addClass('blind');
+        }
+      })
+    }
+    
+    const fnAnswerReplyAdd = () => {
+      $(document).on('click', '.btn_add_reply', (ev) => {
+        if('${sessionScope.user}' === ''){
+          if(confirm('로그인이 필요한 기능입니다. 로그인할까요?')){
+            location.href = '/user/login.form';
+          } else {
+            return;
+          }
+        }
+        var frmAddReply = $(ev.target).closest('.frm_add_reply');
+        $.ajax({
+          // 요청
+          type: 'post',
+          url: '/inquiry/addAnswerReply.do',
+          data: frmAddReply.serialize(),
+          // 응답
+          dataType: 'json',
+          success: (resData) => {  // resData = {"addCommentReplyResult": 1}
+            if(resData.addAnswerReplyResult === 1){
+              alert('답글이 등록되었습니다.');
+              fnAnswerList();
+              frmAddReply.find('textarea').val('');
+            } else {
+              alert('답글이 등록되지 않았습니다.');
+            }
+          }
+        })
+      })
+    }
+    
+    fnAnswerAdd();
+    fnAnswerList();
+    fnAnswerReplyAdd();
+    fnBlind();
+      
+  </script>
+  
+ </div>
+  
+<div th:replace="~{/layout/footer::footer}"></div>
+  
+</body>
+</html>
