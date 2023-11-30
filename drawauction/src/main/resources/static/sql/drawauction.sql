@@ -156,7 +156,8 @@ CREATE TABLE DRAW_T (
     PRICE       NUMBER             NULL,
 	CONTENTS	VARCHAR2(200 BYTE) NULL,
 	WIDTH	    NUMBER		       NULL,
-	HEIGHT	    NUMBER		       NULL
+	HEIGHT	    NUMBER		       NULL,
+    WORK_TERM   NUMBER             NULL
 );
 
 -- 그려드림 이미지 테이블
@@ -499,12 +500,12 @@ INSERT INTO EMONEY_T VALUES(EMONEY_SEQ.NEXTVAL, 3, 10000000, TO_DATE('2023-11-11
 INSERT INTO EMONEY_T VALUES(EMONEY_SEQ.NEXTVAL, 4, 3000000, TO_DATE('2023-11-11 04:20:00','YYYY-MM-DD HH24:MI:SS'));
 
 -- 그려드림 INSERT
-INSERT INTO DRAW_T VALUES(DRAW_SEQ.NEXTVAL, 2, 3, '현대판 렘브란트', 1200000, '마치 현대에 있는 렘브란트처럼 그려드립니다.', 1024, 1024);
-INSERT INTO DRAW_T VALUES(DRAW_SEQ.NEXTVAL, 3, 2, '원화 그려드립니다.', 24000000, '1:1채팅 걸어주세요.', 1024, 1024);
-INSERT INTO DRAW_T VALUES(DRAW_SEQ.NEXTVAL, 4, 4, '귀여운 캐릭 판화', 579000, '귀여운 캐릭터만 그릴 수 있습니다.', 1024, 1024);
-INSERT INTO DRAW_T VALUES(DRAW_SEQ.NEXTVAL, 5, 5, '붓글씨로 그려주는 이쁜손글씨', 8900000, '붓글씨 손글씨 15년째 장인이 글씨 그려드립니다.', 1024, 1024);
-INSERT INTO DRAW_T VALUES(DRAW_SEQ.NEXTVAL, 6, 6, '유명한 작품 모방가능합니다.', 9999999, '회화 관련 유명 작가 모방한 그림체로 그려드립니다.', 1024, 1024);
-INSERT INTO DRAW_T VALUES(DRAW_SEQ.NEXTVAL, 7, 7, '동양화로 그리는 초상화', 19750000, '사진보내주시면 동양화로 초상화 그려드립니다.', 1024, 1024);
+INSERT INTO DRAW_T VALUES(DRAW_SEQ.NEXTVAL, 2, 3, '현대판 렘브란트', 1200000, '마치 현대에 있는 렘브란트처럼 그려드립니다.', 1024, 1024, 7);
+INSERT INTO DRAW_T VALUES(DRAW_SEQ.NEXTVAL, 3, 2, '원화 그려드립니다.', 24000000, '1:1채팅 걸어주세요.', 1024, 1024, 14);
+INSERT INTO DRAW_T VALUES(DRAW_SEQ.NEXTVAL, 4, 4, '귀여운 캐릭 판화', 579000, '귀여운 캐릭터만 그릴 수 있습니다.', 1024, 1024, 3);
+INSERT INTO DRAW_T VALUES(DRAW_SEQ.NEXTVAL, 5, 5, '붓글씨로 그려주는 이쁜손글씨', 8900000, '붓글씨 손글씨 15년째 장인이 글씨 그려드립니다.', 1024, 1024, 6);
+INSERT INTO DRAW_T VALUES(DRAW_SEQ.NEXTVAL, 6, 6, '유명한 작품 모방가능합니다.', 9999999, '회화 관련 유명 작가 모방한 그림체로 그려드립니다.', 1024, 1024, 2);
+INSERT INTO DRAW_T VALUES(DRAW_SEQ.NEXTVAL, 7, 7, '동양화로 그리는 초상화', 19750000, '사진보내주시면 동양화로 초상화 그려드립니다.', 1024, 1024, 1);
 
 -- 그려드림 이미지 INSERT
 INSERT INTO DRAW_IMAGE_T VALUES(DRAW_IMAGE_SEQ.NEXTVAL, 1, '이미지 경로 1', '파일시스템이름1', '이미지 원본이름1', 1);
@@ -636,3 +637,5 @@ INSERT INTO INACTIVE_USER_T VALUES(8, 'user07@naver.com', STANDARD_HASH('7777', 
 -- 탈퇴
 INSERT INTO LEAVE_USER_T VALUES('user08@naver.com', TO_DATE('230111', 'YYMMDD'), TO_DATE('230911', 'YYMMDD'));
 INSERT INTO LEAVE_USER_T VALUES('user09@naver.com', TO_DATE('230111', 'YYMMDD'), TO_DATE('230911', 'YYMMDD'));
+
+COMMIT;
