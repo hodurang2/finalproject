@@ -6,6 +6,5 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface AuctionService {
   public Map<String, Object> getAuctionList(HttpServletRequest request);
-  public void addAuctionWishlist(HttpServletRequest request);
-  public void removeAuctionWishlist(HttpServletRequest request);
+  public Map<String, Object> controlAuctionWishlist(HttpServletRequest request);
 }

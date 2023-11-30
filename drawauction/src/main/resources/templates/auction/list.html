@@ -4,10 +4,7 @@
 <head th:replace="~{/layout/header::head('경매 게시판')}"></head>
 
 <style>
-  #auction_heart_btn {
-    border: none;
-    background-color: white;
-  }
+  
   .auction_heart {
     text-align: right;
     padding-right: 10px;
@@ -69,9 +66,7 @@
             $.each(resData.auctionList, (i, auction) => {
               let str = '<div class="auction" data-auction_no="' + auction.auctionNo + '">';
               str += '<div class="auction_image">' + '</div>';
-              str += '<form id="auction_heart_frm">';
-              str += '<div class="auction_heart"><button type="button" id="auction_heart_btn" class="auction_heart_off"><i class="fa-regular fa-heart" style="color: #e11414;"></i></button></div>';
-              str += '</form>';
+              str += '<div><i class="fa-regular fa-heart auction_heart" style="color: #e11414;"></i></div>';
               str += '<div><span>' + auction.artDto.categoryDto.categoryName + '</span></div>';
               str += '<div><span>' + auction.artDto.title                    + '</span></div>';
               str += '<div><span>' + auction.artDto.sellerDto.nickname       + '</span></div>';
@@ -85,74 +80,33 @@
           }
         })
       }
-      const fnRemoveWishlist = () => {
-         $.ajax({
-          // 요청
-          type: 'get',
-          url: '/auction/removeWish.do',
-          data: 'auctionNo=' + $('.auction').data('auction_no') + '&userNo=3',
-          // 응답
-          dataType: 'json',
-          success: (resData) => {  
-            document.location.reload(true);
-            alert('찜삭제됨');
-            }
-          })
-      }
-      
-      const fnAddWishlist = () => {
-        
-        $.ajax({
-          // 요청
-          type: 'get',
-          url: '/auction/addWish.do',
-          data: 'auctionNo=' + $('.auction').data('auction_no') + '&userNo=3',
-          // 응답
-          dataType: 'json',
-          success: (resData) => {  
-            document.location.reload(true);
-            alert('찜추가됨');
-            }
-          })
-      }
-      
+     
       const fnHeart = () => {
-        $(document).on('click', '#auction_heart_btn', function(){
-            if($(this).hasClass('auction_heart_off')){
-              $(this).removeClass('auction_heart_off');
-              $(this).addClass('auction_heart_on');
-              $(this).html('<i class="fa-solid fa-heart" style="color: #e11414;"></i>');
+        $(document).on('click', '.auction_heart', function(){
               $.ajax({
                   // 요청
                   type: 'get',
-                  url: '/auction/addWish.do',
-                  data: 'auctionNo=' + $(this).closest('.auction').data('auction_no') + '&userNo=3',
+                  url: '/auction/controlAuctionWishlist.do',
+                  data: 'auctionNo=' + $(this).closest('div .auction').data('auction_no') + '&userNo=[[${session.user.userNo}]]',
                   // 응답
                   dataType: 'json',
-                  success: (resData) => {  
-                    document.location.reload(true);
-                    alert('찜추가됨');
+                  success: (resData) => {
+                    console.log(resData);
+                     if(resData === 0){
+                        $(this).removeClass('fa-regular');  
+                        $(this).addClass('fa-solid');
+                        console.log('하트 채우기');
+                        return;
+                      }
+                      $(this).removeClass('fa-solid');
+                      $(this).addClass('fa-regular');
                     }
                   })
-              return;
-            }
-            $(this).removeClass('auction_heart_on');
-            $(this).addClass('auction_heart_off');
-            $(this).html('<i class="fa-regular fa-heart" style="color: #e11414;"></i>');
-            $.ajax({
-                // 요청
-                type: 'get',
-                url: '/auction/removeWish.do',
-                data: 'auctionNo=' + $(this).closest('.auction').data('auction_no') + '&userNo=3',
-                // 응답
-                dataType: 'json',
-                success: (resData) => {  
-                  document.location.reload(true);
-                  alert('찜삭제됨');
-                  }
-                })
-            
         })
+      }
+      
+      const fnHeartInit = () => {
+        
       }
       
       const fnAuctionDetail = () => {

@@ -6,7 +6,6 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.gdu.drawauction.dto.AuctionDto;
-import com.gdu.drawauction.dto.AuctionWishlistDto;
 
 @Mapper
 public interface AuctionMapper {
@@ -14,4 +13,5 @@ public interface AuctionMapper {
   public int getAuctionCount();
   public int insertAuctionWishlist(Map<String, Object> map);
   public int deleteAuctionWishlist(Map<String, Object> map);
+  public int hasAuctionWishlist(Map<String, Object> map);
 }

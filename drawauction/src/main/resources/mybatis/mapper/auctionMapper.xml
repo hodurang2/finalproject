@@ -96,4 +96,11 @@
      WHERE AUCTION_NO = #{auctionNo}
        AND USER_NO = #{userNo}
   </delete>
+  
+  <select id="hasAuctionWishlist" resultType="int"  parameterType="Map">
+    SELECT COUNT(*)
+      FROM AUCTION_WISHLIST_T
+     WHERE AUCTION_NO = #{auctionNo}
+       AND USER_NO = #{userNo}
+  </select>
 </mapper>

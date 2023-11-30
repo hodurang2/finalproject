@@ -43,18 +43,18 @@ public class AuctionServiceImpl implements AuctionService {
   }
   
   @Override
-  public void addAuctionWishlist(HttpServletRequest request) {
+  public Map<String, Object> controlAuctionWishlist(HttpServletRequest request) {
     int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
     int userNo = Integer.parseInt(request.getParameter("userNo"));
     Map<String, Object> map = Map.of("auctionNo", auctionNo, "userNo", userNo);
-    auctionMapper.insertAuctionWishlist(map);
+    
+    int hasAuctionWishlist = auctionMapper.deleteAuctionWishlist(map);
+    if(hasAuctionWishlist == 0) {
+      auctionMapper.insertAuctionWishlist(map);
+    } else if(hasAuctionWishlist > 0) {
+      auctionMapper.deleteAuctionWishlist(map);
+    }
+    return Map.of("hasAuctionWishlist", hasAuctionWishlist);
   }
-  
-  @Override
-  public void removeAuctionWishlist(HttpServletRequest request) {
-    int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
-    int userNo = Integer.parseInt(request.getParameter("userNo"));
-    Map<String, Object> map = Map.of("auctionNo", auctionNo, "userNo", userNo);
-    auctionMapper.deleteAuctionWishlist(map);
-  }
+ 
 }

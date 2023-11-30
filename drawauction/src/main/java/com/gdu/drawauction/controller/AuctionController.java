@@ -5,8 +5,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -37,13 +37,9 @@ public class AuctionController {
   }
   
   @ResponseBody
-  @GetMapping(value="/addWish.do", produces="application/json")
-  public void addAuctionWishlist (HttpServletRequest request){
-    auctionService.addAuctionWishlist(request);
+  @GetMapping(value="/controlAuctionWishlist.do", produces="application/json")
+  public Map<String, Object> addAuctionWishlist (HttpServletRequest request){
+    return auctionService.controlAuctionWishlist(request);
   }
-  @ResponseBody
-  @GetMapping(value="/removeWish.do", produces="application/json")
-  public void removeAuctionWishlist (HttpServletRequest request){
-    auctionService.removeAuctionWishlist(request);
-  }
+  
 }
