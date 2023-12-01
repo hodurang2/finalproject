@@ -205,7 +205,7 @@ public class UserServiceImpl implements UserService {
   public void naverJoin(HttpServletRequest request, HttpServletResponse response) {
     
     String email = request.getParameter("email");
-    String name = request.getParameter("name");
+    String name = mySecurityUtils.preventXSS(request.getParameter("name"));
     String gender = request.getParameter("gender");
     String mobile = request.getParameter("mobile");
     String postcode = request.getParameter("postcode");
