@@ -38,8 +38,9 @@ public class AuctionController {
   
   @ResponseBody
   @GetMapping(value="/controlAuctionWishlist.do", produces="application/json")
-  public Map<String, Object> addAuctionWishlist (HttpServletRequest request){
+  public Map<String, Object> controlAuctionWishlist (HttpServletRequest request){
     return auctionService.controlAuctionWishlist(request);
   }
+  
   
 }

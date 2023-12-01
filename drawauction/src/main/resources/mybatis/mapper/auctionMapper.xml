@@ -103,4 +103,5 @@
      WHERE AUCTION_NO = #{auctionNo}
        AND USER_NO = #{userNo}
   </select>
+  
 </mapper>
