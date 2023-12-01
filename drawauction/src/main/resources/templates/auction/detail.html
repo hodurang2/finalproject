@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{/layout/header::head(|auction.auctionNo번 경매|)}"></head>
+<style>
+  .fa-regular{
+	cursor: pointer;
+  }
+</style>
+
+<body>
+  
+  <div th:replace="~{/layout/header::header}"></div>
+  
+  <div class="main_wrap">
+
+    <div class="wrap wrap_6">
+    
+      <h1 class="title">경매 게시글</h1>
+      
+      <div class="text-center mb-5">
+        <th:block th:if="${session.user != null}">
+          <th:block th:if="${session.user.userNo == auction.artDto.sellerDto.userNo}">
+            <form id="frm_btn">
+              <input type="hidden" id="auctionNo" name="auctionNo" th:value="${auction.auctionNo}">
+              <button type="button" id="btn_edit" class="btn btn-warning btn-sm">편집</button>
+              <button type="button" id="btn_remove" class="btn btn-danger btn-sm">삭제</button>
+            </form>
+          </th:block>
+        </th:block>
+      </div>
+      <div th:text="|작가 : ${auction.artDto.sellerDto.nickname}|"></div>
+      <div th:text="|카테고리 : ${auction.artDto.categoryDto.categoryName}|"></div>
+      <div th:text="|제목 : ${auction.artDto.title}|"></div> 
+      <div th:text="|가격 : ${#numbers.formatInteger(auction.startPrice, 1, 'COMMA')}P|"></div>
+      <div th:text="|가격 : ${#numbers.formatInteger(auction.price, 1, 'COMMA')}P|"></div>
+      <div th:text="|가격 : ${#numbers.formatInteger(auction.buyPrice, 1, 'COMMA')}P|"></div>
+      <div th:text="|작품 가로길이(px) : ${auction.artDto.width}|"></div>
+      <div th:text="|작품 세로길이(px) : ${auction.artDto.height}|"></div>
+      <div>내용</div>
+      <th:block th:if="${#strings.isEmpty(auction.artDto.contents)}">
+        <div>내용없음</div>
+      </th:block>
+      <th:block th:if="${not #strings.isEmpty(auction.artDto.contents)}">
+        <div th:text="${auction.artDto.contents}"></div>
+      </th:block>
+      <!--/*
+      <div>
+        <th:block th:if="${#lists.isEmpty(imageList)}">
+          <div>첨부 없음</div>          
+        </th:block>
+        <th:block th:if="${not #lists.isEmpty(imageList)}">
+          <th:block th:each="atc:${imageList}">
+            <div class="image" th:data-image_no="${atc.drawImageNo}">
+              <th:block th:if="${atc.hasThumbnail == 1}">
+                <img th:src="@{|${atc.path}/s_${atc.filesystemName}|}" alt="썸네일" width="50">
+              </th:block>
+              <th:block th:if="${atc.hasThumbnail == 0}">
+                <img th:src="@{/image/image1.png}" alt="썸네일" width="50">
+              </th:block>
+              <a th:text="${atc.imageOriginalName}"></a>
+            </div>
+          </th:block>
+          <div><a th:href="@{/draw/downloadAll.do(drawNo=${draw.drawNo})}">모두 다운로드</a></div>
+        </th:block>
+      </div>
+      */-->
+      
+      <hr>
+	  <i class="wishist fa-regular fa-heart fa-2xl" style="color: #ff0000;"></i>      
+    </div>
+      
+    <script th:inline="javascript">
+    
+      var frmBtn = $('#frm_btn');
+    
+      const fnEdit = () => {
+        $('#btn_edit').click(() => {
+          frmBtn.attr('action', '/auction/edit.form');
+          frmBtn.attr('method', 'get');
+          frmBtn.submit();
+        })
+      }
+      
+      const fnRemove = () => {
+        $('#btn_remove').click(() => {
+          if(confirm('해당 게시글을 삭제할까요?')){
+            frmBtn.attr('action', '/auction/removeAuction.do');
+            frmBtn.attr('method', 'post');
+            frmBtn.submit();
+          }
+        })
+      }
+    
+      const fnDownload = () => {
+        $('.image').click(function(){
+          if(confirm('다운로드 할까요?')){
+            location.href = '/auction/download.do?imageNo=' + $(this).data('image_no');
+          }
+        })
+      }
+      
+      const fnModifyResult = () => {
+        let modifyResult = /*[[${modifyResult}]]*/ null;
+        if(modifyResult !== null){
+          if(modifyResult === 1){
+            alert('게시글이 수정되었습니다.');
+          } else {
+            alert('게시글이 수정되지 않았습니다.');
+          }
+        }
+      }
+      
+      const fnAddWishList = () => {
+		$('#wishist').click(() => {
+		  $.ajax({
+			type: 'post',
+		    url: '/auction/addWishList.do',
+		    data: { 
+					drwaNo: $('#auctionNo').val(),
+					userNo: session.user.userNo
+			  	  },
+		    dataType: 'json',
+		    success: (resData) => {
+			  $('#wishist').removeClass('fa-regular');
+			  $('#wishist').addClass('fa-solid');
+		    }
+			
+		  })
+		})
+	  }
+      
+      fnEdit();
+      fnRemove();
+      fnDownload();
+      fnModifyResult();
+      
+    </script>
+      
+  </div>
+  
+  <div th:replace="~{/layout/footer::footer}"></div>
+  
+</body>
+</html>

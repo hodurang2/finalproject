@@ -208,6 +208,11 @@ public class UserServiceImpl implements UserService {
     String name = request.getParameter("name");
     String gender = request.getParameter("gender");
     String mobile = request.getParameter("mobile");
+    String postcode = request.getParameter("postcode");
+    String roadAddress = request.getParameter("roadAddress");
+    String jibunAddress = request.getParameter("jibunAddress");
+    String detailAddress = request.getParameter("detailAddress");
+    String nickname = request.getParameter("nickname");
     String event = request.getParameter("event");
     
     UserDto user = UserDto.builder()
@@ -215,6 +220,11 @@ public class UserServiceImpl implements UserService {
                     .name(name)
                     .gender(gender)
                     .mobile(mobile.replace("-", ""))
+                    .postcode(postcode)
+                    .roadAddress(roadAddress)
+                    .jibunAddress(jibunAddress)
+                    .detailAddress(detailAddress)
+                    .nickname(nickname)
                     .agree(event != null ? 1 : 0)
                     .build();
     
@@ -320,7 +330,8 @@ public class UserServiceImpl implements UserService {
     String postcode = request.getParameter("postcode");
     String roadAddress = request.getParameter("roadAddress");
     String jibunAddress = request.getParameter("jibunAddress");
-    String detailAddress = mySecurityUtils.preventXSS(request.getParameter("detailAddress"));
+    String detailAddress = request.getParameter("detailAddress");
+    String nickname = request.getParameter("nickname");
     String event = request.getParameter("event");
     
     UserDto user = UserDto.builder()
@@ -333,6 +344,7 @@ public class UserServiceImpl implements UserService {
                     .roadAddress(roadAddress)
                     .jibunAddress(jibunAddress)
                     .detailAddress(detailAddress)
+                    .nickname(nickname)
                     .agree(event.equals("on") ? 1 : 0)
                     .build();
     
