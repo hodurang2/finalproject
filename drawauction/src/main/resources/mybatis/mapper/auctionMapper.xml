@@ -45,6 +45,12 @@
     </association>
 </resultMap>
   
+<resultMap type="AuctionWishlistDto" id="AuctionWishlistMap">
+  <id column="AUCTION_WISH_NO"       property="auctionWishNo"/>
+  <result column="WISHED_AT"         property="wishedAt"/>
+  <association resultMap="AuctionMap" property="auctionDto"/>
+  <association javaType="UserDto" property="userDto"/>
+</resultMap>
   <select id="getAuctionList" parameterType="Map" resultMap="AuctionMap">
     SELECT D.AUCTION_NO, D.START_PRICE, D.BUY_PRICE, D.START_AT, D.END_AT, D.STATUS, 
            D.ART_NO, D.TITLE, D.CONTENTS, D.ART_TYPE, D.WIDTH, D.HEIGHT,
@@ -71,5 +77,31 @@
       FROM AUCTION_T
   </select>
  
+  <insert id="insertAuctionWishlist" parameterType="Map">
+    INSERT INTO AUCTION_WISHLIST_T (
+        AUCTION_WISH_NO,
+        AUCTION_NO,
+        USER_NO,
+        WISHED_AT
+        ) VALUES (
+        AUCTION_WISHLIST_SEQ.NEXTVAL,
+        #{auctionNo},
+        #{userNo},
+        SYSDATE
+    )
+  </insert>
+  
+  <delete id="deleteAuctionWishlist" parameterType="Map">
+    DELETE AUCTION_WISHLIST_T
+     WHERE AUCTION_NO = #{auctionNo}
+       AND USER_NO = #{userNo}
+  </delete>
+  
+  <select id="hasAuctionWishlist" resultType="int"  parameterType="Map">
+    SELECT COUNT(*)
+      FROM AUCTION_WISHLIST_T
+     WHERE AUCTION_NO = #{auctionNo}
+       AND USER_NO = #{userNo}
+  </select>
   
 </mapper>

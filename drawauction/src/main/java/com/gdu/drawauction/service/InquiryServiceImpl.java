@@ -79,7 +79,7 @@ public class InquiryServiceImpl implements InquiryService{
                           
     
     int addResult = inquiryMapper.insertInquiry(inquiry);
-    
+    System.out.println(inquiry.getInquiryNo());
     Document document = Jsoup.parse(contents);
     Elements elements = document.getElementsByTag("img");
 

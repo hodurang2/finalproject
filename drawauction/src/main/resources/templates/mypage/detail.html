@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+  
+<style>
+
+  .info_wrap {
+    padding-left: 500px;
+    padding-top: 100px;
+    width: 800px;
+  }
+  
+  table, tr{
+    border-collapse:collapse;
+    border: 1px solid grey;
+    text-align:center;
+  }
+  
+  tr {
+    height: 30px;
+  }
+  
+  #my_info_text {
+    text-align: left;
+    padding-left: 20px;
+    height: 50px;
+  }
+
+  .ing {
+    height: 100px;
+  }
+  .title {
+    border-bottom: none;
+    vertical-align: bottom;
+  }
+  .val {
+    border-top: none;
+    vertical-align: top;
+  }
+  .ing > tr > td {
+    width: 160px;
+  }
+  table {
+    margin-bottom: 50px;
+  }
+  
+  .arrow_btn {
+    display: inline-block;
+    float: right;
+    font-size: 14px;
+    text-decoration: none;
+  }
+
+  
+</style>
+
+  
+  <div class="info_wrap">
+    <table>
+      <thead>
+        <tr>
+          <td colspan="4" id="my_info_text">내 정보</td>
+          <td><button id="btn_modify">회원정보수정</button></td>
+        </tr>      
+      </thead>
+      <tbody class="ing">
+        <tr class="title">
+          <td class="delete_right">판매 중 경매</td>
+          <td class="delete_right">입찰 중 경매</td>
+          <td class="delete_right">찜한 경매</td>
+          <td class="delete_right">찜한 그려드림</td>
+          <td>E-MONEY</td>
+        </tr>
+        <tr class="val">
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div id="bid_list_2">
+      <h2>
+        입찰작품
+        <a th:href="@{/mypage/auctionBidList.do}"class="arrow_btn">자세히보기 ></a>
+      </h2>
+      <hr>
+    </div>
+    
+    <div id="sale_list_2">
+      <h2>
+        출품작품
+        <a th:href="@{/mypage/auctionSaleList.do}"class="arrow_btn">자세히보기 ></a>
+      </h2>
+      <hr>
+    </div>
+    
+    <div id="draw_list_2">
+      <h2>
+        그려드림
+        <a th:href="@{/mypage/myDrawList.do}"class="arrow_btn">자세히보기 ></a>
+      </h2>
+      <hr>
+    </div>
+    
+    
+  </div>
+
+  <script>
+    
+   $(() => {
+     fnModify();
+   })
+    
+    const fnModify = () => {
+      
+      $('#btn_modify').click(() => {
+        location.href = '/mypage/modify.form';
+      })
+    
+    }
+  </script>
+</body>
+</html>

@@ -9,7 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
-import java.util.HashMap;
+
 import java.util.Map;
 import java.util.Optional;
 
@@ -158,7 +158,7 @@ public class UserServiceImpl implements UserService {
     
     // 네이버 로그인-3
     // 접근 토큰을 전달한 뒤 사용자의 프로필 정보(이름, 이메일, 성별, 휴대전화번호) 받아오기
-    // 요청 헤더에 Authorization: Bearer sToken 정보를 저장하고 요청함
+    // 요청 헤더에 Authorization: Bearer accessToken 정보를 저장하고 요청함
     
     // 요청
     String apiURL = "https://openapi.naver.com/v1/nid/me";
@@ -198,7 +198,7 @@ public class UserServiceImpl implements UserService {
   
   @Override
   public UserDto getUser(String email) {
-    return userMapper.getUser(Map.of("email", email));
+	return userMapper.getUser(Map.of("email", email));	
   }
   
   @Override
@@ -209,7 +209,6 @@ public class UserServiceImpl implements UserService {
     String gender = request.getParameter("gender");
     String mobile = request.getParameter("mobile");
     String event = request.getParameter("event");
-    int userNo = Integer.parseInt(request.getParameter("userNo"));
     
     UserDto user = UserDto.builder()
                     .email(email)
@@ -249,7 +248,6 @@ public class UserServiceImpl implements UserService {
     
     String email = naverProfile.getEmail();
     UserDto user = userMapper.getUser(Map.of("email", email));
-    int userNo = Integer.parseInt(request.getParameter("userNo"));
     
     if(user != null) {
       request.getSession().setAttribute("user", user);
@@ -304,7 +302,7 @@ public class UserServiceImpl implements UserService {
     
     // 메일 전송
     myJavaMailUtils.sendJavaMail(email
-                               , "myhome 인증 코드"
+                               , "들어옥션 인증 코드"
                                , "<div>인증코드는 <strong>" + code + "</strong>입니다.</div>");
     
     return new ResponseEntity<>(Map.of("code", code), HttpStatus.OK);

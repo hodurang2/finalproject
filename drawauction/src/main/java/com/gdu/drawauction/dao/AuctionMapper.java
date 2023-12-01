@@ -11,4 +11,7 @@ import com.gdu.drawauction.dto.AuctionDto;
 public interface AuctionMapper {
   public List<AuctionDto> getAuctionList(Map<String, Object> map);
   public int getAuctionCount();
+  public int insertAuctionWishlist(Map<String, Object> map);
+  public int deleteAuctionWishlist(Map<String, Object> map);
+  public int hasAuctionWishlist(Map<String, Object> map);
 }

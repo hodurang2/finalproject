@@ -9,10 +9,6 @@
   padding-top: 50px; 
 }
 .logo {
-  width: 176px;
-  height: 46px;
-  background-image: url(../../image/goodee.png);
-  background-size: 100%;
   margin: 50px auto;
   cursor: pointer;
 }
@@ -48,4 +44,11 @@
   text-align: center;
   line-height: 48px;
   cursor: pointer;
+}
+
+.header_menu {
+	display: flex;
+    justify-content: space-between; /* 요소들을 좌우로 배치합니다. */
+    align-items: center; /* 요소들을 세로 중앙에 배치합니다. */
+    padding: 20px; /* 필요에 따라 페이지 패딩을 조절합니다. */
 }

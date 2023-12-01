@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class InquiryDto {
   private int inquiryNo;
-  private UserDto userDto;
-  private AuctionDto auctionDto;
-  private DrawDto drawDto;
   private String title;
   private String content;
   private Date inquiryCreatedAt;
   private String inquiryType;
+  private UserDto userDto;
+  private AuctionDto auctionDto;
+  private DrawDto drawDto;
 }

@@ -17,5 +17,6 @@ public class AuctionDto {
   private String endAt;
   private int status;
   private int price;
+  private String heartClass;
   private ArtDto artDto;
 }
