@@ -1,8 +1,10 @@
 package com.gdu.drawauction.service;
 
+import java.io.PrintWriter;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
@@ -69,5 +71,64 @@ public class MypageServiceImpl implements MypageService {
     return new ResponseEntity<>(Map.of("modifyResult", modifyResult), HttpStatus.OK);
     
   }
+  
+  @Override
+  public ResponseEntity<Map<String, Object>> modifyIntroduction(HttpServletRequest request) {
+    String introduction = request.getParameter("introduction");
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    
+    UserDto user = UserDto.builder()
+                          .introduction(introduction)
+                          .userNo(userNo)
+                          .build();
+    
+    int modifyIntroductionResult = mypageMapper.updateUserIntroduction(user);
+    
+    if(modifyIntroductionResult == 1) {
+      HttpSession session = request.getSession();
+      UserDto sessionUser = (UserDto)session.getAttribute("user");
+      sessionUser.setIntroduction(introduction);
+    }
+    
+    return new ResponseEntity<>(Map.of("modifyIntroductionResult", modifyIntroductionResult), HttpStatus.OK);
+  }
+ 
+  @Override
+  public void modifyPw(HttpServletRequest request, HttpServletResponse response) {
+    String pw = mySecurityUtils.getSHA256(request.getParameter("pw"));
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    
+    UserDto user = UserDto.builder()
+                    .pw(pw)
+                    .userNo(userNo)
+                    .build();
+    
+    int modifyPwResult = mypageMapper.updateUserPw(user);
+    
+    try {
+      
+      response.setContentType("text/html; charset=UTF-8");
+      PrintWriter out = response.getWriter();
+      out.println("<script>");
+      if(modifyPwResult == 1) {
+        HttpSession session = request.getSession();
+        UserDto sessionUser = (UserDto)session.getAttribute("user");
+        sessionUser.setPw(pw);
+        out.println("alert('비밀번호가 수정되었습니다.')");
+        out.println("location.href='" + request.getContextPath() + "/mypage/modify.form'");
+      } else {
+        out.println("alert('비밀번호가 수정되지 않았습니다.')");
+        out.println("history.back()");
+      }
+      out.println("</script>");
+      out.flush();
+      out.close();
+      
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    
+  }
+
   
 }

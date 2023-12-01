@@ -16,7 +16,19 @@
          , JIBUN_ADDRESS = #{jibunAddress}
          , DETAIL_ADDRESS = #{detailAddress}
          , AGREE = #{agree}
-     WHERE USER_NO = #{userNo};
+     WHERE USER_NO = #{userNo}
+  </update>
+  
+  <update id="updateUserIntroduction" parameterType="UserDto">
+    UPDATE USER_T
+       SET INTRODUCTION = #{introduction}
+     WHERE USER_NO = #{userNo}
+  </update>
+  
+    <update id="updateUserPw" parameterType="UserDto">
+    UPDATE USER_T
+       SET PW = #{pw}
+     WHERE USER_NO = #{userNo}
   </update>
   
 </mapper>

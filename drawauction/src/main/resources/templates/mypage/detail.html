@@ -1,8 +1,5 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="utf-8">
-</head>
 <body>
   
 <style>
@@ -23,7 +20,7 @@
     height: 30px;
   }
   
-  #text {
+  #my_info_text {
     text-align: left;
     padding-left: 20px;
     height: 50px;
@@ -57,13 +54,12 @@
   
 </style>
 
-  <div th:replace="~{/mypage/menu}"></div>
   
   <div class="info_wrap">
     <table>
       <thead>
         <tr>
-          <td colspan="4" id="text">내 정보</td>
+          <td colspan="4" id="my_info_text">내 정보</td>
           <td><button id="btn_modify">회원정보수정</button></td>
         </tr>      
       </thead>

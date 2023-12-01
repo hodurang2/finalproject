@@ -1,82 +1,117 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="utf-8">
-</head>
-<body>
-
+<head th:replace="~{/layout/header::head('회원정보')}"></head>
+  
 <style>
-  .bid_list_wrap {
-    margin-left: 300px;
+  
+  .my_profile {
+    margin-top: 40px;
+    border: 1px solid gray;
+    width: 200px;
+    height: 300px;
   }
+  .my_menu {
+    border: 1px solid gray;
+    width: 200px;
+    height: 360px;
+  }
+  .my_wrap {
+    float: left;
+  }
+  .right_wrap {
+    float: left;
+    margin-top: 40px;
+    margin-left: 50px;
+    width: 750px;
+    height: 900px;
+  }
+
+  .my_menu ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 200px;
+    height: 290px;
+  }
+  
+  .my_menu li a {
+    text-decoration: none;
+    padding: 10px 10px 10px;
+    display: block;
+    color: #000;
+    font-weight: bold;
+    height: 45px;
+  }
+  
+  .my_menu li a:hover {
+    background: rgb(0, 128, 128);
+    color: #fff;
+  }
+  
+  .my_menu li a:active {
+    color: rgb(0, 128, 128);
+  }
+  .my_menu_text {
+    text-align: center;
+    border: 1px solid gray;
+    height: 45px;
+    line-height: 45px;
+  }
+
+  
 </style>
- 
-  <div th:replace="~{/mypage/menu}"></div>
+
+<body>
+  
+  <div th:replace="~{/layout/header::header}"></div>
+  
+  <aside class="my_wrap">
     
-  <div class="bid_list_wrap">
-    
-    <h1>입찰작품목록</h1>
-    
-    <div>
-      <div id="bid_list" class="bid_list"></div>
+    <div class="my_profile">    
+      <div>
+        <h2>프로필사진</h2>       <!--/* 사용자 프로필 사진 넣어야 함 */-->
+      </div>
+      <div th:text="${session.user.nickname}" style="text-align: center;"></div>
+      <div>
+        <form id="frm_modify_introduction" method="post" th:action="@{/mypage/modifyIntroduction.do}">
+          <textarea type="text" cols="20" rows="7" id="introduction" name="introduction" class="form-control" placeholder="최대 100자" th:text="${session.user.introduction}"></textarea>
+          <input type="hidden" name="userNo" th:value="${session.user.userNo}">
+          <div class="text-lg-end">
+            <button type="submit" class="btn btn-primary">수정</button>
+          </div>          
+        </form>
+      </div>
     </div>
     
+    
+    <div class="my_menu">
+      <div class="my_menu_text">MY MENU</div>
+      <ul>
+        <li><a th:href="@{/mypage/auctionBidList.do}">경매 이용 내역</a></li>
+        <li><a th:href="@{/mypage/myDrawList.do}">드려드림 내역</a></li>
+        <li><a th:href="@{/mypage/emoneyList.do}">E-MONEY</a></li>
+        <li><a th:href="@{/mypage/wishList.do}">찜목록</a></li>
+        <li><a th:href="@{/mypage/inquiryList.do}">1:1 문의</a></li>
+        <li><a th:href="@{/mypage/reviewList.do}">리뷰</a></li>
+        <li><a th:href="@{/mypage/modify.form}">회원정보</a></li>
+      </ul>
+    </div>     
+    
+  </aside>
+  
+  <div class="right_wrap">
+    <div class="bid_list_wrap">
+      
+      <h1>입찰작품목록</h1>
+      
+      <div>
+        <div id="bid_list" class="bid_list"></div>
+      </div>
+      
+    </div>
   </div>
   
+  <div th:replace="~{/layout/footer::footer}"></div>
+  
 </body>
-
-<!--/*
-<script>
-  
-  $(() => {
-    
-    fnGetBidList();
-    
-  })
-
-  // 전역 변수
-  var page = 1;
-  var totalPage = 0;
-  
-  const fnGetBidList = () => {
-    $.ajax({
-      // 요청
-      type: 'get',
-      url: '${contextPath}/mypage/getBidList.do',
-      data: 'page=' + page + '&bidderNo=${sessionScope.user.userNo}',
-      // 응답
-      dataType: 'json',
-      success: (resData) => {   // resData = {"buyerNo": 1, "purchaseList": [], "totalPage" : 10}
-        totalPage = resData.totalPage;
-        $.each(resData.purchaseList, (i, pp) => {
-          let str = '<div class="purchase_product" data-product-no="' + pp.productNo + '">';
-          str += '<div>상품명: ' + pp.productName + '</div>';
-          if(pp.buyerNo === null) {
-            str += '<div>탈퇴한 판매자</div>';
-          } else {
-            str += '<div>판매자: ' + pp.sellerNo + '</div>';
-          }
-          str += '<div>등록일: ' + pp.productCreatedAt + '</div>';
-          str += '</div>';
-    
-          if(pp.reviewContents === null) {
-            // 작성한 리뷰가 없을 때만 버튼 생성
-            str += '<button type="button" class="btn_review">리뷰작성</button>';
-          } else if(pp.reviewContents !== null) {
-            // 작성한 리뷰가 있을 때만 버튼 생성
-            str += '<button type="button" class="btn_view_review">내가 쓴 리뷰보기</button>';
-          }
-          
-          $('#purchase_list').append(str);
-        
-        })
-      }
-    })
-  }
-  
-</script>
-
-*/-->
-
-
 </html>
