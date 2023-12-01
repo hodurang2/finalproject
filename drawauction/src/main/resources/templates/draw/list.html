@@ -32,7 +32,7 @@
   <div th:replace="~{/layout/header::header}"></div>
   
   <div class="main_wrap">
-
+	
     <div class="wrap wrap_9">
     
       <div class="text-center">
@@ -52,14 +52,12 @@
       var totalPage = 0;
     
       const fnGetDrawList = () => {
-		var userNo = '[[${session.user != null ? session.user.userNo : " "}]]';
         $.ajax({
           // 요청
           type: 'get',
           url: '/draw/getList.do',
           data: {
-                  page: page,
-                  userNo: userNo
+                  page: page
                 },
           // 응답
           dataType: 'json',
@@ -152,8 +150,7 @@
             type: 'post',
             url: '/draw/WishListControll.do',
             data: {
-                    drawNo: $(this).closest('div .draw').data('draw_no'),
-                    userNo: '[[${session.user.userNo}]]'
+                    drawNo: $(this).closest('div .draw').data('draw_no')
                   },
           // 응답
           dataType: 'json',
@@ -181,7 +178,8 @@
       fnAddResult();
       fnRemoveResult();
       fnWishListControll();
-    
+      fnWishListControll();
+    	
     </script>
 
   </div>

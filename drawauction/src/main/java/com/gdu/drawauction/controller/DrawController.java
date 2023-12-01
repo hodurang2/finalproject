@@ -10,10 +10,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.service.DrawService;
 
 import lombok.RequiredArgsConstructor;
@@ -64,6 +66,46 @@ public class DrawController {
   @GetMapping(value="/WishCheck.do", produces="application/json")
   public ResponseEntity<Map<String, Object>> wishCheck(HttpServletRequest request) {
 	return drawService.wishCheck(request);
+  }
+  
+  @GetMapping("/edit.form")
+  public String edit(HttpServletRequest request, Model model) {
+    drawService.getDraw(request, model);
+    return "draw/edit";
+  }
+  
+  @PostMapping("/modify.do")
+  public String modify(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+	System.out.println(request.getParameter("categoryNo") + "+++++++++++++");
+    int modifyResult = drawService.modifyDraw(request);
+    redirectAttributes.addFlashAttribute("modifyResult", modifyResult);
+    return "redirect:/draw/detail.do?drawNo=" + request.getParameter("drawNo");
+  }
+  
+  @ResponseBody
+  @GetMapping(value="/getImageList.do", produces="application/json")
+  public Map<String, Object> getAttachList(HttpServletRequest request) {
+    return drawService.getImageList(request);
+  }
+  
+  @ResponseBody
+  @PostMapping(value="/addImage.do", produces="application/json")
+  public Map<String, Object> addAttach(MultipartHttpServletRequest multipartRequest) throws Exception {
+    return drawService.addImage(multipartRequest);
+  }
+  
+  @ResponseBody
+  @PostMapping(value="/removeImage.do", produces="application/json")
+  public Map<String, Object> removeAttach(HttpServletRequest request) {
+    return drawService.removeImage(request);
+  }
+  
+  @PostMapping("/removeDraw.do")
+  public String removeUpload(@RequestParam(value="drawNo", required=false, defaultValue="0") int drawNo
+                           , RedirectAttributes redirectAttributes) {
+    int removeResult = drawService.removeDraw(drawNo);
+    redirectAttributes.addFlashAttribute("removeResult", removeResult);
+    return "redirect:/draw/list.do";
   }
   
 

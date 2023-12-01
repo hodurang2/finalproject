@@ -178,7 +178,35 @@
 	 WHERE DRAW_NO = #{drawNo}
    	   AND USER_NO = #{userNo}  
   </delete>
-
- 
+  
+  <select id="getImage" parameterType="int" resultType="DrawImageDto">
+    SELECT DRAW_IMAGE_NO, DRAW_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+      FROM DRAW_IMAGE_T
+     WHERE DRAW_IMAGE_NO = #{drawImageNo}
+  </select>
+  
+  <delete id="deleteImage" parameterType="int">
+    DELETE
+      FROM DRAW_IMAGE_T
+     WHERE DRAW_IMAGE_NO = #{drawImageNo}
+  </delete>
+  
+  <update id="updateDraw" parameterType="Map">
+    UPDATE DRAW_T
+       SET CATEGORY_NO = #{categoryNo}
+       	 , TITLE = #{title}
+       	 , PRICE = #{price}
+       	 , WIDTH = #{width}
+       	 , HEIGHT = #{height}
+       	 , WORK_TERM = #{workTerm}
+         , CONTENTS = #{contents}
+     WHERE DRAW_NO = #{drawNo}
+  </update>
+  
+  <delete id="deleteDraw" parameterType="int">
+    DELETE
+      FROM DRAW_T
+     WHERE DRAW_NO = #{drawNo}
+  </delete>
   
 </mapper>
