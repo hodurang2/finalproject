@@ -25,6 +25,8 @@
           <input type="hidden" name="contents" th:value='${notice.contents}'>
           <button type="button" id="btn_edit" class="btn btn-primary">편집</button>
           <button type="button" id="btn_rmv"  class="btn btn-danger">삭제</button>
+          <button type="button" id="btn_list" class="btn btn-dark">목록</button>
+          
         </form>
       </th:block>
     </div>
@@ -51,8 +53,16 @@
   			}
   		})	
   	}
+  	
+    const fnNoticeList = () => {
+      $('#btn_list').click(() => {
+        window.location.href = '/notice/list.do';
+      });
+    }
+  	
     fnEditNotice();
     fnRemoveNotice();
+    fnNoticeList();
     
   </script>
   
