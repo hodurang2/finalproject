@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{/layout/header::head('공지사항')}"></head>
+
+<style>
+  .support_title {
+    text-align: center;
+    font-size: 1.75rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  .wrap {
+    max-width: 1170px;
+    position: relative;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+  }
+  .support_left_wrap {
+    width: 245px;
+    padding-right: 50px;
+  }
+  .support_right_wrap {
+    width: 1000px;
+  }
+  .left_menu ul li:last-child {
+    border-bottom: 1px solid #EAEAEA;
+     
+  }
+  .left_menu ul li {
+    display: block;
+    border: 1px solid #F4F4F4;
+    border-bottom: none;
+    
+  }
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  ul {
+    list-style: none;
+  }
+  .notice_head {
+    display: flex;
+  }
+  .btn_write{
+    flex-grow: 1;
+  }
+  .btn_support {
+    width: 168px;
+  }
+  .btn_support li{
+    width: 168px;
+    height: 56px;
+    text-align: left;
+    padding-left: 10px;
+    line-height: 56px;
+  }
+  .on {
+    border: 1px solid #222;
+    background-color: #222;
+  }
+  .on span {
+    color: #fff;
+   }
+  .support_right_wrap thead tr {
+    background-color: #FCFCFC;
+    color: #555;
+  }
+  .notice_title {
+    margin-bottom: 25px;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 22px;
+    margin-top: 10px;
+    flex-grow: 1;
+  }
+  
+  .support_right_wrap table {
+    border-top: 1.5px black solid;
+    border-left: 0;
+    border-right: 0;
+    border-collapse: collapse;
+  }
+  
+</style>
+
+<body>
+  
+  <div th:replace="~{/layout/header::header}"></div>
+  
+  <div class="main_wrap">
+  
+    <div class="wrap wrap_3">
+
+      <div class="support_title">고객센터</div>
+      
+       <div class="wrap">
+        <div class="support_left_wrap">
+            <div class="left_menu">
+                <ul class="btn_support">
+                    <li><a th:href="@{/notice/list.do}"><span>공지사항</span></a></li>
+                </ul>
+            </div>
+        </div>   
+    
+        <div class="support_right_wrap">
+            <div class="notice_head">
+                <div class="notice_title">공지사항</div>
+                <div th:if="${session.user.userNo == 1}"> 
+                    <a th:href="@{/notice/write.form}">
+                        <button type="button" class="btn btn-dark btn_write">새글작성</button>
+                    </a>
+                </div>
+            </div>
+            <table border="1" class="table">
+                <thead>
+                    <tr>
+                        <td>글번호</td>
+                        <td>제목</td>
+                        <td>작성일자</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <th:block th:each="n,vx:${noticeList}">
+                        <tr>
+                            <td th:text="${n.noticeNo}"></td>
+                            <td>
+                                <a class="notice_list_title" th:href="@{/notice/detail.do(noticeNo=${n.noticeNo})}" th:text="${n.title}"></a>
+                            </td>
+                            <td th:text="${n.createdAt}"></td>
+                        </tr>
+                    </th:block>
+                </tbody>
+                <tfoot> 
+                    <tr>
+                        <td colspan="4">${paging}</td>
+                    </tr>
+                </tfoot>
+            </table>    
+        </div>
+    </div>
+        
+    <script>
+    	
+    </script>
+    
+     </div>
+  </div>
+  
+<div th:replace="~{/layout/footer::footer}"></div>
+
+</body>
+</html>

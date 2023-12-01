@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{/layout/header::head('공지편집')}"></head>
+
+<style>
+  .ck.ck-editor {
+    max-width: 1000px;
+  }
+  .ck-editor__editable {
+    min-height: 400px;
+  }
+  .ck-content {
+    color: gray;
+  }
+</style>
+
+<body>
+
+  <div th:replace="~{/layout/header::header}"></div>
+
+  <div class="main_wrap">
+
+    <div class="wrap wrap_2" th:object="${notice}">
+      
+      <div>
+      
+        <form id="frm_notice_modify" method="post" th:action="@{/notice/modifyNotice.do}">
+          
+           <h1 style="text-align: center;">${notice.noticeNo}번 공지 편집</h1>
+          
+          <div>
+            <label for="title">제목</label>
+            <input type="text" name="title" id="title" class="form-control" value="${notice.title}">
+          </div>
+          
+          <div>
+            <label for="contents">내용</label>
+            <textarea name="contents" id="contents" style="display: none;"></textarea>
+            <div id="toolbar-container"></div>
+            <div id="ckeditor" th:utext="${notice.contents}"></div>
+          </div>
+          
+          <div>
+            <input type="hidden" name="noticeNo" value="${notice.noticeNo}">
+            <button class="btn btn-primary col-12" type="submit">수정완료</button>
+          </div>
+          
+        </form>
+      
+      </div>
+      
+    </div>
+
+
+      <script>
+      
+        const fnCkeditor = () => {
+          DecoupledEditor
+            .create(document.getElementById('ckeditor'), {
+              ckfinder: {
+                // 이미지 업로드 경로
+                uploadUrl: '/Notice/imageUpload.do'         
+              }
+            })
+            .then(editor => {
+              const toolbarContainer = document.getElementById('toolbar-container');
+              toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+            })
+            .catch(error => {
+              console.error(error);
+            });
+        }
+        
+        const fnNoticeModify = () => {
+          $('#frm_notice_modify').submit(() => {
+            $('#contents').val($('#ckeditor').html());
+          })
+        }
+        
+        fnCkeditor();
+        fnNoticeModify();
+      </script>
+      
+   </div>
+  
+<div th:replace="~{/layout/footer::footer}"></div>
+
+</body>
+</html>
