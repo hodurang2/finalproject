@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{layout/header::head(|${inquiry.inquiryNo번 게시글|)}"></head>
+<head th:replace="~{layout/header::head(|${inquiry.inquiryNo}번 게시글|)}"></head>
 
 <style>
   .blind {
@@ -23,16 +23,17 @@
     <h1 class="title">문의 상세</h1>
     
     <div>
-      <h1>${inquiry.inquiryTitle}</h1>
-      <div th:text="|작성자  : ${inquiry.userDto.email}|"></div>
-      <div th:text="|작성일  : <fmt:formatDate pattern="yyyy-MM-dd" th:value="${inquiry.inquiryCreatedAt}"/>|"></div>
+      <h1 th:text="${inquiry.title}"></h1>
+      <div th:text="|작성자  : ${inquiry.userDto.nickname}|"></div>
+      <div th:text="|작성일  : ${#dates.format(inquiry.inquiryCreatedAt, 'yyyy-MM-dd HH:mm:ss')}|"></div>
+      <div th:text="|문의종류  : ${inquiry.inquiryType}|"></div>
       <div>
        <th:block th:if="${session.user != null}">
-        <th:block th:if="${sessionScope.user.userNo == inquiry.userDto.userNo}">
+        <th:block th:if="${session.user.userNo == inquiry.userDto.userNo}">
           <form id="frm_btn" method="post">
             <input type="hidden" name="inquiryNo" th:value="${inquiry.inquiryNo}">
             <input type="hidden" name="title" th:value="${inquiry.title}">
-            <input type="hidden" name="contents" th:value="${inquiry.content}">
+            <input type="hidden" name="content" th:value="${inquiry.content}">
             <button type="button" id="btn_edit" class="btn btn-primary">편집</button>
             <button type="button" id="btn_rmv"  class="btn btn-danger">삭제</button>
           </form>
@@ -47,7 +48,6 @@
       <form id="frm_answer_add">
         <textarea rows="3" cols="50" name="contents" id="contents" placeholder="댓글을 작성해 주세요"></textarea>
         <input type="hidden" name="inquiryNo" th:value="${inquiry.inquiryNo}">
-        <input type="hidden" name="inquiryNo" th:value="${answer.inquiryNo}">
         <button type="button" id="btn_answer_add">작성완료</button>
       </form>
     </div>
@@ -61,7 +61,7 @@
     
     const fnAnswerAdd = () => {
         $('#btn_answer_add').click(() => {
-          if('${sessionScope.user}' === ''){
+          if('${session.user}' === ''){
             if(confirm('로그인이 필요한 기능입니다. 로그인할까요?')){
               location.href = '/user/login.form';
             } else {
@@ -124,13 +124,13 @@
                 str += '  <div class="blind frm_add_reply_wrap">';
                 str += '    <form class="frm_add_reply">';
                 str += '      <textarea rows="3" cols="50" name="contents" placeholder="답글을 입력하세요"></textarea>';
-                str += '      <input type="hidden" name="userNo" value="${sessionScope.user.userNo}">';
+                str += '      <input type="hidden" name="userNo" value="${session.user.userNo}">';
                 str += '      <input type="hidden" name="inquiryNo" value="${inquiry.inquiryNo}">';
                 str += '      <button type="button" class="btn_add_reply">답글작성완료</button>';
                 str += '    </form>';
                 str += '  </div>';
                 /******************************************************************/
-                if('${sessionScope.user.userNo}' == '${inquiry.userDto.userNo}'){                
+                if('${session.user.userNo}' == '${inquiry.userDto.userNo}'){                
                   str += '  <div>';
                   str += '  </div>';
                 }
@@ -151,7 +151,7 @@
     
     const fnBlind = () => {
       $(document).on('click', '.btn_open_reply', (ev) => {
-        if('${sessionScope.user}' === ''){
+        if('${session.user}' === ''){
           if(confirm('로그인이 필요한 기능입니다. 로그인할까요?')){
             location.href = '/user/login.form';
           } else {
@@ -170,7 +170,7 @@
     
     const fnAnswerReplyAdd = () => {
       $(document).on('click', '.btn_add_reply', (ev) => {
-        if('${sessionScope.user}' === ''){
+        if('${session.user}' === ''){
           if(confirm('로그인이 필요한 기능입니다. 로그인할까요?')){
             location.href = '/user/login.form';
           } else {
