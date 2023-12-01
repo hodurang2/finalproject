@@ -7,9 +7,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.service.AuctionService2;
 
 import lombok.RequiredArgsConstructor;
@@ -38,10 +41,15 @@ public class AuctionController2 {
   
   @GetMapping("/detail.do")
   public String detail(HttpServletRequest request, Model model) {
-    System.out.println("컨트롤러 서비스전");
     auctionService2.loadAuction(request, model);
-    System.out.println("컨트롤러 서비스전후");
-    return "auction/detail";
+    return "/auction/detail";
+  } 
+  
+  @GetMapping("/edit.form")
+  public String edit(@ModelAttribute("auction") AuctionDto auction) {
+    return "auction/edit";
   }
+  
+  
   
 }

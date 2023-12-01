@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{/layout/header::head('경매편집')}"></head>
+
+<body>
+
+  <div th:replace="~{/layout/header::header}"></div>
+
+  <div class="main_wrap">
+
+    <div class="wrap wrap_9" th:object="${auction}">
+    
+      <h1 class="title" th:text="|*{auctionNo}번 경매 편집|"></h1>
+    
+      <form id="frm_auction_modify" method="post" th:action="@{/auction/modifyAuction.do}">
+        <div>
+          <label for="title">제목</label>
+          <input type="text" name="title" id="title" class="form-control" th:field="*{artDto.title}">
+        </div>
+        <!--/*
+        <div>
+          <label for="contents">내용</label>
+          <textarea name="contents" id="contents" style="display: none;"></textarea>
+          <div id="toolbar-container"></div>
+          <div id="ckeditor" th:utext="*{contents}"></div>
+        </div>
+        
+        <div class="text-center my-3">
+          <a th:href="@{/auction2/detail.do(auctionNo=*{auctionNo})}">
+            <button class="btn btn-secondary" type="button">블로그로 돌아가기</button>
+          </a>
+          <input type="hidden" name="auctionNo" th:field="*{auctionNo}">
+          <button class="btn btn-primary" type="submit">수정완료</button>
+        </div>
+        */-->
+      </form>
+    
+    </div>
+
+    <script>
+    
+      const fnCkeditor = () => {
+        DecoupledEditor
+          .create(document.getElementById('ckeditor'), {
+            ckfinder: {
+              // 이미지 업로드 경로
+              uploadUrl: '/auction/imageUpload.do'         
+            }
+          })
+          .then(editor => {
+            const toolbarContainer = document.getElementById('toolbar-container');
+            toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+      
+      const fnAuctionModify = () => {
+        $('#frm_auction_modify').submit((ev) => {
+        	if($('#title').val() === ''){
+        		alert('제목은 반드시 입력해야 합니다.');
+            $('#title').focus();
+            ev.preventDefault();
+            return;
+        	}
+          $('#contents').val($('#ckeditor').html());
+        })
+      }
+      
+      fnCkeditor();
+      fnAuctionModify();
+      
+    </script>
+    
+  </div>
+
+  <div th:replace="~{/layout/footer::footer}"></div>
+
+</body>
+</html>

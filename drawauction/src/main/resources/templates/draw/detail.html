@@ -82,7 +82,7 @@
     
       const fnEdit = () => {
         $('#btn_edit').click(() => {
-          frmBtn.attr('action', '/draw/edit.form');
+          frmBtn.attr('action', '/auction2/edit.form');
           frmBtn.attr('method', 'get');
           frmBtn.submit();
         })
@@ -91,7 +91,7 @@
       const fnRemove = () => {
         $('#btn_remove').click(() => {
           if(confirm('해당 게시글을 삭제할까요?')){
-            frmBtn.attr('action', '/draw/removeDraw.do');
+            frmBtn.attr('action', '/auction2/removeAuction.do');
             frmBtn.attr('method', 'post');
             frmBtn.submit();
           }
