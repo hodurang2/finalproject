@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.gdu.drawauction.dao.DrawMapper;
+import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.dto.CategoryDto;
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.DrawImageDto;
@@ -53,11 +54,18 @@ public class DrawServiceImpl implements DrawService{
 	    
 	    List<DrawDto> drawList = drawMapper.getDrawList(map);
 	    
-	     int checkResult = drawMapper.wishCheck(Map.of("drawNo", request.getParameter("drawNo"), "userNo", request.getParameter("userNo")));
-	     
-	     if(checkResult != 1) {
-	       
-	     }
+	    int userNo = Integer.parseInt(request.getParameter("userNo"));
+	    for(DrawDto drawDto : drawList) {
+	        Map<String, Object> wishMap = Map.of("drawNo", drawDto.getDrawNo(), "userNo", userNo);
+	        int WishChecklist = drawMapper.wishCheck(wishMap);
+	        String heart;
+	        if(WishChecklist == 0) {
+	        	heart = "fa-regular";
+	        } else {
+	        	heart = "fa-solid";
+	        }
+	        drawDto.setHeart(heart);
+	      }
 	    
 	    return Map.of("drawList", drawList
 	                , "totalPage", myPageUtils.getTotalPage());
@@ -181,7 +189,6 @@ public class DrawServiceImpl implements DrawService{
 		
 	}
 	
-	@Override
 	public ResponseEntity<Map<String, Object>> wishCheck(HttpServletRequest request) {
 	  
 	  int drawNo = Integer.parseInt(request.getParameter("drawNo")); 
