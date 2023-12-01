@@ -6,12 +6,14 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gdu.drawauction.dao.AuctionMapper;
 import com.gdu.drawauction.dto.AuctionDto;
+import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.util.MyFileUtils;
 import com.gdu.drawauction.util.MyPageUtils;
 
@@ -40,18 +42,28 @@ public class AuctionServiceImpl implements AuctionService {
     
     List<AuctionDto> auctionList = auctionMapper.getAuctionList(map);
     
-    int userNo = Integer.parseInt(request.getParameter("userNo"));
-    List<Map<String, Object>> heartList = new ArrayList<>();
-    for(AuctionDto auctionDto : auctionList) {
-      Map<String, Object> wishMap = Map.of("auctionNo", auctionDto.getAuctionNo(), "userNo", userNo);
-      int hasAuctionWishlist = auctionMapper.hasAuctionWishlist(wishMap);
-      String heartClass;
-      if(hasAuctionWishlist == 0) {
-        heartClass = "fa-regular";
-      } else {
-        heartClass = "fa-solid";
+    int userNo;
+    
+    HttpSession session = request.getSession();
+    
+    if(session.getAttribute("user") == null) {
+      for(AuctionDto auctionDto : auctionList) {
+        auctionDto.setHeartClass("fa-regular");
       }
-      auctionDto.setHeartClass(heartClass);
+    } else {
+      UserDto user = (UserDto) session.getAttribute("user");
+      userNo = user.getUserNo();
+      for(AuctionDto auctionDto : auctionList) {
+        Map<String, Object> wishMap = Map.of("auctionNo", auctionDto.getAuctionNo(), "userNo", userNo);
+        int hasAuctionWishlist = auctionMapper.hasAuctionWishlist(wishMap);
+        String heartClass;
+        if(hasAuctionWishlist == 0) {
+          heartClass = "fa-regular";
+        } else {
+          heartClass = "fa-solid";
+        }
+        auctionDto.setHeartClass(heartClass);
+      }
     }
     
     
@@ -64,7 +76,10 @@ public class AuctionServiceImpl implements AuctionService {
   @Override
   public Map<String, Object> controlAuctionWishlist(HttpServletRequest request) {
     int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
-    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    HttpSession session = request.getSession();
+    UserDto user = (UserDto) session.getAttribute("user");
+    int userNo = user.getUserNo();
+    
     Map<String, Object> map = Map.of("auctionNo", auctionNo, "userNo", userNo);
     
     int hasAuctionWishlist = auctionMapper.hasAuctionWishlist(map);
