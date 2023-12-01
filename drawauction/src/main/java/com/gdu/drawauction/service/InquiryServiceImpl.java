@@ -104,9 +104,7 @@ public class InquiryServiceImpl implements InquiryService{
   public Map<String, Object> addAnswer(HttpServletRequest request) {
     
     int inquiryNo = Integer.parseInt(request.getParameter("inquiryNo"));
-    System.out.println(inquiryNo);
     String contents = request.getParameter("contents");
-    System.out.println(contents);
     
     
     AnswerDto answer = AnswerDto.builder()
