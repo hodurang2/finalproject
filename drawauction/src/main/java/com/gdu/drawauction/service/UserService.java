@@ -29,4 +29,7 @@ public interface UserService {
 	  public void inactiveUserBatch();
 	  public void active(HttpSession session, HttpServletRequest request, HttpServletResponse response);
 	
+	  
+	  public UserDto findId(UserDto user);
+	  public void findPw(UserDto user, HttpServletResponse response) throws Exception;
 }
