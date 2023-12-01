@@ -20,7 +20,9 @@
   }
   .draw:hover {
     background-color: silver;
-    cursor: pointer;
+  }
+  #wish_list{
+	cursor: pointer;
   }
 </style>
 
@@ -68,6 +70,8 @@
                 str += '<div>작가: ' + draw.userDto.nickname + '</div>';
               }
               str += '<div>가격: ' + draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</div>'; // 상품가격 1000단위 콤마찍기
+              str += '<div id="drawNo">글번호: ' + draw.drawNo + '</div>';
+              str += '<i id="wish_list" class="fa-regular fa-heart fa-2xl" style="color: #ff0000;"></i>';
               str += '</div>';
               $('#draw_list').append(str);
             })
@@ -135,12 +139,39 @@
         }
       }
       
+      const fnWishListControll = () => {
+	    $(document).on('click', '#wish_list', function() {
+	        const wishListIcon = $('#wish_list', '#draw_list');
+	        const drawNo = wishListIcon.closest('.draw').attr('data-draw_no');
+	        const self = this; 
+	        $.ajax({
+	            type: 'post',
+	            url: '/draw/WishListControll.do',
+	            data: {
+	                drawNo: drawNo,
+	                userNo: '[[${session.user.userNo}]]'
+	            },
+	            dataType: 'json',
+	            success: function(resData) {
+	                if (resData.addWishResult == 1) {
+	                    $(self).removeClass('fa-regular fa-heart fa-2xl');
+	                    $(self).addClass('fa-solid fa-heart fa-2xl');
+	                } else if (resData.removeWishResult == 1) {
+	                    $(self).removeClass('fa-solid fa-heart fa-2xl');
+	                    $(self).addClass('fa-regular fa-heart fa-2xl');
+	                }
+	            }
+	          });
+	      });
+	  };
+	  
       
       fnGetDrawList();
-      fnDrawDetail();
+      // fnDrawDetail();
       fnScroll();
       fnAddResult();
       fnRemoveResult();
+      fnWishListControll();
     
     </script>
 

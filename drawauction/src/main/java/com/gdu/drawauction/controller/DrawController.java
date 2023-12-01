@@ -57,6 +57,7 @@ public class DrawController {
   
   @PostMapping(value="/WishListControll.do", produces="application/json")
   public ResponseEntity<Map<String, Object>> addWishList(HttpServletRequest request) {
+	  System.out.println(request.getParameter("drawNo"));
 	return drawService.WishListControll(request);
   }
   

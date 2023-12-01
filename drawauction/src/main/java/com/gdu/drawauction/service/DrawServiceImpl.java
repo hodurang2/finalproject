@@ -53,6 +53,12 @@ public class DrawServiceImpl implements DrawService{
 	    
 	    List<DrawDto> drawList = drawMapper.getDrawList(map);
 	    
+	     int checkResult = drawMapper.wishCheck(Map.of("drawNo", request.getParameter("drawNo"), "userNo", request.getParameter("userNo")));
+	     
+	     if(checkResult != 1) {
+	       
+	     }
+	    
 	    return Map.of("drawList", drawList
 	                , "totalPage", myPageUtils.getTotalPage());
 	}

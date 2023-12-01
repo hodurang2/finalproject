@@ -19,4 +19,5 @@ public class DrawDto {
 	private CategoryDto categoryDto; // private String name;
 	private UserDto userDto; // private int sellerNo;
 	private int workTerm;
+	private String heart;
 }
