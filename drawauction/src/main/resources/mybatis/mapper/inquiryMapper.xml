@@ -139,7 +139,7 @@
     ) VALUES (
         #{inquiryNo}
       , #{contents}
-      , TO_DATE(#{createdAt}, 'YYYY-MM-DD HH24:MI:SS')
+      , SYSDATE
       , #{status}
     )
   </insert>
