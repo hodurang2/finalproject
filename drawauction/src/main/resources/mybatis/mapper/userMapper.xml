@@ -161,7 +161,7 @@
     INSERT INTO USER_T (
 			USER_NO, EMAIL, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME
     ) VALUES (
-	        USER_SEQ.NEXTVAL, #{email}, #{name}, #{mobile}, #{gender}, #{agree}, 0, SYSDATE, #{postcode}, #{roadAddress}, #{jibunAddress}, #{detailAddress}, #{nickname}
+    	USER_SEQ.NEXTVAL, #{email}, #{name}, #{mobile}, #{gender}, #{agree}, 0, SYSDATE, #{postcode}, #{roadAddress}, #{jibunAddress}, #{detailAddress}, #{nickname}
     )
   </insert>
 
