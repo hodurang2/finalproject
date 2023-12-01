@@ -48,7 +48,8 @@ public class InquiryController {
   }
   
   @PostMapping(value = "/addInquiry.do", produces = "application/json")
-  public String addNotice(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+  public String addInquiry(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    System.out.println(request.getParameter("userNo"));
     redirectAttributes.addFlashAttribute("addResult", inquiryService.addInquiry(request));
     return "redirect:/inquiry/list.do"; 
   }

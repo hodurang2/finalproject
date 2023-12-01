@@ -111,7 +111,7 @@
       , IMAGE_ORIGINAL_NAME
       , HAS_THUMBNAIL
     ) VALUES (
-        ATTACH_SEQ.NEXTVAL
+        DRAW_IMAGE_SEQ.NEXTVAL
       , #{drawNo}
       , #{path}
       , #{filesystemName}

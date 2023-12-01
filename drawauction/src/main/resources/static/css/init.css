@@ -7,16 +7,22 @@
   font-family: 'Noto Sans KR', sans-serif;
   color: #333333;
 }
+
+
+body {
+  width: 1600px;
+  margin: 0;
+}
+
+
 body, div, ul, li, ol {
   padding: 0;
   margin: 0;
   position: relative;
   box-sizing: border-box;
 }
-body {
-  width: 1000px;
-  margin: 0 auto;
-}
+
+
 a {
   text-decoration: none;
   color: #333333;
