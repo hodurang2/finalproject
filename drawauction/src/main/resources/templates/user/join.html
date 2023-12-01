@@ -13,7 +13,7 @@
 	  <div class="wrap wrap_7">
 		  <h1 class="title">회원가입</h1>
 
-			<form id="frm_join" method="post" action="@{/user/join.do}">
+			<form id="frm_join" method="post" th:action="@{/user/join.do}">
 				
  	 <div class="row mb-2">
           <label for="email" class="col-sm-3 col-form-label">이메일</label>
@@ -47,8 +47,8 @@
         <hr class="my-3">
         
         <div class="row mb-2">
-          <label for="name" class="col-sm-3 col-form-label">닉네임</label>
-          <div class="col-sm-9"><input type="text" name="name" id="name" class="form-control"></div>
+          <label for="nickname" class="col-sm-3 col-form-label">닉네임</label>
+          <div class="col-sm-9"><input type="text" name="nickname" id="nickname" class="form-control"></div>
           <div class="col-sm-3"></div>
           <div class="col-sm-9 mb-3" id="msg_nickname"></div>
         </div>
