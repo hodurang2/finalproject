@@ -1,5 +1,6 @@
 package com.gdu.drawauction.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gdu.drawauction.dao.AuctionMapper;
 import com.gdu.drawauction.dto.AuctionDto;
-import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.util.MyFileUtils;
 import com.gdu.drawauction.util.MyPageUtils;
 
@@ -39,10 +39,42 @@ public class AuctionServiceImpl implements AuctionService {
                                    , "end", myPageUtils.getEnd());
     
     List<AuctionDto> auctionList = auctionMapper.getAuctionList(map);
-    System.out.println(auctionList.get(0).getEndAt());
-    System.out.println(auctionList.get(0).getEndAt());
-    System.out.println(auctionList.get(0).getEndAt());
+    
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    List<Map<String, Object>> heartList = new ArrayList<>();
+    for(AuctionDto auctionDto : auctionList) {
+      Map<String, Object> wishMap = Map.of("auctionNo", auctionDto.getAuctionNo(), "userNo", userNo);
+      int hasAuctionWishlist = auctionMapper.hasAuctionWishlist(wishMap);
+      String heartClass;
+      if(hasAuctionWishlist == 0) {
+        heartClass = "fa-regular";
+      } else {
+        heartClass = "fa-solid";
+      }
+      auctionDto.setHeartClass(heartClass);
+    }
+    
+    
+    
+    
     return Map.of("auctionList", auctionList
                 , "totalPage", myPageUtils.getTotalPage());
   }
+  
+  @Override
+  public Map<String, Object> controlAuctionWishlist(HttpServletRequest request) {
+    int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    Map<String, Object> map = Map.of("auctionNo", auctionNo, "userNo", userNo);
+    
+    int hasAuctionWishlist = auctionMapper.hasAuctionWishlist(map);
+    if(hasAuctionWishlist == 0) {
+      auctionMapper.insertAuctionWishlist(map);
+    } else if(hasAuctionWishlist == 1) {
+      auctionMapper.deleteAuctionWishlist(map);
+    }
+    return Map.of("hasAuctionWishlist", hasAuctionWishlist);
+  }
+ 
+  
 }

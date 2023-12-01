@@ -8,10 +8,8 @@ import org.apache.ibatis.annotations.Mapper;
 import com.gdu.drawauction.dto.AuctionDto;
 
 @Mapper
-public interface AuctionMapper {
+public interface AuctionMapper2 {
   public List<AuctionDto> getAuctionList(Map<String, Object> map);
   public int getAuctionCount();
-  public int insertAuctionWishlist(Map<String, Object> map);
-  public int deleteAuctionWishlist(Map<String, Object> map);
-  public int hasAuctionWishlist(Map<String, Object> map);
+  public AuctionDto getAuction(int auctionNo);
 }

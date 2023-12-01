@@ -22,14 +22,6 @@
   <div class="main_wrap">
 
     <div class="wrap wrap_3">
-    
-      <script src="/resources/js/.js?dt=${dt}"></script>
-
-      <div>
-      
-        <form id="frm_notice_add" method="post" th:action="@{/notice/addNotice.do}">
-          
-          <h1 style="text-align: center;">공지사항 작성</h1>
 
           <div>
           
@@ -37,20 +29,32 @@
               
               <h1 style="text-align: center;">문의사항을 작성하세요</h1>
               
+              <div>문의 종류
+                <select name="inquiryType">
+                  <option th:value="auction">경매신고</option>
+                  <option th:value="draw">그려드림 신고</option>
+                  <option th:value="badContent">부적절한 게시글</option>
+                  <option th:value="marketing">광고성 홍보</option>
+                  <option th:value="hacking">사칭 · 해킹문의</option>
+                  <option th:value="bug">버그문의</option>
+                  <option th:value="etc">기타</option>
+                </select>
+              </div>
+              
               <div>
                 <label for="title">제목</label>
                 <input type="text" name="title" id="title" class="form-control">
               </div>
               
               <div>
-                <label for="contents">내용</label>
-                <textarea name="contents" id="contents" style="display: none;"></textarea>
+                <label for="content">내용</label>
+                <textarea name="content" id="content" style="display: none;"></textarea>
                 <div id="toolbar-container"></div>
                 <div id="ckeditor"></div>
               </div>
               
               <div>
-                <input type="hidden" name="userNo" value="${sessionScope.user.userNo}">
+                <input type="hidden" name="userNo" th:value="${session.user.userNo}">
                 <button class="btn btn-primary col-12" type="submit">작성완료</button>
               </div>
               
@@ -59,7 +63,7 @@
           </div>
           
           <script>
-          
+            
             const fnCkeditor = () => {
               DecoupledEditor
                 .create(document.getElementById('ckeditor'), {
@@ -79,7 +83,7 @@
             
             const fnInquiryAdd = () => {
               $('#frm_inquiry_add').submit(() => {
-                $('#contents').val($('#ckeditor').html());
+                $('#content').val($('#ckeditor').html());
               })
             }
             
@@ -88,9 +92,8 @@
             
           </script>
           
-     </div>
-   </div>
- </div>
+    </div>
+  </div>
   
 <div th:replace="~{/layout/footer::footer}"></div>
 

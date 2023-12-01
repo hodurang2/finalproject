@@ -10,15 +10,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.gdu.drawauction.service.AuctionService;
+import com.gdu.drawauction.service.AuctionService2;
 
 import lombok.RequiredArgsConstructor;
 
-@RequestMapping("/auction")
+@RequestMapping("/auction2")
 @RequiredArgsConstructor
 @Controller
-public class AuctionController {
-  private final AuctionService auctionService;
+public class AuctionController2 {
+  private final AuctionService2 auctionService2;
   
   @GetMapping("/list.do")
   public String list() {
@@ -33,14 +33,15 @@ public class AuctionController {
   @ResponseBody
   @GetMapping(value="/getList.do", produces="application/json")
   public Map<String, Object> getList(HttpServletRequest request){
-    return auctionService.getAuctionList(request);
+    return auctionService2.getAuctionList(request);
   }
   
-  @ResponseBody
-  @GetMapping(value="/controlAuctionWishlist.do", produces="application/json")
-  public Map<String, Object> controlAuctionWishlist (HttpServletRequest request){
-    return auctionService.controlAuctionWishlist(request);
+  @GetMapping("/detail.do")
+  public String detail(HttpServletRequest request, Model model) {
+    System.out.println("컨트롤러 서비스전");
+    auctionService2.loadAuction(request, model);
+    System.out.println("컨트롤러 서비스전후");
+    return "auction/detail";
   }
-  
   
 }

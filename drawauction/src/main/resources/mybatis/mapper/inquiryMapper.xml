@@ -64,7 +64,7 @@
      WHERE RN BETWEEN #{begin} AND #{end}
   </select>
   
-  <!-- 개별 1:1문의 조회 -->
+  <!-- 개별 1:1문의 상세 -->
   <select id="getInquiry" parameterType="int" resultMap="InquiryMap">
     SELECT INQUIRY_NO, USER_NO, AUCTION_NO, DRAW_NO, TITLE, CONTENT, INQUIRY_CREATED_AT, INQUIRY_TYPE
       FROM (SELECT INQUIRY_NO, I.USER_NO, AUCTION_NO, DRAW_NO, TITLE, CONTENT, INQUIRY_CREATED_AT, INQUIRY_TYPE
@@ -90,12 +90,12 @@
       , INQUIRY_TYPE
     ) VALUES (
         #{inquiryNo}
-      , #{userDto.userNo}
-      , #{auctionDto.auctionNo}
-      , #{drawDto.drawNo}
+      , #{userNo}
+      , #{auctionNo}
+      , #{drawNo}
       , #{title}
       , #{content}
-      , TO_DATE(#{inquiryCreatedAt}, 'YYYY-MM-DD HH24:MI:SS')
+      , SYSDATE
       , #{inquiryType}
     )
   </insert>
