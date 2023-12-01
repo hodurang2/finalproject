@@ -38,7 +38,9 @@ public class AuctionController2 {
   
   @GetMapping("/detail.do")
   public String detail(HttpServletRequest request, Model model) {
+    System.out.println("컨트롤러 서비스전");
     auctionService2.loadAuction(request, model);
+    System.out.println("컨트롤러 서비스전후");
     return "auction/detail";
   }
   

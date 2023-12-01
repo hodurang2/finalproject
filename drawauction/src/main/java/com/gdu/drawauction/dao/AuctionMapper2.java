@@ -11,5 +11,5 @@ import com.gdu.drawauction.dto.AuctionDto;
 public interface AuctionMapper2 {
   public List<AuctionDto> getAuctionList(Map<String, Object> map);
   public int getAuctionCount();
-  public int getAuction(int auctionNo);
+  public AuctionDto getAuction(int auctionNo);
 }

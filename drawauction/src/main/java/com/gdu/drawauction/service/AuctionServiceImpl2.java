@@ -52,8 +52,9 @@ public class AuctionServiceImpl2 implements AuctionService2 {
     
     Optional<String> opt = Optional.ofNullable(request.getParameter("auctionNo"));
     int auctionNo = Integer.parseInt(opt.orElse("0"));
-  
+    System.out.println("서비스 임플전");
     model.addAttribute("auction", auctionMapper2.getAuction(auctionNo));
+    System.out.println("서비스 임플후");
 //    model.addAttribute("imageList", auctionMapper2.getImageList(auctionNo));
     
   }
