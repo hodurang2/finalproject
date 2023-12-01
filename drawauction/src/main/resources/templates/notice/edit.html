@@ -27,11 +27,11 @@
       
         <form id="frm_notice_modify" method="post" th:action="@{/notice/modifyNotice.do}">
           
-           <h1 style="text-align: center;">${notice.noticeNo}번 공지 편집</h1>
+           <h1 style="text-align: center;" th:text="|${notice.noticeNo}번 공지 편집|"></h1>
           
           <div>
             <label for="title">제목</label>
-            <input type="text" name="title" id="title" class="form-control" value="${notice.title}">
+            <input type="text" name="title" id="title" class="form-control" th:value="${notice.title}">
           </div>
           
           <div>
@@ -42,7 +42,7 @@
           </div>
           
           <div>
-            <input type="hidden" name="noticeNo" value="${notice.noticeNo}">
+            <input type="hidden" name="noticeNo" th:value="${notice.noticeNo}">
             <button class="btn btn-primary col-12" type="submit">수정완료</button>
           </div>
           
