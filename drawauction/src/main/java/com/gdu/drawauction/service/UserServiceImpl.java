@@ -190,11 +190,6 @@ public class UserServiceImpl implements UserService {
                     .name(response.getString("name"))
                     .gender(response.getString("gender"))
                     .mobile(response.getString("mobile"))
-                    .postcode(response.getString("postcode"))
-                    .roadAddress(response.getString("roadAddress"))
-                    .jibunAddress(response.getString("jibunAddress"))
-                    .detailAddress(response.getString("detailAddress"))
-                    .nickname(response.getString("nickname"))
                     .build();
     
     return user;
