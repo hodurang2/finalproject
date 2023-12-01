@@ -1,6 +1,7 @@
 package com.gdu.drawauction.service;
 
 import java.io.File;
+import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -63,7 +64,7 @@ public class NoticeServiceImpl implements NoticeService{
     NoticeDto notice = noticeMapper.getNotice(noticeNo);
     
     
-    model.addAttribute("diffHour", null);
+    model.addAttribute("notice", notice);
     return notice;
   }
   
@@ -150,7 +151,8 @@ public class NoticeServiceImpl implements NoticeService{
   }
   
   @Override
-  public int removeNotice(int noticeNo) {
+  public int removeNotice(HttpServletRequest request) {
+    int noticeNo = Integer.parseInt(request.getParameter("noticeNo"));
     return noticeMapper.deleteNotice(noticeNo);
   }
 }

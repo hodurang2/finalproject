@@ -121,7 +121,7 @@ public class DrawServiceImpl implements DrawService{
 	        if(hasThumbnail == 1) {
 	          File thumbnail = new File(dir, "s_" + filesystemName);  // small 이미지를 의미하는 s_을 덧붙임
 	          Thumbnails.of(file)
-	                    .size(250, 250)      // 가로 100px, 세로 100px
+	                    .size(500, 500)      // 가로 100px, 세로 100px
 	                    .toFile(thumbnail);
 	        }
 	        

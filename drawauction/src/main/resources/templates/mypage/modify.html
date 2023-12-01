@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/layout/header::head('회원정보')}"></head>
+  
+<style>
+  
+  .my_profile {
+    margin-top: 40px;
+    border: 1px solid gray;
+    width: 200px;
+    height: 300px;
+  }
+  .my_menu {
+    border: 1px solid gray;
+    width: 200px;
+    height: 360px;
+  }
+  .my_wrap {
+    float: left;
+  }
+  .right_wrap {
+    float: left;
+    margin-top: 40px;
+    margin-left: 50px;
+    width: 750px;
+    height: 900px;
+  }
+
+  .my_menu ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 200px;
+    height: 290px;
+  }
+  
+  .my_menu li a {
+    text-decoration: none;
+    padding: 10px 10px 10px;
+    display: block;
+    color: #000;
+    font-weight: bold;
+    height: 45px;
+  }
+  
+  .my_menu li a:hover {
+    background: rgb(0, 128, 128);
+    color: #fff;
+  }
+  
+  .my_menu li a:active {
+    color: rgb(0, 128, 128);
+  }
+  .my_menu_text {
+    text-align: center;
+    border: 1px solid gray;
+    height: 45px;
+    line-height: 45px;
+  }
+
+  
+</style>
+
+<body>
+  
+  <div th:replace="~{/layout/header::header}"></div>
+  
+  <aside class="my_wrap">
+    
+    <div class="my_profile">    
+      <div>
+        <h2>프로필사진</h2>       <!--/* 사용자 프로필 사진 넣어야 함 */-->
+      </div>
+      <div th:text="${session.user.nickname}" style="text-align: center;"></div>
+      <div>
+        <form id="frm_modify_introduction" method="post" th:action="@{/mypage/modifyIntroduction.do}">
+          <textarea type="text" cols="20" rows="7" id="introduction" name="introduction" class="form-control" placeholder="최대 100자" th:text="${session.user.introduction}"></textarea>
+          <input type="hidden" name="userNo" th:value="${session.user.userNo}">
+          <div class="text-lg-end">
+            <button type="button" id="btn_modify_introduction" class="btn btn-primary">수정</button>
+          </div>          
+        </form>
+      </div>
+    </div>
+    
+    
+    <div class="my_menu">
+      <div class="my_menu_text">MY MENU</div>
+      <ul>
+        <li><a th:href="@{/mypage/auctionBidList.do}">경매 이용 내역</a></li>
+        <li><a th:href="@{/mypage/myDrawList.do}">드려드림 내역</a></li>
+        <li><a th:href="@{/mypage/emoneyList.do}">E-MONEY</a></li>
+        <li><a th:href="@{/mypage/wishList.do}">찜목록</a></li>
+        <li><a th:href="@{/mypage/inquiryList.do}">1:1 문의</a></li>
+        <li><a th:href="@{/mypage/reviewList.do}">리뷰</a></li>
+        <li><a th:href="@{/mypage/modify.form}">회원정보</a></li>
+      </ul>
+    </div>     
+    
+  </aside>
+  
+  <div class="right_wrap">
+    <div class="main_wrap">
+    
+      <div class="wrap wrap_6" th:if="${session.user != null}">
+      
+        <h1 class="title">회원 정보</h1>
+      
+        <form id="frm_mypage" method="post">
+          
+          <div th:if="${session.user.state == 0}" class="text-lg-end">
+            <button type="button" id="btn_modify_pw" class="btn btn-primary float-right">비밀번호변경하기</button>
+          </div>
+          
+          <hr class="my-3">
+          
+          <div class="row mb-4">
+            <div class="col-sm-3">이메일</div>
+            <div class="col-sm-9" th:text="${session.user.email}"></div>
+          </div>
+          <div class="row mb-4">
+            <div class="col-sm-3">가입일</div>
+            <div class="col-sm-9" th:text="${session.user.joinedAt}"></div>
+          </div>
+          <div class="row mb-2">
+            <label for="name" class="col-sm-3 col-form-label">이름</label>
+            <div class="col-sm-9"><input type="text" name="name" th:value="${session.user.name}" id="name" class="form-control"></div>
+            <div class="col-sm-3"></div>
+            <div class="col-sm-9 mb-3" id="msg_name"></div>
+          </div>
+          <div class="row mb-2">
+            <label for="nickname" class="col-sm-3 col-form-label">닉네임</label>
+            <div class="col-sm-9"><input type="text" name="nickname" th:value="${session.user.nickname}" id="nickname" class="form-control"></div>
+            <div class="col-sm-3"></div>
+            <div class="col-sm-9 mb-3" id="msg_nickname"></div>
+          </div>
+          
+          
+          <div class="row mb-2">
+            <label for="mobile" class="col-sm-3 col-form-label">휴대전화번호</label>
+            <div class="col-sm-9"><input type="text" name="mobile" th:value="${session.user.mobile}" id="mobile" class="form-control"></div>
+            <div class="col-sm-3"></div>
+            <div class="col-sm-9 mb-3" id="msg_mobile"></div>
+          </div>
+          
+          <div class="row mb-2">
+            <label class="col-sm-3 form-label">성별</label>
+            <div class="col-sm-3">
+              <input type="radio" name="gender" value="NO" id="none" class="form-check-input" checked>
+              <label class="form-check-label" for="none">선택안함</label>
+            </div>
+            <div class="col-sm-3">
+              <input type="radio" name="gender" value="M" id="man" class="form-check-input">
+              <label class="form-check-label" for="man">남자</label>
+            </div>
+            <div class="col-sm-3">
+              <input type="radio" name="gender" value="F" id="woman" class="form-check-input">
+              <label class="form-check-label" for="woman">여자</label>
+            </div>
+          </div>
+          <script th:inline="javascript">
+            $(':radio[value=[[${session.user.gender}]]]').prop('checked', true);
+          </script>
+          
+          <div class="row mb-2">
+            <label for="postcode" class="col-sm-3 col-form-label">주소</label>
+            <div class="col-sm-4"><input type="text" name="postcode" th:value="${session.user.postcode}" id="postcode" class="form-control" onclick="execDaumPostcode()" placeholder="우편번호" readonly></div>
+            <div class="col-sm-5"><input type="button" class="btn btn-outline-success" onclick="execDaumPostcode()" value="우편번호 찾기"></div>
+          </div>
+          
+          <div class="row mb-2">
+            <div class="col-sm-6"><input type="text" name="roadAddress" th:value="${session.user.roadAddress}" id="roadAddress" class="form-control" placeholder="도로명주소" readonly></div>
+            <div class="col-sm-6"><input type="text" name="jibunAddress" th:value="${session.user.jibunAddress}" id="jibunAddress" class="form-control" placeholder="지번주소" readonly></div>
+          </div>
+          <div class="col-sm-12"><span id="guide" style="color:#999;display:none"></span></div>
+          <div class="row mb-2">
+            <div class="col-sm-6"><input type="text" name="detailAddress" th:value="${session.user.detailAddress}" id="detailAddress" class="form-control" placeholder="상세주소"></div>
+          </div>
+          <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+          <script>
+            //본 예제에서는 도로명 주소 표기 방식에 대한 법령에 따라, 내려오는 데이터를 조합하여 올바른 주소를 구성하는 방법을 설명합니다.
+            function execDaumPostcode() {
+              new daum.Postcode({
+                oncomplete: function(data) {
+                  // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+      
+                  // 도로명 주소의 노출 규칙에 따라 주소를 표시한다.
+                  // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                  var roadAddr = data.roadAddress; // 도로명 주소 변수
+                  var extraRoadAddr = ''; // 참고 항목 변수
+      
+                  // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                  // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                  if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                    extraRoadAddr += data.bname;
+                  }
+                  // 건물명이 있고, 공동주택일 경우 추가한다.
+                  if(data.buildingName !== '' && data.apartment === 'Y'){
+                    extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                  }
+                  // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                  if(extraRoadAddr !== ''){
+                    extraRoadAddr = ' (' + extraRoadAddr + ')';
+                  }
+      
+                  // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                  document.getElementById('postcode').value = data.zonecode;
+                  document.getElementById("roadAddress").value = roadAddr;
+                  document.getElementById("jibunAddress").value = data.jibunAddress;
+                  
+                  // 참고항목 문자열이 있을 경우 해당 필드에 넣는다.
+                  if(roadAddr !== ''){
+                    document.getElementById("extraAddress").value = extraRoadAddr;
+                  } else {
+                    document.getElementById("extraAddress").value = '';
+                  }
+      
+                  var guideTextBox = document.getElementById("guide");
+                  // 사용자가 '선택 안함'을 클릭한 경우, 예상 주소라는 표시를 해준다.
+                  if(data.autoRoadAddress) {
+                    var expRoadAddr = data.autoRoadAddress + extraRoadAddr;
+                    guideTextBox.innerHTML = '(예상 도로명 주소 : ' + expRoadAddr + ')';
+                    guideTextBox.style.display = 'block';
+                  } else if(data.autoJibunAddress) {
+                    var expJibunAddr = data.autoJibunAddress;
+                    guideTextBox.innerHTML = '(예상 지번 주소 : ' + expJibunAddr + ')';
+                    guideTextBox.style.display = 'block';
+                  } else {
+                    guideTextBox.innerHTML = '';
+                    guideTextBox.style.display = 'none';
+                  }
+                }
+              }).open();
+            }
+          </script>
+          
+          <div class="row mt-3">
+            <label class="col-sm-12 form-label">이벤트 알림 동의(선택)</label>
+          </div>
+          <div class="row mb-2">
+            <div class="col-sm-3">
+              <input type="radio" name="event" value="on" id="event_on" class="form-check-input">
+              <label class="form-check-label" for="event_on">동의함</label>
+            </div>
+            <div class="col-sm-3">
+              <input type="radio" name="event" value="off" id="event_off" class="form-check-input">
+              <label class="form-check-label" for="event_off">동의안함</label>
+            </div>
+          </div>
+          <script th:inline="javascript">
+            let agree = /*[[${session.user.agree}]]*/ null;
+            if(agree === 0){
+              $('#event_off').prop('checked', true);
+            } else if(agree === 1){
+              $('#event_on').prop('checked', true);
+            }
+          </script>
+          
+          <hr class="my-3">
+          
+          <div class="text-center">
+            <input type="hidden" name="userNo" th:value="${session.user.userNo}">
+            <button type="button" id="btn_leave" class="btn btn-dark">회원탈퇴</button>
+            <button type="button" id="btn_modify" class="btn btn-success">개인정보수정</button>
+          </div>
+          
+        </form>
+        
+      </div>
+      
+      <div th:if="${session.user == null}">
+        로그아웃되었습니다.
+      </div>
+  
+    </div>
+  
+  <script>
+  
+  /* 함수 호출 */
+    $(() => {
+      fnCheckName();
+      fnCheckNickname();
+      fnCheckMobile();
+      fnModify();
+      fnModifyIntroduction();
+      fnModifyPw();
+    })
+    
+    
+    /* 전역변수 선언 */
+    var namePassed = true;
+    var nicknamePassed = true;
+    var mobilePassed = true;
+    
+    
+    /* 함수 정의 */
+  
+    const fnCheckName = () => {
+      $('#name').blur((ev) => {
+        let name = ev.target.value;
+        let bytes = 0;
+        for(let i = 0; i < name.length; i++){
+          if(name.charCodeAt(i) > 128){  // 코드값이 128을 초과하는 문자는 한 글자 당 2바이트임
+            bytes += 2;
+          } else {
+            bytes++;
+          }
+        }
+        namePassed = (bytes <= 50);
+        if(!namePassed){
+          $('#msg_name').text('이름은 50바이트 이내로 작성해야 합니다.');
+        }  else {
+          $('#msg_name').text('');
+        }
+      })
+    }
+    
+    const fnCheckNickname = () => {
+      $('#nickname').blur((ev) => {
+        let nickname = ev.target.value;
+        let bytes = 0;
+        for(let i = 0; i < nickname.length; i++){
+          if(nickname.charCodeAt(i) > 128){  // 코드값이 128을 초과하는 문자는 한 글자 당 2바이트임
+            bytes += 2;
+          } else {
+            bytes++;
+          }
+        }
+        nicknamePassed = (bytes <= 50);
+        if(!nicknamePassed){
+          $('#msg_nickname').text('닉네임은 50바이트 이내로 작성해야 합니다.');
+        } else {
+          $('#msg_nickname').text('');
+        }
+      })
+    }
+    
+    const fnCheckMobile = () => {
+      $('#mobile').keyup((ev) => {
+        ev.target.value = ev.target.value.replaceAll('-', '');
+        // 휴대전화번호 검사 정규식 (010숫자8개)
+        let regMobile = /^010[0-9]{8}$/;
+        mobilePassed = regMobile.test(ev.target.value);
+        if(mobilePassed){
+          $('#msg_mobile').text('');
+        } else {
+          $('#msg_mobile').text('휴대전화번호를 확인하세요.');       
+        }
+      })
+    }
+    
+    const fnModify = () => {
+      $('#btn_modify').click(() => {
+        if(!namePassed || $('#name').val() == ''){
+          alert('이름을 확인하세요.');
+          return;
+        } else if(!nicknamePassed || $('#nickname').val() == '') {
+          alert('닉네임을 확인하세요.');
+          return;
+        } else if(!mobilePassed || $('#mobile').val() == ''){
+          alert('휴대전화번호를 확인하세요.');
+          return;
+        }
+        $.ajax({
+          // 요청
+          type: 'post',
+          url: '/mypage/modify.do',
+          data: $('#frm_mypage').serialize(),
+          // 응답
+          dataType: 'json',
+          success: (resData) => {  // {"modifyResult": 1}
+            if(resData.modifyResult === 1){
+              alert('회원 정보가 수정되었습니다.');
+            } else {
+              alert('회원 정보가 수정되지 않았습니다.');
+            }
+          }
+        })
+      })
+    }
+    
+      const fnModifyIntroduction = () => {
+      $('#btn_modify_introduction').click(() => {
+        $.ajax({
+          // 요청
+          type: 'post',
+          url: '/mypage/modifyIntroduction.do',
+          data: $('#frm_modify_introduction').serialize(),
+          // 응답
+          dataType: 'json',
+          success: (resData) => {  // {"modifyResult": 1}
+            if(resData.modifyIntroductionResult === 1){
+              alert('회원 소개글이 수정되었습니다.');
+            } else {
+              alert('회원 소개글이 수정되지 않았습니다.');
+            }
+          }
+        })
+      })
+    }
+    
+    const fnModifyPw = () => {
+      $('#btn_modify_pw').click(() => {
+        location.href = '/mypage/modifyPw.form';
+      })
+    }
+  
+  </script>
+  
+  </div>
+  
+    <div th:replace="~{/layout/footer::footer}"></div>
+    
+</body>
+</html>
