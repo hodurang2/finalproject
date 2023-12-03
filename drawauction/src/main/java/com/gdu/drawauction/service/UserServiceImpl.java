@@ -158,7 +158,7 @@ public class UserServiceImpl implements UserService {
     
     // 네이버 로그인-3
     // 접근 토큰을 전달한 뒤 사용자의 프로필 정보(이름, 이메일, 성별, 휴대전화번호) 받아오기
-    // 요청 헤더에 Authorization: Bearer sToken 정보를 저장하고 요청함
+    // 요청 헤더에 Authorization: Bearer accessToken 정보를 저장하고 요청함
     
     // 요청
     String apiURL = "https://openapi.naver.com/v1/nid/me";
@@ -198,24 +198,33 @@ public class UserServiceImpl implements UserService {
   
   @Override
   public UserDto getUser(String email) {
-    return userMapper.getUser(Map.of("email", email));
+	return userMapper.getUser(Map.of("email", email));	
   }
   
   @Override
   public void naverJoin(HttpServletRequest request, HttpServletResponse response) {
     
     String email = request.getParameter("email");
-    String name = request.getParameter("name");
+    String name = mySecurityUtils.preventXSS(request.getParameter("name"));
     String gender = request.getParameter("gender");
     String mobile = request.getParameter("mobile");
+    String postcode = request.getParameter("postcode");
+    String roadAddress = request.getParameter("roadAddress");
+    String jibunAddress = request.getParameter("jibunAddress");
+    String detailAddress = request.getParameter("detailAddress");
+    String nickname = request.getParameter("nickname");
     String event = request.getParameter("event");
-    int userNo = Integer.parseInt(request.getParameter("userNo"));
     
     UserDto user = UserDto.builder()
                     .email(email)
                     .name(name)
                     .gender(gender)
                     .mobile(mobile.replace("-", ""))
+                    .postcode(postcode)
+                    .roadAddress(roadAddress)
+                    .jibunAddress(jibunAddress)
+                    .detailAddress(detailAddress)
+                    .nickname(nickname)
                     .agree(event != null ? 1 : 0)
                     .build();
     
@@ -249,7 +258,6 @@ public class UserServiceImpl implements UserService {
     
     String email = naverProfile.getEmail();
     UserDto user = userMapper.getUser(Map.of("email", email));
-    int userNo = Integer.parseInt(request.getParameter("userNo"));
     
     if(user != null) {
       request.getSession().setAttribute("user", user);
@@ -304,7 +312,7 @@ public class UserServiceImpl implements UserService {
     
     // 메일 전송
     myJavaMailUtils.sendJavaMail(email
-                               , "myhome 인증 코드"
+                               , "들어옥션 인증 코드"
                                , "<div>인증코드는 <strong>" + code + "</strong>입니다.</div>");
     
     return new ResponseEntity<>(Map.of("code", code), HttpStatus.OK);
@@ -322,7 +330,8 @@ public class UserServiceImpl implements UserService {
     String postcode = request.getParameter("postcode");
     String roadAddress = request.getParameter("roadAddress");
     String jibunAddress = request.getParameter("jibunAddress");
-    String detailAddress = mySecurityUtils.preventXSS(request.getParameter("detailAddress"));
+    String detailAddress = request.getParameter("detailAddress");
+    String nickname = request.getParameter("nickname");
     String event = request.getParameter("event");
     
     UserDto user = UserDto.builder()
@@ -335,6 +344,7 @@ public class UserServiceImpl implements UserService {
                     .roadAddress(roadAddress)
                     .jibunAddress(jibunAddress)
                     .detailAddress(detailAddress)
+                    .nickname(nickname)
                     .agree(event.equals("on") ? 1 : 0)
                     .build();
     
@@ -532,6 +542,51 @@ public class UserServiceImpl implements UserService {
     
   }
 
+  
+  // 아이디 찾기 
+  @Override
+  public UserDto findId(UserDto user) {
+    return userMapper.findId(user);
+  }
+  
+  
+  // 비밀번호 찾기 
+  @Override
+	public void findPw(UserDto user, HttpServletResponse response) throws Exception {
+	  response.setContentType("text/html;charset=utf-8");
+	    PrintWriter out = response.getWriter();
+	    
+	    // RandomString 생성(10자리, 문자 사용, 숫자 사용) -- 임시 비밀번호
+	    String temporaryPw = mySecurityUtils.getRandomString(10, true, true);
+	    // 생성된 임시 비밀번호 암호화 처리
+	    String temporarySHAPw = mySecurityUtils.getSHA256(temporaryPw);
+	    
+	    int pwCheckResult = userMapper.findPwCheck(user);  // 1 or 0
+	    String email = user.getEmail();
+	    String name = user.getName();
+	    String mobile = user.getMobile();
+	    
+	    Map<String, Object> map = new HashMap<String, Object>();
+	    map.put("email", email);
+	    map.put("name", name);
+	    map.put("mobile", mobile);
+	    map.put("pw", temporarySHAPw);
+	    
+	    if(pwCheckResult == 1) {
+	      userMapper.updateUserPw(user);
+	      myJavaMailUtils.sendJavaMail(email
+	          , "들어옥션 임시 비밀번호발급"
+	          , "<div>임시 비밀번호는 <strong>" + temporaryPw + "</strong>입니다. <h2 style='color: crimson;'>* 로그인 후 비밀번호를 변경해주세요 *</h2></div>");
+	      out.print(email + "로 임시 비밀번호가 전송되었습니다. 로그인 후 비밀번호를 변경해주세요.");
+	      out.close();
+	    } else {
+	      out.print("잘못된 정보입니다. 정보를 다시 입력하세요." );
+	      out.close();
+	    }
+		
+	}
+  
+  
 }
 
 

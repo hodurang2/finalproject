@@ -31,7 +31,7 @@ public class UserController {
   public String loginForm(HttpServletRequest request, Model model) throws Exception {
     // referer : 이전 주소가 저장되는 요청 Header 값
     String referer = request.getHeader("referer");
-    String[] exceptUrl = {"/agree.form", "/join.form", "/join_option.form", "/find_id.form", "/find_pw.form"};
+    String[] exceptUrl = {"/agree.form", "/join.form", "/join_option.form"};
     String ret = "";
     if(referer != null) {
       for(String url : exceptUrl) {
@@ -156,11 +156,32 @@ public class UserController {
   public void active(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
     userService.active(session, request, response);
   }
+
+  @GetMapping("/find.form")
+  public String findForm() {
+    return "user/find";
+  }
   
+  @PostMapping("/findId.do")
+  public String findId(HttpServletRequest request, Model model, UserDto user) {
+    
+	user.setEmail(request.getParameter("email"));
+    user.setMobile(request.getParameter("mobile"));
+    UserDto findId = userService.findId(user);
+    
+    model.addAttribute("findId", findId);
+    
+    return "user/find_id";
+  }
   
-  
-  
-  
+  @PostMapping("/findPw.do")
+  public void findPw(HttpServletRequest request, HttpServletResponse response, UserDto user) throws Exception {
+    
+    user.setEmail(request.getParameter("email"));
+    user.setName(request.getParameter("name"));
+    user.setMobile(request.getParameter("mobile"));
+    userService.findPw(user, response);
+  }
   
   
   

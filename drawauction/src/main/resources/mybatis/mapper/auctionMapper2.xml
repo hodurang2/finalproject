@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.gdu.drawauction.dao.AuctionMapper">
+<mapper namespace="com.gdu.drawauction.dao.AuctionMapper2">
 
 <!-- AuctionDto에 대한 resultMap -->
 <resultMap type="AuctionDto" id="AuctionMap">
@@ -44,19 +44,14 @@
       </association>
     </association>
 </resultMap>
+
   
-<resultMap type="AuctionWishlistDto" id="AuctionWishlistMap">
-  <id column="AUCTION_WISH_NO"       property="auctionWishNo"/>
-  <result column="WISHED_AT"         property="wishedAt"/>
-  <association resultMap="AuctionMap" property="auctionDto"/>
-  <association javaType="UserDto" property="userDto"/>
-</resultMap>
   <select id="getAuctionList" parameterType="Map" resultMap="AuctionMap">
     SELECT D.AUCTION_NO, D.START_PRICE, D.BUY_PRICE, D.START_AT, D.END_AT, D.STATUS, 
            D.ART_NO, D.TITLE, D.CONTENTS, D.ART_TYPE, D.WIDTH, D.HEIGHT,
            D.USER_NO, D.NICKNAME,
            D.CATEGORY_NO, D.CATEGORY_NAME,
-           D.PRICE       
+           D.PRICE, D.BID_NO       
       FROM (SELECT ROW_NUMBER() OVER(ORDER BY AUC.AUCTION_NO DESC) AS RN,
                    AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS, 
                    A.ART_NO, A.TITLE, A.CONTENTS, A.ART_TYPE, A.WIDTH, A.HEIGHT,
@@ -76,32 +71,27 @@
     SELECT COUNT(*)
       FROM AUCTION_T
   </select>
- 
-  <insert id="insertAuctionWishlist" parameterType="Map">
-    INSERT INTO AUCTION_WISHLIST_T (
-        AUCTION_WISH_NO,
-        AUCTION_NO,
-        USER_NO,
-        WISHED_AT
-        ) VALUES (
-        AUCTION_WISHLIST_SEQ.NEXTVAL,
-        #{auctionNo},
-        #{userNo},
-        SYSDATE
-    )
-  </insert>
   
-  <delete id="deleteAuctionWishlist" parameterType="Map">
-    DELETE AUCTION_WISHLIST_T
-     WHERE AUCTION_NO = #{auctionNo}
-       AND USER_NO = #{userNo}
-  </delete>
-  
-  <select id="hasAuctionWishlist" resultType="int"  parameterType="Map">
-    SELECT COUNT(*)
-      FROM AUCTION_WISHLIST_T
-     WHERE AUCTION_NO = #{auctionNo}
-       AND USER_NO = #{userNo}
+  <select id="getAuction" parameterType="int" resultMap="AuctionMap">
+    SELECT D.AUCTION_NO, D.START_PRICE, D.BUY_PRICE, D.START_AT, D.END_AT, D.STATUS, 
+           D.ART_NO, D.TITLE, D.CONTENTS, D.ART_TYPE, D.WIDTH, D.HEIGHT,
+           D.USER_NO, D.NICKNAME,
+           D.CATEGORY_NO, D.CATEGORY_NAME,
+           D.PRICE        
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY AUC.AUCTION_NO DESC) AS RN,
+                   AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS, 
+                   A.ART_NO, A.SELLER_NO, A.TITLE, A.CONTENTS, A.ART_TYPE, A.WIDTH, A.HEIGHT,
+                   U.USER_NO, U.NICKNAME,
+                   C.CATEGORY_NO, C.CATEGORY_NAME,
+                   B.BID_NO, B.PRICE
+              FROM AUCTION_T AUC, ART_T A, USER_T U, CATEGORY_T C, BID_T B
+             WHERE AUC.ART_NO = A.ART_NO
+               AND A.SELLER_NO = U.USER_NO
+               AND A.CATEGORY_NO = C.CATEGORY_NO 
+               AND AUC.AUCTION_NO = B.AUCTION_NO(+)
+               AND (B.PRICE IS NULL OR B.PRICE = (SELECT MAX(PRICE) FROM BID_T WHERE AUCTION_NO = AUC.AUCTION_NO))
+               AND AUC.AUCTION_NO = #{auctionNo}) D
   </select>
+ 
   
 </mapper>

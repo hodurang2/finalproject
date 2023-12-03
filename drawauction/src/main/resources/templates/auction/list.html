@@ -4,6 +4,12 @@
 <head th:replace="~{/layout/header::head('경매 게시판')}"></head>
 
 <style>
+  
+  .auction_heart_div {
+    text-align: right;
+    padding-right: 10px;
+    padding-top: 10px;
+  }
   .auction_list {
     margin: 10px auto;
     display: flex;
@@ -15,13 +21,38 @@
     border: 1px solid gray;
     border-radius: 5px;
     text-align: center;
-    padding-top: 80px;
     margin: 20px 15px;
   }
   .auction:hover {
     background-color: silver;
     cursor: pointer;
   }
+  .text-center {
+    
+  }
+  .searchWord {
+  width: 250px;
+  display :inline-block;
+  text-align: left;
+}
+.search {
+  width: 350px;
+  margin-right: 400px;
+  margin-top: 40px;
+}
+
+.btn_search {
+  width: 37px;
+  height: 37px;
+  background-color: white;
+  border: none;
+  display :inline-block;
+}
+.search_icon {
+  width: 40px;
+  height: 40px;
+  padding-right: 20px;
+}
 </style>
 
 <body>
@@ -33,9 +64,44 @@
     <div class="wrap wrap_9">
     
       <div class="text-center">
-        <a th:href="@{/auction/write.form}">
-          <button type="button" class="btn btn-outline-primary">새글작성</button>
-        </a>
+        <div class="search">
+          <form id="search_frm">
+            <input type="text" name="searchWord" id="searchWord" class="searchWord input-group-text" placeholder="작가/작품명 검색">
+            <button type="submit" id="btn_search" class="btn_search"><i class="fa-solid fa-magnifying-glass search_icon" style="color: #1937cc;"></i></button>
+            <input type="hidden" name="userNo" id="userNo" th:value="${session.user != null ? session.user.userNo : 0}">
+            <select class="col-sm-3" id="">
+              <option value="" selected>전체</option>
+              <option value="A.TITLE">제목</option>
+              <option value="A.CONTENTS">내용</option>
+              <option value="U.NICKNAME">작가명</option>
+            </select>
+            <select class="col-sm-3" name="categoryNo" id="categoryNo">
+              <option>카테고리</option>  
+              <option value="1">포토그래픽</option>  
+              <option value="2">원화</option>  
+              <option value="3">드로잉</option>  
+              <option value="4">판화</option>  
+              <option value="5">서예</option>  
+              <option value="6">회화</option>  
+              <option value="7">동양화</option>  
+              <option value="8">공예</option>  
+              <option value="9">디지털아트</option>  
+              <option value="10">조각품</option>  
+              <option value="11">기타</option>  
+            </select>
+            <select class="col-sm-3" name="status" id="status">
+              <option>상태</option>  
+              <option value="0">진행중</option>  
+              <option value="1">낙찰</option>  
+              <option value="-1">유찰</option>  
+            </select>
+          </form>
+        </div>
+        <div>
+          <a th:href="@{/auction/write.form}">
+            <button type="button" class="btn btn-outline-primary">새글작성</button>
+          </a>
+        </div>
       </div>
       
       <div id="auction_list" class="auction_list"></div>
@@ -47,21 +113,30 @@
       // 전역 변수
       var page = 1;
       var totalPage = 0;
-    
+      
+      
+     
       const fnGetAuctionList = () => {
         $.ajax({
           // 요청
           type: 'get',
           url: '/auction/getList.do',
-          data: 'page=' + page,
+          data: {
+                    page: page
+                    },
           // 응답
           dataType: 'json',
           success: (resData) => {  
             totalPage = resData.totalPage;
-            $.each(resData.auctionList, (i, auction) => {
+            $.each(resData.auctionList,(i, auction) => {
               let str = '<div class="auction" data-auction_no="' + auction.auctionNo + '">';
               str += '<div class="auction_image">' + '</div>';
-              str += '<div class="auction_heart">' + '</div>';
+              if(auction.status === 0){
+              str += '<div>경매진행중</div>';
+              } else {
+              str += '<div>경매종료</div>';
+              }
+              str += '<div class="auction_heart_div"><i class="' + auction.heartClass + ' fa-heart fa-xl auction_heart" style="color: #e11414;"></i></div>';
               str += '<div><span>' + auction.artDto.categoryDto.categoryName + '</span></div>';
               str += '<div><span>' + auction.artDto.title                    + '</span></div>';
               str += '<div><span>' + auction.artDto.sellerDto.nickname       + '</span></div>';
@@ -75,10 +150,46 @@
           }
         })
       }
+     
+      const fnHeart = () => {
+        $(document).on('click', '.auction_heart', function(event){
+          let user = /*[[${session.user}]]*/ null;
+            if(user === null){
+              if(confirm('로그인이 필요한 기능입니다. 로그인하시겠습니까?')){
+                event.preventDefault();
+                location.href = '/user/login.form';
+                return;
+                
+              }
+            }
+              $.ajax({
+                  // 요청
+                  type: 'get',
+                  url: '/auction/controlAuctionWishlist.do',
+                  data: {
+                    auctionNo: $(this).closest('div .auction').data('auction_no')
+                    },
+                  // 응답
+                  dataType: 'json',
+                  success: (resData) => {
+                    console.log(resData);
+                     if(resData.hasAuctionWishlist === 0){
+                        $(this).removeClass('fa-regular');  
+                        $(this).addClass('fa-solid');
+                        console.log('하트 채우기');
+                        return;
+                      }
+                      $(this).removeClass('fa-solid');
+                      $(this).addClass('fa-regular');
+                      console.log('하트 비우기');
+                    }
+                  })
+        })
+      }
       
       const fnAuctionDetail = () => {
         $(document).on('click', '.auction', function(){
-          location.href = '/auction/detail.do?auctionNo=' + $(this).data('auction_no');
+          location.href = '/auction2/detail.do?auctionNo=' + $(this).data('auction_no');
         })
       }
     
@@ -138,11 +249,11 @@
 
       
       fnGetAuctionList();
-      fnAuctionDetail();
+      // fnAuctionDetail();
       fnScroll();
       fnAddResult();
       fnRemoveResult();
-    
+      fnHeart();
     </script>
 
   </div>

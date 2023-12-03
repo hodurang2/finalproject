@@ -4,16 +4,26 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.gdu.drawauction.dao.UserMapper">
-
+	
 	<select id="getUser" parameterType="Map" resultType="UserDto">
 		SELECT USER_NO, EMAIL, PW, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION
 		  FROM USER_T
 		<where>
-			<if test="email != null">EMAIL = #{email}</if>
-			<if test="pw != null">AND PW = #{pw}</if>
-			<if test="userNo != null">AND USER_NO = #{userNo}</if>  
-		</where>
+	      <if test="email != null">EMAIL = #{email}</if>
+	      <if test="pw != null">AND PW = #{pw}</if>
+	      <if test="userNo != null">AND USER_NO = #{userNo}</if>
+	    </where>
 	</select>
+
+	
+	<!--/* 접속기록 넣기 */-->
+  <insert id="insertAccess" parameterType="String">
+    INSERT INTO ACCESS_T (
+    	EMAIL, LOGIN_AT
+    ) VALUES (
+		#{email}, SYSDATE
+    )
+  </insert>
 	
 	<select id="getLeaveUser" parameterType="Map" resultType="LeaveUserDto">
     SELECT EMAIL, JOINED_AT, LEAVED_AT
@@ -24,12 +34,13 @@
   <select id="getInactiveUser" parameterType="Map" resultType="InactiveUserDto">
     SELECT USER_NO, EMAIL, PW, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION, INACTIVED_AT
       FROM INACTIVE_USER_T
-    <where>
+   <where>
       <if test="email != null">EMAIL = #{email}</if>
       <if test="pw != null">AND PW = #{pw}</if>
     </where>
   </select>
   
+  <!--/* 사용자 추가하기 */-->
   <insert id="insertUser" parameterType="UserDto">
     INSERT INTO USER_T (
 			USER_NO
@@ -46,7 +57,6 @@
 		  , JIBUN_ADDRESS
 		  , DETAIL_ADDRESS
 		  , NICKNAME
-		  , INTRODUCTION
     ) VALUES (
 	        USER_SEQ.NEXTVAL
 	      , #{email}
@@ -56,99 +66,54 @@
 	      , #{gender}
 	      , #{agree}
 	      , 0
-	      , TO_DATE(#{joinedAt}, 'YYYY-MM-DD HH24:MI:SS')
+	      , SYSDATE
 	      , #{postcode}
 	      , #{roadAddress}
 	      , #{jibunAddress}
 	      , #{detailAddress}
 	      , #{nickname}
-	      , #{introduction}
     )
   </insert>
-  
-  <!--/* 접속기록 넣기 */-->
-  <insert id="insertAccess" parameterType="String">
-    INSERT INTO ACCESS_T (
-    	EMAIL, LOGIN_AT
-    ) VALUES (
-		#{email}, SYSDATE
-    )
-  </insert>
-  
-  <!--/* 사용자 이메일 찾기 */-->
-  <select id="findId" resultType="UserDto">
-    SELECT USER_NO, EMAIL, PW, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION, INACTIVED_AT
-      FROM USER_T
-     WHERE EMAIL = #{email}
-       AND MOBILE = #{mobile}
-  </select>
-  
- <!--/* 비밀번호 찾기 */-->
-  <select id="findPwCheck" resultType="int">
-    SELECT COUNT(*)
-      FROM USER_T
-     WHERE NAME = #{name}
-       AND EMAIL = #{email}
-       AND MOBILE = #{mobile} 
-  </select>
-  
-  <!--/* 비밀번호 바꾸기 */-->
-  <update id="updatePw" parameterType="Map">
-    UPDATE USER_T
-       SET PW = #{pw}
-     WHERE EMAIL = #{email}
-       AND NAME = #{name}
-  </update>
-  
-  
-  <insert id="insertNaverUser" parameterType="UserDto">
-    INSERT INTO USER_T (
-			USER_NO
-		  , EMAIL
-		  , PW
-		  , NAME
-		  , MOBILE
-		  , GENDER
-		  , AGREE
-		  , STATE
-		  , JOINED_AT
-		  , POSTCODE
-		  , ROAD_ADDRESS
-		  , JIBUN_ADDRESS
-		  , DETAIL_ADDRESS
-		  , NICKNAME
-		  , INTRODUCTION
-    ) VALUES (
-	        USER_SEQ.NEXTVAL
-	      , #{email}
-	      , #{pw}
-	      , #{name}
-	      , #{mobile}
-	      , #{gender}
-	      , #{agree}
-	      , 0
-	      , TO_DATE(#{joinedAt}, 'YYYY-MM-DD HH24:MI:SS')
-	      , #{postcode}
-	      , #{roadAddress}
-	      , #{jibunAddress}
-	      , #{detailAddress}
-	      , #{nickname}
-	      , #{introduction}
-    )
-  </insert>
-  
-  <!--/* 탈퇴한 사용자 INSERT */-->
-  <insert id="insertLeaveUser" parameterType="userDto">
-    INSERT INTO LEAVE_USER_T (
-        EMAIL
-      , JOINED_AT
-      , LEAVED_AT
-    ) VALUES (
-        #{email}
-      , TO_DATE(#{joinedAt}, 'YYYY-MM-DD HH24:MI:SS')
-      , SYSDATE
-    )
-  </insert>
+
+
+	<!--/* 사용자 정보 수정하기 */-->
+	<update id="updateUser" parameterType="UserDto">
+		UPDATE USER_T
+		   SET EMAIL = #{email}
+             , NAME = #{name}
+             , MOBILE = #{mobile}
+		   	 , GENDER = #{gender}
+		   	 , POSTCODE = #{postcode}
+		   	 , AGREE = 0
+		   	 , ROAD_ADDRESS = #{roadAddress}
+		   	 , JIBUN_ADDRESS = #{jibunAddress}
+		   	 , DETAIL_ADDRESS = #{detailAddress}
+		   	 , NICKNAME = #{nickname}
+		   	 , INTRODUCTION = #{introduction}
+		 WHERE USER_NO = #{userNo}
+	</update>
+
+	<update id="updateUserPw" parameterType="UserDto">
+		UPDATE USER_T
+		   SET EMAIL = #{email}
+             , PW = #{pw}
+		 WHERE USER_NO = #{userNo};	
+	</update>
+
+
+	<!--/* 탈퇴한 사용자 INSERT */-->
+	  <insert id="insertLeaveUser" parameterType="UserDto">
+	    INSERT INTO LEAVE_USER_T (
+	        EMAIL
+	      , JOINED_AT
+	      , LEAVED_AT
+	    ) VALUES (
+	        #{email}
+	      , #{joinedAt}
+	      , SYSDATE
+	    )
+	  </insert>
+
   
   <!--/* 유저 삭제하기 */-->
   <delete id="deleteUser" parameterType="UserDto">
@@ -170,7 +135,7 @@
   <delete id="deleteUserForInactive">
     DELETE
         FROM USER_T
- WHERE EMAIL IN(SELECT U.EMAIL
+	   WHERE EMAIL IN(SELECT U.EMAIL
                   FROM USER_T U LEFT OUTER JOIN ACCESS_T A
                     ON U.EMAIL = A.EMAIL
                  WHERE MONTHS_BETWEEN(SYSDATE, LOGIN_AT) >= 6
@@ -190,6 +155,33 @@
       FROM INACTIVE_USER_T
      WHERE EMAIL = #{email}  
   </delete>
+
+
+	 <insert id="insertNaverUser" parameterType="UserDto">
+    INSERT INTO USER_T (
+			USER_NO, EMAIL, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME
+    ) VALUES (
+    	USER_SEQ.NEXTVAL, #{email}, #{name}, #{mobile}, #{gender}, #{agree}, 0, SYSDATE, #{postcode}, #{roadAddress}, #{jibunAddress}, #{detailAddress}, #{nickname}
+    )
+  </insert>
+
+
+	<!--/* 아이디/비밀번호 찾기 */-->
+	<!--/* 아이디 찾기 */-->
+	<select id="findId" resultType="UserDto">
+	SELECT USER_NO, EMAIL, PW, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION
+      FROM USER_T
+     WHERE EMAIL = #{email}
+       AND MOBILE = #{mobile}
+	</select>
+
+	<select id="findPw" resultType="int">
+		SELECT COUNT(*)
+		  FROM USER_T
+		 WHERE EMAIL = #{email}
+		   AND NAME = #{name}
+		   AND MOBILE = #{mobile}
+	</select>
 
 
 </mapper>

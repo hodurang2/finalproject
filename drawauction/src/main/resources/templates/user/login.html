@@ -13,13 +13,13 @@
   <div class="wrap wrap_5">
     <h3 class="title">로그인</h3>
     <form method="post" th:action="@{/user/login.do}">
-      <div class="input-box">      
+      <div class="input-box">
+		<label for="email">아이디</label>		  
         <input type="text" name="email" id="email" placeholder="이메일" >
-        <label for="email">아이디</label>
       </div>
-      <div class="input-box">      
+      <div class="input-box">
+		<label for="pw">비밀번호</label>  
         <input type="password" name="pw" id="pw" placeholder="비밀번호">
-        <label for="pw">비밀번호</label>
       </div>
       <div class="d-grid gap-2">
         <input type="hidden" name="referer" value="${referer}">
@@ -29,14 +29,14 @@
     
     <!--/* 회원가입, 아이디/비밀번호 찾기 */-->
     <ul class="sub_menu">
-      <li><a class="atag" th:href="@{/user/agree.form}">회원가입</a>
-      <li><a class="atag" th:href="@{/user/find_id.do}">아이디/비밀번호 찾기</a>
+      <li><a class="atag" th:href="@{/user/agree.form}">회원가입</a></li>
+      <li><a class="atag" th:href="@{/user/find.form}">아이디/비밀번호 찾기</a></li>
     </ul>
     
     <hr>
     <div class="text-center">
       <a th:href="${naverLoginURL}">
-        <img src="$/resources/image/btnW_완성형.png" width="200px">
+        <img th:src="@{/image/btnG_완성형.png}" width="200px">
       </a>
     </div>
   </div>

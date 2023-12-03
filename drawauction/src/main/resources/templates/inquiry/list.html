@@ -11,7 +11,7 @@
     color: #333;
     margin-bottom: 20px;
   }
-  .wrap2 {
+  .wrap {
     max-width: 1170px;
     position: relative;
     margin: 0 auto;
@@ -94,63 +94,66 @@
   
   <div class="main_wrap">
   
-    <div class="wrap wrap_2">
+    <div class="wrap wrap_3">
 
-      <div class="support_title">1:1문의</div>
-  
-      <div class="wrap2">ㄴ
+      <div class="support_title">고객센터</div>
+      
+       <div class="wrap">
         <div class="support_left_wrap">
-          <div class="left_menu">
-            <ul class="btn_support">
-              <li class="off"><a href="/notice/list.do"><span>공지사항</span></a></li>
-              <li class="on"><a href="/inquiry/list.do"><span>1:1문의</span></a></li>
-            </ul>
-          </div>  
-         </div>
-         <div class="support_right_wrap">
+            <div class="left_menu">
+                <ul class="btn_support">
+                  <li><a th:href="@{/notice/list.do}"><span>공지사항</span></a></li>
+                  <li><a th:href="@{/inquiry/list.do}"><span>1:1문의</span></a></li>
+                  <li><a th:href="@{/chatt/chatting.html}"><span>1:1문의 채팅</span></a></li>
+                </ul>
+            </div>
+        </div>
+    
+        <div class="support_right_wrap">
             <div class="inquiry_head">
-              <div class="inquiry_title">1:1문의</div>
-                  <div>
+                <div class="inquiry_title">1:1문의</div>
+                <div th:if="${session.user.userNo == 1}"> 
                     <a th:href="@{/inquiry/write.form}">
-                      <button type="button" class="btn btn-dark btn_write">새글작성</button>
+                        <button type="button" class="btn btn-dark btn_write">문의하기</button>
                     </a>
-                  </div>
+                </div>
             </div>
             <table border="1" class="table">
-              <thead>
-                <tr>
-                  <td>글번호</td>
-                  <td>제목</td>
-                  <td>작성자</td>
-                  <td>작성일자</td>
-                </tr>
-              </thead>
-              <tbody>
-                <th:block th:each="i,vx:${inquiryList}">
-                  <tr>
-                    <td th:text="${i.inquiryNo}"></td>
-                    <td><a th:href="@{/inquiry/detail.do(inquiryNo=${i.inquiryNo})}" th:text="${i.inquiryTitle}"></a></td>
-                    <td th:text="${i.userDto.email}"></td>
-                    <td th:text="${#dates.format(i.inquiryCreatedAt, 'yyyy-MM-dd')}"></td>
-                  </tr>
-                </th:block>
-              </tbody>
-              <tfoot> 
-                <tr>
-                  <td colspan="5">${paging}</td>
-                </tr>
-              </tfoot>
+                <thead>
+                    <tr>
+                        <td>글번호</td>
+                        <td>제목</td>
+                        <td>작성일자</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <th:block th:each="i,vx:${inquiryList}">
+                        <tr>
+                            <td th:text="${i.inquiryNo}"></td>
+                            <td>
+                                <a class="inquiry_list_title" th:href="@{/inquiry/detail.do(inquiryNo=${i.inquiryNo})}" th:text="${i.title}"></a>
+                            </td>
+                            <td th:text="${i.inquiryCreatedAt}"></td>
+                        </tr>
+                    </th:block>
+                </tbody>
+                <tfoot> 
+                    <tr>
+                        <td colspan="3">${paging}</td>
+                    </tr>
+                </tfoot>
             </table>    
-         </div>
-      </div> 
-      <script>
-        
-      </script>
-      
+        </div>
     </div>
+        
+    <script>
+      
   
+    </script>
+    
+     </div>
   </div>
-   
+  
 <div th:replace="~{/layout/footer::footer}"></div>
 
 </body>
