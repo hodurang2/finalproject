@@ -15,4 +15,5 @@ public interface MypageService {
   
   public void modifyPw(HttpServletRequest request, HttpServletResponse response);   // 비밀번호 변경
 
+  
 }
