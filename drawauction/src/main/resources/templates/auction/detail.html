@@ -3,7 +3,7 @@
 
 <head th:replace="~{/layout/header::head(|auction.auctionNo번 경매|)}"></head>
 <style>
-  .fa-regular{
+  #wish_list{
 	cursor: pointer;
   }
 </style>
@@ -30,13 +30,15 @@
         </th:block>
       </div>
       <div th:text="|작가 : ${auction.artDto.sellerDto.nickname}|"></div>
-      <div th:text="|카테고리 : ${auction.artDto.categoryDto.categoryName}|"></div>
       <div th:text="|제목 : ${auction.artDto.title}|"></div> 
-      <div th:text="|가격 : ${#numbers.formatInteger(auction.startPrice, 1, 'COMMA')}P|"></div>
-      <div th:text="|가격 : ${#numbers.formatInteger(auction.price, 1, 'COMMA')}P|"></div>
-      <div th:text="|가격 : ${#numbers.formatInteger(auction.buyPrice, 1, 'COMMA')}P|"></div>
+      <div th:text="|카테고리 : ${auction.artDto.categoryDto.categoryName}|"></div>
+      <div th:text="|시작가 : ${#numbers.formatInteger(auction.startPrice, 1, 'COMMA')}P|"></div>
+      <div th:text="|현재입찰가 : ${#numbers.formatInteger(auction.price, 1, 'COMMA')}P|"></div>
+      <div th:text="|즉시구매가 : ${#numbers.formatInteger(auction.buyPrice, 1, 'COMMA')}P|"></div>
+      <div th:text="|마감일 : ${auction.endAt}"></div>
       <div th:text="|작품 가로길이(px) : ${auction.artDto.width}|"></div>
       <div th:text="|작품 세로길이(px) : ${auction.artDto.height}|"></div>
+      <input type="hidden" id="auctionNo2" name="auctionNo2" th:value="${auction.auctionNo}">
       <div>내용</div>
       <th:block th:if="${#strings.isEmpty(auction.artDto.contents)}">
         <div>내용없음</div>
@@ -67,7 +69,7 @@
       */-->
       
       <hr>
-	  <i class="wishist fa-regular fa-heart fa-2xl" style="color: #ff0000;"></i>      
+	  <i id="wish_list" class="fa-regular fa-heart fa-2xl" style="color: #ff0000;"></i>      
     </div>
       
     <script th:inline="javascript">
@@ -110,7 +112,7 @@
           }
         }
       }
-      
+/*      
       const fnAddWishList = () => {
 		$('#wishist').click(() => {
 		  $.ajax({
@@ -129,12 +131,59 @@
 		  })
 		})
 	  }
+*/	  
+	  var auctionNo = $('#auctionNo2').val();
+      
+      const fnWishListControll = () => {
+    $('#wish_list').click(() => {
+      $.ajax({
+      type: 'post',
+        url: '/auction2/controlWishlist.do',
+        data: { 
+          auctionNo: auctionNo,
+          userNo: '[[${session.user.userNo}]]'
+            },
+        dataType: 'json',
+        success: (resData) => {
+        if(resData.hasAuctionWishlist === 0) {
+          $('#wish_list').removeClass('fa-regular fa-heart fa-2xl');
+          $('#wish_list').addClass('fa-solid fa-heart fa-2xl');
+          return;
+        } 
+        $('#wish_list').removeClass('fa-solid fa-heart fa-2xl');
+        $('#wish_list').addClass('fa-regular fa-heart fa-2xl');
+        
+        }
+      
+      })
+    })
+    }
+    
+    const fnWishCheck = () => {
+    $.ajax({
+      type: 'get',
+      url: '/auction2/wishCheck.do',
+      data: { 
+          auctionNo: auctionNo,
+          userNo: '[[${session.user.userNo}]]'
+          },
+      dataType: 'json',
+      success: (resData) => {
+      if(!resData.wishCheckResult == 0) {
+        $('#wish_list').removeClass('fa-regular fa-heart fa-2xl');
+        $('#wish_list').addClass('fa-solid fa-heart fa-2xl');
+      }
+      }
+      
+    })
+    }
+	  
       
       fnEdit();
       fnRemove();
-      fnDownload();
       fnModifyResult();
-      
+      fnWishListControll();
+      fnWishCheck();
     </script>
       
   </div>

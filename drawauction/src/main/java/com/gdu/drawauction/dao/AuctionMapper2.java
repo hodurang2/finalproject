@@ -12,4 +12,7 @@ public interface AuctionMapper2 {
   public List<AuctionDto> getAuctionList(Map<String, Object> map);
   public int getAuctionCount();
   public AuctionDto getAuction(int auctionNo);
+  public int hasAuctionWishlist(Map<String, Object> map);
+  public void insertAuctionWishlist(Map<String, Object> map);
+  public void deleteAuctionWishlist(Map<String, Object> map);
 }

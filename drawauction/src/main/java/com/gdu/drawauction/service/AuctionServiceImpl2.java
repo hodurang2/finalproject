@@ -5,13 +5,17 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import com.gdu.drawauction.dao.AuctionMapper2;
 import com.gdu.drawauction.dto.AuctionDto;
+import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.util.MyFileUtils;
 import com.gdu.drawauction.util.MyPageUtils;
 
@@ -54,8 +58,42 @@ public class AuctionServiceImpl2 implements AuctionService2 {
     int auctionNo = Integer.parseInt(opt.orElse("0"));
     model.addAttribute("auction", auctionMapper2.getAuction(auctionNo));
 //    model.addAttribute("imageList", auctionMapper2.getImageList(auctionNo));
-    
   }
+  
+  @Override
+  public Map<String, Object> controlAuctionWishlist(HttpServletRequest request) {
+    int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
+    HttpSession session = request.getSession();
+    UserDto user = (UserDto) session.getAttribute("user");
+    int userNo = user.getUserNo();
+    
+    Map<String, Object> map = Map.of("auctionNo", auctionNo, "userNo", userNo);
+    
+    int hasAuctionWishlist = auctionMapper2.hasAuctionWishlist(map);
+    if(hasAuctionWishlist == 0) {
+      auctionMapper2.insertAuctionWishlist(map);
+    } else if(hasAuctionWishlist == 1) {
+      auctionMapper2.deleteAuctionWishlist(map);
+    }
+    return Map.of("hasAuctionWishlist", hasAuctionWishlist);
+  }
+  
+  @Override
+  public ResponseEntity<Map<String, Object>> hasAuctionWishlist(HttpServletRequest request) {
+    
+    System.out.println("서비스임플 시작");
+    int auctionNo = Integer.parseInt(request.getParameter("auctionNo")); 
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    
+    Map<String, Object> map = Map.of("auctionNo", auctionNo, "userNo", userNo);
+    
+    System.out.println("서비스임플 매퍼전");
+    int wishCheckResult = auctionMapper2.hasAuctionWishlist(map);
+    System.out.println("서비스임플 매퍼후");
+    
+    return new ResponseEntity<>(Map.of("wishCheckResult", wishCheckResult), HttpStatus.OK);
+  }
+  
   
   
 }

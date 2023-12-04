@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,6 +49,18 @@ public class AuctionController2 {
   @GetMapping("/edit.form")
   public String edit(@ModelAttribute("auction") AuctionDto auction) {
     return "auction/edit";
+  }
+  
+  @ResponseBody
+  @PostMapping(value="/controlWishlist.do", produces="application/json")
+  public Map<String, Object> controlAuctionWishlist (HttpServletRequest request){
+    return auctionService2.controlAuctionWishlist(request);
+  }
+  
+  @GetMapping(value="/wishCheck.do", produces="application/json")
+  public ResponseEntity<Map<String, Object>> wishCheck(HttpServletRequest request) {
+    System.out.println("컨트롤러 들어가기전");
+  return auctionService2.hasAuctionWishlist(request);
   }
   
   

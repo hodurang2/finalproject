@@ -92,6 +92,35 @@
                AND (B.PRICE IS NULL OR B.PRICE = (SELECT MAX(PRICE) FROM BID_T WHERE AUCTION_NO = AUC.AUCTION_NO))
                AND AUC.AUCTION_NO = #{auctionNo}) D
   </select>
- 
+  
+  <insert id="insertAuctionWishlist" parameterType="Map">
+    INSERT INTO AUCTION_WISHLIST_T (
+        AUCTION_WISH_NO,
+        AUCTION_NO,
+        USER_NO,
+        WISHED_AT
+        ) VALUES (
+        AUCTION_WISHLIST_SEQ.NEXTVAL,
+        #{auctionNo},
+        #{userNo},
+        SYSDATE
+    )
+  </insert>
+  
+  <delete id="deleteAuctionWishlist" parameterType="Map">
+    DELETE AUCTION_WISHLIST_T
+     WHERE AUCTION_NO = #{auctionNo}
+       AND USER_NO = #{userNo}
+  </delete>
+  
+  <select id="hasAuctionWishlist" resultType="int"  parameterType="Map">
+    SELECT COUNT(*)
+      FROM AUCTION_WISHLIST_T
+     WHERE AUCTION_NO = #{auctionNo}
+       AND USER_NO = #{userNo}
+  </select>
+  
+  
+  
   
 </mapper>
