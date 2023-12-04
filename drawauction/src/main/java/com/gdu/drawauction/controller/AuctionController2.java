@@ -42,7 +42,7 @@ public class AuctionController2 {
   @GetMapping("/detail.do")
   public String detail(HttpServletRequest request, Model model) {
     auctionService2.loadAuction(request, model);
-    return "/auction/detail";
+    return "auction/detail";
   } 
   
   @GetMapping("/edit.form")

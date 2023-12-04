@@ -18,12 +18,11 @@
           <label for="title">제목</label>
           <input type="text" name="title" id="title" class="form-control" th:field="*{artDto.title}">
         </div>
-        <!--/*
         <div>
           <label for="contents">내용</label>
           <textarea name="contents" id="contents" style="display: none;"></textarea>
           <div id="toolbar-container"></div>
-          <div id="ckeditor" th:utext="*{contents}"></div>
+          <div id="ckeditor" th:utext="*{artDto.contents}"></div>
         </div>
         
         <div class="text-center my-3">
@@ -33,7 +32,6 @@
           <input type="hidden" name="auctionNo" th:field="*{auctionNo}">
           <button class="btn btn-primary" type="submit">수정완료</button>
         </div>
-        */-->
       </form>
     
     </div>
