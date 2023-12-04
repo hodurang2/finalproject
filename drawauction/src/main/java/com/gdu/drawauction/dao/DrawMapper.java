@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.DrawImageDto;
+import com.gdu.drawauction.dto.DrawReviewDto;
 
 @Mapper
 public interface DrawMapper {
@@ -23,4 +24,6 @@ public interface DrawMapper {
 	public int deleteImage(int drawNo);
 	public int updateDraw(Map<String, Object> map);
 	public int deleteDraw(int drawNo);
+	public int getReviewCount(int drawNo);
+	public List<DrawReviewDto> getReviewList(Map<String, Object> map);
 }

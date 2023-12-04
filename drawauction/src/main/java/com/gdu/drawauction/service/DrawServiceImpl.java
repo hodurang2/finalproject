@@ -21,6 +21,7 @@ import com.gdu.drawauction.dao.DrawMapper;
 import com.gdu.drawauction.dto.CategoryDto;
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.DrawImageDto;
+import com.gdu.drawauction.dto.DrawReviewDto;
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.util.MyFileUtils;
 import com.gdu.drawauction.util.MyPageUtils;
@@ -45,7 +46,7 @@ public class DrawServiceImpl implements DrawService{
 		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
 	    int page = Integer.parseInt(opt.orElse("1"));
 	    int total = drawMapper.getDrawCount();
-	    int display = 9;
+	    int display = 10;
 	    
 	    myPageUtils.setPaging(page, total, display);
 	    
@@ -84,14 +85,11 @@ public class DrawServiceImpl implements DrawService{
 	@Override
 	public boolean addDraw(MultipartHttpServletRequest multipartRequest) throws Exception {
 	    
-		Optional<String> optWidth = Optional.ofNullable(multipartRequest.getParameter("width"));
-		Optional<String> optHeight = Optional.ofNullable(multipartRequest.getParameter("height"));
-		
 		int categoryNo = Integer.parseInt(multipartRequest.getParameter("categoryNo")); 
 	    String title = multipartRequest.getParameter("title");
 	    int price = Integer.parseInt(multipartRequest.getParameter("price")); 
-	    int width = Integer.parseInt(optWidth.orElse("0"));
-	    int height = Integer.parseInt(optHeight.orElse("0"));
+	    int width = (multipartRequest.getParameter("width").equals("")) ? 0 : Integer.parseInt(multipartRequest.getParameter("width"));
+	    int height = (multipartRequest.getParameter("height").equals("")) ? 0 : Integer.parseInt(multipartRequest.getParameter("height"));
 	    int workTerm = Integer.parseInt(multipartRequest.getParameter("workTerm"));
 	    String contents = multipartRequest.getParameter("contents");
 	    int sellerNo = Integer.parseInt(multipartRequest.getParameter("sellerNo"));
@@ -250,13 +248,11 @@ public class DrawServiceImpl implements DrawService{
 	@Override
 	public int modifyDraw(HttpServletRequest request) {
 		
-		Optional<String> optWidth = Optional.ofNullable(request.getParameter("width"));
-		Optional<String> optHeight = Optional.ofNullable(request.getParameter("height"));
 		int categoryNo = Integer.parseInt(request.getParameter("categoryNo"));
 		String title = request.getParameter("title");
 		int price = Integer.parseInt(request.getParameter("price"));
-		int width = Integer.parseInt(optWidth.orElse("0"));
-		int height = Integer.parseInt(optHeight.orElse("0"));
+		int width = (request.getParameter("width").equals("")) ? 0 : Integer.parseInt(request.getParameter("width"));
+	    int height = (request.getParameter("height").equals("")) ? 0 : Integer.parseInt(request.getParameter("height"));
 		int workTerm = Integer.parseInt(request.getParameter("workTerm"));
 		String contents = request.getParameter("contents");
 		int drawNo = Integer.parseInt(request.getParameter("drawNo"));
@@ -385,5 +381,28 @@ public class DrawServiceImpl implements DrawService{
 	    }
 	    return drawMapper.deleteDraw(drawNo);
 	}
+	
+	@Transactional(readOnly=true)
+	@Override
+	public Map<String, Object> getReviewList(HttpServletRequest request) {
+
+		int drawNo = Integer.parseInt(request.getParameter("drawNo"));
+	    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+	    int page = Integer.parseInt(opt.orElse("1"));
+	    int total = drawMapper.getReviewCount(drawNo);
+	    int display = 5;
+	    
+	    myPageUtils.setPaging(page, total, display);
+	    
+	    Map<String, Object> map = Map.of("drawNo", drawNo
+	                                   , "begin", myPageUtils.getBegin()
+	                                   , "end", myPageUtils.getEnd());
+	    
+	    List<DrawReviewDto> reviewList = drawMapper.getReviewList(map);
+	    
+	    return Map.of("reviewList", reviewList
+                , "totalPage", myPageUtils.getTotalPage());
+	    
+	  }
 	
 }

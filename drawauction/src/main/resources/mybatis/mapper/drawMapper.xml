@@ -38,9 +38,8 @@
   
   <resultMap type="DrawWishListDto"    id="DrawWishListMap">
     <id      column="DRAW_WISH_NO"     property="drawWishNo"/>
-    <result  column="USER_NO"          property="userNo"/>
     <result  column="WISHED_AT"        property="wishedAt"/>
-    <association javaType="DrawDto"    property="drawMap">
+    <association javaType="DrawDto"    property="drawDto">
 	  <id      column="DRAW_NO"      property="drawNo"/>
 	  <result  column="TITLE"        property="title"/>
 	  <result  column="PRICE"        property="price"/>
@@ -72,6 +71,59 @@
 	</association>
   </resultMap>
   
+  <resultMap type="DrawReviewDto" id="DrawReviewMap">
+  	<result column="REVIEW_TITLE" property="reviewTitle"/>
+  	<result column="REVIEW_CONTENTS" property="reviewContents"/>
+  	<result column="RATING" property="rating"/>
+  	<result column="CREATED_AT" property="createdAt"/>
+  	<association javaType="DrawDto"    property="drawDto">
+	  <id      column="DRAW_NO"      property="drawNo"/>
+	  <result  column="TITLE"        property="title"/>
+	  <result  column="PRICE"        property="price"/>
+	  <result  column="CONTENTS"     property="contents"/>
+	  <result  column="WIDTH"  		 property="width"/>
+	  <result  column="HEIGHT" 		 property="height"/>
+	  <result  column="WORK_TERM" 	 property="workTerm"/>
+	  <association javaType="CategoryDto" property="categoryDto">
+	  	<id        column="CATEGORY_NO"   property="categoryNo"/>
+	  	<result    column="CATEGORY_NAME"          property="categoryName" />
+	  </association>
+      <association javaType="UserDto"      property="userDto">
+      	<id        column="USER_NO"        property="userNo"/>
+      	<result    column="EMAIL"          property="email" />
+      	<result    column="PW"             property="pw" />
+      	<result    column="NAME"           property="name" />
+      	<result    column="MOBILE"         property="mobile" />
+      	<result    column="GENDER"         property="gender" />
+      	<result    column="AGREE"          property="agree" />
+      	<result    column="STATE"          property="state" />
+      	<result    column="JOINED_AT"      property="joinedAt" />
+      	<result    column="POSTCODE"       property="postcode" />
+      	<result    column="ROAD_ADDRESS"   property="roadAddress" />
+      	<result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      	<result    column="DETAIL_ADDRESS" property="detailAddress" />
+      	<result    column="NICKNAME"	   property="nickname" />
+      	<result    column="INTRODUCTION"   property="introduction" />
+      </association>
+	</association>
+	<association javaType="UserDto"      property="userDto">
+      	<id        column="USER_NO"        property="userNo"/>
+      	<result    column="EMAIL"          property="email" />
+      	<result    column="PW"             property="pw" />
+      	<result    column="NAME"           property="name" />
+      	<result    column="MOBILE"         property="mobile" />
+      	<result    column="GENDER"         property="gender" />
+      	<result    column="AGREE"          property="agree" />
+      	<result    column="STATE"          property="state" />
+      	<result    column="JOINED_AT"      property="joinedAt" />
+      	<result    column="POSTCODE"       property="postcode" />
+      	<result    column="ROAD_ADDRESS"   property="roadAddress" />
+      	<result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      	<result    column="DETAIL_ADDRESS" property="detailAddress" />
+      	<result    column="NICKNAME"	   property="nickname" />
+      	<result    column="INTRODUCTION"   property="introduction" />
+      </association>
+  </resultMap>
   
   <insert id="insertDraw" parameterType="DrawDto">
     <!-- INSERT 수행 이전에 파라미터 UploadDto의 uploadNo 필드에 UPLOAD_SEQ.NEXTVAL값을 저장한다. -->
@@ -209,5 +261,20 @@
       FROM DRAW_T
      WHERE DRAW_NO = #{drawNo}
   </delete>
+  
+  <select id="getReviewCount" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+      FROM DRAW_REVIEW_T
+     WHERE DRAW_NO = #{drawNo}
+  </select>
+  
+  <select id="getReviewList" parameterType="Map" resultMap="DrawReviewMap">
+	SELECT A.DRAW_NO, A.USER_NO, A.REVIEW_TITLE, A.REVIEW_CONTENTS, A.RATING, A.CREATED_AT, A.NICKNAME
+	  FROM (SELECT ROW_NUMBER() OVER(ORDER BY CREATED_AT DESC) AS RN, D.DRAW_NO, D.BUYER_NO, D.REVIEW_TITLE, D.REVIEW_CONTENTS, D.RATING, D.CREATED_AT, U.USER_NO, U.NICKNAME
+	          FROM USER_T U LEFT OUTER JOIN DRAW_REVIEW_T D
+	            ON U.USER_NO = D.BUYER_NO
+	         WHERE D.DRAW_NO = #{drawNo}) A
+	 WHERE A.RN BETWEEN #{begin} AND #{end}
+  </select>
   
 </mapper>

@@ -47,7 +47,6 @@ public class DrawController {
                   , RedirectAttributes redirectAttributes) throws Exception {
     boolean addResult = drawService.addDraw(multipartRequest);
     redirectAttributes.addFlashAttribute("addResult", addResult);
-    System.out.println(multipartRequest.getParameter("width") + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     return "redirect:/draw/list.do";
   }
   
@@ -104,6 +103,13 @@ public class DrawController {
     int removeResult = drawService.removeDraw(drawNo);
     redirectAttributes.addFlashAttribute("removeResult", removeResult);
     return "redirect:/draw/list.do";
+  }
+  
+  @ResponseBody
+  @GetMapping(value="/getReviewList.do", produces="application/json")
+  public Map<String, Object> getReviewList(HttpServletRequest request){
+	System.out.println(request.getParameter("drawNo"));
+    return drawService.getReviewList(request);
   }
   
 

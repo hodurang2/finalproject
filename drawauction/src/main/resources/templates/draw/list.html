@@ -178,7 +178,6 @@
     const fnWishListControll = () => {
 	  $(document).off('click', '.heart').on('click', '.heart', function() {
 	    var self = $(this); // Wrap this in jQuery to ensure consistent behavior
-	
 	    $.ajax({
 	      type: 'post',
 	      url: '/draw/WishListControll.do',

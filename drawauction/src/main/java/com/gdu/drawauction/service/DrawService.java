@@ -8,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.gdu.drawauction.dto.DrawDto;
-
 public interface DrawService {
 	public Map<String, Object> getDrawList(HttpServletRequest request);
 	public boolean addDraw(MultipartHttpServletRequest multipartRequest) throws Exception;
@@ -22,4 +20,5 @@ public interface DrawService {
 	public Map<String, Object> addImage(MultipartHttpServletRequest multipartRequest) throws Exception;
 	public Map<String, Object> removeImage(HttpServletRequest request);
 	public int removeDraw(int drawNo);
+	public Map<String, Object> getReviewList(HttpServletRequest request);
 }
