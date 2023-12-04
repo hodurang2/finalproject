@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.service.DrawService;
 
 import lombok.RequiredArgsConstructor;
@@ -59,7 +58,6 @@ public class DrawController {
   
   @PostMapping(value="/WishListControll.do", produces="application/json")
   public ResponseEntity<Map<String, Object>> addWishList(HttpServletRequest request) {
-	  System.out.println(request.getParameter("drawNo"));
 	return drawService.WishListControll(request);
   }
   
@@ -76,7 +74,6 @@ public class DrawController {
   
   @PostMapping("/modify.do")
   public String modify(HttpServletRequest request, RedirectAttributes redirectAttributes) {
-	System.out.println(request.getParameter("categoryNo") + "+++++++++++++");
     int modifyResult = drawService.modifyDraw(request);
     redirectAttributes.addFlashAttribute("modifyResult", modifyResult);
     return "redirect:/draw/detail.do?drawNo=" + request.getParameter("drawNo");
@@ -106,6 +103,13 @@ public class DrawController {
     int removeResult = drawService.removeDraw(drawNo);
     redirectAttributes.addFlashAttribute("removeResult", removeResult);
     return "redirect:/draw/list.do";
+  }
+  
+  @ResponseBody
+  @GetMapping(value="/getReviewList.do", produces="application/json")
+  public Map<String, Object> getReviewList(HttpServletRequest request){
+	System.out.println(request.getParameter("drawNo"));
+    return drawService.getReviewList(request);
   }
   
 

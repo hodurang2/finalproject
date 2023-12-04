@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,18 +45,20 @@ public class MypageController {
   }
   
   @GetMapping("/auctionBidList.do")
-  public String auctionBidList() {
-    return "mypage/auctionBidList";
+  public String auctionBidList(HttpServletRequest request, Model model) {
+    mypageService.loadAuctionBidList(request, model);
+    return "mypage/auctionList";
   }
   
-  @GetMapping("/auctionSaleList.do")
-  public String auctionSaleList() {
-    return "mypage/auctionSaleList";
+  @GetMapping("/auctionSalesList.do")
+  public String auctionSalesList(HttpServletRequest request, Model model) {
+    mypageService.loadAuctionSalesList(request, model);
+    return "mypage/auctionList";
   }
   
-  @GetMapping("/myDrawList.do")
+  @GetMapping("/drawList.do")
   public String myDrawLsit() {
-    return "mypage/myDrawList";
+    return "mypage/drawList";
   }
   
   @GetMapping("/modifyPw.form")

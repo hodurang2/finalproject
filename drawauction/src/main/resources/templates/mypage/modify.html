@@ -1,103 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{/layout/header::head('회원정보')}"></head>
-  
-<style>
-  
-  .my_profile {
-    margin-top: 40px;
-    border: 1px solid gray;
-    width: 200px;
-    height: 300px;
-  }
-  .my_menu {
-    border: 1px solid gray;
-    width: 200px;
-    height: 360px;
-  }
-  .my_wrap {
-    float: left;
-  }
-  .right_wrap {
-    float: left;
-    margin-top: 40px;
-    margin-left: 50px;
-    width: 750px;
-    height: 900px;
-  }
-
-  .my_menu ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    width: 200px;
-    height: 290px;
-  }
-  
-  .my_menu li a {
-    text-decoration: none;
-    padding: 10px 10px 10px;
-    display: block;
-    color: #000;
-    font-weight: bold;
-    height: 45px;
-  }
-  
-  .my_menu li a:hover {
-    background: rgb(0, 128, 128);
-    color: #fff;
-  }
-  
-  .my_menu li a:active {
-    color: rgb(0, 128, 128);
-  }
-  .my_menu_text {
-    text-align: center;
-    border: 1px solid gray;
-    height: 45px;
-    line-height: 45px;
-  }
-
-  
-</style>
 
 <body>
   
   <div th:replace="~{/layout/header::header}"></div>
-  
-  <aside class="my_wrap">
-    
-    <div class="my_profile">    
-      <div>
-        <h2>프로필사진</h2>       <!--/* 사용자 프로필 사진 넣어야 함 */-->
-      </div>
-      <div th:text="${session.user.nickname}" style="text-align: center;"></div>
-      <div>
-        <form id="frm_modify_introduction" method="post" th:action="@{/mypage/modifyIntroduction.do}">
-          <textarea type="text" cols="20" rows="7" id="introduction" name="introduction" class="form-control" placeholder="최대 100자" th:text="${session.user.introduction}"></textarea>
-          <input type="hidden" name="userNo" th:value="${session.user.userNo}">
-          <div class="text-lg-end">
-            <button type="button" id="btn_modify_introduction" class="btn btn-primary">수정</button>
-          </div>          
-        </form>
-      </div>
-    </div>
-    
-    
-    <div class="my_menu">
-      <div class="my_menu_text">MY MENU</div>
-      <ul>
-        <li><a th:href="@{/mypage/auctionBidList.do}">경매 이용 내역</a></li>
-        <li><a th:href="@{/mypage/myDrawList.do}">드려드림 내역</a></li>
-        <li><a th:href="@{/mypage/emoneyList.do}">E-MONEY</a></li>
-        <li><a th:href="@{/mypage/wishList.do}">찜목록</a></li>
-        <li><a th:href="@{/mypage/inquiryList.do}">1:1 문의</a></li>
-        <li><a th:href="@{/mypage/reviewList.do}">리뷰</a></li>
-        <li><a th:href="@{/mypage/modify.form}">회원정보</a></li>
-      </ul>
-    </div>     
-    
-  </aside>
+  <div th:replace="~{/mypage/menu::side-menu}"></div>
   
   <div class="right_wrap">
     <div class="main_wrap">
@@ -107,7 +15,6 @@
         <h1 class="title">회원 정보</h1>
       
         <form id="frm_mypage" method="post">
-          
           <div th:if="${session.user.state == 0}" class="text-lg-end">
             <button type="button" id="btn_modify_pw" class="btn btn-primary float-right">비밀번호변경하기</button>
           </div>
@@ -268,9 +175,10 @@
         
       </div>
       
-      <div th:if="${session.user == null}">
+      <th:block th:if="${session.user == null}">
+        <input type="hidden" name="userNo" th:value="0">
         로그아웃되었습니다.
-      </div>
+      </th>
   
     </div>
   
@@ -282,7 +190,6 @@
       fnCheckNickname();
       fnCheckMobile();
       fnModify();
-      fnModifyIntroduction();
       fnModifyPw();
     })
     
@@ -373,26 +280,6 @@
               alert('회원 정보가 수정되었습니다.');
             } else {
               alert('회원 정보가 수정되지 않았습니다.');
-            }
-          }
-        })
-      })
-    }
-    
-      const fnModifyIntroduction = () => {
-      $('#btn_modify_introduction').click(() => {
-        $.ajax({
-          // 요청
-          type: 'post',
-          url: '/mypage/modifyIntroduction.do',
-          data: $('#frm_modify_introduction').serialize(),
-          // 응답
-          dataType: 'json',
-          success: (resData) => {  // {"modifyResult": 1}
-            if(resData.modifyIntroductionResult === 1){
-              alert('회원 소개글이 수정되었습니다.');
-            } else {
-              alert('회원 소개글이 수정되지 않았습니다.');
             }
           }
         })
