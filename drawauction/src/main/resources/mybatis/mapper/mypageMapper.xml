@@ -5,6 +5,80 @@
 
 <mapper namespace="com.gdu.drawauction.dao.MypageMapper">
   
+  <!-- BidDto에 대한 resultMap -->
+  <resultMap type="BidDto"        id="BidMap">
+    <id column="BID_NO"           property="bidNo"/>
+    <result column="PRICE"        property="price" />
+    <result column="BID_AT"       property="bidAt" />
+    <result column="POSTCODE"     property="postcode" />
+    <result column="ROAD_ADDRESS" property="roadAddress" />
+    <result column="JIBUN_ADDRESS" property="jibunAddress" />
+    <result column="DETAIL_ADDRESS" property="detailAddress" />
+    
+    <association javaType="AuctionDto"  property="auctionDto">
+      <id column="AUCTION_NO"       property="auctionNo"/>
+      <result column="START_PRICE"  property="startPrice"/>
+      <result column="BUY_PRICE"    property="buyPrice"/>
+      <result column="START_AT"     property="startAt"/>
+      <result column="END_AT"       property="endAt"/>
+      <result column="STATUS"       property="status"/>
+      <result column="PRICE"        property="price"/>
+      
+      <association javaType="ArtDto"      property="artDto">
+        <id column="ART_NO"         property="artNo"/>
+        <result column="TITLE"      property="title"/>
+        <result column="CONTENTS"   property="contents"/>
+        <result column="ART_TYPE"   property="artType"/>
+        <result column="WIDTH"      property="width"/>
+        <result column="HEIGHT"     property="height"/>
+        
+        <association javaType="UserDto"    property="sellerDto">
+          <id column="USER_NO"              property="sellerNo"/>
+          <result column="EMAIL"            property="email"/>
+          <result column="PW"               property="pw"/>
+          <result column="NAME"             property="name"/>
+          <result column="MOBILE"           property="mobile"/>
+          <result column="GENDER"           property="gender"/>
+          <result column="AGREE"            property="agree"/>
+          <result column="STATE"            property="state"/>
+          <result column="JOINED_AT"        property="joinedAt"/>
+          <result column="POSTCODE"         property="postcode"/>
+          <result column="ROAD_ADDRESS"     property="roadAddress"/>
+          <result column="JIBUN_ADDRESS"    property="jibunAddress"/>
+          <result column="DETAIL_ADDRESS"   property="detailAddress"/>
+          <result column="NICKNAME"         property="nickname"/>
+          <result column="INTRODUCTION"     property="introduction"/>
+        </association>
+        
+        <association javaType="CategoryDto" property="categoryDto">
+          <id        column="CATEGORY_NO"     property="categoryNo"/>
+          <result    column="CATEGORY_NAME"   property="categoryName" />
+        </association>
+        
+      </association>
+    </association>
+    
+    <association javaType="UserDto"    property="bidderDto">
+      <id column="USER_NO"              property="bidderNo"/>
+      <result column="EMAIL"            property="email"/>
+      <result column="PW"               property="pw"/>
+      <result column="NAME"             property="name"/>
+      <result column="MOBILE"           property="mobile"/>
+      <result column="GENDER"           property="gender"/>
+      <result column="AGREE"            property="agree"/>
+      <result column="STATE"            property="state"/>
+      <result column="JOINED_AT"        property="joinedAt"/>
+      <result column="POSTCODE"         property="postcode"/>
+      <result column="ROAD_ADDRESS"     property="roadAddress"/>
+      <result column="JIBUN_ADDRESS"    property="jibunAddress"/>
+      <result column="DETAIL_ADDRESS"   property="detailAddress"/>
+      <result column="NICKNAME"         property="nickname"/>
+      <result column="INTRODUCTION"     property="introduction"/>
+      <result column="MY_PRICE"         property="myPrice" />
+    </association>
+    
+  </resultMap>
+  
   <update id="updateUser" parameterType="UserDto">
     UPDATE USER_T
        SET NAME = #{name}
@@ -25,10 +99,47 @@
      WHERE USER_NO = #{userNo}
   </update>
   
-    <update id="updateUserPw" parameterType="UserDto">
+  <update id="updateUserPw" parameterType="UserDto">
     UPDATE USER_T
        SET PW = #{pw}
      WHERE USER_NO = #{userNo}
   </update>
+  
+  <select id="getAuctionBidCount" parameterType="int" resultType="int">
+    SELECT COUNT(*) FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
+                              AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,
+                              B.BID_NO, B.BIDDER_NO, B.PRICE AS 내입찰가, B.BID_AT,
+                              ROW_NUMBER() OVER (PARTITION BY ART.ART_NO ORDER BY B.PRICE DESC) AS RN
+                         FROM ART_T ART INNER JOIN AUCTION_T AUC
+                           ON ART.ART_NO = AUC.AUCTION_NO INNER JOIN BID_T B
+                           ON AUC.AUCTION_NO = B.AUCTION_NO
+                        WHERE B.BIDDER_NO = #{bidderNo})
+        WHERE RN = 1
+  </select> 
+  
+  <select id="getAuctionBidList" parameterType="Map" resultMap="BidMap">
+  SELECT Q1.ART_NO, Q1.TITLE, Q1.CONTENTS, Q1.BID_AT, Q1.MY_PRICE, Q2.PRICE, Q1.STATUS, Q1.END_AT
+    FROM (SELECT ART_NO, SELLER_NO, TITLE, CONTENTS, AUCTION_NO, END_AT, STATUS, BID_NO, BIDDER_NO, MY_PRICE, BID_AT, RN1, RN
+            FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
+                         AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,
+                         B.BID_NO, B.BIDDER_NO, B.PRICE AS MY_PRICE, B.BID_AT,
+                         ROW_NUMBER() OVER (PARTITION BY ART.ART_NO ORDER BY B.PRICE DESC) AS RN1,
+                         ROW_NUMBER() OVER(ORDER BY BID_AT ASC) AS RN
+                    FROM ART_T ART INNER JOIN AUCTION_T AUC
+                      ON ART.ART_NO = AUC.AUCTION_NO INNER JOIN BID_T B
+                      ON AUC.AUCTION_NO = B.AUCTION_NO
+                    WHERE B.BIDDER_NO = #{bidderNo})
+          WHERE RN1 = 1) Q1 LEFT OUTER JOIN (SELECT ART_NO, PRICE
+                                               FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
+                                                            AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,
+                                                            B.BID_NO, B.BIDDER_NO, B.PRICE, B.BID_AT,
+                                                            ROW_NUMBER() OVER (PARTITION BY ART.ART_NO ORDER BY B.PRICE DESC) AS RN2
+                                                       FROM ART_T ART INNER JOIN AUCTION_T AUC
+                                                         ON ART.ART_NO = AUC.AUCTION_NO INNER JOIN BID_T B
+                                                         ON AUC.AUCTION_NO = B.AUCTION_NO)
+                                              WHERE RN2 = 1) Q2
+                                                 ON Q1.ART_NO = Q2.ART_NO
+   WHERE RN BETWEEN #{begin} AND #{end}
+  </select>
   
 </mapper>

@@ -1,7 +1,9 @@
 package com.gdu.drawauction.service;
 
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,19 +12,25 @@ import javax.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 
 import com.gdu.drawauction.dao.MypageMapper;
+import com.gdu.drawauction.dto.BidDto;
 import com.gdu.drawauction.dto.UserDto;
+import com.gdu.drawauction.util.MyPageUtils;
 import com.gdu.drawauction.util.MySecurityUtils;
 
 import lombok.RequiredArgsConstructor;
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class MypageServiceImpl implements MypageService {
 
   private final MypageMapper mypageMapper;
   private final MySecurityUtils mySecurityUtils;
+  private final MyPageUtils myPageUtils;
   
   @Override
   public ResponseEntity<Map<String, Object>> modify(HttpServletRequest request) {
@@ -129,6 +137,33 @@ public class MypageServiceImpl implements MypageService {
     }
     
   }
-
   
+  @Override
+  public void loadAuctionBidList(HttpServletRequest request, Model model) {
+    
+    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(opt.orElse("1"));
+    
+    HttpSession session = request.getSession();
+    UserDto user = (UserDto)session.getAttribute("user");
+    
+    if(user != null) {
+      int bidderNo = user.getUserNo();
+      int total = mypageMapper.getAuctionBidCount(bidderNo);
+      int display = 10;
+      
+      myPageUtils.setPaging(page, total, display);
+      
+      Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
+                                     , "end", myPageUtils.getEnd()
+                                     , "bidderNo", bidderNo);
+      
+      List<BidDto> bidList = mypageMapper.getAuctionBidList(map);
+      
+      model.addAttribute("bidList", bidList);
+      model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/mypage/auctionBidList.do"));
+      model.addAttribute("beginNo", total - (page - 1) * display);
+    }
+  }
+
 }

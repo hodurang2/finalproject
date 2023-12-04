@@ -1,14 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<body>
-  
-<style>
+ 
+<head th:replace="~{/layout/header::head('마이페이지')}"></head>
 
-  .info_wrap {
-    padding-left: 500px;
-    padding-top: 100px;
-    width: 800px;
-  }
+<style>
   
   table, tr{
     border-collapse:collapse;
@@ -53,14 +48,20 @@
 
   
 </style>
+  
+<body>
+  
+  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{/mypage/menu::side-menu}"></div>
+
 
   
-  <div class="info_wrap">
+  <div class="right_wrap">
     <table>
       <thead>
         <tr>
           <td colspan="4" id="my_info_text">내 정보</td>
-          <td><button id="btn_modify">회원정보수정</button></td>
+          <td><button class="btn btn-primary" id="btn_modify">회원정보수정</button></td>
         </tr>      
       </thead>
       <tbody class="ing">
