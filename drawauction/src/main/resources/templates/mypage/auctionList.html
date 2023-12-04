@@ -1,14 +1,51 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{/layout/header::head('경매이용내역')}"></head>
+
+<style>
+  .list_wrap {
+    width: 100%;
+    height: 50px;
+    border-bottom: 1px solid gray;
+  }
+  .mypage_list {
+    display: flex;
+    justify-content: space-between;
+    flex: 4;
+  }
+  .mypage_list li {
+    width: 100%;
+    
+  }
+  .mypage_list a {
+    display: block;
+    width: 100%;
+    text-align: center;
+    line-height: 50px;
+    cursor: pointer;
+    font-size: 20px;
+  }
+  .mypage_list a:hover {
+    background-color: rgb(0, 128, 64);
+    border-bottom: 1px solid gray;
+  }
   
+</style>
+ 
 <body>
   
   <div th:replace="~{/layout/header::header}"></div>
   <div th:replace="~{/mypage/menu::side-menu}"></div>
   
   <div class="right_wrap">
-    <h1>내용</h1>
+    <h3>경매 이용 내역</h3>
+    
+    <div class="list_wrap">
+      <ul class="mypage_list">
+        <li><a href="${contextPath}/mypage/auctionBidList.do">입찰작품</a></li>
+        <li><a href="${contextPath}/mypage/auctionSalesList.do">출품작품</a></li>
+      </ul>
+    </div>
   </div>
   
   <div th:replace="~{/layout/footer::footer}"></div>

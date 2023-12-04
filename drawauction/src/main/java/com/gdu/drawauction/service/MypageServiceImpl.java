@@ -1,9 +1,7 @@
 package com.gdu.drawauction.service;
 
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,10 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 
 import com.gdu.drawauction.dao.MypageMapper;
-import com.gdu.drawauction.dto.BidDto;
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.util.MyPageUtils;
 import com.gdu.drawauction.util.MySecurityUtils;
