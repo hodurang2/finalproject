@@ -59,7 +59,6 @@ public class AuctionController2 {
   
   @GetMapping(value="/wishCheck.do", produces="application/json")
   public ResponseEntity<Map<String, Object>> wishCheck(HttpServletRequest request) {
-    System.out.println("컨트롤러 들어가기전");
   return auctionService2.hasAuctionWishlist(request);
   }
   

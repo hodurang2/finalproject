@@ -71,7 +71,7 @@
       */-->
       
       <hr>
-	  <i id="wish_list" class="fa-regular fa-heart fa-2xl" style="color: #ff0000;"></i>      
+  	  <i id="wish_list" class="fa-regular fa-heart fa-2xl" style="color: #ff0000;"></i>      
     </div>
       
     <script th:inline="javascript">
@@ -80,7 +80,6 @@
     
       const fnEdit = () => {
         $('#btn_edit').click(() => {
-          if(auction.)
           frmBtn.attr('action', '/auction2/edit.form');
           frmBtn.attr('method', 'get');
           frmBtn.submit();
@@ -135,30 +134,39 @@
 		})
 	  }
 */	  
-	  var auctionNo = $('#auctionNo2').val();
+      var auctionNo = $('#auctionNo2').val();
       
       const fnWishListControll = () => {
-    $('#wish_list').click(() => {
-      $.ajax({
-      type: 'post',
-        url: '/auction2/controlWishlist.do',
-        data: { 
-          auctionNo: auctionNo,
-          userNo: '[[${session.user.userNo}]]'
-            },
-        dataType: 'json',
-        success: (resData) => {
-        if(resData.hasAuctionWishlist === 0) {
-          $('#wish_list').removeClass('fa-regular fa-heart fa-2xl');
-          $('#wish_list').addClass('fa-solid fa-heart fa-2xl');
-          return;
-        } 
-        $('#wish_list').removeClass('fa-solid fa-heart fa-2xl');
-        $('#wish_list').addClass('fa-regular fa-heart fa-2xl');
-        }
-      })
-    })
-    }
+        $('#wish_list').click(() => {
+          let user = /*[[${session.user}]]*/ null;
+            if(user === null){
+              if(confirm('로그인이 필요한 기능입니다. 로그인하시겠습니까?')){
+                event.preventDefault();
+                location.href = '/user/login.form';
+                return;
+                
+              }
+            }
+          $.ajax({
+          type: 'post',
+            url: '/auction2/controlWishlist.do',
+            data: { 
+              auctionNo: auctionNo,
+              userNo: '[[${session.user.userNo}]]'
+                },
+            dataType: 'json',
+            success: (resData) => {
+            if(resData.hasAuctionWishlist === 0) {
+              $('#wish_list').removeClass('fa-regular fa-heart fa-2xl');
+              $('#wish_list').addClass('fa-solid fa-heart fa-2xl');
+              return;
+            } 
+            $('#wish_list').removeClass('fa-solid fa-heart fa-2xl');
+            $('#wish_list').addClass('fa-regular fa-heart fa-2xl');
+            }
+          })
+        })
+      }
     
       const fnWishCheck = () => {
         $.ajax({
