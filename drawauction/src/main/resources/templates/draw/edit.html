@@ -61,7 +61,7 @@
         <!-- 첨부 추가 -->
         <th:block th:if="${session.user != null}">
           <th:block th:if="${session.user.userNo == draw.userDto.userNo}">
-            <h5>신규 첨부</h5>
+            <h5>신규 이미지 첨부</h5>
             <div class="input-group">
               <input type="hidden" name="userNo" th:value="${session.user.userNo}">
               <input type="file" name="files" id="files"  class="form-control" multiple>
@@ -74,7 +74,7 @@
         <hr class="my-3">
     
         <!-- 첨부 목록에서 삭제 -->
-        <h5>기존 첨부 목록</h5>
+        <h5>기존 첨부 이미지 목록</h5>
         <th:block th:if="${session.user != null}">
           <th:block th:if="${session.user.userNo == draw.userDto.userNo}">    
 		    <div id="image_list"></div>
@@ -211,19 +211,39 @@
       }
       
       const fnModifyImage = () => {
-    	  $('#frm_draw_edit').submit((ev) => {
+    	$('#frm_draw_edit').submit((ev) => {
           if($('#title').val() === ''){
             alert('제목은 반드시 입력해야 합니다.');
             $('#title').focus();
             ev.preventDefault();
             return;
-          } else if($('#files').val() !== ''){
-        	  alert('새로운 첨부가 있는 경우 첨부추가하기 버튼을 먼저 클릭해 주세요.');
-        	  $('#btn_add_image').focus();
-        	  ev.preventDefault();
+          } else if($("#price").val() === ''){
+		    alert('가격은 반드시 입력해야 합니다');
+		    $('#price').focus();
+    	    ev.preventDefault();
+    		return;
+		  } else if($("#contents").val() === ''){
+		    alert('내용은 반드시 입력해야 합니다');
+		    $('#contents').focus();
+    	    ev.preventDefault();
+    		return;
+		  } else if($("#workTerm").val() === ''){
+		    alert('작업기간은 반드시 입력해야 합니다');
+		    $('#workTerm').focus();
+    	    ev.preventDefault();
+    		return;
+		  } else if($('#files').val() !== ''){
+        	alert('새로운 첨부가 있는 경우 첨부추가하기 버튼을 먼저 클릭해 주세요.');
+        	$('#btn_add_image').focus();
+        	ev.preventDefault();
+            return;
+          } else if($('#image_list').val() !== ''){
+        	alert('대표이미지 첨부는 반드시 있어야 합니다.');
+        	$('#btn_add_image').focus();
+        	ev.preventDefault();
             return;
           }
-    	  })
+    	})
       }
     
       fnFileCheck();
