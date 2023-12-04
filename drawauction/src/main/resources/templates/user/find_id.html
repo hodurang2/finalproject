@@ -16,31 +16,27 @@
 	   </div>
 	</div>
 	
-	<script>
-  $(() => {
-	fnfindIdResult();
-  })
-
-
-  const fnfindIdResult = () => {
-	if('${findId}' == ''){
-      $('#findIdResult').text('조회결과가 없습니다');
-      return;
-	} else {
-	  $('#findIdResult').text('${findId.email}');
+<script th:inline="javascript">
+	$(document).ready(function() {
+		var userEmail = /*[[${userDto.email}]]*/ '';
+		fnfindIdResult(userEmail);
+	});
+	
+	function fnfindIdResult(email) {
+		if(email === ''){
+			$('#findIdResult').text('조회결과가 없습니다.');
+		} else {
+			$('#findIdResult').text('아이디:' +  email);
+		}
 	}
-  }
-
+	 
 </script>
 	
 	
-	
+	<div th:replace="~{/layout/footer::footer}"></div>
 	
 	
 </body>
 </html>
 
     
-
-
-<%@ include file="../layout/footer.jsp" %>
