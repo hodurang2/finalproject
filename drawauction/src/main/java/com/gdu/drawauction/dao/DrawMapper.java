@@ -19,5 +19,8 @@ public interface DrawMapper {
 	public int addWishList(Map<String, Object> map);
 	public int removeWishList(Map<String, Object> map);
 	public int wishCheck(Map<String, Object> map);
-	public int wishCheck2(Map<String, Object> map);
+	public DrawImageDto getImage(int drawNo);
+	public int deleteImage(int drawNo);
+	public int updateDraw(Map<String, Object> map);
+	public int deleteDraw(int drawNo);
 }
