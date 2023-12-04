@@ -17,8 +17,12 @@ public interface MypageMapper {
   
   public int updateUserPw(UserDto user);    // 비밀번호 변경
   
-  public int getAuctionBidCount(int bidderNo);     // 입찰 작품 수(종료, 진행 포함)
+  public int getAuctionBidCount(int bidderNo);     // 입찰 작품수(종료, 진행 포함)
 
   public List<BidDto> getAuctionBidList(Map<String, Object> map);   // 입찰 내역
+  
+  public int getAuctionSalesCount(int sellerNo);   // 출품 작품수(종료, 진행 포함)
+  
+  public List<BidDto> getAuctionSalesList(Map<String, Object> map); // 출품 내역
   
   }

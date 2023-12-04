@@ -18,4 +18,6 @@ public interface MypageService {
 
   public void loadAuctionBidList(HttpServletRequest request, Model model);    // 입찰 목록
   
+  public void loadAuctionSalesList(HttpServletRequest request, Model model);  // 출품 목록
+  
 }
