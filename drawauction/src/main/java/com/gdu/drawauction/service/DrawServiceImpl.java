@@ -55,9 +55,7 @@ public class DrawServiceImpl implements DrawService{
 	    List<DrawDto> drawList = drawMapper.getDrawList(map);
 	    
 	    int userNo;
-	    
 	    HttpSession session = request.getSession();
-	    
 	    if(session.getAttribute("user") == null) {
 	        for(DrawDto drawDto : drawList) {
 	          drawDto.setHeart("fa-regular");
@@ -77,7 +75,6 @@ public class DrawServiceImpl implements DrawService{
 	          drawDto.setHeart(heart);
 	        }
 	      }
-
 	    
 	    return Map.of("drawList", drawList
 	                , "totalPage", myPageUtils.getTotalPage());
@@ -87,11 +84,14 @@ public class DrawServiceImpl implements DrawService{
 	@Override
 	public boolean addDraw(MultipartHttpServletRequest multipartRequest) throws Exception {
 	    
+		Optional<String> optWidth = Optional.ofNullable(multipartRequest.getParameter("width"));
+		Optional<String> optHeight = Optional.ofNullable(multipartRequest.getParameter("height"));
+		
 		int categoryNo = Integer.parseInt(multipartRequest.getParameter("categoryNo")); 
 	    String title = multipartRequest.getParameter("title");
 	    int price = Integer.parseInt(multipartRequest.getParameter("price")); 
-	    int width = Integer.parseInt(multipartRequest.getParameter("width"));
-	    int height = Integer.parseInt(multipartRequest.getParameter("height"));
+	    int width = Integer.parseInt(optWidth.orElse("0"));
+	    int height = Integer.parseInt(optHeight.orElse("0"));
 	    int workTerm = Integer.parseInt(multipartRequest.getParameter("workTerm"));
 	    String contents = multipartRequest.getParameter("contents");
 	    int sellerNo = Integer.parseInt(multipartRequest.getParameter("sellerNo"));
@@ -173,6 +173,27 @@ public class DrawServiceImpl implements DrawService{
 	    
 	  Optional<String> opt = Optional.ofNullable(request.getParameter("drawNo"));
 	  int drawNo = Integer.parseInt(opt.orElse("0"));
+	  DrawDto drawDto = drawMapper.getDraw(drawNo);
+	  
+	  int userNo;
+	    
+	  HttpSession session = request.getSession();
+	    
+	  if(session.getAttribute("user") == null) {
+	      drawDto.setHeart("fa-regular");
+	    } else {
+	      UserDto user = (UserDto) session.getAttribute("user");
+	      userNo = user.getUserNo();
+	      Map<String, Object> wishMap = Map.of("drawNo", drawDto.getDrawNo(), "userNo", userNo);
+	      int wishCheck = drawMapper.wishCheck(wishMap);
+	      String heart;
+	      if(wishCheck == 0) {
+	        heart = "fa-regular";
+	      } else {
+	        heart = "fa-solid";
+	      }
+	      drawDto.setHeart(heart);
+	    }
 	
 	  model.addAttribute("draw", drawMapper.getDraw(drawNo));
 	  model.addAttribute("imageList", drawMapper.getImageList(drawNo));
@@ -229,11 +250,13 @@ public class DrawServiceImpl implements DrawService{
 	@Override
 	public int modifyDraw(HttpServletRequest request) {
 		
+		Optional<String> optWidth = Optional.ofNullable(request.getParameter("width"));
+		Optional<String> optHeight = Optional.ofNullable(request.getParameter("height"));
 		int categoryNo = Integer.parseInt(request.getParameter("categoryNo"));
 		String title = request.getParameter("title");
 		int price = Integer.parseInt(request.getParameter("price"));
-		int width = Integer.parseInt(request.getParameter("width"));
-		int height = Integer.parseInt(request.getParameter("height"));
+		int width = Integer.parseInt(optWidth.orElse("0"));
+		int height = Integer.parseInt(optHeight.orElse("0"));
 		int workTerm = Integer.parseInt(request.getParameter("workTerm"));
 		String contents = request.getParameter("contents");
 		int drawNo = Integer.parseInt(request.getParameter("drawNo"));
