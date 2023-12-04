@@ -47,7 +47,6 @@ public class DrawController {
                   , RedirectAttributes redirectAttributes) throws Exception {
     boolean addResult = drawService.addDraw(multipartRequest);
     redirectAttributes.addFlashAttribute("addResult", addResult);
-    System.out.println(multipartRequest.getParameter("width") + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     return "redirect:/draw/list.do";
   }
   
