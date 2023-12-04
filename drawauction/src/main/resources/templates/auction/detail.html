@@ -23,6 +23,8 @@
           <th:block th:if="${session.user.userNo == auction.artDto.sellerDto.userNo}">
             <form id="frm_btn">
               <input type="hidden" id="auctionNo" name="auctionNo" th:value="${auction.auctionNo}">
+              <input type="hidden" id="startPrice" name="startPrice" th:value="${auction.startPrice}">
+              <input type="hidden" id="price" name="price" th:value="${auction.price}">
               <button type="button" id="btn_edit" class="btn btn-warning btn-sm">편집</button>
               <button type="button" id="btn_remove" class="btn btn-danger btn-sm">삭제</button>
             </form>
@@ -78,6 +80,7 @@
     
       const fnEdit = () => {
         $('#btn_edit').click(() => {
+          if(auction.)
           frmBtn.attr('action', '/auction2/edit.form');
           frmBtn.attr('method', 'get');
           frmBtn.submit();
@@ -152,38 +155,51 @@
         } 
         $('#wish_list').removeClass('fa-solid fa-heart fa-2xl');
         $('#wish_list').addClass('fa-regular fa-heart fa-2xl');
-        
         }
-      
       })
     })
     }
     
-    const fnWishCheck = () => {
-    $.ajax({
-      type: 'get',
-      url: '/auction2/wishCheck.do',
-      data: { 
-          auctionNo: auctionNo,
-          userNo: '[[${session.user.userNo}]]'
+      const fnWishCheck = () => {
+        $.ajax({
+          type: 'get',
+          url: '/auction2/wishCheck.do',
+          data: { 
+              auctionNo: auctionNo,
+              userNo: '[[${session.user.userNo}]]'
+              },
+          dataType: 'json',
+          success: (resData) => {
+            if(!resData.wishCheckResult == 0) {
+              $('#wish_list').removeClass('fa-regular fa-heart fa-2xl');
+              $('#wish_list').addClass('fa-solid fa-heart fa-2xl');
+            }
+          }
+        })
+      }
+      
+      const fnCheckBidCount = () => {
+        $.ajax({
+          type: 'get',
+          url: '/auction2/checkBidCount.do',
+          data: {
+            auctionNo: auctionNo
           },
-      dataType: 'json',
-      success: (resData) => {
-      if(!resData.wishCheckResult == 0) {
-        $('#wish_list').removeClass('fa-regular fa-heart fa-2xl');
-        $('#wish_list').addClass('fa-solid fa-heart fa-2xl');
+          dataType: 'json',
+          success: (resData) => {
+            return;
+          }
+        })
       }
-      }
-      
-    })
-    }
-	  
-      
+  	  
       fnEdit();
       fnRemove();
       fnModifyResult();
       fnWishListControll();
       fnWishCheck();
+      fnCheckBidCount();
+      
+      
     </script>
       
   </div>
