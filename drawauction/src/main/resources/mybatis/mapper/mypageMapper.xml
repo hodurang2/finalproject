@@ -74,6 +74,7 @@
       <result column="DETAIL_ADDRESS"   property="detailAddress"/>
       <result column="NICKNAME"         property="nickname"/>
       <result column="INTRODUCTION"     property="introduction"/>
+      <result column="MY_PRICE"         property="myPrice" />
     </association>
     
   </resultMap>
@@ -117,16 +118,17 @@
   </select> 
   
   <select id="getAuctionBidList" parameterType="Map" resultMap="BidMap">
-  SELECT *
-    FROM (SELECT * FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
-                                AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,
-                                B.BID_NO, B.BIDDER_NO, B.PRICE AS MY_PRICE, B.BID_AT,
-                                ROW_NUMBER() OVER (PARTITION BY ART.ART_NO ORDER BY B.PRICE DESC) AS RN1,
-                                ROW_NUMBER() OVER(ORDER BY BID_AT ASC) AS RN
-                           FROM ART_T ART INNER JOIN AUCTION_T AUC
-                             ON ART.ART_NO = AUC.AUCTION_NO INNER JOIN BID_T B
-                             ON AUC.AUCTION_NO = B.AUCTION_NO
-                           WHERE B.BIDDER_NO = #{bidderNo})
+  SELECT Q1.ART_NO, Q1.TITLE, Q1.CONTENTS, Q1.BID_AT, Q1.MY_PRICE, Q2.PRICE, Q1.STATUS, Q1.END_AT
+    FROM (SELECT ART_NO, SELLER_NO, TITLE, CONTENTS, AUCTION_NO, END_AT, STATUS, BID_NO, BIDDER_NO, MY_PRICE, BID_AT, RN1, RN
+            FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
+                         AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,
+                         B.BID_NO, B.BIDDER_NO, B.PRICE AS MY_PRICE, B.BID_AT,
+                         ROW_NUMBER() OVER (PARTITION BY ART.ART_NO ORDER BY B.PRICE DESC) AS RN1,
+                         ROW_NUMBER() OVER(ORDER BY BID_AT ASC) AS RN
+                    FROM ART_T ART INNER JOIN AUCTION_T AUC
+                      ON ART.ART_NO = AUC.AUCTION_NO INNER JOIN BID_T B
+                      ON AUC.AUCTION_NO = B.AUCTION_NO
+                    WHERE B.BIDDER_NO = #{bidderNo})
           WHERE RN1 = 1) Q1 LEFT OUTER JOIN (SELECT ART_NO, PRICE
                                                FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
                                                             AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,
@@ -138,8 +140,6 @@
                                               WHERE RN2 = 1) Q2
                                                  ON Q1.ART_NO = Q2.ART_NO
    WHERE RN BETWEEN #{begin} AND #{end}
-    
-    
   </select>
   
 </mapper>

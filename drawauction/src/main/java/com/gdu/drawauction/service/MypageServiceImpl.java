@@ -145,8 +145,10 @@ public class MypageServiceImpl implements MypageService {
     int page = Integer.parseInt(opt.orElse("1"));
     
     HttpSession session = request.getSession();
-    if(session.getAttribute("user") != null) {
-      int bidderNo = 2;// Integer.parseInt((String)session.getAttribute("userNo"));
+    UserDto user = (UserDto)session.getAttribute("user");
+    
+    if(user != null) {
+      int bidderNo = user.getUserNo();
       int total = mypageMapper.getAuctionBidCount(bidderNo);
       int display = 10;
       
@@ -159,7 +161,7 @@ public class MypageServiceImpl implements MypageService {
       List<BidDto> bidList = mypageMapper.getAuctionBidList(map);
       
       model.addAttribute("bidList", bidList);
-      model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/mypage/getBidList.do"));
+      model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/mypage/auctionBidList.do"));
       model.addAttribute("beginNo", total - (page - 1) * display);
     }
   }

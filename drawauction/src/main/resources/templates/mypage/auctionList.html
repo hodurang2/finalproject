@@ -47,6 +47,39 @@
       </ul>
     </div>
     
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <td>작품이미지</td>
+            <td>작품정보</td>
+            <td>입찰일</td>
+            <td>내입찰가</td>
+            <td>현재입찰가</td>
+            <td>진행상태</td>
+            <td>낙찰상태</td>
+            <td>경매종료일</td>
+          </tr>
+        </thead>
+        <tbody>
+          <th:block th:each="b,vs:${bidList}">
+            <tr>
+              <td th:text="작품이미지"></td>
+              <td th:text="|작품제목:${b.auctionDto.artDto.title} 작품설명:${b.auctionDto.artDto.contents}|"></td>
+              <td th:text="${b.bidAt}"></td>
+              <td th:text="${b.bidderDto.myPrice}"></td>
+              <td th:text="${b.price}"></td>
+              <td th:text="${b.auctionDto.status}"></td>
+              <td th:text="${b.auctionDto.status}"></td>
+              <td th:text="${b.auctionDto.endAt}"></td>
+            </tr>
+          </th:block>
+        </tbody>
+      </table>
+      
+      
+    </div>
+    
   </div>
   
   
