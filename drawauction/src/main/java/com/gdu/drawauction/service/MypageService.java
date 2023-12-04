@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 
 public interface MypageService {
 
@@ -15,5 +16,6 @@ public interface MypageService {
   
   public void modifyPw(HttpServletRequest request, HttpServletResponse response);   // 비밀번호 변경
 
+  public void loadAuctionBidList(HttpServletRequest request, Model model);    // 입찰 목록
   
 }

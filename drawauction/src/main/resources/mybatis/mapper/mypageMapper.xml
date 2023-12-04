@@ -104,7 +104,7 @@
      WHERE USER_NO = #{userNo}
   </update>
   
-  <select id="getBidCount" parameterType="int" resultType="int">
+  <select id="getAuctionBidCount" parameterType="int" resultType="int">
     SELECT COUNT(*) FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
                               AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,
                               B.BID_NO, B.BIDDER_NO, B.PRICE AS 내입찰가, B.BID_AT,
@@ -116,6 +116,30 @@
         WHERE RN = 1
   </select> 
   
-  
+  <select id="getAuctionBidList" parameterType="Map" resultMap="BidMap">
+  SELECT *
+    FROM (SELECT * FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
+                                AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,
+                                B.BID_NO, B.BIDDER_NO, B.PRICE AS MY_PRICE, B.BID_AT,
+                                ROW_NUMBER() OVER (PARTITION BY ART.ART_NO ORDER BY B.PRICE DESC) AS RN1,
+                                ROW_NUMBER() OVER(ORDER BY BID_AT ASC) AS RN
+                           FROM ART_T ART INNER JOIN AUCTION_T AUC
+                             ON ART.ART_NO = AUC.AUCTION_NO INNER JOIN BID_T B
+                             ON AUC.AUCTION_NO = B.AUCTION_NO
+                           WHERE B.BIDDER_NO = #{bidderNo})
+          WHERE RN1 = 1) Q1 LEFT OUTER JOIN (SELECT ART_NO, PRICE
+                                               FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
+                                                            AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,
+                                                            B.BID_NO, B.BIDDER_NO, B.PRICE, B.BID_AT,
+                                                            ROW_NUMBER() OVER (PARTITION BY ART.ART_NO ORDER BY B.PRICE DESC) AS RN2
+                                                       FROM ART_T ART INNER JOIN AUCTION_T AUC
+                                                         ON ART.ART_NO = AUC.AUCTION_NO INNER JOIN BID_T B
+                                                         ON AUC.AUCTION_NO = B.AUCTION_NO)
+                                              WHERE RN2 = 1) Q2
+                                                 ON Q1.ART_NO = Q2.ART_NO
+   WHERE RN BETWEEN #{begin} AND #{end}
+    
+    
+  </select>
   
 </mapper>

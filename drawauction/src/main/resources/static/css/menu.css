@@ -17,14 +17,6 @@
   width: 200px;
   height: 360px;
 }
-.right_wrap {
-  float: left;
-  margin-top: 40px;
-  margin-left: 50px;
-  width: 750px;
-  height: 900px;
-}
-
 .my_menu ul {
   list-style-type: none;
   padding: 0;
@@ -55,4 +47,11 @@
   border: 1px solid gray;
   height: 45px;
   line-height: 45px;
+}
+.right_wrap {
+  float: left;
+  margin-top: 40px;
+  margin-left: 80px;
+  width: 1000px;
+  height: 900px;
 }

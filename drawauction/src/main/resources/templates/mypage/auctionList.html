@@ -42,11 +42,13 @@
     
     <div class="list_wrap">
       <ul class="mypage_list">
-        <li><a href="${contextPath}/mypage/auctionBidList.do">입찰작품</a></li>
-        <li><a href="${contextPath}/mypage/auctionSalesList.do">출품작품</a></li>
+        <li><a th:href="@{/mypage/auctionBidList.do}">입찰작품</a></li>
+        <li><a th:href="@{/mypage/auctionSalesList.do}">출품작품</a></li>
       </ul>
     </div>
+    
   </div>
+  
   
   <div th:replace="~{/layout/footer::footer}"></div>
   
