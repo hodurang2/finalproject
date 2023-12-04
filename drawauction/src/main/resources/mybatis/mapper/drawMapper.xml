@@ -133,6 +133,7 @@
                 ON D.SELLER_NO = USR.USER_NO) A INNER JOIN CATEGORY_T C
         ON A.CATEGORY_NO = C.CATEGORY_NO
      WHERE A.RN BETWEEN #{begin} AND #{end}
+     ORDER BY A.DRAW_NO DESC
   </select>
   
   <select id="getDraw" parameterType="int" resultMap="DrawMap">

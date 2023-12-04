@@ -55,9 +55,7 @@ public class DrawServiceImpl implements DrawService{
 	    List<DrawDto> drawList = drawMapper.getDrawList(map);
 	    
 	    int userNo;
-	    
 	    HttpSession session = request.getSession();
-	    
 	    if(session.getAttribute("user") == null) {
 	        for(DrawDto drawDto : drawList) {
 	          drawDto.setHeart("fa-regular");
@@ -77,7 +75,6 @@ public class DrawServiceImpl implements DrawService{
 	          drawDto.setHeart(heart);
 	        }
 	      }
-
 	    
 	    return Map.of("drawList", drawList
 	                , "totalPage", myPageUtils.getTotalPage());
@@ -173,6 +170,27 @@ public class DrawServiceImpl implements DrawService{
 	    
 	  Optional<String> opt = Optional.ofNullable(request.getParameter("drawNo"));
 	  int drawNo = Integer.parseInt(opt.orElse("0"));
+	  DrawDto drawDto = drawMapper.getDraw(drawNo);
+	  
+	  int userNo;
+	    
+	  HttpSession session = request.getSession();
+	    
+	  if(session.getAttribute("user") == null) {
+	      drawDto.setHeart("fa-regular");
+	    } else {
+	      UserDto user = (UserDto) session.getAttribute("user");
+	      userNo = user.getUserNo();
+	      Map<String, Object> wishMap = Map.of("drawNo", drawDto.getDrawNo(), "userNo", userNo);
+	      int wishCheck = drawMapper.wishCheck(wishMap);
+	      String heart;
+	      if(wishCheck == 0) {
+	        heart = "fa-regular";
+	      } else {
+	        heart = "fa-solid";
+	      }
+	      drawDto.setHeart(heart);
+	    }
 	
 	  model.addAttribute("draw", drawMapper.getDraw(drawNo));
 	  model.addAttribute("imageList", drawMapper.getImageList(drawNo));

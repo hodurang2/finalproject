@@ -68,7 +68,7 @@
       
       <hr>
       
-	  <i id="wish_list" class="fa-regular fa-heart fa-2xl" style="color: #ff0000;"></i>
+	  <i id="wish_list" th:class="|${draw.heart} fa-heart fa-2xl|" style="color: #ff0000;"></i>
 	  
 	  <hr>
 	  
@@ -118,7 +118,6 @@
 		    url: '/draw/WishListControll.do',
 		    data: { 
 					drawNo: drawNo,
-					userNo: '[[${session.user.userNo}]]'
 			  	  },
 		    dataType: 'json',
 		    success: (resData) => {
@@ -135,31 +134,11 @@
 		})
 	  }
 	  
-	  const fnWishCheck = () => {
-		$.ajax({
-		  type: 'get',
-		  url: '/draw/WishCheck.do',
-		  data: { 
-				  drawNo: drawNo,
-				  userNo: '[[${session.user.userNo}]]'
-			  	},
-		  dataType: 'json',
-		  success: (resData) => {
-			if(!resData.wishCheckResult == 0) {
-			  $('#wish_list').removeClass('fa-regular fa-heart fa-2xl');
-			  $('#wish_list').addClass('fa-solid fa-heart fa-2xl');
-			}
-		  }
-			
-		})
-	  }
-	  
       
       fnEdit();
       fnRemove();
       fnModifyResult();
       fnWishListControll();
-      fnWishCheck();
     </script>
       
   </div>
