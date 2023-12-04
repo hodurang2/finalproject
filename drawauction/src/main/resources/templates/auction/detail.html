@@ -21,13 +21,13 @@
       <div class="text-center mb-5">
         <th:block th:if="${session.user != null}">
           <th:block th:if="${session.user.userNo == auction.artDto.sellerDto.userNo}">
-            <form id="frm_btn">
-              <input type="hidden" id="auctionNo" name="auctionNo" th:value="${auction.auctionNo}">
-              <input type="hidden" id="startPrice" name="startPrice" th:value="${auction.startPrice}">
-              <input type="hidden" id="price" name="price" th:value="${auction.price}">
-              <button type="button" id="btn_edit" class="btn btn-warning btn-sm">편집</button>
-              <button type="button" id="btn_remove" class="btn btn-danger btn-sm">삭제</button>
-            </form>
+            <th:block th:if="${bidCount == 0}">
+              <form id="frm_btn">
+                <input type="hidden" id="auctionNo" name="auctionNo" th:value="${auction.auctionNo}">
+                <button type="button" id="btn_edit" class="btn btn-warning btn-sm">편집</button>
+                <button type="button" id="btn_remove" class="btn btn-danger btn-sm">삭제</button>
+              </form>
+            </th:block>
           </th:block>
         </th:block>
       </div>
@@ -38,8 +38,8 @@
       <div th:text="|현재입찰가 : ${#numbers.formatInteger(auction.price, 1, 'COMMA')}P|"></div>
       <div th:text="|즉시구매가 : ${#numbers.formatInteger(auction.buyPrice, 1, 'COMMA')}P|"></div>
       <div th:text="|마감일 : ${auction.endAt}"></div>
-      <div th:text="|작품 가로길이(px) : ${auction.artDto.width}|"></div>
-      <div th:text="|작품 세로길이(px) : ${auction.artDto.height}|"></div>
+      <div th:text="|작품 가로길이(cm) : ${auction.artDto.width}|"></div>
+      <div th:text="|작품 세로길이(cm) : ${auction.artDto.height}|"></div>
       <input type="hidden" id="auctionNo2" name="auctionNo2" th:value="${auction.auctionNo}">
       <div>내용</div>
       <th:block th:if="${#strings.isEmpty(auction.artDto.contents)}">
@@ -96,14 +96,6 @@
         })
       }
     
-      const fnDownload = () => {
-        $('.image').click(function(){
-          if(confirm('다운로드 할까요?')){
-            location.href = '/auction/download.do?imageNo=' + $(this).data('image_no');
-          }
-        })
-      }
-      
       const fnModifyResult = () => {
         let modifyResult = /*[[${modifyResult}]]*/ null;
         if(modifyResult !== null){
@@ -114,30 +106,11 @@
           }
         }
       }
-/*      
-      const fnAddWishList = () => {
-		$('#wishist').click(() => {
-		  $.ajax({
-			type: 'post',
-		    url: '/auction/addWishList.do',
-		    data: { 
-					drwaNo: $('#auctionNo').val(),
-					userNo: session.user.userNo
-			  	  },
-		    dataType: 'json',
-		    success: (resData) => {
-			  $('#wishist').removeClass('fa-regular');
-			  $('#wishist').addClass('fa-solid');
-		    }
-			
-		  })
-		})
-	  }
-*/	  
+        
       var auctionNo = $('#auctionNo2').val();
       
       const fnWishListControll = () => {
-        $('#wish_list').click(() => {
+        $(document).on('click', '#wish_list', function(event){
           let user = /*[[${session.user}]]*/ null;
             if(user === null){
               if(confirm('로그인이 필요한 기능입니다. 로그인하시겠습니까?')){
@@ -186,27 +159,12 @@
         })
       }
       
-      const fnCheckBidCount = () => {
-        $.ajax({
-          type: 'get',
-          url: '/auction2/checkBidCount.do',
-          data: {
-            auctionNo: auctionNo
-          },
-          dataType: 'json',
-          success: (resData) => {
-            return;
-          }
-        })
-      }
   	  
       fnEdit();
       fnRemove();
       fnModifyResult();
       fnWishListControll();
       fnWishCheck();
-      fnCheckBidCount();
-      
       
     </script>
       

@@ -56,7 +56,10 @@ public class AuctionServiceImpl2 implements AuctionService2 {
     
     Optional<String> opt = Optional.ofNullable(request.getParameter("auctionNo"));
     int auctionNo = Integer.parseInt(opt.orElse("0"));
+    int bidCount = auctionMapper2.getBidCount(auctionNo);
+    
     model.addAttribute("auction", auctionMapper2.getAuction(auctionNo));
+    model.addAttribute("bidCount", bidCount);
 //    model.addAttribute("imageList", auctionMapper2.getImageList(auctionNo));
   }
   
@@ -81,19 +84,21 @@ public class AuctionServiceImpl2 implements AuctionService2 {
   @Override
   public ResponseEntity<Map<String, Object>> hasAuctionWishlist(HttpServletRequest request) {
     
-    System.out.println("서비스임플 시작");
     int auctionNo = Integer.parseInt(request.getParameter("auctionNo")); 
     int userNo = Integer.parseInt(request.getParameter("userNo"));
     
     Map<String, Object> map = Map.of("auctionNo", auctionNo, "userNo", userNo);
     
-    System.out.println("서비스임플 매퍼전");
     int wishCheckResult = auctionMapper2.hasAuctionWishlist(map);
-    System.out.println("서비스임플 매퍼후");
     
     return new ResponseEntity<>(Map.of("wishCheckResult", wishCheckResult), HttpStatus.OK);
   }
   
-  
+@Override
+  public Map<String, Object> getBidCount(int auctionNo) {
+    
+    int bidCount = auctionMapper2.getBidCount(auctionNo);
+    return Map.of("bidCount", bidCount);
+  }
   
 }

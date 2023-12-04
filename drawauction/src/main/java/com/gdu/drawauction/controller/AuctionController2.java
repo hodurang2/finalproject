@@ -59,9 +59,12 @@ public class AuctionController2 {
   
   @GetMapping(value="/wishCheck.do", produces="application/json")
   public ResponseEntity<Map<String, Object>> wishCheck(HttpServletRequest request) {
-  return auctionService2.hasAuctionWishlist(request);
+    return auctionService2.hasAuctionWishlist(request);
   }
   
-  
+  @GetMapping(value="/checkBidCount.do", produces="application/json")
+  public Map<String, Object> getBidCount (int auctionNo) {
+    return auctionService2.getBidCount(auctionNo);
+  }
   
 }

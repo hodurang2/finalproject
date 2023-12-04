@@ -12,6 +12,7 @@ public interface AuctionService2 {
   public void loadAuction(HttpServletRequest request, Model model); 
   public Map<String, Object> controlAuctionWishlist(HttpServletRequest request);
   public ResponseEntity<Map<String, Object>> hasAuctionWishlist(HttpServletRequest request);
+  public Map<String, Object> getBidCount(int auctionNo);
   
   
 }

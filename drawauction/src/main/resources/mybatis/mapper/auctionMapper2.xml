@@ -120,6 +120,30 @@
        AND USER_NO = #{userNo}
   </select>
   
+  <select id="getBidCount" resultType="int" parameterType="int">
+    SELECT COUNT(*)
+      FROM BID_T
+     WHERE AUCTION_NO = #{auctionNo}
+  </select>
+  
+  <select id="getImageList" parameterType="int" resultType="AuctionImageDto">
+    SELECT AUCTION_IMAGE_NO, AUCTION_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+    FROM AUCTION_IMAGE_T
+   WHERE AUCTION_NO = #{auctionNo}
+  </select>
+  
+  <select id="getImage" parameterType="int" resultType="AuctionImageDto">
+    SELECT AUCTION_IMAGE_NO, AUCTION_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+      FROM AUCTION_IMAGE_T
+     WHERE AUCTION_IMAGE_NO = #{auctionImageNo}
+  </select>
+  
+  <delete id="deleteImage" parameterType="int">
+    DELETE
+      FROM AUCTION_IMAGE_T
+     WHERE AUCTION_IMAGE_NO = #{auctionImageNo}
+  </delete>
+  
   
   
   
