@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="utf-8">
-</head>
+
+<head th:replace="~{/layout/header::head('회원가입')}"></head>
+
 <body>
-  <img src="/image/404.jpg">
-  <div>
-    <a th:href="@{/main.do}">홈으로</a>
+	
+	<div th:replace="~{/layout/header::header}"></div>	
+  <img src="/image/404.png" height="700px" text-align="center">
+  <div style="text-align: center; margin-bottom: 150px;">
+	  <button type="submit" class="btn btn-outline-success btn-lg"><a th:href="@{/main.do}">홈으로</a></button>
   </div>
+  <div th:replace="~{/layout/footer::footer}"></div>
+  
+  
 </body>
 </html>

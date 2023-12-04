@@ -8,6 +8,7 @@
     margin: 10px auto;
     display: flex;
     flex-wrap: wrap;
+    
    }
   .draw {
     width: 262px;
@@ -20,7 +21,9 @@
   }
   .draw:hover {
     background-color: silver;
-    cursor: pointer;
+  }
+  .wish_list{
+	cursor: pointer;
   }
 </style>
 
@@ -29,7 +32,7 @@
   <div th:replace="~{/layout/header::header}"></div>
   
   <div class="main_wrap">
-
+	
     <div class="wrap wrap_9">
     
       <div class="text-center">
@@ -53,7 +56,9 @@
           // 요청
           type: 'get',
           url: '/draw/getList.do',
-          data: 'page=' + page,
+          data: {
+                  page: page
+                },
           // 응답
           dataType: 'json',
           success: (resData) => {  
@@ -68,6 +73,8 @@
                 str += '<div>작가: ' + draw.userDto.nickname + '</div>';
               }
               str += '<div>가격: ' + draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</div>'; // 상품가격 1000단위 콤마찍기
+              str += '<div id="drawNo">글번호: ' + draw.drawNo + '</div>';
+              str += '<div class="wish_list"><i class="' + draw.heart + ' fa-heart fa-2xl heart" style="color: #ff0000;"></i></div>';
               str += '</div>';
               $('#draw_list').append(str);
             })
@@ -135,13 +142,44 @@
         }
       }
       
+      const fnWishListControll = () => {
+	    $(document).on('click', '.heart', function(){
+		  var self = (this);
+          $.ajax({
+            // 요청
+            type: 'post',
+            url: '/draw/WishListControll.do',
+            data: {
+                    drawNo: $(this).closest('div .draw').data('draw_no')
+                  },
+          // 응답
+          dataType: 'json',
+          success: (resData) => {
+            console.log(resData.addWishResult);
+            console.log(resData.removeWishResult);
+             if(resData.addWishResult == 1){
+                $(this).removeClass('fa-regular');  
+                $(this).addClass('fa-solid');
+                return;
+              } else if(resData.removeWishResult == 1) {
+	            $(this).removeClass('fa-solid');
+	            $(this).addClass('fa-regular');
+				return;  
+			  }
+            }
+          })
+        })
+	  }
+	  
       
       fnGetDrawList();
       fnDrawDetail();
       fnScroll();
       fnAddResult();
       fnRemoveResult();
-    
+      fnWishListControll();
+      fnWishListControll();
+    	
     </script>
 
   </div>

@@ -47,7 +47,7 @@
     </script>
     
     <div class="header_menu">
-    <div class="logo"><img th:src="@{../../image/drawlogo.png}" width="250px"></div>
+    <div class="logo"><img th:src="@{../../image/한글로고.png}" width="250px"></div>
     <div class="login_wrap">
       <th:block th:if="${session.user == null}">
         <ul class="ico_user_group">
@@ -68,9 +68,9 @@
     </div>
     <div class="gnb_wrap">
       <ul class="gnb">
-        <li><a th:href="@{/free/list.do}">자유게시판</a></li>
-        <li><a th:href="@{/blog/list.do}">블로그</a></li>
-        <li><a th:href="@{/upload/list.do}">웹하드</a></li>
+        <li><a th:href="@{/free/list.do}">경매</a></li>
+        <li><a th:href="@{/blog/list.do}">그려드림</a></li>
+        <li><a th:href="@{/upload/list.do}">여기는 뭐로할까요?</a></li>
         <li><a th:href="@{/user/mypage.form}"><i class="fa-solid fa-user-pen"></i></a></li>
       </ul>
     </div>
