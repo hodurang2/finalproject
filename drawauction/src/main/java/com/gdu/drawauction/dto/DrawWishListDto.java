@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DrawWishListDto {
 	private int drawWishNo;
-	private int userNo;
 	private Date wishedAt;
+	private UserDto userNo;
 	private DrawDto drawDto;
 }

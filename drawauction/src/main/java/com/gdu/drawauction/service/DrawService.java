@@ -20,4 +20,5 @@ public interface DrawService {
 	public Map<String, Object> addImage(MultipartHttpServletRequest multipartRequest) throws Exception;
 	public Map<String, Object> removeImage(HttpServletRequest request);
 	public int removeDraw(int drawNo);
+	public Map<String, Object> getReviewList(HttpServletRequest request);
 }
