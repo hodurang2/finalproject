@@ -25,7 +25,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
       .addPathPatterns("/user/mypage.form", "/user/modifyPw.form")
       .addPathPatterns("/free/write.form")
       .addPathPatterns("/blog/write.form", "/blog/edit.form", "/blog/remove.do")
-      .addPathPatterns("/upload/write.form");
+      .addPathPatterns("/draw/write.form", "/draw/edit.form", "/draw/remove.do", "/draw/WishListControll.do");
     registry.addInterceptor(shouldNotLoginInterceptor)
       .addPathPatterns("/user/agree.form", "/user/join.form", "/user/login.form");
   }

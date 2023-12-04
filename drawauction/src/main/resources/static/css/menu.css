@@ -1,0 +1,57 @@
+@charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css');
+
+.my_wrap {
+  float: left;
+}
+.my_profile {
+  margin-top: 40px;
+  border: 1px solid gray;
+  width: 200px;
+  height: 300px;
+}
+.my_menu {
+  border: 1px solid gray;
+  width: 200px;
+  height: 360px;
+}
+.my_menu ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  width: 200px;
+  height: 290px;
+}
+
+.my_menu li a {
+  text-decoration: none;
+  padding: 10px 10px 10px;
+  display: block;
+  color: #000;
+  font-weight: bold;
+  height: 45px;
+}
+
+.my_menu li a:hover {
+  background: rgb(0, 128, 128);
+  color: #fff;
+}
+
+.my_menu li a:active {
+  color: rgb(0, 128, 128);
+}
+.my_menu_text {
+  text-align: center;
+  border: 1px solid gray;
+  height: 45px;
+  line-height: 45px;
+}
+.right_wrap {
+  float: left;
+  margin-top: 40px;
+  margin-left: 80px;
+  width: 1000px;
+  height: 900px;
+}
