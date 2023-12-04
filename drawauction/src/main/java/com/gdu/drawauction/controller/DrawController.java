@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.service.DrawService;
 
 import lombok.RequiredArgsConstructor;
@@ -48,6 +47,7 @@ public class DrawController {
                   , RedirectAttributes redirectAttributes) throws Exception {
     boolean addResult = drawService.addDraw(multipartRequest);
     redirectAttributes.addFlashAttribute("addResult", addResult);
+    System.out.println(multipartRequest.getParameter("width") + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     return "redirect:/draw/list.do";
   }
   
@@ -75,7 +75,6 @@ public class DrawController {
   
   @PostMapping("/modify.do")
   public String modify(HttpServletRequest request, RedirectAttributes redirectAttributes) {
-	System.out.println(request.getParameter("categoryNo") + "+++++++++++++");
     int modifyResult = drawService.modifyDraw(request);
     redirectAttributes.addFlashAttribute("modifyResult", modifyResult);
     return "redirect:/draw/detail.do?drawNo=" + request.getParameter("drawNo");
