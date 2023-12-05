@@ -21,6 +21,7 @@ import com.gdu.drawauction.dao.DrawMapper;
 import com.gdu.drawauction.dto.CategoryDto;
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.DrawImageDto;
+import com.gdu.drawauction.dto.DrawReviewDto;
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.util.MyFileUtils;
 import com.gdu.drawauction.util.MyPageUtils;
@@ -380,5 +381,28 @@ public class DrawServiceImpl implements DrawService{
 	    }
 	    return drawMapper.deleteDraw(drawNo);
 	}
+	
+	@Transactional(readOnly=true)
+	@Override
+	public Map<String, Object> getReviewList(HttpServletRequest request) {
+
+		int drawNo = Integer.parseInt(request.getParameter("drawNo"));
+	    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+	    int page = Integer.parseInt(opt.orElse("1"));
+	    int total = drawMapper.getReviewCount(drawNo);
+	    int display = 5;
+	    
+	    myPageUtils.setPaging(page, total, display);
+	    
+	    Map<String, Object> map = Map.of("drawNo", drawNo
+	                                   , "begin", myPageUtils.getBegin()
+	                                   , "end", myPageUtils.getEnd());
+	    
+	    List<DrawReviewDto> reviewList = drawMapper.getReviewList(map);
+	    
+	    return Map.of("reviewList", reviewList
+                , "totalPage", myPageUtils.getTotalPage());
+	    
+	  }
 	
 }

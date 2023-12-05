@@ -50,9 +50,15 @@ public class MypageController {
     return "mypage/auctionList";
   }
   
-  @GetMapping("/myDrawList.do")
+  @GetMapping("/auctionSalesList.do")
+  public String auctionSalesList(HttpServletRequest request, Model model) {
+    mypageService.loadAuctionSalesList(request, model);
+    return "mypage/auctionList";
+  }
+  
+  @GetMapping("/drawList.do")
   public String myDrawLsit() {
-    return "mypage/myDrawList";
+    return "mypage/drawList";
   }
   
   @GetMapping("/modifyPw.form")

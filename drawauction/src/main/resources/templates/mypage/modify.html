@@ -15,7 +15,6 @@
         <h1 class="title">회원 정보</h1>
       
         <form id="frm_mypage" method="post">
-          <input type="hidden" name="userNo" th:value="session.user.userNo}">
           <div th:if="${session.user.state == 0}" class="text-lg-end">
             <button type="button" id="btn_modify_pw" class="btn btn-primary float-right">비밀번호변경하기</button>
           </div>

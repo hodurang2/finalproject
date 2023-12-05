@@ -47,18 +47,18 @@
       </ul>
     </div>
     
-    <div class="table-responsive">
+    <div class="table-responsive" id="bidList_wrap">
       <table class="table align-middle">
         <thead>
           <tr>
             <td>작품이미지</td>
             <td>작품정보</td>
-            <td>입찰일</td>
+            <td>입찰일시</td>
             <td>내입찰가</td>
             <td>현재입찰가</td>
             <td>진행상태</td>
             <td>낙찰상태</td>
-            <td>경매종료일</td>
+            <td>경매종료일시</td>
           </tr>
         </thead>
         <tbody>
@@ -69,14 +69,74 @@
               <td th:text="${b.bidAt}"></td>
               <td th:text="${b.bidderDto.myPrice}"></td>
               <td th:text="${b.price}"></td>
-              <td th:text="${b.auctionDto.status}"></td>
-              <td th:text="${b.auctionDto.status}"></td>
+              <th:block th:if="${b.auctionDto.status == 0}">
+                <td th:text="진행"></td>
+                <th:block th:if="${b.price > b.bidderDto.myPrice}">
+                  <td th:text="재입찰요망"></td>
+                </th:block>
+                <th:block th:if="${b.price <= b.bidderDto.myPrice}">
+                  <td th:text="최고가입찰중"></td>
+                </th:block>
+              </th:block>
+              <th:block th:if="${b.auctionDto.status == 1}">
+                <td th:text="종료"></td>
+                <th:block th:if="${b.price > b.bidderDto.myPrice}">
+                  <td th:text="낙찰실패"></td>
+                </th:block>
+                <th:block th:if="${b.price <= b.bidderDto.myPrice}">
+                  <td th:text="낙찰성공"></td>
+                </th:block>
+              </th:block>
               <td th:text="${b.auctionDto.endAt}"></td>
             </tr>
           </th:block>
         </tbody>
       </table>
       
+    </div>
+    
+    
+    
+    <div class="table-responsive" id="salesList_wrap">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <td>작품이미지</td>
+            <td>작품정보</td>
+            <td>경매시작일시</td>
+            <td>시작가</td>
+            <td>현재입찰가</td>
+            <td>진행상태</td>
+            <td>판매상태</td>
+            <td>경매종료일시</td>
+          </tr>
+        </thead>
+        <tbody>
+          <th:block th:each="s,vs:${salesList}">
+            <tr>
+              <td th:text="작품이미지"></td>
+              <td th:text="|작품제목:${s.auctionDto.artDto.title} 작품설명:${s.auctionDto.artDto.contents}|"></td>
+              <td th:text="${s.auctionDto.startAt}"></td>
+              <td th:text="${s.auctionDto.startPrice}"></td>
+              <td th:text="${s.price}"></td>
+              <th:block th:if="${s.auctionDto.status == 0}">
+                <td th:text="진행"></td>
+                <td th:text="판매진행중"></td>
+              </th:block>
+              <th:block th:if="${s.auctionDto.status == 1}">
+                <td th:text="종료"></td>
+                <th:block th:if="${s.price == null}">
+                  <td th:text="유찰"></td>
+                </th:block>
+                <th:block th:if="${s.price != null}">
+                  <td th:text="판매완료"></td>
+                </th:block>
+              </th:block>
+              <td th:text="${s.auctionDto.endAt}"></td>
+            </tr>
+          </th:block>
+        </tbody>
+      </table>
       
     </div>
     
@@ -84,6 +144,21 @@
   
   
   <div th:replace="~{/layout/footer::footer}"></div>
+  
+  <script>
+
+    $(() => {
+      fnShow();
+    })
+
+    const fnShow = () => {
+      $('.mypage_list a').on('click', (ev) => {
+        $('.mypage_list').find('a').removeClass('show');
+        $(ev.target).addClass('show');
+      })
+    }
+    
+  </script>
   
 </body>
 </html>

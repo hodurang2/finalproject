@@ -16,7 +16,6 @@ public interface UserMapper {
 	  public InactiveUserDto getInactiveUser(Map<String, Object> map);
 	  public int insertUser(UserDto user);
 	  public int updateUser(UserDto user);
-	  public int updateUserPw(UserDto user);
 	  public int insertLeaveUser(UserDto user);
 	  public int deleteUser(UserDto user);
 	  public int insertInactiveUser();
@@ -24,6 +23,9 @@ public interface UserMapper {
 	  public int insertActiveUser(String email);
 	  public int deleteInactiveUser(String email);
 	  public int insertNaverUser(UserDto user);
+	  public int insertKakaoUser(UserDto user);
 	  public UserDto findId(UserDto user);
-	  public int findPwCheck(UserDto user);
+	  
+	  public int findPw(UserDto user);
+	  public void updatePw(Map<String, Object> map);
 }

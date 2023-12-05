@@ -2,6 +2,7 @@ package com.gdu.drawauction.service;
 
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.math.BigInteger;
@@ -375,89 +376,6 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public ResponseEntity<Map<String, Object>> modify(HttpServletRequest request) {
-    
-    String name = mySecurityUtils.preventXSS(request.getParameter("name"));
-    String gender = request.getParameter("gender");
-    String mobile = request.getParameter("mobile");
-    String postcode = request.getParameter("postcode");
-    String roadAddress = request.getParameter("roadAddress");
-    String jibunAddress = request.getParameter("jibunAddress");
-    String detailAddress = mySecurityUtils.preventXSS(request.getParameter("detailAddress"));
-    String event = request.getParameter("event");
-    int agree = event.equals("on") ? 1 : 0;
-    int userNo = Integer.parseInt(request.getParameter("userNo"));
-    
-    UserDto user = UserDto.builder()
-        .name(name)
-        .gender(gender)
-        .mobile(mobile)
-        .postcode(postcode)
-        .roadAddress(roadAddress)
-        .jibunAddress(jibunAddress)
-        .detailAddress(detailAddress)
-        .agree(agree)
-        .userNo(userNo)
-        .build();
-    
-    int modifyResult = userMapper.updateUser(user);
-    
-    if(modifyResult == 1) {
-      HttpSession session = request.getSession();
-      UserDto sessionUser = (UserDto)session.getAttribute("user");
-      sessionUser.setName(name);
-      sessionUser.setGender(gender);
-      sessionUser.setMobile(mobile);
-      sessionUser.setPostcode(postcode);
-      sessionUser.setRoadAddress(roadAddress);
-      sessionUser.setJibunAddress(jibunAddress);
-      sessionUser.setDetailAddress(detailAddress);
-      sessionUser.setAgree(agree);
-    }
-    
-    return new ResponseEntity<>(Map.of("modifyResult", modifyResult), HttpStatus.OK);
-    
-  }
-
-  @Override
-  public void modifyPw(HttpServletRequest request, HttpServletResponse response) {
-    
-    String pw = mySecurityUtils.getSHA256(request.getParameter("pw"));
-    int userNo = Integer.parseInt(request.getParameter("userNo"));
-    
-    UserDto user = UserDto.builder()
-                    .pw(pw)
-                    .userNo(userNo)
-                    .build();
-    
-    int modifyPwResult = userMapper.updateUserPw(user);
-    
-    try {
-      
-      response.setContentType("text/html; charset=UTF-8");
-      PrintWriter out = response.getWriter();
-      out.println("<script>");
-      if(modifyPwResult == 1) {
-        HttpSession session = request.getSession();
-        UserDto sessionUser = (UserDto)session.getAttribute("user");
-        sessionUser.setPw(pw);
-        out.println("alert('비밀번호가 수정되었습니다.')");
-        out.println("location.href='" + request.getContextPath() + "/user/mypage.form'");
-      } else {
-        out.println("alert('비밀번호가 수정되지 않았습니다.')");
-        out.println("history.back()");
-      }
-      out.println("</script>");
-      out.flush();
-      out.close();
-      
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    
-  }
-  
-  @Override
   public void leave(HttpServletRequest request, HttpServletResponse response) {
   
     Optional<String> opt = Optional.ofNullable(request.getParameter("userNo"));
@@ -552,41 +470,42 @@ public class UserServiceImpl implements UserService {
   
   // 비밀번호 찾기 
   @Override
-	public void findPw(UserDto user, HttpServletResponse response) throws Exception {
-	  response.setContentType("text/html;charset=utf-8");
-	    PrintWriter out = response.getWriter();
-	    
-	    // RandomString 생성(10자리, 문자 사용, 숫자 사용) -- 임시 비밀번호
-	    String temporaryPw = mySecurityUtils.getRandomString(10, true, true);
-	    // 생성된 임시 비밀번호 암호화 처리
-	    String temporarySHAPw = mySecurityUtils.getSHA256(temporaryPw);
-	    
-	    int pwCheckResult = userMapper.findPwCheck(user);  // 1 or 0
-	    String email = user.getEmail();
-	    String name = user.getName();
-	    String mobile = user.getMobile();
-	    
-	    Map<String, Object> map = new HashMap<String, Object>();
-	    map.put("email", email);
-	    map.put("name", name);
-	    map.put("mobile", mobile);
-	    map.put("pw", temporarySHAPw);
-	    
-	    if(pwCheckResult == 1) {
-	      userMapper.updateUserPw(user);
-	      myJavaMailUtils.sendJavaMail(email
-	          , "들어옥션 임시 비밀번호발급"
-	          , "<div>임시 비밀번호는 <strong>" + temporaryPw + "</strong>입니다. <h2 style='color: crimson;'>* 로그인 후 비밀번호를 변경해주세요 *</h2></div>");
-	      out.print(email + "로 임시 비밀번호가 전송되었습니다. 로그인 후 비밀번호를 변경해주세요.");
-	      out.close();
-	    } else {
-	      out.print("잘못된 정보입니다. 정보를 다시 입력하세요." );
-	      out.close();
-	    }
-		
-	}
+  public void findPw(UserDto user, HttpServletResponse response) throws Exception {
+    
+    response.setContentType("text/html;charset=utf-8");
+    PrintWriter out = response.getWriter();
+    
+    // RandomString 생성(10자리, 문자 사용, 숫자 사용) -- 임시 비밀번호
+    String temporaryPw = mySecurityUtils.getRandomString(10, true, true);
+    // 생성된 임시 비밀번호 암호화 처리
+    String temporarySHAPw = mySecurityUtils.getSHA256(temporaryPw);
+    
+    int pwCheckResult = userMapper.findPw(user);  // 1 or 0
+    String email = user.getEmail();
+    String name = user.getName();
+    String mobile = user.getMobile();
+    
+    Map<String, Object> map = new HashMap<String, Object>();
+    map.put("email", email);
+    map.put("name", name);
+    map.put("mobile", mobile);
+    map.put("pw", temporarySHAPw);
+    
+    if(pwCheckResult == 1) {
+      userMapper.updatePw(map);
+      myJavaMailUtils.sendJavaMail(email
+          , "들어옥션 임시 비밀번호발급"
+          , "<div>임시 비밀번호는 <strong>" + temporaryPw + "</strong>입니다. <h2 style='color: crimson;'>* 로그인 후 비밀번호를 변경해주세요 *</h2></div>");
+      out.print(email + "로 임시 비밀번호가 전송되었습니다. 로그인 후 비밀번호를 변경해주세요.");
+      out.close();
+    } else {
+      out.print("잘못된 정보입니다. 정보를 다시 입력하세요." );
+      out.close();
+    }
+    
+  }
   
-  
+ 
 }
 
 

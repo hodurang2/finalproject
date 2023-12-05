@@ -166,4 +166,35 @@ public class MypageServiceImpl implements MypageService {
     }
   }
 
+  @Override
+  public void loadAuctionSalesList(HttpServletRequest request, Model model) {
+    
+    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(opt.orElse("1"));
+    
+    HttpSession session = request.getSession();
+    UserDto user = (UserDto)session.getAttribute("user");
+    
+    if(user != null) {
+      int sellerNo = user.getUserNo();
+      int total = mypageMapper.getAuctionSalesCount(sellerNo);
+      System.out.println(total);
+      int display = 10;
+      
+      myPageUtils.setPaging(page, total, display);
+      
+      Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
+                                     , "end", myPageUtils.getEnd()
+                                     , "sellerNo", sellerNo);
+      
+      List<BidDto> salesList = mypageMapper.getAuctionSalesList(map);
+      
+      System.out.println(salesList.size());
+      
+      model.addAttribute("salesList", salesList);
+      model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/mypage/auctionSalesList.do"));
+      model.addAttribute("beginNo", total - (page - 1) * display);
+    }
+  }
+  
 }

@@ -3,8 +3,14 @@
 
 <head th:replace="~{/layout/header::head('아이디/비밀번호 찾기')}"></head>
 
-<script th:src="@{/js/user_find.js(ver=1.0)}"></script>
-
+<style>
+	
+	.wrap wrap_5{
+		margin-top: 120px;
+	}
+	
+	
+</style>
 
 <body>
   
@@ -15,10 +21,10 @@
 	  <div class="wrap wrap_5">
 		  <form method="post" th:action="@{/user/findId.do}">
 		  <h2 class="title">아이디 찾기</h2>
-		  <div class="mb-3 row">
-        <label for="email" class="col-sm-3 col-form-label">이메일</label>
-        <div class="col-sm-9"><input type="text" name="email" id="email" placeholder="이메일" class="form-control"></div>
-      </div>
+		        <div class="mb-3 row">
+        <label for="name" class="col-sm-3 col-form-label">이름</label>
+        <div class="col-sm-9"><input type="text" name="name" id="name" placeholder="이름" class="form-control"></div>
+      </div> 
         
       <div class="mb-3 row">
         <label for="mobile" class="col-sm-3 col-form-label">전화번호</label>
@@ -35,23 +41,58 @@
     
     <div>
     
-      <div class="mb-3 row">
-        <label for="email" class="col-sm-3 col-form-label">이메일</label>
-        <div class="col-sm-9"><input type="text" name="email" id="email" placeholder="이메일" class="form-control"></div>
-      </div>
-      
-      <div class="mb-3 row">
-        <label for="name" class="col-sm-3 col-form-label">이름</label>
-        <div class="col-sm-9"><input type="text" name="name" id="name" placeholder="이름" class="form-control"></div>
-      </div> 
-      
-      <div class="d-grid gap-2 mb-3">
-        <button class="btn btn-outline-success btn-lg" type="button" id="btn_findPw">비밀번호 찾기</button>
-      </div> 
-		
+<!-- 예시로 id에 아이디 찾기와 비밀번호 찾기를 구분하여 수정한 부분 -->
+<div class="mb-3 row">
+    <label for="email" class="col-sm-3 col-form-label">이메일</label>
+    <div class="col-sm-9"><input type="text" name="email" id="email_pw" placeholder="이메일" class="form-control"></div>
+</div>
+
+<div class="mb-3 row">
+    <label for="name" class="col-sm-3 col-form-label">이름</label>
+    <div class="col-sm-9"><input type="text" name="name" id="name_pw" placeholder="이름" class="form-control"></div>
+</div>
+
+<div class="mb-3 row">
+    <label for="mobile" class="col-sm-3 col-form-label">전화번호</label>
+    <div class="col-sm-9"><input type="text" name="mobile" id="mobile_pw" placeholder="전화번호" class="form-control"></div>
+</div>
+
+	<div class="d-grid gap-2 mb-3">
+		<button class="btn btn-outline-success btn-lg" type="button" id="btn_findPw">비밀번호 찾기</button>
+	</div> 
+	      
 		  
 	  </div>
   </div>
+
+<script>
+	
+  $(() => {
+    fnFindPw();
+  })
+
+
+  const fnFindPw = () => {
+    $('#btn_findPw').one('click', () => {
+        $.ajax({
+            url: '/user/findPw.do',
+            type: 'post',
+            data: { 
+                email: $('#email_pw').val(),
+                name: $('#name_pw').val(),
+                mobile: $('#mobile_pw').val()
+            },
+            success: (resData) => {
+                alert(resData);
+                location.href = '/user/login.form';
+            },
+        });
+    });
+};
+
+
+</script>
+
 
   <div th:replace="~{/layout/footer::footer}"></div>
 
