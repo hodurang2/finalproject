@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-@ServerEndpoint(value="/chatt")
+@ServerEndpoint(value="/chat")
 public class WebSocketChatt {
   
   private static Set<Session> clients = 
