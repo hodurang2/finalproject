@@ -101,7 +101,6 @@
         let now = new Date();
         let today = now.toISOString().slice(0, 19);
         let lastDay = new Date(now.setFullYear(now.getFullYear() + 1)).toISOString().slice(0, 19);
-        $('#endAt').attr('th:value' , today);
         $('#endAt').attr('min' , today);
         $('#endAt').attr('max', lastDay);
       }
@@ -193,7 +192,7 @@
     })
     
 
-      fnDate();
+      //fnDate();
       fnFileCheck();
       fnSubmit();
       
