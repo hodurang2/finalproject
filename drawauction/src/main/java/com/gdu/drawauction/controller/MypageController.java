@@ -57,26 +57,27 @@ public class MypageController {
   
   
   @GetMapping("/getAuctionBidList.do")
-  public String auctionBidList(HttpServletRequest request, Model model) {
+  public String getAuctionBidList(HttpServletRequest request, Model model) {
     mypageService.getAuctionBidList(request, model);
     return "mypage/auctionBidList";
   }
   
   @GetMapping("/getAuctionSalesList.do")
-  public String auctionSalesList(HttpServletRequest request, Model model) {
+  public String getAuctionSalesList(HttpServletRequest request, Model model) {
     mypageService.getAuctionSalesList(request, model);
     return "mypage/auctionSalesList";
   }
   
   @ResponseBody
   @GetMapping(value="/getMyDrawList.do", produces="application/json")
-  public Map<String, Object> myDrawList(HttpServletRequest request){
+  public Map<String, Object> getMyDrawList(HttpServletRequest request){
+    System.out.println("컨트롤러");
     return mypageService.getMyDrawList(request);
   }
   
   @ResponseBody
   @GetMapping(value="/getDrawImageList.do", produces="application/json")
-  public Map<String, Object> myDrawImageList(HttpServletRequest request) {
+  public Map<String, Object> getMyDrawImageList(HttpServletRequest request) {
     return mypageService.getMyDrawImageList(request);
   }
   

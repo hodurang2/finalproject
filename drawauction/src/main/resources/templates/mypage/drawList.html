@@ -28,25 +28,44 @@
         // 요청
         type: 'get',
         url: '/mypage/getMyDrawList.do',
-        data: 'page=' + page + '&sellerNo=${session.user.userNo}',
+        data: 'page=' + page,
         // 응답
-        dataType: 'json',
-        success: (resData) => {
-          totalPage = resData.totalPage;
-          $.each(resData.myDrawList, (i, draw) => {
+      dataType: 'json',
+      success: (resData) => {
+        totalPage = resData.totalPage;
+        sellerNo = reaData.sellerNo;
+        $.each(resData.myDrawList, (i, draw) => {
           let drawNo = draw.drawNo;
-          let str = '<div class="draw" data-draw_no="' + drawNo + '">';
-          str += '<div>제목: ' + draw.title + '</div>';
-          str += '<div>카테고리: ' + draw.categoryDto.categoryName + '</div>';
-          str += '<div>가격: ' + draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</div>';
-          str += '<div id="drawNo" style="display:none">글번호: ' + drawNo + '</div>';
-          str += '<div>찜갯수: ' + draw.wishCount + '</div>';
-          str += '</div>';
-          $('#my_draw_list').append(str);
+          let drawContainer = $('<div class="draw" data-draw_no="' + draw.drawNo + '"></div>');
+          let drawContent = '<div>제목: ' + draw.title + '</div>';
+          drawContent += '<div>카테고리: ' + draw.categoryDto.categoryName + '</div>';
+          drawContent += '<div>가격: ' + draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</div>';
+          drawContent += '<div id="drawNo" style="display:none">글번호: ' + draw.drawNo + '</div>';
+          drawContent += '<div class="wish_list"><i class="' + draw.heart + ' fa-heart fa-2xl heart" style="color: #ff0000;"></i></div>';
+          drawContainer.append(drawContent);
+  
+          $.ajax({
+            type: 'get',
+            url: '/mypage/getMyDrawImageList.do',
+            data: {
+              drawNo: drawNo
+            },
+            dataType: 'json',
+            success: (resData) => {
+              let imageContainer = $('<div class="image-container"></div>');
+              let image = resData.myDrawImageList[0];
+              let imageContent = '<div class="image" data-draw_no="' + image.drawNo + '">';
+              imageContent += '<img src="' + image.path + '/s_' + image.filesystemName + '"  width="398" height="250">';
+              imageContent += '</div>';
+              imageContainer.append(imageContent);
+              drawContainer.prepend(imageContainer);
+            }
           })
-        }
-      })
-    }
+          $('#my_draw_list').append(drawContainer);
+        })
+      }
+    })
+  }
       
     const fnDrawDetail = () => {
       $(document).on('click', '.image', function(){

@@ -202,6 +202,7 @@ public class MypageServiceImpl implements MypageService {
   @Transactional(readOnly=true)
   @Override
   public Map<String, Object> getMyDrawList(HttpServletRequest request) {
+    System.out.println("서비스임플");
     
     Map<String, Object> map = new HashMap<>();
     
@@ -217,14 +218,19 @@ public class MypageServiceImpl implements MypageService {
       int total = mypageMapper.getMyDrawCount(sellerNo);
       int display = 10;
 
+      System.out.println("유틸===="+sellerNo);
       myPageUtils.setPaging(page, total, display);
       
+      System.out.println("그려드림내역매퍼===="+sellerNo);
       List<DrawDto> myDrawList = mypageMapper.getMyDrawList(Map.of("begin", myPageUtils.getBegin()
                                                                  , "end", myPageUtils.getEnd()
                                                                  , "sellerNo", sellerNo));
-      map.put("myDrawImageList", myDrawList);
+      System.out.println("그려드림내역매퍼끝===="+sellerNo);
+      map.put("myDrawList", myDrawList);
+      map.put("totalPage", myPageUtils.getTotalPage());
       
       System.out.println(myDrawList.size());
+      
     } else {
       
       map.put("myDrawList", null);
@@ -252,7 +258,7 @@ public class MypageServiceImpl implements MypageService {
       List<DrawImageDto> myDrawImageList = mypageMapper.getMyDrawImageList(Map.of("sellerNo", sellerNo
                                                                                 , "drawNo", drawNo));
       map.put("myDrawImageList", myDrawImageList);
-    
+      
     } else {
       
       map.put("myDrawImageList", null);
