@@ -179,6 +179,7 @@ public class DrawServiceImpl implements DrawService{
 	    
 	  if(session.getAttribute("user") == null) {
 	      drawDto.setHeart("fa-regular");
+	      userNo = 0;
 	    } else {
 	      UserDto user = (UserDto) session.getAttribute("user");
 	      userNo = user.getUserNo();
@@ -192,7 +193,10 @@ public class DrawServiceImpl implements DrawService{
 	      }
 	      drawDto.setHeart(heart);
 	    }
-	
+	  System.out.println(userNo + "***************************************************************************************");
+	  Map<String, Object> orderMap = Map.of("drawNo", drawDto.getDrawNo(), "userNo", userNo);
+	  
+	  model.addAttribute("orderReview", drawMapper.getOrderReview(orderMap));
 	  model.addAttribute("draw", drawMapper.getDraw(drawNo));
 	  model.addAttribute("imageList", drawMapper.getImageList(drawNo));
 	    
