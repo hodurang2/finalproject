@@ -60,7 +60,7 @@ public class AuctionServiceImpl2 implements AuctionService2 {
     
     model.addAttribute("auction", auctionMapper2.getAuction(auctionNo));
     model.addAttribute("bidCount", bidCount);
-//    model.addAttribute("imageList", auctionMapper2.getImageList(auctionNo));
+    model.addAttribute("imageList", auctionMapper2.getImageList(auctionNo));
   }
   
   @Override

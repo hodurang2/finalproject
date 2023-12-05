@@ -16,4 +16,5 @@ public interface AuctionMapper2 {
   public void insertAuctionWishlist(Map<String, Object> map);
   public void deleteAuctionWishlist(Map<String, Object> map);
   public int getBidCount(int auctionNo);
+  public Object getImageList(int auctionNo);
 }

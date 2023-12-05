@@ -48,7 +48,6 @@
       <th:block th:if="${not #strings.isEmpty(auction.artDto.contents)}">
         <div th:text="${auction.artDto.contents}"></div>
       </th:block>
-      <!--/*
       <div>
         <th:block th:if="${#lists.isEmpty(imageList)}">
           <div>첨부 없음</div>          
@@ -68,7 +67,6 @@
           <div><a th:href="@{/draw/downloadAll.do(drawNo=${draw.drawNo})}">모두 다운로드</a></div>
         </th:block>
       </div>
-      */-->
       
       <hr>
   	  <i id="wish_list" class="fa-regular fa-heart fa-2xl" style="color: #ff0000;"></i>      
