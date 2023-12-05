@@ -21,13 +21,12 @@
       <div class="text-center mb-5">
         <th:block th:if="${session.user != null}">
           <th:block th:if="${session.user.userNo == auction.artDto.sellerDto.userNo}">
-            <th:block th:if="${bidCount == 0}">
+            
               <form id="frm_btn">
                 <input type="hidden" id="auctionNo" name="auctionNo" th:value="${auction.auctionNo}">
                 <button type="button" id="btn_edit" class="btn btn-warning btn-sm">편집</button>
                 <button type="button" id="btn_remove" class="btn btn-danger btn-sm">삭제</button>
               </form>
-            </th:block>
           </th:block>
         </th:block>
       </div>
@@ -64,7 +63,6 @@
               <a th:text="${atc.imageOriginalName}"></a>
             </div>
           </th:block>
-          <div><a th:href="@{/draw/downloadAll.do(drawNo=${draw.drawNo})}">모두 다운로드</a></div>
         </th:block>
       </div>
       
@@ -140,12 +138,13 @@
       }
     
       const fnWishCheck = () => {
+        let userNo = /*[[${session.user.userNo}]]*/ null;
         $.ajax({
           type: 'get',
           url: '/auction2/wishCheck.do',
           data: { 
               auctionNo: auctionNo,
-              userNo: '[[${session.user.userNo}]]'
+              userNo: userNo
               },
           dataType: 'json',
           success: (resData) => {
@@ -162,7 +161,7 @@
       fnRemove();
       fnModifyResult();
       fnWishListControll();
-      fnWishCheck();
+      
       
     </script>
       
