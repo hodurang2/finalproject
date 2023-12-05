@@ -1,11 +1,13 @@
 package com.gdu.drawauction.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -126,21 +128,7 @@ public class UserController {
   public String mypageForm() {
     return "user/mypage";
   }
-  
-  @PostMapping(value="/modify.do", produces=MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Map<String, Object>> modify(HttpServletRequest request) {
-    return userService.modify(request);
-  }
-  
-  @GetMapping("/modifyPw.form")
-  public String modifyPwForm() {
-    return "user/pw";
-  }
-  
-  @PostMapping("/modifyPw.do")
-  public void modifyPw(HttpServletRequest request, HttpServletResponse response) {
-    userService.modifyPw(request, response);
-  }
+
   
   @PostMapping("/leave.do")
   public void leave(HttpServletRequest request, HttpServletResponse response) {
@@ -165,8 +153,8 @@ public class UserController {
   @PostMapping("/findId.do")
   public String findId(HttpServletRequest request, Model model, UserDto user) {
     
-	user.setEmail(request.getParameter("email"));
-    user.setMobile(request.getParameter("mobile"));
+	user.setName(request.getParameter("name"));
+	user.setMobile(request.getParameter("mobile"));
     UserDto findId = userService.findId(user);
     
     model.addAttribute("findId", findId);
@@ -177,12 +165,11 @@ public class UserController {
   @PostMapping("/findPw.do")
   public void findPw(HttpServletRequest request, HttpServletResponse response, UserDto user) throws Exception {
     
-    user.setEmail(request.getParameter("email"));
-    user.setName(request.getParameter("name"));
-    user.setMobile(request.getParameter("mobile"));
-    userService.findPw(user, response);
+	    user.setEmail(request.getParameter("email"));
+	    user.setName(request.getParameter("name"));
+	    user.setMobile(request.getParameter("mobile"));
+	    userService.findPw(user, response);
   }
-  
-  
+
   
 }

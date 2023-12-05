@@ -34,11 +34,20 @@
     </ul>
     
     <hr>
-    <div class="text-center">
+    <div class="text-center" style="margin-top: 70px;">
       <a th:href="${naverLoginURL}">
         <img th:src="@{/image/btnG_완성형.png}" width="200px">
       </a>
     </div>
+
+	<div class="text-center">
+			<a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=f9aea8ab0296365d0f73ddfd4d974156&redirect_uri=http://localhost:8080/user/kakaologin">
+	    <img th:src="@{/image/kakaologin.png}" width="200px"></a>
+		
+	</div>
+
+    
+    
   </div>
   
   	<div th:replace="~{/layout/footer::footer}"></div>

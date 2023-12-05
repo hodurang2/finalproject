@@ -35,12 +35,12 @@
 }
 
 .my_menu li a:hover {
-  background: rgb(0, 128, 128);
+  background: rgb(84, 186, 125);
   color: #fff;
 }
 
 .my_menu li a:active {
-  color: rgb(0, 128, 128);
+  color: rgb(84, 186, 125);
 }
 .my_menu_text {
   text-align: center;
@@ -54,4 +54,7 @@
   margin-left: 80px;
   width: 1000px;
   height: 900px;
+}
+.show {
+  display: none;
 }

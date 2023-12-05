@@ -1,6 +1,7 @@
 
   $(() => {
     fnFindPw();
+    fnRule();
   })
 
 
@@ -18,6 +19,12 @@
 		  location.href = '/user/login.form';
 		},
 	  })
-	});
+	})
   }
   
+  
+   const fnRule = () => {
+	if('${sessionScope.user}' != '') {
+	  location.href= '/main.do';
+	}
+  }

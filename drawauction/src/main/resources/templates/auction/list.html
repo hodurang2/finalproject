@@ -6,9 +6,32 @@
 <style>
   
   .auction_heart_div {
-    text-align: right;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    justify-content: space-between;
+    text-align: center;
     padding-right: 10px;
     padding-top: 10px;
+    float: right;
+  }
+  .auction_category {
+    color: grey;
+    font-size: 11px;
+  }
+  .auction_title {
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .auction_nickname {
+    color: grey;
+    font-size: 13px;
+  }
+  .first_auction {
+    font-weight: 550;
+  }
+  .last_auction {
+    float: right;
   }
   .auction_list {
     margin: 10px auto;
@@ -17,18 +40,56 @@
    }
   .auction {
     width: 262px;
-    height: 262px;
-    border: 1px solid gray;
+    height: 420px;
     border-radius: 5px;
-    text-align: center;
+    text-align: left;
     margin: 20px 15px;
+  }
+  .auction div {
+    margin-bottom: 5px;
+  }
+  .auction_end_wrap div {
+    font-size: 13px;
   }
   .auction:hover {
     background-color: silver;
     cursor: pointer;
   }
-  .text-center {
-    
+  .auction_ongoing {
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    width: 68px;
+    height: 28px;
+    padding: 1px 0px;
+    font-size: 12px;
+    font-family: "Spoqa Han Sans Neo";
+    font-weight: 700;
+    white-space: nowrap;
+    background: rgb(220, 245, 236);
+    color: rgb(19, 189, 126);
+    display: inline-flex;
+    border-radius: 4px;
+    margin-left: 10px;
+  }
+  .auction_end {
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    width: 68px;
+    height: 28px;
+    padding: 1px 0px;
+    font-size: 12px;
+    font-family: "Spoqa Han Sans Neo";
+    font-weight: 700;
+    white-space: nowrap;
+    background: rgb(254, 238, 223);
+    color: rgb(253, 53, 53);
+    display: inline-flex;
+    border-radius: 4px;
+    margin-left: 10px;
   }
   .searchWord {
   width: 250px;
@@ -39,6 +100,7 @@
   width: 350px;
   margin-right: 400px;
   margin-top: 40px;
+  display: inline-flex;
 }
 
 .btn_search {
@@ -46,37 +108,41 @@
   height: 37px;
   background-color: white;
   border: none;
-  display :inline-block;
 }
 .search_icon {
   width: 40px;
   height: 40px;
   padding-right: 20px;
+  padding-top: 10px;
+}
+.form-select {
+  width: 120px;
+}
+#search_frm {
+  display: inline-flex;
+}
+.text-center {
+  display: inline-flex;
 }
 </style>
 
 <body>
   
   <div th:replace="~{/layout/header::header}"></div>
-  
-  <div class="main_wrap">
 
     <div class="wrap wrap_9">
     
       <div class="text-center">
         <div class="search">
           <form id="search_frm">
-            <input type="text" name="searchWord" id="searchWord" class="searchWord input-group-text" placeholder="작가/작품명 검색">
-            <button type="submit" id="btn_search" class="btn_search"><i class="fa-solid fa-magnifying-glass search_icon" style="color: #1937cc;"></i></button>
-            <input type="hidden" name="userNo" id="userNo" th:value="${session.user != null ? session.user.userNo : 0}">
-            <select class="col-sm-3" id="">
-              <option value="" selected>전체</option>
+            <select class="form-select" name="auctionType" id="auctionType">
+              <option value="all" selected>전체</option>
               <option value="A.TITLE">제목</option>
               <option value="A.CONTENTS">내용</option>
               <option value="U.NICKNAME">작가명</option>
             </select>
-            <select class="col-sm-3" name="categoryNo" id="categoryNo">
-              <option>카테고리</option>  
+            <select class="form-select" name="categoryNo" id="categoryNo">
+              <option value="404">카테고리</option>  
               <option value="1">포토그래픽</option>  
               <option value="2">원화</option>  
               <option value="3">드로잉</option>  
@@ -89,19 +155,21 @@
               <option value="10">조각품</option>  
               <option value="11">기타</option>  
             </select>
-            <select class="col-sm-3" name="status" id="status">
-              <option>상태</option>  
+            <select class="form-select" name="status" id="status">
+              <option value="404">상태</option>  
               <option value="0">진행중</option>  
               <option value="1">낙찰</option>  
               <option value="-1">유찰</option>  
             </select>
+            <input type="text" name="searchWord" id="searchWord" class="searchWord input-group-text" placeholder="작가/작품명 검색">
+            <button type="button" id="btn_search" class="btn_search"><i class="fa-solid fa-magnifying-glass search_icon" style="color: #1937cc;"></i></button>
           </form>
         </div>
-        <div>
-          <a th:href="@{/auction/write.form}">
-            <button type="button" class="btn btn-outline-primary">새글작성</button>
-          </a>
-        </div>
+            <div>
+              <a th:href="@{/auction/write.form}">
+                <button type="button" class="auction_write btn btn-outline-primary">새글작성</button>
+              </a>
+            </div>
       </div>
       
       <div id="auction_list" class="auction_list"></div>
@@ -122,28 +190,30 @@
           type: 'get',
           url: '/auction/getList.do',
           data: {
-                    page: page
-                    },
+                  page: page
+                  },
           // 응답
           dataType: 'json',
           success: (resData) => {  
             totalPage = resData.totalPage;
             $.each(resData.auctionList,(i, auction) => {
               let str = '<div class="auction" data-auction_no="' + auction.auctionNo + '">';
-              str += '<div class="auction_image">' + '</div>';
+              str += '<div class="auction_image"><img src="' + auction.image.path + '/s_' + auction.image.filesystemName + '" width="260" height="200"></div>';
               if(auction.status === 0){
-              str += '<div>경매진행중</div>';
+              str += '<div class="auction_ongoing">경매진행중</div>';
               } else {
-              str += '<div>경매종료</div>';
+              str += '<div class="auction_end">경매종료</div>';
               }
               str += '<div class="auction_heart_div"><i class="' + auction.heartClass + ' fa-heart fa-xl auction_heart" style="color: #e11414;"></i></div>';
-              str += '<div><span>' + auction.artDto.categoryDto.categoryName + '</span></div>';
-              str += '<div><span>' + auction.artDto.title                    + '</span></div>';
-              str += '<div><span>' + auction.artDto.sellerDto.nickname       + '</span></div>';
-              str += '<div><span>시작가</span><span>'         + auction.startPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
-              str += '<div><span>현재입찰가</span><span>'     + auction.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
-              str += '<div><span>즉시 구매가</span><span>'    + auction.buyPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
-              str += '<div><span>마감일</span><span> '        + auction.endAt + '</span></div>'; // 상품가격 1000단위 콤마찍기
+              str += '<div><span class="auction_category">' + auction.artDto.categoryDto.categoryName + '</span></div>';
+              str += '<div><span class="auction_title">'    + auction.artDto.title                    + '</span></div>';
+              str += '<div><span class="auction_nickname">' + auction.artDto.sellerDto.nickname       + '</span></div>';
+              str += '<div class="auction_end_wrap">';
+              str += '<div><span class="first_auction">시작가</span><span class="last_auction">'         + auction.startPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+              str += '<div><span class="first_auction">현재입찰가</span><span class="last_auction">'     + auction.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+              str += '<div><span class="first_auction">즉시 구매가</span><span class="last_auction">'    + auction.buyPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+              str += '<div><span class="first_auction">마감일</span><span class="last_auction"> '        + auction.endAt + '</span></div>'; // 상품가격 1000단위 콤마찍기
+              str += '</div>';
               str += '</div>';
               $('#auction_list').append(str);
             })
@@ -151,16 +221,64 @@
         })
       }
      
+      const fnSearchAuctionList = () => {
+        
+         $('#btn_search').on('click', () => {
+            let searchWord = $('#searchWord').val();
+            let auctionType = $('#auctionType option:selected').val(); 
+            let categoryNo = $('#categoryNo option:selected').val(); 
+            let status = $('#status option:selected').val(); 
+           $('#auction_list').empty();
+           $.ajax({
+              type: 'GET',
+              dataType: 'json',
+              url: '/auction/search.form', 
+              data: {
+                page: page,
+                searchWord: searchWord,
+                auctionType: auctionType,
+                categoryNo: categoryNo,
+                status: status
+              },
+             success: (resData) => {
+               $('#auction_list').empty();
+               totalPage = resData.totalPage;
+               $.each(resData.searchList,(i, auction) => {
+                let str = '<div class="auction" data-auction_no="' + auction.auctionNo + '">';
+                str += '<div class="auction_image"><img src="' + auction.image.path + '/s_' + auction.image.filesystemName + '"  width="260" height="200"></div>';
+                if(auction.status === 0){
+                str += '<div>경매진행중</div>';
+                } else {
+                str += '<div>경매종료</div>';
+                }
+                str += '<div class="auction_heart_div"><i class="' + auction.heartClass + ' fa-heart fa-xl auction_heart" style="color: #e11414;"></i></div>';
+                str += '<div><span class="auction_category">' + auction.artDto.categoryDto.categoryName + '</span></div>';
+                str += '<div><span class="auction_title">'    + auction.artDto.title                    + '</span></div>';
+                str += '<div><span class="auction_nickname">' + auction.artDto.sellerDto.nickname       + '</span></div>';
+                str += '<div class="auction_end_wrap">';
+                str += '<div><span class="first_auction">시작가</span><span class="last_auction">'         + auction.startPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+                str += '<div><span class="first_auction">현재입찰가</span><span class="last_auction">'     + auction.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+                str += '<div><span class="first_auction">즉시 구매가</span><span class="last_auction">'    + auction.buyPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+                str += '<div><span class="first_auction">마감일</span><span class="last_auction"> '        + auction.endAt + '</span></div>'; // 상품가격 1000단위 콤마찍기
+                str += '</div>';
+                str += '</div>';
+                $('#auction_list').append(str);
+              })
+               
+             } 
+           })
+         }) 
+        
+      } 
       const fnHeart = () => {
-        $(document).on('click', '.auction_heart', function(event){
+        $(document).on('click', '.auction_heart', function(event) {
           let user = /*[[${session.user}]]*/ null;
-            if(user === null){
+            if(user === null) {
               if(confirm('로그인이 필요한 기능입니다. 로그인하시겠습니까?')){
-                event.preventDefault();
                 location.href = '/user/login.form';
-                return;
-                
               }
+              event.preventDefault();
+              return;
             }
               $.ajax({
                   // 요청
@@ -188,8 +306,8 @@
       }
       
       const fnAuctionDetail = () => {
-        $(document).on('click', '.auction', function(){
-          location.href = '/auction2/detail.do?auctionNo=' + $(this).data('auction_no');
+        $(document).on('click', '.auction', function() {
+            location.href = '/auction2/detail.do?auctionNo=' + $(this).data('auction_no');
         })
       }
     
@@ -247,13 +365,27 @@
         }
       }
 
+      const fnAuctionWrite = () => {
+       $('.auction_write').click((event) => {
+         let user = /*[[${session.user}]]*/ null;
+            if(user === null) {
+              if(confirm('로그인이 필요한 기능입니다. 로그인하시겠습니까?')){
+                location.href = '/user/login.form';
+              }
+                event.preventDefault();
+                return;
+            }
+       })
+      }
       
+      fnAuctionWrite();
       fnGetAuctionList();
       // fnAuctionDetail();
       fnScroll();
       fnAddResult();
       fnRemoveResult();
       fnHeart();
+      fnSearchAuctionList();
     </script>
 
   </div>
