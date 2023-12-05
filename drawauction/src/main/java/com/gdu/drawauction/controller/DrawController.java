@@ -108,7 +108,6 @@ public class DrawController {
   @ResponseBody
   @GetMapping(value="/getReviewList.do", produces="application/json")
   public Map<String, Object> getReviewList(HttpServletRequest request){
-	System.out.println(request.getParameter("drawNo"));
     return drawService.getReviewList(request);
   }
   

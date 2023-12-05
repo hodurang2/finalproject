@@ -71,9 +71,9 @@
   
   <div class="main_wrap">
 
-    <div class="wrap wrap_6">
+    <div class="wrap wrap_6 ">
     
-      <h1 class="title">그려드림 게시글</h1>
+      <h1 class="title" th:text="|${draw.userDto.nickname}의 그려드림|"></h1>
       
       <div class="text-center mb-5">
         <th:block th:if="${session.user != null}">
@@ -95,7 +95,6 @@
       <div th:text="|작품 세로길이(px) : ${draw.height}|"></div>
       <div th:text="|작업기간 : 결제일로부터 ${draw.workTerm} 일|"></div>
       <input type="hidden" id="drawNo2" name="drawNo2" th:value="${draw.drawNo}">
-      
       
       <div>내용</div>
       <th:block th:if="${#strings.isEmpty(draw.contents)}">
@@ -128,15 +127,45 @@
       
       <hr>
       
+      <div>
+        <form id="frm_review_add">
+          <div class="input-group mb-3">
+            <!-- 로그인 안 한 경우 -->
+            <th:block th:if="${session.user == null}">              
+              <input type="hidden" name="userNo" th:value="0">
+            </th:block>
+            <!-- 로그인 한 경우 -->
+            <th:block th:if="${session.user != null and orderReview != null and session.user.userNo == orderReview.userDto.userNo}">
+              <input type="hidden" name="userNo" th:value="${session.user.userNo}">
+              <input type="hidden" name="drawNo" th:value="${draw.drawNo}">
+              <textarea rows="5" name="reviewContents" class="form-control" id="contents" placeholder="후기를 작성해 주세요"></textarea>
+              <button type="button" class="btn btn-primary btn-sm" id="btn_review_add">작성완료</button>
+            </th:block>
+          </div>
+        </form>
+      </div>
 	 
-	  <div>상품후기
-		<div id="review_list"></div>
+	<div>
+	  <h4>상품후기</h4>
+	  <div class="form-control">
+	    <table class="table">
+	      <thead>
+	        <tr>
+	          <th>작성자</th>
+	          <th>별점</th>
+	          <th>내용</th>
+	          <th>작성일</th>
+	        </tr>
+	      </thead>
+	      <tbody id="review_list">
+	      </tbody>
+	    </table>
 	  </div>
+	</div>
 	        
     </div>
       
     <script th:inline="javascript">
-    
   	  // 전역 변수
       var frmBtn = $('#frm_btn');
       var page = 1;
@@ -171,8 +200,7 @@
           }
         }
       }
-      
-      
+     
       const fnWishListControll = () => {
 		$('#wish_list').click(() => {
 		  $.ajax({
@@ -225,33 +253,40 @@
     }
     
     const fnReviewtList = () => {
-          $.ajax({
-            // 요청
-            type: 'get',
-            url: '/draw/getReviewList.do',
-            data: 'page=' + page + '&drawNo=[[${draw.drawNo}]]',
-            // 응답
-            dataType: 'json',
-            success: (resData) => {
-			  console.log(resData.reviewList);
-              $('#review_list').empty();
-              if(resData.reviewList.length === 0){
-                $('#review_list').html('<div class="text-center my-3">작성된 후기가 없습니다.</div>');
-                return;
-              }
-              $.each(resData.reviewList, (i, r) => {
-                let str = '';
-                str += '<div>';
-                str += '<div>' + r.userDto.nickname + '</div>';
-                str += '<div>' + r.reviewTitle + '</div>';
-                str += '<div>' + r.reviewContents + '</div>';
-                str += '<div style="font-size: 12px;">' + r.createdAt + '</div>';
-                str += '</div>';
-                $('#review_list').append(str);
-                })
-              }
+      $.ajax({
+        // 요청
+        type: 'get',
+        url: '/draw/getReviewList.do',
+        data: 'page=' + page + '&drawNo=[[${draw.drawNo}]]',
+        // 응답
+        dataType: 'json',
+        success: (resData) => {
+          $('#review_list').empty();
+          if(resData.reviewList.length === 0){
+            $('#review_list').html('<div class="text-center my-3">작성된 후기가 없습니다.</div>');
+            return;
+          }
+          $.each(resData.reviewList, (i, r) => {
+	      var createdAt = new Date(r.createdAt);
+	 	  var formattedCreatedAt = createdAt.toISOString().slice(0, 16).replace('T', ' ');
+            let str = '<tr>';
+            str += '<td style="color: #1E90FF">' + r.userDto.nickname + '</td>';
+            str += '<td>' + r.rating + '</td>';
+            str += '<td>' + r.reviewContents + '</td>';
+            str += '<td style="font-size: 12px;">' + formattedCreatedAt + '</td>';
+            str += '</tr>';
+            $('#review_list').append(str);
             })
           }
+        })
+      }
+          
+      const fnAddReview = () => {
+	    
+	  }
+      
+      
+      
           
 	  fnReviewtList();
       fnScroll();
