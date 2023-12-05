@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{/layout/header::head('1:1문의 채팅')}"></head>
+<head th:replace="~{/layout/header::head('실시간 문의')}"></head>
 
 <style>
     
@@ -106,8 +106,8 @@
     <div class="wrap wrap_3">
 
       <div id="chat">
-        <h1>웹소켓 채팅</h1>
-        <input type="text" id="mid" th:value="${mid}">
+        <h1>실시간 문의</h1>
+        <input type="text" id="mid" th:value="${mid}" placeholder="아이디를 입력해주세요.">
         <input type="button" value="로그인" id="btnLogin">
         <br/>
         <div id="talk"></div>

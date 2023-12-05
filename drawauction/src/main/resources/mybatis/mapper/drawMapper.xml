@@ -72,7 +72,6 @@
   </resultMap>
   
   <resultMap type="DrawReviewDto" id="DrawReviewMap">
-  	<result column="REVIEW_TITLE" property="reviewTitle"/>
   	<result column="REVIEW_CONTENTS" property="reviewContents"/>
   	<result column="RATING" property="rating"/>
   	<result column="CREATED_AT" property="createdAt"/>
@@ -323,8 +322,8 @@
   </select>
   
   <select id="getReviewList" parameterType="Map" resultMap="DrawReviewMap">
-	SELECT A.DRAW_NO, A.USER_NO, A.REVIEW_TITLE, A.REVIEW_CONTENTS, A.RATING, A.CREATED_AT, A.NICKNAME
-	  FROM (SELECT ROW_NUMBER() OVER(ORDER BY CREATED_AT DESC) AS RN, D.DRAW_NO, D.BUYER_NO, D.REVIEW_TITLE, D.REVIEW_CONTENTS, D.RATING, D.CREATED_AT, U.USER_NO, U.NICKNAME
+	SELECT A.DRAW_NO, A.USER_NO, A.REVIEW_CONTENTS, A.RATING, A.CREATED_AT, A.NICKNAME
+	  FROM (SELECT ROW_NUMBER() OVER(ORDER BY CREATED_AT DESC) AS RN, D.DRAW_NO, D.BUYER_NO, D.REVIEW_CONTENTS, D.RATING, D.CREATED_AT, U.USER_NO, U.NICKNAME
 	          FROM USER_T U LEFT OUTER JOIN DRAW_REVIEW_T D
 	            ON U.USER_NO = D.BUYER_NO
 	         WHERE D.DRAW_NO = #{drawNo}) A
@@ -339,6 +338,22 @@
 	 WHERE O.BUYER_NO = #{userNo}
 	   AND O.DRAW_NO = #{drawNo}
   </select>
+  
+  <insert id="addReview" parameterType="Map">
+	INSERT INTO DRAW_REVIEW_T (
+	  DRAW_NO
+	, BUYER_NO
+	, REVIEW_CONTENTS
+	, RATING
+	, CREATED_AT
+	) VALUES (
+	  #{drawNo}
+	, #{userNo}
+	, #{reviewContents}
+	, #{rating}
+	, SYSDATE
+	)
+  </insert>
   
   
   

@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class DrawReviewDto {
-	private String reviewTitle;
 	private String reviewContents;
 	private int rating;
 	private Date createdAt;
