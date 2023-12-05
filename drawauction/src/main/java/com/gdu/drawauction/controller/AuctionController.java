@@ -7,8 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gdu.drawauction.service.AuctionService;
 
@@ -20,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class AuctionController {
   private final AuctionService auctionService;
   
-  @GetMapping("/list.do")
+  @GetMapping("/")
   public String list() {
     return "auction/list";
   }
@@ -42,5 +45,17 @@ public class AuctionController {
     return auctionService.controlAuctionWishlist(request);
   }
   
+  @ResponseBody
+  @GetMapping(value="/search.form", produces="application/json")
+  public Map<String, Object> search(HttpServletRequest request){
+    return auctionService.getSearchAuctionList(request);
+  }
   
+  
+ @PostMapping("/add.do") 
+ public String add(MultipartHttpServletRequest multipartRequest , RedirectAttributes redirectAttributes) throws Exception {
+   boolean addResult = auctionService.addAuction(multipartRequest);
+   redirectAttributes.addFlashAttribute("addResult", addResult); 
+   return "redirect:/auction/"; 
+   }
 }

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
 <head th:replace="~{/layout/header::head('아이디 찾기')}"></head>
 
 
@@ -11,24 +13,33 @@
   	<div class="main_wrap">
 	   <div class="wrap wrap_5">
 		   <h2>회원님의 아이디(이메일)를 확인해주세요</h2>
-		   <h4 style="margin-top: 20px" id="findIdResult"></h4>
+		   <h4 style="margin-top: 20px" class="findIdResult"></h4>
 		   
 	   </div>
 	</div>
 	
 <script th:inline="javascript">
-	$(document).ready(function() {
-		var userEmail = /*[[${userDto.email}]]*/ '';
-		fnfindIdResult(userEmail);
-	});
 	
-	function fnfindIdResult(email) {
-		if(email === ''){
-			$('#findIdResult').text('조회결과가 없습니다.');
-		} else {
-			$('#findIdResult').text('아이디:' +  email);
-		}
-	}
+	 $(() => {
+			fnfindIdResult();
+		  })
+	
+	
+const fnfindIdResult = () => {
+    var findIdValue = /*[[${findId.email}]]*/ null;
+
+  
+    if (findIdValues === null || findIdValues.length === 0) {
+        $('.findIdResult').text('조회결과가 없습니다');
+    } else if (findIdValues.length === 1) {
+        // 하나의 이메일이 있는 경우
+        $('.findIdResult').text('아이디(이메일): ' + findIdValues[0]);
+    } else {
+        // 여러 이메일이 있는 경우
+        $('.findIdResult').text('여러 이메일이 있습니다: ' + findIdValues.join(', '));
+    }
+    
+} 
 	 
 </script>
 	

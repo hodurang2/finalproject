@@ -28,7 +28,8 @@
     <typeAlias alias="AnswerDto"          type="com.gdu.drawauction.dto.AnswerDto"/>
     <typeAlias alias="DrawImageDto"       type="com.gdu.drawauction.dto.DrawImageDto"/>
     <typeAlias alias="DrawWishListDto"    type="com.gdu.drawauction.dto.DrawWishListDto"/>
-    <typeAlias alias="DrawReviewDto"    type="com.gdu.drawauction.dto.DrawReviewDto"/>
+    <typeAlias alias="DrawReviewDto"      type="com.gdu.drawauction.dto.DrawReviewDto"/>
+    <typeAlias alias="DrawOrderDto"       type="com.gdu.drawauction.dto.DrawOrderDto"/>
   </typeAliases>
 
 
