@@ -67,7 +67,7 @@ public class MypageController {
     mypageService.getAuctionSalesList(request, model);
     return "mypage/auctionSalesList";
   }
-  /*
+  
   @ResponseBody
   @GetMapping(value="/getMyDrawList.do", produces="application/json")
   public Map<String, Object> myDrawList(HttpServletRequest request){
@@ -75,10 +75,10 @@ public class MypageController {
   }
   
   @ResponseBody
-  @GetMapping(value="/getMyDrawImageList.do", produces="application/json")
+  @GetMapping(value="/getDrawImageList.do", produces="application/json")
   public Map<String, Object> myDrawImageList(HttpServletRequest request) {
     return mypageService.getMyDrawImageList(request);
   }
-  */
+  
   
 }

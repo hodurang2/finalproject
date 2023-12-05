@@ -203,7 +203,7 @@
                       FROM DRAW_T D LEFT OUTER JOIN USER_T USR
                         ON D.SELLER_NO = USR.USER_NO) A INNER JOIN CATEGORY_T C
               ON A.CATEGORY_NO = C.CATEGORY_NO
-             WHERE A.SELLER_NO = #{sellerNo});
+             WHERE A.SELLER_NO = #{sellerNo})
   </select>  
  
   <select id="getMyDrawList" parameterType="Map" resultMap="DrawMap">
@@ -222,6 +222,7 @@
       FROM DRAW_IMAGE_T DI INNER JOIN DRAW_T D
         ON DI.DRAW_NO = D.DRAW_NO
      WHERE DI.DRAW_NO = #{drawNo} AND D.SELLER_NO = #{sellerNo}
-  </select>  
+  </select>
+
   
 </mapper>

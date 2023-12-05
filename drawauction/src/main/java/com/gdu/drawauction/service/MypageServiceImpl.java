@@ -1,6 +1,7 @@
 package com.gdu.drawauction.service;
 
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -196,11 +197,13 @@ public class MypageServiceImpl implements MypageService {
     }
   }
   
-  /*
+  
   
   @Transactional(readOnly=true)
   @Override
   public Map<String, Object> getMyDrawList(HttpServletRequest request) {
+    
+    Map<String, Object> map = new HashMap<>();
     
     Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
     int page = Integer.parseInt(opt.orElse("1"));
@@ -208,28 +211,33 @@ public class MypageServiceImpl implements MypageService {
     HttpSession session = request.getSession();
     UserDto user = (UserDto)session.getAttribute("user");
 
-    Optional<Integer> opt2 = Optional.ofNullable(user.getUserNo());
-    int sellerNo = opt2.orElse(0);
-   
-    int total = mypageMapper.getMyDrawCount(sellerNo);
-    int display = 10;
+    if(user != null) {
     
-    myPageUtils.setPaging(page, total, display);
-    
-    Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
-                                   , "end", myPageUtils.getEnd()
-                                   , "sellerNo", sellerNo);
-    
-    List<DrawDto> myDrawList = mypageMapper.getMyDrawList(map);
-    
-  
-    return Map.of("myDrawList", myDrawList
-                , "totalPage", myPageUtils.getTotalPage());
+      int sellerNo = user.getUserNo();
+      int total = mypageMapper.getMyDrawCount(sellerNo);
+      int display = 10;
+
+      myPageUtils.setPaging(page, total, display);
+      
+      List<DrawDto> myDrawList = mypageMapper.getMyDrawList(Map.of("begin", myPageUtils.getBegin()
+                                                                 , "end", myPageUtils.getEnd()
+                                                                 , "sellerNo", sellerNo));
+      map.put("myDrawImageList", myDrawList);
+      
+      System.out.println(myDrawList.size());
+    } else {
+      
+      map.put("myDrawList", null);
+      
+    }
+    return map;
     
   }
   
   @Override
   public Map<String, Object> getMyDrawImageList(HttpServletRequest request) {
+    
+    Map<String, Object> map = new HashMap<>();
     
     Optional<String> opt = Optional.ofNullable(request.getParameter("drawNo"));
     int drawNo = Integer.parseInt(opt.orElse("0"));
@@ -241,17 +249,18 @@ public class MypageServiceImpl implements MypageService {
       
       int sellerNo = user.getUserNo();
       
-      Map<String, Object> map = Map.of("sellerNo", sellerNo
-                                     , "drawNo", drawNo);
+      List<DrawImageDto> myDrawImageList = mypageMapper.getMyDrawImageList(Map.of("sellerNo", sellerNo
+                                                                                , "drawNo", drawNo));
+      map.put("myDrawImageList", myDrawImageList);
+    
+    } else {
       
-      List<DrawImageDto> myDrawImageList = mypageMapper.getMyDrawImageList(map);
-    
-    return Map.of("myDrawImageList", myDrawImageList);
-    
-    } if(user == null) {
+      map.put("myDrawImageList", null);
       
     }
     
+    return map;
+    
   }
-  */
+  
 }
