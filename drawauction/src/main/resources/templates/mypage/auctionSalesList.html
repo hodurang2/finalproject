@@ -3,10 +3,12 @@
 <head th:replace="~{/layout/header::head('경매이용내역')}"></head>
 
 <style>
+  
   .list_wrap {
     width: 100%;
     height: 50px;
     border-bottom: 1px solid gray;
+    margin-top: 30px;
   }
   .mypage_list {
     display: flex;
@@ -25,10 +27,17 @@
     cursor: pointer;
     font-size: 20px;
   }
-  .mypage_list a:hover {
-    background-color: rgb(0, 128, 64);
-    border-bottom: 1px solid gray;
+  .sales {
+    background-color: rgb(84, 186, 125);
+    border-bottom: 2px solid gray;
+    color: white;
   }
+  .mypage_list a:hover {
+    background-color: rgb(84, 186, 125);
+    border-bottom: 2px solid gray;
+    color: white;
+  }
+
   
 </style>
  
@@ -42,73 +51,23 @@
     
     <div class="list_wrap">
       <ul class="mypage_list">
-        <li><a th:href="@{/mypage/auctionBidList.do}">입찰작품</a></li>
-        <li><a th:href="@{/mypage/auctionSalesList.do}">출품작품</a></li>
+        <li><a th:href="@{/mypage/auctionBidList.do}" class="bid">입찰작품</a></li>
+        <li><a th:href="@{/mypage/auctionSalesList.do}" class="sales">출품작품</a></li>
       </ul>
     </div>
-    
-    <div class="table-responsive" id="bidList_wrap">
-      <table class="table align-middle">
-        <thead>
-          <tr>
-            <td>작품이미지</td>
-            <td>작품정보</td>
-            <td>입찰일시</td>
-            <td>내입찰가</td>
-            <td>현재입찰가</td>
-            <td>진행상태</td>
-            <td>낙찰상태</td>
-            <td>경매종료일시</td>
-          </tr>
-        </thead>
-        <tbody>
-          <th:block th:each="b,vs:${bidList}">
-            <tr>
-              <td th:text="작품이미지"></td>
-              <td th:text="|작품제목:${b.auctionDto.artDto.title} 작품설명:${b.auctionDto.artDto.contents}|"></td>
-              <td th:text="${b.bidAt}"></td>
-              <td th:text="${b.bidderDto.myPrice}"></td>
-              <td th:text="${b.price}"></td>
-              <th:block th:if="${b.auctionDto.status == 0}">
-                <td th:text="진행"></td>
-                <th:block th:if="${b.price > b.bidderDto.myPrice}">
-                  <td th:text="재입찰요망"></td>
-                </th:block>
-                <th:block th:if="${b.price <= b.bidderDto.myPrice}">
-                  <td th:text="최고가입찰중"></td>
-                </th:block>
-              </th:block>
-              <th:block th:if="${b.auctionDto.status == 1}">
-                <td th:text="종료"></td>
-                <th:block th:if="${b.price > b.bidderDto.myPrice}">
-                  <td th:text="낙찰실패"></td>
-                </th:block>
-                <th:block th:if="${b.price <= b.bidderDto.myPrice}">
-                  <td th:text="낙찰성공"></td>
-                </th:block>
-              </th:block>
-              <td th:text="${b.auctionDto.endAt}"></td>
-            </tr>
-          </th:block>
-        </tbody>
-      </table>
       
-    </div>
-    
-    
-    
     <div class="table-responsive" id="salesList_wrap">
       <table class="table align-middle">
         <thead>
           <tr>
             <td>작품이미지</td>
             <td>작품정보</td>
-            <td>경매시작일시</td>
+            <td>경매시작일</td>
             <td>시작가</td>
             <td>현재입찰가</td>
             <td>진행상태</td>
             <td>판매상태</td>
-            <td>경매종료일시</td>
+            <td>경매종료일</td>
           </tr>
         </thead>
         <tbody>
@@ -132,6 +91,10 @@
                   <td th:text="판매완료"></td>
                 </th:block>
               </th:block>
+              <th:block th:if="${s.auctionDto.status == -1}">
+                <td th:text="종료"></td>
+                <td th:text="유찰"></td>
+              </th:block>
               <td th:text="${s.auctionDto.endAt}"></td>
             </tr>
           </th:block>
@@ -144,21 +107,6 @@
   
   
   <div th:replace="~{/layout/footer::footer}"></div>
-  
-  <script>
-
-    $(() => {
-      fnShow();
-    })
-
-    const fnShow = () => {
-      $('.mypage_list a').on('click', (ev) => {
-        $('.mypage_list').find('a').removeClass('show');
-        $(ev.target).addClass('show');
-      })
-    }
-    
-  </script>
   
 </body>
 </html>

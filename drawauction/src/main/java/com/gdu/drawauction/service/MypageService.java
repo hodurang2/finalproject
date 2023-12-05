@@ -16,8 +16,13 @@ public interface MypageService {
   
   public void modifyPw(HttpServletRequest request, HttpServletResponse response);   // 비밀번호 변경
 
-  public void loadAuctionBidList(HttpServletRequest request, Model model);    // 입찰 목록
+  public void getAuctionBidList(HttpServletRequest request, Model model);    // 입찰 목록
   
-  public void loadAuctionSalesList(HttpServletRequest request, Model model);  // 출품 목록
+  public void getAuctionSalesList(HttpServletRequest request, Model model);  // 출품 목록
   
+  /*
+  public Map<String, Object> getMyDrawList(HttpServletRequest request);    // 나의 그려드림 목록
+  
+  public Map<String, Object> getMyDrawImageList(HttpServletRequest request);  // 나의 그려드림 이미지 목록
+  */
 }
