@@ -79,15 +79,15 @@
  
   <insert id="insertAuctionWishlist" parameterType="Map">
     INSERT INTO AUCTION_WISHLIST_T (
-        AUCTION_WISH_NO,
-        AUCTION_NO,
-        USER_NO,
-        WISHED_AT
+          AUCTION_WISH_NO,
+          AUCTION_NO,
+          USER_NO,
+          WISHED_AT
         ) VALUES (
-        AUCTION_WISHLIST_SEQ.NEXTVAL,
-        #{auctionNo},
-        #{userNo},
-        SYSDATE
+          AUCTION_WISHLIST_SEQ.NEXTVAL,
+          #{auctionNo},
+          #{userNo},
+          SYSDATE
     )
   </insert>
   
@@ -104,4 +104,108 @@
        AND USER_NO = #{userNo}
   </select>
   
+  <select id="searchAuctionList" parameterType="Map" resultMap="AuctionMap" >
+    SELECT D.AUCTION_NO, D.START_PRICE, D.BUY_PRICE, D.START_AT, D.END_AT, D.STATUS, 
+       D.ART_NO, D.TITLE, D.CONTENTS, D.ART_TYPE, D.WIDTH, D.HEIGHT,
+       D.USER_NO, D.NICKNAME,
+       D.CATEGORY_NO, D.CATEGORY_NAME,
+       D.PRICE        
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY AUC.AUCTION_NO DESC) AS RN,
+                   AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS, 
+                   A.ART_NO, A.SELLER_NO, A.TITLE, A.CONTENTS, A.ART_TYPE, A.WIDTH, A.HEIGHT,
+                   U.USER_NO, U.NICKNAME,
+                   C.CATEGORY_NO, C.CATEGORY_NAME,
+                   B.BID_NO, B.PRICE
+              FROM AUCTION_T AUC, ART_T A, USER_T U, CATEGORY_T C, BID_T B
+             WHERE AUC.ART_NO = A.ART_NO
+               AND A.SELLER_NO = U.USER_NO
+               AND A.CATEGORY_NO = C.CATEGORY_NO 
+               AND AUC.AUCTION_NO = B.AUCTION_NO(+)
+               AND (B.PRICE IS NULL OR B.PRICE = (SELECT MAX(PRICE) FROM BID_T WHERE AUCTION_NO = AUC.AUCTION_NO))
+           <choose>
+             <when test="auctionType != '' and auctionType == 'all'">
+               AND (A.TITLE LIKE '%' || #{searchWord} || '%' OR A.CONTENTS LIKE '%' || #{searchWord} || '%')
+             </when>
+             <when test="auctionType != '' and auctionType != 'all'">
+               AND ${auctionType} LIKE '%' || #{searchWord} || '%'
+             </when>
+           </choose>
+           <if test="categoryNo != 404">
+             AND C.CATEGORY_NO = #{categoryNo}
+           </if>
+           <if test="status != 404">
+             AND AUC.STATUS = #{status}
+           </if>
+           ) D 
+     WHERE RN BETWEEN #{begin} AND #{end}
+  </select>
+  
+  <select id="getAuctionimage" parameterType="int" resultType="AuctionImageDto">
+    SELECT AUCTION_IMAGE_NO, AUCTION_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+    FROM AUCTION_IMAGE_T
+   WHERE AUCTION_NO = #{auctionNo}
+     AND AUCTION_IMAGE_NO = (SELECT MIN(AUCTION_IMAGE_NO) FROM AUCTION_IMAGE_T WHERE AUCTION_NO = #{auctionNo})
+  </select>
+  
+  <insert id="insertArt" parameterType="Map">
+    INSERT INTO ART_T(
+        ART_NO, 
+        SELLER_NO,
+        CATEGORY_NO,
+        TITLE, 
+        CONTENTS, 
+        ART_TYPE, 
+        WIDTH, 
+        HEIGHT
+    ) VALUES (
+        ART_SEQ.NEXTVAL,
+        #{sellerNo},
+        #{categoryNo},
+        #{title},
+        #{contents},
+        #{artType},
+        #{width},
+        #{height}
+    )
+  </insert>
+  <insert id="insertAuction" parameterType="Map">
+    INSERT INTO AUCTION_T (
+      AUCTION_NO,
+      ART_NO,
+      START_PRICE, 
+      BUY_PRICE, 
+      START_AT, 
+      END_AT, 
+      STATUS 
+    )VALUES(
+      AUCTION_SEQ.NEXTVAL,
+      ART_SEQ.CURRVAL,
+      #{startPrice},
+      #{buyPrice},
+      SYSDATE,
+      #{endAt},
+      1
+  )
+  </insert>
+  <insert id="insertImage" parameterType="AuctionImageDto">
+    INSERT INTO AUCTION_IMAGE_T (
+        AUCTION_IMAGE_NO
+      , AUCTION_NO
+      , PATH
+      , FILESYSTEM_NAME
+      , IMAGE_ORIGINAL_NAME
+      , HAS_THUMBNAIL
+    ) VALUES (
+        AUCTION_IMAGE_SEQ.NEXTVAL
+      , #{auctionNo}
+      , #{path}
+      , #{filesystemName}
+      , #{imageOriginalName}
+      , #{hasThumbnail}
+    )
+  </insert>
+  <select id="getCurrentAuctionNo" resultType="int">
+    SELECT AUCTION_SEQ.CURRVAL
+      FROM DUAL
+  </select>
 </mapper>

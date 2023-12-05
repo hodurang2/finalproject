@@ -18,5 +18,6 @@ public class AuctionDto {
   private int status;
   private int price;
   private String heartClass;
+  private AuctionImageDto image;
   private ArtDto artDto;
 }
