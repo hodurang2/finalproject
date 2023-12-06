@@ -7,17 +7,17 @@
   font-family: 'Noto Sans KR', sans-serif;
   color: #333333;
 }
-body, div, ul, li, ol {
+/*body, div, ul, li, ol {
   padding: 0;
   margin: 0;
   position: relative;
   box-sizing: border-box;
-}
+}*/
 body {
-  width: 1280px;
+  width: 1920px;
   margin: 0 auto;
 }
-a {
+/*a {
   text-decoration: none;
   color: #333333;
 }
@@ -32,4 +32,4 @@ a:hover i {
 }
 ul, ol {
   list-style-type: none;
-}
+}*/

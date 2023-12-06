@@ -33,7 +33,7 @@ public class UserController {
   public String loginForm(HttpServletRequest request, Model model) throws Exception {
     // referer : 이전 주소가 저장되는 요청 Header 값
     String referer = request.getHeader("referer");
-    String[] exceptUrl = {"/agree.form", "/join.form", "/join_option.form"};
+    String[] exceptUrl = {"/agree.form", "/join.form", "/join_option.form", "/find_id.form", "/find_pw.form"};
     String ret = "";
     if(referer != null) {
       for(String url : exceptUrl) {
@@ -48,8 +48,39 @@ public class UserController {
     model.addAttribute("referer", ret.isEmpty() ? referer : ret);
     // 네이버로그인-1
     model.addAttribute("naverLoginURL", userService.getNaverLoginURL(request));
+ // 카카오로그인 -1
+    model.addAttribute("kakaoLoginURL", userService.getKakaoLoginURL(request));
     return "user/login";
   }
+  // 카카오톡 로그인-2  
+  @GetMapping("/kakao/getKakaoAccessToken.do")
+  public String getKakaoAccessToken(HttpServletRequest request) throws Exception {
+	  String accessToken  = userService.getKakaoLoginAccessToken(request);
+	  return "redirect:/user/kakao/getKakaoProfile.do?accessToken=" + accessToken;
+  }
+  
+  // 카카오톡 로그인 -3 
+  @GetMapping("/kakao/getKakaoProfile.do")
+  public String getKakaoProfile(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
+	  
+	  UserDto kakaoProfile = userService.getKakaoProfile(request.getParameter("accessToken"));
+	  UserDto user = userService.getUser(kakaoProfile.getEmail());
+	  if(user == null) {
+		  model.addAttribute("kakaoProfile", kakaoProfile);
+		  return "user/kakao_join";
+	  } else {
+		  userService.kakaoLogin(request, response, kakaoProfile);
+	      return "redirect:/main.do";
+	  }
+	  
+  }
+  
+  // 카카오 간편로그인
+  @PostMapping("/kakao/join.do")
+  public void kakaoJoin(HttpServletRequest request, HttpServletResponse response) {
+	  userService.kakaoJoin(request, response);
+  }
+  
   
   @GetMapping("/naver/getAccessToken.do")
   public String getAccessToken(HttpServletRequest request) throws Exception {
@@ -75,10 +106,13 @@ public class UserController {
     }
   }
   
+  // 네이버 간편가입
   @PostMapping("/naver/join.do")
   public void naverJoin(HttpServletRequest request, HttpServletResponse response) {
     userService.naverJoin(request, response);
   }
+
+  
   
   @PostMapping("/login.do")
   public void login(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -142,7 +176,7 @@ public class UserController {
   
   @GetMapping("/active.do")
   public void active(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
-    userService.active(session, request, response);
+	  userService.active(session, request, response);
   }
 
   @GetMapping("/find.form")
@@ -171,5 +205,5 @@ public class UserController {
 	    userService.findPw(user, response);
   }
 
-  
+
 }
