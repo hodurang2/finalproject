@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{/layout/header::head('그려드림 작성')}"></head>
-
+<head th:replace="~{/layout/header::head('응찰 등록')}"></head>
 <body>
   
   <div th:replace="~{/layout/header::header}"></div>
@@ -11,55 +10,85 @@
 
     <div class="wrap wrap_6">
     
-      <h1 class="title">그려드림 작성</h1>
+      <h1 class="title">응찰 등록</h1>
       
-      <form id="frm_draw_add" method="post" th:action="@{/draw/add.do}" enctype="multipart/form-data">
-        <div class="mt-3" th:if="${session.user != null}">
-          <label for="email" class="form-label">작성자</label>
-          <input type="text" id="email" class="form-control-plaintext" th:value="${session.user.email}" readonly>
-        </div>
+      <form id="frm_auction_add" method="post" th:action="@{/auction/add.do}" enctype="multipart/form-data">
+        
         <div class="mt-3">
           <label for="title" class="form-label">카테고리</label>
-          <select class="col-sm-2" name="categoryNo" id="categoryNo">
-			<option value="1">포토그래픽</option>  
-			<option value="2">원화</option>  
-			<option value="3">드로잉</option>  
-			<option value="4">판화</option>  
-			<option value="5">서예</option>  
-			<option value="6">회화</option>  
-			<option value="7">동양화</option>  
-			<option value="8">공예</option>  
-			<option value="9">디지털아트</option>  
-			<option value="10">조각품</option>  
-			<option value="11">기타</option>  
-		  </select>
+          <select class="col-sm-3" name="categoryNo" id="categoryNo">
+      <option value="1">포토그래픽</option>  
+      <option value="2">원화</option>  
+      <option value="3">드로잉</option>  
+      <option value="4">판화</option>  
+      <option value="5">서예</option>  
+      <option value="6">회화</option>  
+      <option value="7">동양화</option>  
+      <option value="8">공예</option>  
+      <option value="9">디지털아트</option>  
+      <option value="10">조각품</option>  
+      <option value="11">기타</option>  
+      </select>
         </div>
         <div class="mt-3">
-          <label for="title" class="form-label">제목</label>
+          <label for="title" class="form-label target2">작품명 필수</label>
           <input type="text" name="title" id="title" class="form-control">
         </div>
+        
         <div class="mt-3">
-          <label for="files" class="form-label">대표이미지</label>
+          <label for="artType" class="form-label target2">작품종류 필수</label>
+          <div id="artType">
+            <input type="radio" name="artType" id="digital" class="form-check-input" th:value="0" checked>
+            <label for="digital" class="form-label target2">디지털</label>
+            <input type="radio" name="artType" id="real" class="form-check-input" th:value="1">
+            <label for="real" class="form-label target2">실물</label>
+            <div>* 작품종류 선택은 필수사항 입니다.</div>
+          </div>
+        </div>
+        <div class="mt-3">
+          <label for="buyPrice" class="form-label target2">즉시구매가</label>
+          <input type="number" name="buyPrice" id="buyPrice" class="form-control" placeholder="금액을 입력해 주세요.">
+        </div>
+        
+        <div class="mt-3">
+          <label for="startPrice" class="form-label target2">입찰시작가 필수</label>
+          <input type="number" name="startPrice" id="startPrice" class="form-control" placeholder="금액을 입력해 주세요.">
+        </div>
+    
+        <div class="mt-3">
+          <label for="endAt" class="form-label target2">마감일자 필수
+            <input type="datetime-local"
+               name="endAt" 
+               id="endAt" 
+               class="form-control-sm"
+               required>
+          </label>
+        </div>
+        
+        <div class="mt-3">
+          <label for="files" class="form-label target2" id="target">대표이미지 필수 첫 번째 첨부이미지가 대표이미지 입니다.</label>
           <input type="file" name="files" id="files" class="form-control" multiple>
         </div>
-        <div class="attached_list mt-2" id="attached_list"></div>
         <div id="image_container"></div>
+        
         <div class="mt-3">
-          <label for="title" class="form-label">가격</label>
-          <input type="text" name="price" id="price" class="form-control">
+          <label for="width" class="form-label">작품 가로길이(cm)</label>
+          <input type="number" name="width" id="width" class="form-control" placeholder="0">
+          <label for="height" class="form-label">작품 세로길이(cm)</label>
+          <input type="number" name="height" id="height" class="form-control" placeholder="0">
         </div>
-        <div>
-          <label for="contents">내용</label>
-          <textarea name="contents" id="contents" style="display: none;"></textarea>
-          <div id="toolbar-container"></div>
-          <div id="ckeditor"></div>
+        
+        <hr>
+        
+        <div class="mt-3">
+          <label for="contents" class="form-label target2">작품설명 필수</label>
+          <textarea rows="8" name="contents" id="contents" class="form-control"></textarea>
         </div>
-        <div class="attached_list mt-2" id="attached_list"></div>
         <div class="text-center mt-5" th:if="${session.user != null}">
-          <a th:href="@{/draw/list.do}">
+          <a th:href="@{/auction/}">
             <button class="btn btn-secondary" type="button">작성취소</button>
           </a>
-          <input type="hidden" name="userNo" th:value="${session.user.userNo}">
+          <input type="hidden" name="sellerNo" th:value="${session.user.userNo}">
           <button type="submit" class="btn btn-primary">작성완료</button>
         </div>
       </form>
@@ -67,22 +96,68 @@
     </div>
       
     <script>
-    
+      /*const fnDate = () =>{
+        let now = new Date();
+        let today = now.toISOString().slice(0, 19);
+        let lastDay = new Date(now.setFullYear(now.getFullYear() + 1)).toISOString().slice(0, 19);
+        let endAt =  $('#endAt').val();
+        
+        $('#endAt').attr('min' , today);
+        $('#endAt').attr('max', lastDay);
+        
+        $('#endAt').on('change', () => {
+          if(endAt < today) {
+              alert('현재 시간보다 이전의 날짜는 설정할 수 없습니다.');
+               $('#endAt').val(today);
+              return;
+          }
+        })
+        
+      }*/
+      const fnDate = () => {
+        // 현재 시간
+        let now = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000);
+        let date = now.toISOString().slice(0, -5);
+        // 현재로부터 1년 후의 시간
+        let lastYear = new Date(now);
+        lastYear.setFullYear(now.getFullYear() + 1);
+        let lastDay = lastYear.toISOString().slice(0, -5);
+        
+        // endAt 요소에 현재 시간을 초기 값으로 설정
+        $('#endAt').val(date);
+      
+        // endAt 요소에 최소 및 최대 날짜 제한 설정
+        $('#endAt').attr('min', date);
+        $('#endAt').attr('max', lastDay);
+      
+        console.log($('#endAt').val());
+        // endAt 값 변경 이벤트 리스너
+        $('#endAt').on('change', () => {
+          let selectedDate = $('#endAt').val();
+      
+          if (selectedDate < date) {
+            // 선택한 날짜가 현재 시간보다 이전인 경우 알림을 표시하고 현재 시간으로 설정
+            alert('현재 시간보다 이전의 날짜는 설정할 수 없습니다.');
+            $('#endAt').val(date);
+          }
+        })
+      }
       const fnFileCheck = () => {
         $('#files').change((ev) => {
-		  for (var image of event.target.files) {
+          $('#image_container').empty();
+      for (var image of event.target.files) {
             var reader = new FileReader();
             reader.onload = function(event) {
               var img = document.createElement("img");
               img.setAttribute("src", event.target.result);
-              img.setAttribute("width", "300px");
-              document.querySelector("div#image_container").appendChild(img);
+              img.setAttribute("width", "250px");
+              document.querySelector("#image_container").appendChild(img);
             };
 
             console.log(image);
             reader.readAsDataURL(image);
           }
-          $('#attached_list').empty();
+          $('#image_list').empty();
           let maxSize = 1024 * 1024 * 100;
           let maxSizePerFile = 1024 * 1024 * 10;
           let totalSize = 0;
@@ -92,59 +167,69 @@
             if(files[i].size > maxSizePerFile){
               alert('각 첨부파일의 최대 크기는 10MB입니다.');
               $(ev.target).val('');
-              $('#attached_list').empty();
               return;
             }
-            $('#attached_list').append('<div>' + files[i].name + '</div>');
           }
           if(totalSize > maxSize){
             alert('전체 첨부파일의 최대 크기는 100MB입니다.');
             $(ev.target).val('');
-            $('#attached_list').empty();
             return;
           }
         })
       }
       
       const fnSubmit = () => {
-    	  $('#frm_draw_add').submit((ev) => {
-    		  if($('#title').val() === ''){
-    			  alert('제목은 반드시 입력해야 합니다.');
-    			  $('#title').focus();
-    			  ev.preventDefault();
-    			  return;
-    		  }
-    	  })
+      $('#frm_auction_add').submit((ev) => {
+        if($('#title').val() === ''){
+          alert('제목은 반드시 입력해야 합니다.');
+          $('#title').focus();
+          ev.preventDefault();
+        return;
+      } else if($("#startPrice").val() === ''){
+        alert('입찰시작가는 반드시 입력해야 합니다');
+        $('#startPrice').focus();
+          ev.preventDefault();
+        return;
+      } else if($("#endAt").val() === ''){
+        alert('마감기한은 반드시 입력해야 합니다');
+        $('#endAt').focus();
+          ev.preventDefault();
+        return;
+      } else if($("#files").val() === ''){
+        alert('대표이미지는 반드시 추가해야 합니다');
+          ev.preventDefault();
+        return;
+      } else if($("#contents").val() === ''){
+        alert('내용은 반드시 입력해야 합니다');
+        $('#contents').focus();
+          ev.preventDefault();
+        return;
+      }
+        })
       }
       
-      const fnCkeditor = () => {
-    	  DecoupledEditor
-          .create(document.getElementById('ckeditor'), {
-        	  ckfinder: {
-              // 이미지 업로드 경로
-              uploadUrl: '/draw/imageUpload.do'    		  
-        		}
-      	  })
-          .then(editor => {
-            const toolbarContainer = document.getElementById('toolbar-container');
-            toolbarContainer.appendChild(editor.ui.view.toolbar.element);
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      }
-      
-      const fnDrawAdd = () => {
-    	  $('#frm_draw_add').submit((ev) => {
-          if($('#title').val() === ''){
-            alert('제목은 반드시 입력해야 합니다.');
-            ev.preventDefault();
-            return;
-          }
-    		  $('#contents').val($('#ckeditor').html());
-    	  })
-      }
-      
+      $('#target').each(function() {
+      $(this).html($(this).html().replace(/(첫 번째 첨부이미지가 대표이미지 입니다.)/g, '<span style="color: crimson">(첫 번째 첨부이미지가 대표이미지 입니다.)</span>'));
+    });
+    
+      $('.target2').each(function() {
+      $(this).html($(this).html().replace(/(필수)/g, '<span style="color: crimson">⁕</span>'));
+    });
+    
+    $('#frm_auction_add').submit(() => {
+    if($('#buyPrice').val() == ""){
+        $('#buyPrice').val("-1");
+    }
+    if($('#width').val() == ""){
+        $('#width').val("0");
+    }
+    if($('#height').val() == ""){
+        $('#height').val("0");
+    }
+    })
+    
+
+      fnDate();
       fnFileCheck();
       fnSubmit();
       

@@ -11,10 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class DrawReviewDto {
-	private String reviewContents;
-	private int rating;
-	private Date createdAt;
-	private DrawDto drawDto;
-	private UserDto userDto;
+public class DrawOrderDto {
+  private int orderNo;
+  private Date orderDate;
+  private int price;
+  private String receiveEmail;
+  private DrawDto drawDto;
+  private UserDto userDto;
 }

@@ -4,8 +4,29 @@
 <head th:replace="~{/layout/header::head('그려드림 게시판')}"></head>
 
 <style>
-	
+  
+  body {
+	  width: 100%;
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f8f9fa;
+      margin: 0;
+      align-items: center;
+      justify-content: center;
+    }
+  
+  .main_wrap {
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .wrap_9{
+	width: 90%;
+  }
+    
   .draw_list {
+	width: 90%;
     margin: 10px auto;
     display: flex;
     flex-wrap: wrap;
@@ -13,12 +34,14 @@
   
   .draw {
     width: 400px;
+    height: 360px;
     border: 1px solid gray;
     border-radius: 5px;
-    text-align: center;
-    margin: 20px 15px;
+    text-align: left;
+    margin: 20px 20px;
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
+    position: relative; 
   }
   
   .image-container {
@@ -39,8 +62,11 @@
     background-color: silver;
   }
   
-  .wish_list{
-	cursor: pointer;
+  .wish_list {
+    position: absolute;
+    bottom: 10px; 
+    right: 10px; 
+    cursor: pointer;
   }
 </style>
 
@@ -105,7 +131,7 @@
 	            let imageContainer = $('<div class="image-container"></div>');
 	            let image = resData.imageList[0];
 	            let imageContent = '<div class="image" data-draw_no="' + image.drawNo + '">';
-	            imageContent += '<img src="' + image.path + '/s_' + image.filesystemName + '"  width="398" height="200">';
+	            imageContent += '<img src="' + image.path + '/s_' + image.filesystemName + '"  width="398" height="250">';
 	            imageContent += '</div>';
 	            imageContainer.append(imageContent);
 	            drawContainer.prepend(imageContainer);

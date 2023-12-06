@@ -72,11 +72,64 @@
   </resultMap>
   
   <resultMap type="DrawReviewDto" id="DrawReviewMap">
-  	<result column="REVIEW_TITLE" property="reviewTitle"/>
   	<result column="REVIEW_CONTENTS" property="reviewContents"/>
   	<result column="RATING" property="rating"/>
   	<result column="CREATED_AT" property="createdAt"/>
   	<association javaType="DrawDto"    property="drawDto">
+	  <id      column="DRAW_NO"      property="drawNo"/>
+	  <result  column="TITLE"        property="title"/>
+	  <result  column="PRICE"        property="price"/>
+	  <result  column="CONTENTS"     property="contents"/>
+	  <result  column="WIDTH"  		 property="width"/>
+	  <result  column="HEIGHT" 		 property="height"/>
+	  <result  column="WORK_TERM" 	 property="workTerm"/>
+	  <association javaType="CategoryDto" property="categoryDto">
+	  	<id        column="CATEGORY_NO"   property="categoryNo"/>
+	  	<result    column="CATEGORY_NAME"          property="categoryName" />
+	  </association>
+      <association javaType="UserDto"      property="userDto">
+      	<id        column="USER_NO"        property="userNo"/>
+      	<result    column="EMAIL"          property="email" />
+      	<result    column="PW"             property="pw" />
+      	<result    column="NAME"           property="name" />
+      	<result    column="MOBILE"         property="mobile" />
+      	<result    column="GENDER"         property="gender" />
+      	<result    column="AGREE"          property="agree" />
+      	<result    column="STATE"          property="state" />
+      	<result    column="JOINED_AT"      property="joinedAt" />
+      	<result    column="POSTCODE"       property="postcode" />
+      	<result    column="ROAD_ADDRESS"   property="roadAddress" />
+      	<result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      	<result    column="DETAIL_ADDRESS" property="detailAddress" />
+      	<result    column="NICKNAME"	   property="nickname" />
+      	<result    column="INTRODUCTION"   property="introduction" />
+      </association>
+	</association>
+	<association javaType="UserDto"      property="userDto">
+      	<id        column="USER_NO"        property="userNo"/>
+      	<result    column="EMAIL"          property="email" />
+      	<result    column="PW"             property="pw" />
+      	<result    column="NAME"           property="name" />
+      	<result    column="MOBILE"         property="mobile" />
+      	<result    column="GENDER"         property="gender" />
+      	<result    column="AGREE"          property="agree" />
+      	<result    column="STATE"          property="state" />
+      	<result    column="JOINED_AT"      property="joinedAt" />
+      	<result    column="POSTCODE"       property="postcode" />
+      	<result    column="ROAD_ADDRESS"   property="roadAddress" />
+      	<result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      	<result    column="DETAIL_ADDRESS" property="detailAddress" />
+      	<result    column="NICKNAME"	   property="nickname" />
+      	<result    column="INTRODUCTION"   property="introduction" />
+      </association>
+  </resultMap>
+  
+  <resultMap type="DrawOrderDto" id="DrawOrderMap">
+	<id 	column="ORDER_NO" property="orderNo"/>
+	<result column="ORDER_DATE" property="orderDate"/>
+	<result column="PRICE" property="price"/>
+	<result column="RECEIVE_EMAIL" property="receiveEmail"/>
+	<association javaType="DrawDto"    property="drawDto">
 	  <id      column="DRAW_NO"      property="drawNo"/>
 	  <result  column="TITLE"        property="title"/>
 	  <result  column="PRICE"        property="price"/>
@@ -269,12 +322,39 @@
   </select>
   
   <select id="getReviewList" parameterType="Map" resultMap="DrawReviewMap">
-	SELECT A.DRAW_NO, A.USER_NO, A.REVIEW_TITLE, A.REVIEW_CONTENTS, A.RATING, A.CREATED_AT, A.NICKNAME
-	  FROM (SELECT ROW_NUMBER() OVER(ORDER BY CREATED_AT DESC) AS RN, D.DRAW_NO, D.BUYER_NO, D.REVIEW_TITLE, D.REVIEW_CONTENTS, D.RATING, D.CREATED_AT, U.USER_NO, U.NICKNAME
+	SELECT A.DRAW_NO, A.USER_NO, A.REVIEW_CONTENTS, A.RATING, A.CREATED_AT, A.NICKNAME
+	  FROM (SELECT ROW_NUMBER() OVER(ORDER BY CREATED_AT DESC) AS RN, D.DRAW_NO, D.BUYER_NO, D.REVIEW_CONTENTS, D.RATING, D.CREATED_AT, U.USER_NO, U.NICKNAME
 	          FROM USER_T U LEFT OUTER JOIN DRAW_REVIEW_T D
 	            ON U.USER_NO = D.BUYER_NO
 	         WHERE D.DRAW_NO = #{drawNo}) A
 	 WHERE A.RN BETWEEN #{begin} AND #{end}
   </select>
+  
+  <select id="getOrderReview" parameterType="Map" resultMap="DrawOrderMap">
+	SELECT O.ORDER_NO, O.DRAW_NO, O.BUYER_NO, O.ORDER_DATE, O.PRICE, O.RECEIVE_EMAIL, U.NICKNAME, U.USER_NO
+	  FROM DRAW_ORDER_T O INNER JOIN DRAW_T D
+	    ON O.DRAW_NO = D.DRAW_NO INNER JOIN USER_T U
+	    ON U.USER_NO = O.BUYER_NO
+	 WHERE O.BUYER_NO = #{userNo}
+	   AND O.DRAW_NO = #{drawNo}
+  </select>
+  
+  <insert id="addReview" parameterType="Map">
+	INSERT INTO DRAW_REVIEW_T (
+	  DRAW_NO
+	, BUYER_NO
+	, REVIEW_CONTENTS
+	, RATING
+	, CREATED_AT
+	) VALUES (
+	  #{drawNo}
+	, #{userNo}
+	, #{reviewContents}
+	, #{rating}
+	, SYSDATE
+	)
+  </insert>
+  
+  
   
 </mapper>

@@ -66,10 +66,10 @@
   
   <!-- 개별 1:1문의 상세 -->
   <select id="getInquiry" parameterType="int" resultMap="InquiryMap">
-    SELECT INQUIRY_NO, USER_NO, AUCTION_NO, DRAW_NO, TITLE, CONTENT, INQUIRY_CREATED_AT, INQUIRY_TYPE
-      FROM (SELECT INQUIRY_NO, I.USER_NO, AUCTION_NO, DRAW_NO, TITLE, CONTENT, INQUIRY_CREATED_AT, INQUIRY_TYPE
+    SELECT IU.INQUIRY_NO, IU.USER_NO, IU.NAME, IU.AUCTION_NO, IU.DRAW_NO, IU.TITLE, IU.CONTENT, IU.INQUIRY_CREATED_AT, IU.INQUIRY_TYPE
+      FROM (SELECT INQUIRY_NO, I.USER_NO, U.NAME, AUCTION_NO, DRAW_NO, TITLE, CONTENT, INQUIRY_CREATED_AT, INQUIRY_TYPE
               FROM INQUIRY_T I INNER JOIN USER_T U
-                ON I.USER_NO = U.USER_NO)
+                ON I.USER_NO = U.USER_NO) IU
      WHERE INQUIRY_NO = #{inquiryNo}
   </select>
   
@@ -90,7 +90,7 @@
       , INQUIRY_TYPE
     ) VALUES (
         #{inquiryNo}
-      , #{userNo}
+      , #{userDto.userNo}
       , #{auctionNo}
       , #{drawNo}
       , #{title}
@@ -110,7 +110,7 @@
     ) VALUES (
         #{inquiryNo}
       , #{contents}
-      , TO_DATE(#{status}, 'YYYY-MM-DD HH24:MI:SS')
+      , SYSDATE
       , #{status}
     )
   </insert>
@@ -126,7 +126,7 @@
   <select id="getAnswerList" parameterType="Map" resultType="AnswerDto">
     SELECT INQUIRY_NO, CONTENTS, CREATED_AT, STATUS
       FROM ANSWER_T
-     WHERE INQUIRY_NO = #{inquiryNo};
+     WHERE INQUIRY_NO = #{inquiryNo}
   </select>
   
   <!-- 1:1문의 답변 댓글 등록하기 -->

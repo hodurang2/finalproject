@@ -21,4 +21,5 @@ public interface DrawService {
 	public Map<String, Object> removeImage(HttpServletRequest request);
 	public int removeDraw(int drawNo);
 	public Map<String, Object> getReviewList(HttpServletRequest request);
+	public int addReview(HttpServletRequest request);
 }

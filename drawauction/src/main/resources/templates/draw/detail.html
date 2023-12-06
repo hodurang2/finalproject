@@ -3,16 +3,23 @@
 
 <head th:replace="~{/layout/header::head(|${draw.userDto.nickname}의 게시글|)}"></head>
 <style>
+	
   body {
-      font-family: 'Arial', sans-serif;
-      line-height: 1.6;
-      color: #333;
-      background-color: #f8f9fa;
-      margin: 0;
-    }
+	  width: 100%;
+	  font-family: 'Arial', sans-serif;
+	  line-height: 1.6;
+	  color: #333;
+	  background-color: #f8f9fa;
+	  margin: 0;
+	  display: flex;
+	  flex-direction: column;
+	  align-items: center;
+	  justify-content: center;
+	  min-height: 100vh;
+	}
 
     .main_wrap {
-      max-width: 800px;
+      width: 90%;
       margin: 0 auto;
       padding: 20px;
       background-color: #fff;
@@ -21,6 +28,7 @@
 
     .wrap_6 {
       position: relative;
+      width: 80%;
     }
 
     .artist-info {
@@ -53,16 +61,38 @@
       border-top: 1px solid #ddd;
     }
 
-    .image img {
-      display: block;
-      margin-top: 15px;
-      max-width: 100%;
-      height: auto;
+   .image img {
+        width: 100%; 
+        height: auto; 
+        object-fit: cover; 
+    }
+    
+    .image-container {
+        display: flex;
+        flex-wrap: wrap;  
+        overflow-x: auto;
     }
 
+
+    
+    .image {
+      flex: 0 0 auto;
+      width: 600px;
+      height: auto;
+      margin: 20px;
+    }
+    
     #review_list {
       margin-top: 20px;
     }
+    
+    .header {
+	  text-align: center;
+	}
+	
+	.header h2 {
+	  margin: 0;
+	}
 </style>
 
 <body>
@@ -71,9 +101,9 @@
   
   <div class="main_wrap">
 
-    <div class="wrap wrap_6">
+    <div class="wrap wrap_6 ">
     
-      <h1 class="title">그려드림 게시글</h1>
+      <h1 class="title" th:text="|${draw.userDto.nickname}의 그려드림|"></h1>
       
       <div class="text-center mb-5">
         <th:block th:if="${session.user != null}">
@@ -96,7 +126,6 @@
       <div th:text="|작업기간 : 결제일로부터 ${draw.workTerm} 일|"></div>
       <input type="hidden" id="drawNo2" name="drawNo2" th:value="${draw.drawNo}">
       
-      
       <div>내용</div>
       <th:block th:if="${#strings.isEmpty(draw.contents)}">
         <div>내용없음</div>
@@ -108,17 +137,17 @@
       <hr>
       
       <h5>그림 예시</h5>
-      <div>
+      <div class="image-container">
         <th:block th:if="${#lists.isEmpty(imageList)}">
           <div>첨부 없음</div>          
         </th:block>
         <th:block th:if="${not #lists.isEmpty(imageList)}">
-          <th:block th:each="atc:${imageList}">
-            <div class="image" th:data-image_no="${atc.drawImageNo}">
-              <th:block th:if="${atc.hasThumbnail == 1}">
-                <img th:src="@{|${atc.path}/s_${atc.filesystemName}|}" alt="썸네일" width="500" style="margin-top: 15px">
+          <th:block th:each="img:${imageList}">
+            <div class="image" th:data-image_no="${img.drawImageNo}">
+              <th:block th:if="${img.hasThumbnail == 1}">
+                <img th:src="@{|${img.path}/s_${img.filesystemName}|}" alt="썸네일">
               </th:block>
-              <th:block th:if="${atc.hasThumbnail == 0}">
+              <th:block th:if="${img.hasThumbnail == 0}">
                 <img th:src="@{/image/image1.png}" alt="썸네일" width="50">
               </th:block>
             </div>
@@ -128,15 +157,57 @@
       
       <hr>
       
+      <div>
+        <form id="frm_review_add" method="post" action="/draw/addReview.do">
+          <div class="input-group mb-3">
+            <!-- 로그인 안 한 경우 -->
+            <th:block th:if="${session.user == null}">              
+              <input type="hidden" name="userNo" th:value="0">
+            </th:block>
+            <!-- 로그인 한 경우 -->
+            <th:block th:if="${session.user != null and orderReview != null and session.user.userNo == orderReview.userDto.userNo}">
+              <input type="hidden" name="userNo" th:value="${session.user.userNo}">
+              <input type="hidden" name="drawNo" th:value="${draw.drawNo}">
+              <div>
+	            <label for="rating" class="form-label">별점</label>
+	            <div>
+		          <select name="rating" id="rating">
+			        <option value="1">1</option>  
+			        <option value="2">2</option>  
+				    <option value="3">3</option>  
+				    <option value="4">4</option>  
+				    <option value="5">5</option>  
+				  </select>
+				</div>
+			  </div>
+              <textarea rows="5" name="reviewContents" class="form-control" id="reviewContents" placeholder="후기를 작성해 주세요"></textarea>
+              <button type="submit" class="btn btn-primary btn-sm" id="btn_review_add">작성완료</button>
+            </th:block>
+          </div>
+        </form>
+      </div>
 	 
-	  <div>상품후기
-		<div id="review_list"></div>
+	<div>
+	  <h4>상품후기</h4>
+	  <div id="review_container"class="form-control">
+	    <table id="review_container2" class="table">
+	      <thead>
+	        <tr>
+	          <th>작성자</th>
+	          <th>별점</th>
+	          <th>내용</th>
+	          <th>작성일</th>
+	        </tr>
+	      </thead>
+	      <tbody id="review_list">
+	      </tbody>
+	    </table>
 	  </div>
+	</div>
 	        
     </div>
       
     <script th:inline="javascript">
-    
   	  // 전역 변수
       var frmBtn = $('#frm_btn');
       var page = 1;
@@ -171,8 +242,7 @@
           }
         }
       }
-      
-      
+     
       const fnWishListControll = () => {
 		$('#wish_list').click(() => {
 		  $.ajax({
@@ -225,34 +295,48 @@
     }
     
     const fnReviewtList = () => {
-          $.ajax({
-            // 요청
-            type: 'get',
-            url: '/draw/getReviewList.do',
-            data: 'page=' + page + '&drawNo=[[${draw.drawNo}]]',
-            // 응답
-            dataType: 'json',
-            success: (resData) => {
-			  console.log(resData.reviewList);
-              $('#review_list').empty();
-              if(resData.reviewList.length === 0){
-                $('#review_list').html('<div class="text-center my-3">작성된 후기가 없습니다.</div>');
-                return;
-              }
-              $.each(resData.reviewList, (i, r) => {
-                let str = '';
-                str += '<div>';
-                str += '<div>' + r.userDto.nickname + '</div>';
-                str += '<div>' + r.reviewTitle + '</div>';
-                str += '<div>' + r.reviewContents + '</div>';
-                str += '<div style="font-size: 12px;">' + r.createdAt + '</div>';
-                str += '</div>';
-                $('#review_list').append(str);
-                })
-              }
+      $.ajax({
+        // 요청
+        type: 'get',
+        url: '/draw/getReviewList.do',
+        data: 'page=' + page + '&drawNo=[[${draw.drawNo}]]',
+        // 응답
+        dataType: 'json',
+        success: (resData) => {
+          $('#review_list').empty();
+          if(resData.reviewList.length === 0){
+            $('#review_container2').css('display', 'none');
+            $('#review_container').html('<div class="text-center my-3">작성된 후기가 없습니다.</div>');
+            return;
+          }
+          $.each(resData.reviewList, (i, r) => {
+	      var createdAt = new Date(r.createdAt);
+	 	  var formattedCreatedAt = createdAt.toISOString().slice(0, 16).replace('T', ' ');
+            let str = '<tr>';
+            str += '<td style="color: #1E90FF">' + r.userDto.nickname + '</td>';
+            str += '<td>' + r.rating + '</td>';
+            str += '<td>' + r.reviewContents + '</td>';
+            str += '<td style="font-size: 12px;">' + formattedCreatedAt + '</td>';
+            str += '</tr>';
+            $('#review_list').append(str);
             })
           }
+        })
+      }
+      
+      const fnReviewResult = () => {
+      let addReviewResult = /*[[${addReviewResult}]]*/ null;
+      if(addReviewResult !== null){
+        if(addReviewResult === 1){
+          alert('후기가 작성되었습니다.');
+        } else {
+          alert('후기 작성이 실패했습니다.');
+        }
+      }
+    }
+      
           
+      fnReviewResult();    
 	  fnReviewtList();
       fnScroll();
       fnEdit();

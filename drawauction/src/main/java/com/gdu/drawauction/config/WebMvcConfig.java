@@ -25,7 +25,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
       .addPathPatterns("/user/mypage.form", "/user/modifyPw.form")
       .addPathPatterns("/free/write.form")
       .addPathPatterns("/blog/write.form", "/blog/edit.form", "/blog/remove.do")
-      .addPathPatterns("/draw/write.form", "/draw/edit.form", "/draw/remove.do", "/draw/WishListControll.do");
+      .addPathPatterns("/draw/write.form", "/draw/edit.form", "/draw/remove.do", "/draw/WishListControll.do")
+      .addPathPatterns("/auction/write.form");
+      
     registry.addInterceptor(shouldNotLoginInterceptor)
       .addPathPatterns("/user/agree.form", "/user/join.form", "/user/login.form");
   }
@@ -38,6 +40,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
       .addResourceLocations("file:/draw/");
     registry.addResourceHandler("/upload/**")
     .addResourceLocations("file:/upload/");
+    registry.addResourceHandler("/auction/**")
+    .addResourceLocations("file:/auction/");
   }
   
 }
