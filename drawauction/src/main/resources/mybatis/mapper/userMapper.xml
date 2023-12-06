@@ -243,5 +243,16 @@
        AND NAME = #{name}
   </update>
   
+  
+  <!--/* 이름 중복 체크 */-->
+  	<select id="nameCheck" resultType="int">
+		SELECT COUNT(*) FROM USER_T
+		   WHERE NAME = #{name}
+	</select>
 
+  <!--/* 닉네임 중복 체크 */-->
+  	<select id="nicknameCheck" resultType="int">
+		SELECT COUNT(*) FROM USER_T
+		   WHERE NICKNAME = #{nickname}
+	</select>
 </mapper>

@@ -1,4 +1,4 @@
-/*@charset "UTF-8";
+@charset "UTF-8";
 
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css');
@@ -48,7 +48,7 @@
 
 .header_menu {
 	display: flex;
-    justify-content: space-between;  요소들을 좌우로 배치합니다. 
-    align-items: center;  요소들을 세로 중앙에 배치합니다. 
-    padding: 20px;  필요에 따라 페이지 패딩을 조절합니다. 
-}*/
+    justify-content: space-between; /* 요소들을 좌우로 배치합니다. */
+    align-items: center; /* 요소들을 세로 중앙에 배치합니다. */
+    padding: 20px; /* 필요에 따라 페이지 패딩을 조절합니다. */
+}
