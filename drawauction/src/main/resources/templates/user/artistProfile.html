@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<head th:replace="~{/layout/header::head(|${session.user.nickname} │ 작가 페이지|)}"></head>
+
+
+<body>
+	<div th:replace="~{/layout/header::header}"></div>
+
+	<div class="main_wrap">
+		<div class="wrap wrap_5" th:if="${session.user != null}">
+			
+			<div>
+			<div th:text="${session.user.nickname}" style="text-align: center;"></div>
+			<div th:text="${session.user.jibunAddress}" style="text-align: center;">"임시"</div>
+			</div>
+
+			
+		
+
+
+   	</div> 
+	</div>
+	
+	<div th:replace="~{/layout/footer::footer}"></div>
+	
+	
+</body>
+</html>
+
+    

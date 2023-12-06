@@ -12,37 +12,34 @@
   
   	<div class="main_wrap">
 	   <div class="wrap wrap_5">
-		   <h2>회원님의 아이디(이메일)를 확인해주세요</h2>
-		   <h4 style="margin-top: 20px" class="findIdResult"></h4>
-		   
+		   <h2>회원님의 아이디를 확인해주세요</h2>
+		   <div style="margin-top: 20px" class="findIdResult" th:value="${findIdValue}"></div>
+		   <button type="button"><a th:href="@{/user/find.form}">비밀번호 변경하러 가기</a></button>
 	   </div>
 	</div>
 	
 <script th:inline="javascript">
-	
-	 $(() => {
-			fnfindIdResult();
-		  })
-	
-	
-const fnfindIdResult = () => {
-    var findIdValue = /*[[${findId.email}]]*/ null;
-
-  
-    if (findIdValues === null || findIdValues.length === 0) {
-        $('.findIdResult').text('조회결과가 없습니다');
-    } else if (findIdValues.length === 1) {
-        // 하나의 이메일이 있는 경우
-        $('.findIdResult').text('아이디(이메일): ' + findIdValues[0]);
-    } else {
-        // 여러 이메일이 있는 경우
-        $('.findIdResult').text('여러 이메일이 있습니다: ' + findIdValues.join(', '));
-    }
+    // Thymeleaf 변수를 JavaScript로 직접 가져오기
+    var findIds = /*[[${findIds}]]*/ [];
     
-} 
-	 
+    $(document).ready(function() {
+        fnfindIdResult();
+    });
+
+    const fnfindIdResult = () => {
+        // Thymeleaf 변수를 사용하여 결과를 설정
+        if (findIds.length === 0) {
+            $('.findIdResult').text('조회결과가 없습니다');
+            return;
+        } else {
+            var resultHtml = '';
+            for (var i = 0; i < findIds.length; i++) {
+                resultHtml += '<div>' +  '이메일 : '+findIds[i].email + '</div>';
+            }
+            $('.findIdResult').html(resultHtml);
+        }
+    };
 </script>
-	
 	
 	<div th:replace="~{/layout/footer::footer}"></div>
 	
