@@ -72,6 +72,12 @@ public class DrawController {
     return "draw/edit";
   }
   
+  @GetMapping("/orderPayment.form")
+  public String orderPayment(HttpServletRequest request, Model model) {
+	drawService.getDraw(request, model);
+	return "draw/orderPayment";
+  }
+  
   @PostMapping("/modify.do")
   public String modify(HttpServletRequest request, RedirectAttributes redirectAttributes) {
     int modifyResult = drawService.modifyDraw(request);
