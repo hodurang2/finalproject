@@ -17,7 +17,6 @@
   }
   .mypage_list li {
     width: 100%;
-    
   }
   .mypage_list a {
     display: block;
@@ -38,7 +37,16 @@
     color: white;
   }
 
-  
+  .auction_title {
+    font-weight: 700;
+    width: 230px;
+    padding: 2px;
+  }
+
+  .column_name {
+    text-align: center;
+  }
+
 </style>
  
 <body>
@@ -59,9 +67,9 @@
     <div class="table-responsive" id="salesList_wrap">
       <table class="table align-middle">
         <thead>
-          <tr>
+          <tr class="column_name">
             <td>작품이미지</td>
-            <td>작품정보</td>
+            <td>작품제목</td>
             <td>경매시작일</td>
             <td>시작가</td>
             <td>현재입찰가</td>
@@ -70,14 +78,14 @@
             <td>경매종료일</td>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="salesList">
           <th:block th:each="s,vs:${salesList}">
-            <tr>
-              <td class="auction_image"><img th:src="@{|${s.auctionDto.image.path}/s_${s.auctionDto.image.filesystemName}|}" alt="썸네일"></td>
-              <td th:text="|작품제목:${s.auctionDto.artDto.title} 작품설명:${s.auctionDto.artDto.contents}|"></td>
-              <td th:text="${s.auctionDto.startAt}"></td>
-              <td th:text="${s.auctionDto.startPrice}"></td>
-              <td th:text="${s.price}"></td>
+            <tr class="auction" data-auction-no="${s.auctionDto.auctionNo}">
+              <td><img th:src="|${s.auctionDto.image.path}/s_${s.auctionDto.image.filesystemName}|" alt="썸네일" width="120px" height="100px"></td>
+              <td class="auction_title" th:text="${s.auctionDto.artDto.title}"></td>
+              <td class="auction_date" th:text="${s.auctionDto.startAt}"></td>
+              <td class="auction_price" th:text="${s.auctionDto.startPrice}"></td>
+              <td class="auction_price" th:text="${s.price}"></td>
               <th:block th:if="${s.auctionDto.status == 0}">
                 <td th:text="진행"></td>
                 <td th:text="판매진행중"></td>
@@ -107,6 +115,22 @@
   
   
   <div th:replace="~{/layout/footer::footer}"></div>
+  
+  <script>
+
+    $(() => {
+       fnAuctionDetail();
+      })
+      
+      const fnAuctionDetail = () => {
+        $(document).on('click', '.auction', (ev) => {
+          console.log($(ev.target).data('auctionNo'));
+          location.href = '/auciton2/detail.do?auctionNo=' + $(ev.target).data('auctionNo');
+        })
+      }
+      
+    
+  </script>
   
 </body>
 </html>
