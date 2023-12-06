@@ -94,7 +94,7 @@ public class AuctionServiceImpl2 implements AuctionService2 {
     return new ResponseEntity<>(Map.of("wishCheckResult", wishCheckResult), HttpStatus.OK);
   }
   
-@Override
+  @Override
   public Map<String, Object> getBidCount(int auctionNo) {
     
     int bidCount = auctionMapper2.getBidCount(auctionNo);

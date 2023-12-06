@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class AuctionController {
   private final AuctionService auctionService;
   
-  @GetMapping("/")
+  @GetMapping("/list.do")
   public String list() {
     return "auction/list";
   }
