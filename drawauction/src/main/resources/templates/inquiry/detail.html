@@ -37,9 +37,9 @@
         </th:block>
         <th:block th:if="${not #lists.isEmpty(inquiryAttachList)}">
           <th:block th:each="atc:${inquiryAttachList}">
-            <div class="inquiryAttach" th:data-inquiryAttachNo="${atc.inquiryNo}">
+            <div class="inquiryAttach" th:data-inquiry_attach_no="${atc.inquiryAttachNo}">
               <th:block th:if="${atc.hasThumbnail == 1}">
-                <img th:src="@{|${atc.path}/s_${atc.filesystemName}|}" alt="썸네일" width="50">
+                <img th:src="@{|${atc.path}/s_${atc.filesystemName}|}" alt="썸네일" width="100">
               </th:block>
               <th:block th:if="${atc.hasThumbnail == 0}">
                 <img th:src="@{/image/attach2.png}" alt="썸네일" width="50">
@@ -231,7 +231,7 @@
     const fnDownload = () => {
       $('.inquiryAttach').click(function(){
         if(confirm('다운로드 할까요?')){
-          location.href = '/inquiry/download.do?inquiryAttachNo=' + $(this).data('inquiryAttachNo');
+          location.href = '/inquiry/download.do?inquiryAttachNo=' + $(this).data('inquiry_attach_no');
         }
       })
     }
