@@ -20,4 +20,5 @@ public class DrawDto {
 	private UserDto userDto; // private int sellerNo;
 	private int workTerm;
 	private String heart;
+	private DrawImageDto image;
 }

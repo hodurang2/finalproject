@@ -2,8 +2,23 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{/layout/header::head(|${draw.userDto.nickname}의 게시글|)}"></head>
+<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
 <style>
-	
+  
+  #btnKakao {
+  display: inline-block;
+  vertical-align: middle;
+  padding-top: 50px;
+  width: 43px; /* Set the width according to your icon size */
+  height: 30px; /* Set the height according to your icon size */
+  background-image: url(../../image/icon-kakao.png);
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 11.6%; /* Adjust the top position to vertically center the icon */
+  right: 11%;
+  transform: translateY(-50%); /* Center the icon vertically */
+}
+  
   body {
 	  width: 100%;
 	  font-family: 'Arial', sans-serif;
@@ -30,18 +45,22 @@
       position: relative;
       width: 80%;
     }
+    .ctr_info{
+      position: relative;
+      max-width: 650px;
+	}
 
-    .artist-info {
+    .artist_info {
       display: inline-block;
       position: relative;
-      margin-bottom: 20px;
+      margin-bottom: 5px;
     }
 
     #wish_list {
       cursor: pointer;
       position: absolute;
-      top: 11%;
-      right: 0;
+      top: 10%;
+      right: 5%;
       color: #ff0000;
     }
 
@@ -72,9 +91,11 @@
         flex-wrap: wrap;  
         overflow-x: auto;
     }
-
-
     
+    .detail_container {
+	  font-size: 20px;
+	}
+
     .image {
       flex: 0 0 auto;
       width: 600px;
@@ -116,23 +137,26 @@
           </th:block>
         </th:block>
       </div>
-      <div class="artist-info" th:text="|작가 : ${draw.userDto.nickname}|"></div>
-      <i id="wish_list" th:class="|${draw.heart} fa-heart fa-2xl|" style="color: #ff0000;"></i>
-      <div th:text="|카테고리 : ${draw.categoryDto.categoryName}|"></div>
-      <div th:text="|제목 : ${draw.title}|"></div>
-      <div th:text="|가격 : ${#numbers.formatInteger(draw.price, 0, 'COMMA')}P|"></div>
-      <div th:text="|작품 가로길이(px) : ${draw.width}|"></div>
-      <div th:text="|작품 세로길이(px) : ${draw.height}|"></div>
-      <div th:text="|작업기간 : 결제일로부터 ${draw.workTerm} 일|"></div>
-      <input type="hidden" id="drawNo2" name="drawNo2" th:value="${draw.drawNo}">
-      
-      <div>내용</div>
-      <th:block th:if="${#strings.isEmpty(draw.contents)}">
-        <div>내용없음</div>
-      </th:block>
-      <th:block th:if="${not #strings.isEmpty(draw.contents)}">
-        <div th:text="${draw.contents}"></div>
-      </th:block>
+      <div class="detail_container">
+	      <div class="artist_info" th:text="|작가 : ${draw.userDto.nickname}|"></div>
+	      <a id="btnKakao" class="link-icon kakao" href="javascript:shareKakao();"></a>
+	      <i id="wish_list" th:class="|${draw.heart} fa-heart fa-2xl|" style="color: #ff0000;"></i>
+	      <div class="ctr_info" th:text="|카테고리 : ${draw.categoryDto.categoryName}|"  style="margin-bottom: 5px"></div>
+	      <div th:text="|제목 : ${draw.title}|" style="margin-bottom: 5px"></div>
+	      <div th:text="|가격 : ${#numbers.formatInteger(draw.price, 0, 'COMMA')}P|" style="margin-bottom: 5px" ></div>
+	      <div th:text="|작품 가로길이(px) : ${draw.width}|" style="margin-bottom: 5px"></div>
+	      <div th:text="|작품 세로길이(px) : ${draw.height}|" style="margin-bottom: 5px"></div>
+	      <div th:text="|작업기간 : 결제일로부터 ${draw.workTerm} 일|" style="margin-bottom: 20px"></div>
+	      <input type="hidden" id="drawNo2" name="drawNo2" th:value="${draw.drawNo}">
+	      
+	      <div style="margin-bottom: 5px">내용</div>
+	      <th:block th:if="${#strings.isEmpty(draw.contents)}">
+	        <div>내용없음</div>
+	      </th:block>
+	      <th:block th:if="${not #strings.isEmpty(draw.contents)}">
+	        <div th:text="${draw.contents}"></div>
+	      </th:block>
+	  </div>
       
       <hr>
       
@@ -165,7 +189,7 @@
               <input type="hidden" name="userNo" th:value="0">
             </th:block>
             <!-- 로그인 한 경우 -->
-            <th:block th:if="${session.user != null and orderReview != null and session.user.userNo == orderReview.userDto.userNo}">
+            <th:block th:if="${session.user != null and orderReview != null and session.user.userNo == orderReview.userDto.userNo and reviewCheck == 0}">
               <input type="hidden" name="userNo" th:value="${session.user.userNo}">
               <input type="hidden" name="drawNo" th:value="${draw.drawNo}">
               <div>
@@ -213,7 +237,6 @@
       var page = 1;
       var totalPage = 0;
       var drawNo = $('#drawNo2').val();
-      
       const fnEdit = () => {
         $('#btn_edit').click(() => {
           frmBtn.attr('action', '/auction2/edit.form');
@@ -316,7 +339,7 @@
             str += '<td style="color: #1E90FF">' + r.userDto.nickname + '</td>';
             str += '<td>' + r.rating + '</td>';
             str += '<td>' + r.reviewContents + '</td>';
-            str += '<td style="font-size: 12px;">' + formattedCreatedAt + '</td>';
+            str += '<td>' + formattedCreatedAt + '</td>';
             str += '</tr>';
             $('#review_list').append(str);
             })
@@ -334,7 +357,31 @@
         }
       }
     }
-      
+    
+    var nickname = $('.artist_info').text();
+    function shareKakao() {
+
+	  // 사용할 앱의 JavaScript 키 설정
+	  Kakao.init('e2d75a3c7c1b1cd979109692b99fdb3c');
+	
+	  // 카카오링크 버튼 생성
+	  Kakao.Link.createDefaultButton({
+	    container: '#btnKakao', // 카카오공유버튼ID
+	    objectType: 'feed',
+	    content: {
+	      title: "들어옥션", // 보여질 제목
+	      description: "들어옥션 " + '[[${draw.userDto.nickname}]]' + "의 그려드림 상세보기 링크", // 보여질 설명
+	      imageUrl: "https://i.ibb.co/ZXqhV0w/image.png", // 이미지 URL
+	      imageWidth: 200, // 이미지 폭
+          imageHeight: 100, // 이미지 높이
+	      link: {
+	         mobileWebUrl: "http://localhost:8080/draw/detail.do?drawNo=" +  drawNo,
+	         webUrl: "http://localhost:8080/draw/detail.do?drawNo=" +  drawNo
+	      }
+	    }
+	  });
+	}
+    
           
       fnReviewResult();    
 	  fnReviewtList();

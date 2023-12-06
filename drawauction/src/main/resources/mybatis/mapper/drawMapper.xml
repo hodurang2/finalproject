@@ -291,6 +291,13 @@
      WHERE DRAW_IMAGE_NO = #{drawImageNo}
   </select>
   
+  <select id="getDrawImage" parameterType="int" resultType="DrawImageDto">
+    SELECT DRAW_IMAGE_NO, DRAW_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+      FROM DRAW_IMAGE_T
+     WHERE DRAW_NO = #{drawNo}
+       AND DRAW_IMAGE_NO = (SELECT MIN(DRAW_IMAGE_NO) FROM DRAW_IMAGE_T WHERE DRAW_NO = #{drawNo})
+  </select>
+  
   <delete id="deleteImage" parameterType="int">
     DELETE
       FROM DRAW_IMAGE_T
@@ -355,6 +362,13 @@
 	)
   </insert>
   
-  
+  <select id="reviewCheck" parameterType="int" resultType="int">
+	SELECT COUNT(*)
+	  FROM DRAW_T D INNER JOIN DRAW_ORDER_T DO
+	    ON D.DRAW_NO = DO.DRAW_NO INNER JOIN DRAW_REVIEW_T DR
+	    ON DO.DRAW_NO = DR.DRAW_NO INNER JOIN USER_T U
+	    ON DR.BUYER_NO = U.USER_NO
+	 WHERE U.USER_NO = #{userNo}
+  </select>
   
 </mapper>

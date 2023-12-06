@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.gdu.drawauction.dao.DrawMapper;
+import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.dto.CategoryDto;
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.DrawImageDto;
@@ -75,6 +76,10 @@ public class DrawServiceImpl implements DrawService{
 	          }
 	          drawDto.setHeart(heart);
 	        }
+	      }
+	    
+	    for(DrawDto drawDto : drawList) {
+	        drawDto.setImage(drawMapper.getDrawImage(drawDto.getDrawNo()));
 	      }
 	    
 	    return Map.of("drawList", drawList
@@ -193,9 +198,10 @@ public class DrawServiceImpl implements DrawService{
 	      }
 	      drawDto.setHeart(heart);
 	    }
-	  System.out.println(userNo + "***************************************************************************************");
 	  Map<String, Object> orderMap = Map.of("drawNo", drawDto.getDrawNo(), "userNo", userNo);
+	  int reviewCheck = drawMapper.reviewCheck(userNo);
 	  
+	  model.addAttribute("reviewCheck", reviewCheck);
 	  model.addAttribute("orderReview", drawMapper.getOrderReview(orderMap));
 	  model.addAttribute("draw", drawMapper.getDraw(drawNo));
 	  model.addAttribute("imageList", drawMapper.getImageList(drawNo));
