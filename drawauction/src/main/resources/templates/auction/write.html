@@ -2,7 +2,6 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{/layout/header::head('응찰 등록')}"></head>
-
 <body>
   
   <div th:replace="~{/layout/header::header}"></div>
@@ -60,7 +59,7 @@
           <label for="endAt" class="form-label target2">마감일자 필수
             <input type="datetime-local"
                name="endAt" 
-               id="endAt"
+               id="endAt" 
                class="form-control-sm"
                required>
           </label>
@@ -97,14 +96,35 @@
     </div>
       
     <script>
-      const fnDate = () =>{
-        let now = new Date();
-        let today = now.toISOString().slice(0, 19);
-        let lastDay = new Date(now.setFullYear(now.getFullYear() + 1)).toISOString().slice(0, 19);
-        $('#endAt').attr('min' , today);
-        $('#endAt').attr('max', lastDay);
-      }
       
+      const fnDate = () => {
+        // 현재 시간
+        let now = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000);
+        let date = now.toISOString().slice(0, -5);
+        // 현재로부터 1년 후의 시간
+        let lastYear = new Date(now);
+        lastYear.setFullYear(now.getFullYear() + 1);
+        let lastDay = lastYear.toISOString().slice(0, -5);
+        
+        // endAt 요소에 현재 시간을 초기 값으로 설정
+        $('#endAt').val(date);
+      
+        // endAt 요소에 최소 및 최대 날짜 제한 설정
+        $('#endAt').attr('min', date);
+        $('#endAt').attr('max', lastDay);
+      
+        console.log($('#endAt').val());
+        // endAt 값 변경 이벤트 리스너
+        $('#endAt').on('change', () => {
+          let selectedDate = $('#endAt').val();
+      
+          if (selectedDate < date) {
+            // 선택한 날짜가 현재 시간보다 이전인 경우 알림을 표시하고 현재 시간으로 설정
+            alert('현재 시간보다 이전의 날짜는 설정할 수 없습니다.');
+            $('#endAt').val(date);
+          }
+        })
+      }
       const fnFileCheck = () => {
         $('#files').change((ev) => {
           $('#image_container').empty();
@@ -192,7 +212,7 @@
     })
     
 
-      //fnDate();
+      fnDate();
       fnFileCheck();
       fnSubmit();
       

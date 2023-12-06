@@ -15,6 +15,9 @@
     padding-top: 10px;
     float: right;
   }
+  .auction_heart_div i {
+    color: #e11414;
+  }
   .auction_category {
     color: grey;
     font-size: 11px;
@@ -37,6 +40,11 @@
     margin: 10px auto;
     display: flex;
     flex-wrap: wrap;
+   }
+   .auction_image img{
+     width: 260px;
+     height: 200px;
+     object-fit: contain;
    }
   .auction {
     width: 262px;
@@ -198,13 +206,13 @@
             totalPage = resData.totalPage;
             $.each(resData.auctionList,(i, auction) => {
               let str = '<div class="auction" data-auction_no="' + auction.auctionNo + '">';
-              str += '<div class="auction_image"><img src="' + auction.image.path + '/s_' + auction.image.filesystemName + '" width="260" height="200"></div>';
+              str += '<div class="auction_image"><img src="' + auction.image.path + '/s_' + auction.image.filesystemName + '"></div>';
               if(auction.status === 0){
               str += '<div class="auction_ongoing">경매진행중</div>';
               } else {
               str += '<div class="auction_end">경매종료</div>';
               }
-              str += '<div class="auction_heart_div"><i class="' + auction.heartClass + ' fa-heart fa-xl auction_heart" style="color: #e11414;"></i></div>';
+              str += '<div class="auction_heart_div"><i class="' + auction.heartClass + ' fa-heart fa-xl auction_heart"></i></div>';
               str += '<div><span class="auction_category">' + auction.artDto.categoryDto.categoryName + '</span></div>';
               str += '<div><span class="auction_title">'    + auction.artDto.title                    + '</span></div>';
               str += '<div><span class="auction_nickname">' + auction.artDto.sellerDto.nickname       + '</span></div>';
@@ -245,13 +253,13 @@
                totalPage = resData.totalPage;
                $.each(resData.searchList,(i, auction) => {
                 let str = '<div class="auction" data-auction_no="' + auction.auctionNo + '">';
-                str += '<div class="auction_image"><img src="' + auction.image.path + '/s_' + auction.image.filesystemName + '"  width="260" height="200"></div>';
+                str += '<div class="auction_image"><img src="' + auction.image.path + '/s_' + auction.image.filesystemName + '"></div>';
                 if(auction.status === 0){
                 str += '<div>경매진행중</div>';
                 } else {
                 str += '<div>경매종료</div>';
                 }
-                str += '<div class="auction_heart_div"><i class="' + auction.heartClass + ' fa-heart fa-xl auction_heart" style="color: #e11414;"></i></div>';
+                str += '<div class="auction_heart_div"><i class="' + auction.heartClass + ' fa-heart fa-xl auction_heart"></i></div>';
                 str += '<div><span class="auction_category">' + auction.artDto.categoryDto.categoryName + '</span></div>';
                 str += '<div><span class="auction_title">'    + auction.artDto.title                    + '</span></div>';
                 str += '<div><span class="auction_nickname">' + auction.artDto.sellerDto.nickname       + '</span></div>';
@@ -272,6 +280,7 @@
       } 
       const fnHeart = () => {
         $(document).on('click', '.auction_heart', function(event) {
+          event.stopPropagation();
           let user = /*[[${session.user}]]*/ null;
             if(user === null) {
               if(confirm('로그인이 필요한 기능입니다. 로그인하시겠습니까?')){
@@ -306,9 +315,10 @@
       }
       
       const fnAuctionDetail = () => {
-        $(document).on('click', '.auction', function() {
-            location.href = '/auction2/detail.do?auctionNo=' + $(this).data('auction_no');
+        $(document).on('click', '.auction', function(ev) {
+          location.href = '/auction2/detail.do?auctionNo=' + $(this).data('auction_no');
         })
+        
       }
     
       const fnScroll = () => {
@@ -365,22 +375,11 @@
         }
       }
 
-      const fnAuctionWrite = () => {
-       $('.auction_write').click((event) => {
-         let user = /*[[${session.user}]]*/ null;
-            if(user === null) {
-              if(confirm('로그인이 필요한 기능입니다. 로그인하시겠습니까?')){
-                location.href = '/user/login.form';
-              }
-                event.preventDefault();
-                return;
-            }
-       })
-      }
+     
       
-      fnAuctionWrite();
+     
       fnGetAuctionList();
-      // fnAuctionDetail();
+      fnAuctionDetail();
       fnScroll();
       fnAddResult();
       fnRemoveResult();

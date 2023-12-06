@@ -4,7 +4,6 @@
 <head th:replace="~{/layout/header::head('그려드림 게시판')}"></head>
 
 <style>
-  
   body {
 	  width: 100%;
       font-family: 'Arial', sans-serif;
@@ -14,8 +13,8 @@
       margin: 0;
       align-items: center;
       justify-content: center;
-    }
-  
+  }
+    
   .main_wrap {
     width: 90%;
     margin: 0 auto;
@@ -24,49 +23,60 @@
   .wrap_9{
 	width: 90%;
   }
-    
-  .draw_list {
+  
+ .draw_list {
 	width: 90%;
     margin: 10px auto;
     display: flex;
     flex-wrap: wrap;
   }
-  
+
   .draw {
-    width: 400px;
-    height: 360px;
+    width: 31.6%;
+    height: 500px;
     border: 1px solid gray;
     border-radius: 5px;
     text-align: left;
-    margin: 20px 20px;
-    display: flex;
-    flex-direction: column;
-    position: relative; 
-  }
-  
-  .image-container {
-    flex: 1;
+    margin: 10px;
+    overflow: hidden;
+    position: center;
+    font-size: 18px;
   }
 
-  .image {
+  .draw:hover {
+    background-color: rgb(84, 186, 125);
+  }
+
+  .draw_image {
     width: 100%;
-    height: 100%;
+    height: 60%;
+    overflow: hidden;	
+    position: relative;
+  }
+
+  .draw_image img {
+    width: 100%;
+    max-height: 100%;
+    object-fit: contain;
     cursor: pointer;
   }
 
-  .draw-content {
+  .draw_content {
     padding: 10px;
+    flex-grow: 1;
   }
-  
-  .draw:hover {
-    background-color: silver;
-  }
-  
+
   .wish_list {
     position: absolute;
-    bottom: 10px; 
-    right: 10px; 
+    bottom: 10px;
+    right: 10px;
     cursor: pointer;
+  }
+
+  .draw_list::after {
+    content: "";
+    display: table;
+    clear: both;
   }
 </style>
 
@@ -104,47 +114,29 @@
 	    dataType: 'json',
 	    success: (resData) => {
 	      totalPage = resData.totalPage;
-	
 	      $.each(resData.drawList, (i, draw) => {
 	        let drawNo = draw.drawNo;
-	        let drawContainer = $('<div class="draw" data-draw_no="' + draw.drawNo + '"></div>');
-	        let drawContent = '<div>제목: ' + draw.title + '</div>';
-	        drawContent += '<div>카테고리: ' + draw.categoryDto.categoryName + '</div>';
+	        let str = '<div class="draw" data-draw_no="' + draw.drawNo + '">';
+			str += '<div class="draw_image" data-draw_no="' + draw.drawNo + '"><img src="' + draw.image.path + '/s_' + draw.image.filesystemName + '"></div>';
+	        str += '<div style="margin-top: 15px">제목: ' + draw.title + '</div>';
+	        str += '<div>카테고리: ' + draw.categoryDto.categoryName + '</div>';
 	        if (draw.userDto === null) {
-	          drawContent += '<div>작가: 정보없음</div>';
+	          str += '<div>작가: 정보없음</div>';
 	        } else {
-	          drawContent += '<div>작가: ' + draw.userDto.nickname + '</div>';
+	          str += '<div>작가: ' + draw.userDto.nickname + '</div>';
 	        }
-	        drawContent += '<div>가격: ' + draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</div>';
-	        drawContent += '<div id="drawNo" style="display:none">글번호: ' + draw.drawNo + '</div>';
-	        drawContent += '<div class="wish_list"><i class="' + draw.heart + ' fa-heart fa-2xl heart" style="color: #ff0000;"></i></div>';
-	        drawContainer.append(drawContent);
-	
-	        $.ajax({
-	          type: 'get',
-	          url: '/draw/getImageList.do',
-	          data: {
-	            drawNo: drawNo
-	          },
-	          dataType: 'json',
-	          success: (resData) => {
-	            let imageContainer = $('<div class="image-container"></div>');
-	            let image = resData.imageList[0];
-	            let imageContent = '<div class="image" data-draw_no="' + image.drawNo + '">';
-	            imageContent += '<img src="' + image.path + '/s_' + image.filesystemName + '"  width="398" height="250">';
-	            imageContent += '</div>';
-	            imageContainer.append(imageContent);
-	            drawContainer.prepend(imageContainer);
-	          }
-	        })
-	        $('#draw_list').append(drawContainer);
+	        str += '<div>가격: ' + draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</div>';
+	        str += '<div id="drawNo" style="display:none">글번호: ' + draw.drawNo + '</div>';
+	        str += '<div class="wish_list"><i class="' + draw.heart + ' fa-heart fa-2xl heart" style="color: #ff0000;"></i></div>';
+	        str += '</div>';
+	        $('#draw_list').append(str);
 	      })
 	    }
 	  })
 	}
       
 	const fnDrawDetail = () => {
-	  $(document).on('click', '.image', function(){
+	  $(document).on('click', '.draw_image', function(){
 	    location.href = '/draw/detail.do?drawNo=' + $(this).data('draw_no');
 	  })
 	}
