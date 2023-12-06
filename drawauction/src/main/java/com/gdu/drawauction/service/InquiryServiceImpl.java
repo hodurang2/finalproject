@@ -15,10 +15,6 @@ import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -71,16 +67,19 @@ public class InquiryServiceImpl implements InquiryService{
   
   @Override
   public InquiryDto getInquiry(int inquiryNo, Model model) {
+    
+    model.addAttribute("inquiry", inquiryMapper.getInquiry(inquiryNo));
+    model.addAttribute("inquiryAttachList", inquiryMapper.getInquiryAttachList(inquiryNo));
     return inquiryMapper.getInquiry(inquiryNo);
   }
   
   @Override
-  public int addInquiry(HttpServletRequest request) {
+  public boolean addInquiry(MultipartHttpServletRequest multipartRequest) throws Exception {
     
-    String title = request.getParameter("title");
-    String content = request.getParameter("content");
-    int userNo = Integer.parseInt(request.getParameter("userNo"));
-    String inquiryType = request.getParameter("inquiryType");
+    String title = multipartRequest.getParameter("title");
+    String content = multipartRequest.getParameter("content");
+    int userNo = Integer.parseInt(multipartRequest.getParameter("userNo"));
+    String inquiryType = multipartRequest.getParameter("inquiryType");
     
     
     InquiryDto inquiry = InquiryDto.builder()
@@ -93,26 +92,62 @@ public class InquiryServiceImpl implements InquiryService{
                           .build();
                           
     
-    int addResult = inquiryMapper.insertInquiry(inquiry);
-    System.out.println(inquiry.getInquiryNo());
-    Document document = Jsoup.parse(content);
-    Elements elements = document.getElementsByTag("img");
-
-    if (elements != null) {
-        for (Element element : elements) {
-            String src = element.attr("src");
-            String filesystemName = src.substring(src.lastIndexOf("/") + 1);
-            InquiryAttachDto inquiryAttach = InquiryAttachDto.builder()
-                    .inquiryNo(inquiry.getInquiryNo())
-                    .path(myFileUtils.getInquiryPath())
-                    .filesystemName(filesystemName)
-                    .build();
-
-            inquiryMapper.insertInquiryAttach(inquiryAttach);
-        }
+    int inquiryCount = inquiryMapper.insertInquiry(inquiry);
+    
+    List<MultipartFile> files = multipartRequest.getFiles("files");
+    
+    // 첨부 없을 때 : [MultipartFile[field="files", filename=, contentType=application/octet-stream, size=0]]
+    // 첨부 1개     : [MultipartFile[field="files", filename="animal1.jpg", contentType=image/jpeg, size=123456]]
+    
+    int attachCount;
+    if(files.get(0).getSize() == 0) {
+      attachCount = 1;
+    } else {
+      attachCount = 0;
     }
     
-    return addResult;
+    for(MultipartFile multipartFile : files) {
+      
+      if(multipartFile != null && !multipartFile.isEmpty()) {
+        
+        String path = myFileUtils.getUploadPath();
+        File dir = new File(path);
+        if(!dir.exists()) {
+          dir.mkdirs();
+        }
+        
+        String originalFilename = multipartFile.getOriginalFilename();
+        String filesystemName = myFileUtils.getFilesystemName(originalFilename);
+        File file = new File(dir, filesystemName);
+        
+        multipartFile.transferTo(file);
+        
+        String contentType = Files.probeContentType(file.toPath());  // 이미지의 Content-Type은 image/jpeg, image/png 등 image로 시작한다.
+        int hasThumbnail = (contentType != null && contentType.startsWith("image")) ? 1 : 0;
+        
+        if(hasThumbnail == 1) {
+          File thumbnail = new File(dir, "s_" + filesystemName);  // small 이미지를 의미하는 s_을 덧붙임
+          Thumbnails.of(file)
+                    .size(100, 100)      // 가로 100px, 세로 100px
+                    .toFile(thumbnail);
+        }
+        
+        InquiryAttachDto inquiryAttach = InquiryAttachDto.builder()
+                            .path(path)
+                            .originalFilename(originalFilename)
+                            .filesystemName(filesystemName)
+                            .hasThumbnail(hasThumbnail)
+                            .inquiryNo(inquiry.getInquiryNo())
+                            .build();
+        
+        attachCount += inquiryMapper.insertInquiryAttach(inquiryAttach);
+        
+      }  // if
+      
+    }  // for
+    
+    return (inquiryCount == 1) && (files.size() == attachCount);
+    
   }
   
   @Override
@@ -204,61 +239,6 @@ public class InquiryServiceImpl implements InquiryService{
   }
   
   @Override
-  public Map<String, Object> addInquiryAttach(MultipartHttpServletRequest multipartRequest) throws Exception {
-    
-    List<MultipartFile> files =  multipartRequest.getFiles("files");
-    
-    int attachCount;
-    if(files.get(0).getSize() == 0) {
-      attachCount = 1;
-    } else {
-      attachCount = 0;
-    }
-    
-    for(MultipartFile multipartFile : files) {
-      
-      if(multipartFile != null && !multipartFile.isEmpty()) {
-        
-        String path = myFileUtils.getUploadPath();
-        File dir = new File(path);
-        if(!dir.exists()) {
-          dir.mkdirs();
-        }
-        
-        String originalFilename = multipartFile.getOriginalFilename();
-        String filesystemName = myFileUtils.getFilesystemName(originalFilename);
-        File file = new File(dir, filesystemName);
-        
-        multipartFile.transferTo(file);
-        
-        String contentType = Files.probeContentType(file.toPath());  // 이미지의 Content-Type은 image/jpeg, image/png 등 image로 시작한다.
-        int hasThumbnail = (contentType != null && contentType.startsWith("image")) ? 1 : 0;
-        
-        if(hasThumbnail == 1) {
-          File thumbnail = new File(dir, "s_" + filesystemName);  // small 이미지를 의미하는 s_을 덧붙임
-          Thumbnails.of(file)
-                    .size(100, 100)      // 가로 100px, 세로 100px
-                    .toFile(thumbnail);
-        }
-        
-        InquiryAttachDto InquiryAttach = InquiryAttachDto.builder()
-                            .path(path)
-                            .originalFilename(originalFilename)
-                            .filesystemName(filesystemName)
-                            .hasThumbnail(hasThumbnail)
-                            .inquiryNo(Integer.parseInt(multipartRequest.getParameter("inquiryNo")))
-                            .build();
-        
-        attachCount += inquiryMapper.insertInquiryAttach(InquiryAttach);
-        
-      }  // if
-      
-    }  // for
-    
-    return Map.of("attachResult", files.size() == attachCount);
-  }
-  
-  @Override
   public Map<String, Object> getInquiryAttachList(HttpServletRequest request) {
     
     Optional<String> opt = Optional.ofNullable(request.getParameter("inquiryNo"));
@@ -271,11 +251,11 @@ public class InquiryServiceImpl implements InquiryService{
   public ResponseEntity<Resource> download(HttpServletRequest request) {
     
     // 첨부 파일의 정보 가져오기
-    int inquiryattachNo = Integer.parseInt(request.getParameter("inquiryAttachNo"));
-    InquiryAttachDto inquiryattach = inquiryMapper.getInquiryAttach(inquiryattachNo);
+    int inquiryAttachNo = Integer.parseInt(request.getParameter("inquiryAttachNo"));
+    InquiryAttachDto inquiryAttach = inquiryMapper.getInquiryAttach(inquiryAttachNo);
     
     // 첨부 파일 File 객체 -> Resource 객체
-    File file = new File(inquiryattach.getPath(), inquiryattach.getFilesystemName());
+    File file = new File(inquiryAttach.getPath(), inquiryAttach.getFilesystemName());
     Resource resource = new FileSystemResource(file);
     
     // 첨부 파일이 없으면 다운로드 취소
@@ -283,11 +263,8 @@ public class InquiryServiceImpl implements InquiryService{
       return new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
     }
     
-    // 다운로드 횟수 증가하기
-    inquiryMapper.updateDownloadCount(inquiryattachNo);
-    
     // 사용자가 다운로드 받을 파일의 이름 결정 (User-Agent값에 따른 인코딩 처리)
-    String originalFilename = inquiryattach.getOriginalFilename();
+    String originalFilename = inquiryAttach.getOriginalFilename();
     String userAgent = request.getHeader("User-Agent");
     try {
       // IE
@@ -362,9 +339,6 @@ public class InquiryServiceImpl implements InquiryService{
         // 자원 반납
         bin.close();
         zout.closeEntry();
-        
-        // 다운로드 횟수 증가
-        inquiryMapper.updateDownloadCount(inquiryAttach.getInquiryAttachNo());
         
       }
       

@@ -49,11 +49,12 @@ public class InquiryController {
     return inquiryService.imageUpload(multipartRequest);
   }
   
-  @PostMapping(value = "/addInquiry.do", produces = "application/json")
-  public String addInquiry(HttpServletRequest request, RedirectAttributes redirectAttributes) {
-    System.out.println(request.getParameter("userNo"));
-    redirectAttributes.addFlashAttribute("addResult", inquiryService.addInquiry(request));
-    return "redirect:/inquiry/list.do"; 
+  @PostMapping("/addInquiry.do")
+  public String addInquiry(MultipartHttpServletRequest multipartRequest
+                  , RedirectAttributes redirectAttributes) throws Exception {
+    boolean addResult = inquiryService.addInquiry(multipartRequest);
+    redirectAttributes.addFlashAttribute("addResult", addResult);
+    return "redirect:/inquiry/list.do";
   }
   
   @ResponseBody
@@ -72,12 +73,6 @@ public class InquiryController {
   @PostMapping(value="/addAnswerReply.do", produces="application/json")
   public Map<String, Object> addAnswerReply(HttpServletRequest request) {
     return inquiryService.addAnswerReply(request);
-  }
-  
-  @ResponseBody
-  @PostMapping(value="/addInquiryAttach.do", produces="application/json")
-  public Map<String, Object> addInquiryAttach(MultipartHttpServletRequest multipartRequest) throws Exception {
-    return inquiryService.addInquiryAttach(multipartRequest);
   }
   
   @ResponseBody

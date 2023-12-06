@@ -1,6 +1,7 @@
 package com.gdu.drawauction.service;
 
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,7 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import com.gdu.drawauction.dao.MypageMapper;
+import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.dto.BidDto;
+import com.gdu.drawauction.dto.DrawDto;
+import com.gdu.drawauction.dto.DrawImageDto;
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.util.MyPageUtils;
 import com.gdu.drawauction.util.MySecurityUtils;
@@ -139,7 +143,7 @@ public class MypageServiceImpl implements MypageService {
   }
   
   @Override
-  public void loadAuctionBidList(HttpServletRequest request, Model model) {
+  public void getAuctionBidList(HttpServletRequest request, Model model) {
     
     Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
     int page = Integer.parseInt(opt.orElse("1"));
@@ -160,6 +164,15 @@ public class MypageServiceImpl implements MypageService {
       
       List<BidDto> bidList = mypageMapper.getAuctionBidList(map);
       
+      System.out.println("이미지 넣기 전");
+
+      for(BidDto bidDto : bidList) {
+        //System.out.println(mypageMapper.getMyAuctionImage(bidDto.getAuctionDto().getAuctionNo()));
+        bidDto.getAuctionDto().setImage(mypageMapper.getMyAuctionImage(bidDto.getAuctionDto().getAuctionNo()));
+      }
+      
+      System.out.println("이미지 넣은 후");
+      
       model.addAttribute("bidList", bidList);
       model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/mypage/auctionBidList.do"));
       model.addAttribute("beginNo", total - (page - 1) * display);
@@ -167,7 +180,7 @@ public class MypageServiceImpl implements MypageService {
   }
 
   @Override
-  public void loadAuctionSalesList(HttpServletRequest request, Model model) {
+  public void getAuctionSalesList(HttpServletRequest request, Model model) {
     
     Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
     int page = Integer.parseInt(opt.orElse("1"));
@@ -178,8 +191,7 @@ public class MypageServiceImpl implements MypageService {
     if(user != null) {
       int sellerNo = user.getUserNo();
       int total = mypageMapper.getAuctionSalesCount(sellerNo);
-      System.out.println(total);
-      int display = 10;
+      int display = 1;
       
       myPageUtils.setPaging(page, total, display);
       
@@ -188,13 +200,58 @@ public class MypageServiceImpl implements MypageService {
                                      , "sellerNo", sellerNo);
       
       List<BidDto> salesList = mypageMapper.getAuctionSalesList(map);
-      
-      System.out.println(salesList.size());
-      
+
+      for(BidDto bidDto : salesList) {
+        bidDto.getAuctionDto().setImage(mypageMapper.getMyAuctionImage(bidDto.getAuctionDto().getAuctionNo()));
+      }
+ 
       model.addAttribute("salesList", salesList);
-      model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/mypage/auctionSalesList.do"));
+      model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/mypage/getAuctionSalesList.do"));
       model.addAttribute("beginNo", total - (page - 1) * display);
+      
     }
   }
   
+  
+  
+  @Transactional(readOnly=true)
+  @Override
+  public Map<String, Object> getMyDrawList(HttpServletRequest request) {
+    
+    Map<String, Object> map = new HashMap<>();
+    
+    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(opt.orElse("1"));
+    
+    HttpSession session = request.getSession();
+    UserDto user = (UserDto)session.getAttribute("user");
+
+    if(user != null) {
+    
+      int sellerNo = user.getUserNo();
+      int total = mypageMapper.getMyDrawCount(sellerNo);
+      int display = 10;
+
+      myPageUtils.setPaging(page, total, display);
+      
+      List<DrawDto> myDrawList = mypageMapper.getMyDrawList(Map.of("begin", myPageUtils.getBegin()
+                                                                 , "end", myPageUtils.getEnd()
+                                                                 , "sellerNo", sellerNo));
+
+      for(DrawDto drawDto : myDrawList) {
+        //drawDto.setImage(mypageMapper.getMyDrawImage(drawDto.getDrawNo()));
+      }
+      
+      map.put("myDrawList", myDrawList);
+      map.put("totalPage", myPageUtils.getTotalPage());
+
+    } else {
+      
+      map.put("myDrawList", null);
+      
+    }
+    return map;
+    
+  }
+
 }
