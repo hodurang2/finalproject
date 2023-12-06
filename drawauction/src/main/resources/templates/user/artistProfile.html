@@ -15,12 +15,55 @@
 			<div>
 			<div th:text="${session.user.nickname}" style="text-align: center;"></div>
 			<div th:text="${session.user.jibunAddress}" style="text-align: center;">"임시"</div>
+
 			</div>
-
-			
-		
-
-
+<div class="table-responsive" id="bidList_wrap">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <td>작품이미지</td>
+            <td>작품정보</td>
+            <td>입찰일</td>
+            <td>내입찰가</td>
+            <td>현재입찰가</td>
+            <td>진행상태</td>
+            <td>낙찰상태</td>
+            <td>경매종료일</td>
+          </tr>
+        </thead>
+        <tbody>
+          <th:block th:each="b,vs:${bidList}">
+            <tr>
+              <td><img th:src="|${b.auctionDto.image.path}/s_${b.auctionDto.image.filesystemName}|" alt="썸네일" width="120px" height="100px"></td>
+              <td class="auction_title" th:text="${b.auctionDto.artDto.title}"></td>
+              <td th:text="${b.bidAt}"></td>
+              <td th:text="${b.bidderDto.myPrice}"></td>
+              <td th:text="${b.price}"></td>
+              <th:block th:if="${b.auctionDto.status == 0}">
+                <td th:text="진행"></td>
+                <th:block th:if="${b.price > b.bidderDto.myPrice}">
+                  <td th:text="재입찰요망"></td>
+                </th:block>
+                <th:block th:if="${b.price <= b.bidderDto.myPrice}">
+                  <td th:text="최고가입찰중"></td>
+                </th:block>
+              </th:block>
+              <th:block th:if="${b.auctionDto.status == 1}">
+                <td th:text="종료"></td>
+                <th:block th:if="${b.price > b.bidderDto.myPrice}">
+                  <td th:text="낙찰실패"></td>
+                </th:block>
+                <th:block th:if="${b.price <= b.bidderDto.myPrice}">
+                  <td th:text="낙찰성공"></td>
+                </th:block>
+              </th:block>
+              <td th:text="${b.auctionDto.endAt}"></td>
+            </tr>
+          </th:block>
+        </tbody>
+      </table>
+      
+    </div>
    	</div> 
 	</div>
 	
