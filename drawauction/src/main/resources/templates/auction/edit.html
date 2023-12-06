@@ -37,9 +37,9 @@
         <div class="mt-3">
           <label class="form-label target2">작품종류 필수</label>
           <div id="artType">
-            <input type="radio" name="artType" id="digital" class="form-check-input" th:value="${auction.artDto.artType}" checked>
+            <input type="radio" name="artType" id="digital" class="form-check-input" th:value="0" checked>
             <label for="digital" class="form-label target2">디지털</label>
-            <input type="radio" name="artType" id="real" class="form-check-input" th:value="${auction.artDto.artType}">
+            <input type="radio" name="artType" id="real" class="form-check-input" th:value="1">
             <label for="real" class="form-label target2">실물</label>
             <div>* 작품종류 선택은 필수사항 입니다.</div>
           </div>
@@ -77,19 +77,14 @@
           <textarea rows="8" name="contents" id="contents" class="form-control" th:text="${auction.artDto.contents}"></textarea>
         </div>
         
-        <div class="mt-3">
-          <label for="files" class="form-label target2" id="target">대표이미지 필수 첫 번째 첨부이미지가 대표이미지 입니다.</label>
-          <input type="files" name="files" id="files" class="form-control" multiple>
-        </div>
         <div id="image_container"></div>
         <div>
           <input type="hidden" name="artNo" th:value="${auction.artDto.artNo}">
           <input type="hidden" name="auctionNo" th:value="${auction.auctionNo}">
         </div>
         <!-- 첨부 추가 -->
-        <!--
         <th:block th:if="${session.user != null}">
-          <th:block th:if="${session.user.userNo == auction.artDto.userDto.userNo}">
+          <th:block th:if="${session.user.userNo == auction.artDto.sellerDto.userNo}">
             <h5>신규 이미지 첨부</h5>
             <div class="input-group">
               <input type="hidden" name="userNo" th:value="${session.user.userNo}">
@@ -101,28 +96,20 @@
         </th:block>
         <hr class="my-3">
     
-        <!/-/- 첨부 목록에서 삭제 /-/->
+        <!-- 첨부 목록에서 삭제 -->
         <h5>기존 첨부 이미지 목록</h5>
         <th:block th:if="${session.user != null}">
-          <th:block th:if="${session.user.userNo == draw.userDto.userNo}">    
+          <th:block th:if="${session.user.userNo == auction.artDto.sellerDto.userNo}">    
             <div id="image_list"></div>
             <div class="text-center my-3">
-              <a th:href="@{/draw/detail.do(drawNo=${draw.drawNo})}">
+              <a th:href="@{/auction2/detail.do(auctionNo=${auction.auctionNo})}">
                 <button class="btn btn-secondary" type="button">돌아가기</button>
               </a>
-              <input type="hidden" name="drawNo" th:value="${draw.drawNo}">
-              <button type="submit" id="btn_modify" class="btn btn-success">수정하기</button>
+              <input type="hidden" name="auctionNo" th:value="${auction.auctionNo}">
+              <button type="submit" id="btn_modify" class="btn btn-primary">수정하기</button>
             </div>
           </th:block>
         </th:block>
-        -->
-        <div class="text-center mt-5" th:if="${session.user != null}">
-          <a th:href="@{/auction/}">
-            <button class="btn btn-secondary" type="button">수정취소</button>
-          </a>
-          <input type="hidden" name="sellerNo" th:value="${session.user.userNo}">
-          <button type="submit" class="btn btn-primary">수정완료</button>
-        </div>
       </form>
     
     </div>
@@ -153,6 +140,102 @@
           }
         })
       }
+      
+      const fnAddImage = () => {
+        $('#btn_add_image').click(() => {
+          // 폼을 FormData 객체로 생성한다.
+          let formData = new FormData();
+          // 첨부된 파일들을 FormData에 추가한다.
+          let files = $('#files').prop('files');
+          $.each(files, (i, file) => {
+            formData.append('files', file);  // 폼에 포함된 파라미터명은 files이다. files는 여러 개의 파일을 가지고 있다.
+          })
+          // 현재 게시글 번호(drawNo)를 FormData에 추가한다.
+          formData.append('auctionNo', '[[${auction.auctionNo}]]');
+          // FormData 객체를 보내서 저장한다.
+          $.ajax({
+            // 요청
+            type: 'post',
+            url: '/auction2/addImage.do',
+            data: formData,
+            contentType: false,
+            processData: false,
+            // 응답
+            dataType: 'json',
+            success: (resData) => {  // resData = {"imageResult": true}
+              if(resData.imageResult){
+                alert('첨부 파일이 추가되었습니다.');
+                fnImageList();
+                $('#image_list').empty();
+              } else {
+                alert('첨부 파일이 추가되지 않았습니다.');
+              }
+              $('#files').val('');
+            }
+          })
+        })
+      }
+    
+      const fnImageList = () => {
+        $.ajax({
+          // 요청
+          type: 'get',
+          url: '/auction2/getImageList.do',
+          data: 'auctionNo=[[${auction.auctionNo}]]',
+          // 응답
+          dataType: 'json',
+          success: (resData) => {  // resData = {"imageList": []}
+            $('#image_list').empty();
+            $.each(resData.imageList, (i, image) => {
+              let str = '<div class="image">';
+              if(image.hasThumbnail === 0){
+                str += '<img src="/image/image1.png" width="250">';
+              } else {            
+                str += '<img src="' + image.path + '/s_' + image.filesystemName + '"  width="300" style="margin-top: 10px">';
+              }
+              str += '<span style="margin: 0 10px;">' + image.imageOriginalName + '</span>';
+              <!-- 로그인 유저가 업로더이면 삭제 버튼 보여주기 -->
+              let user = /*[[${session.user}]]*/ null;
+              if(user !== null){
+                if(user.userNo == '[[${auction.artDto.sellerDto.userNo}]]'){            
+                  str += '<a data-image_no="' + image.auctionImageNo + '"><i class="fa-regular fa-circle-xmark ico_remove_image"></i></a>';
+                }
+              }
+              str += '</div>';
+              $('#image_list').append(str);
+            })
+          }
+        })
+      }
+      
+      const fnRemoveImage = () => {
+        $(document).on('click', '.ico_remove_image', (ev) => {
+          if(!confirm('해당 첨부 파일을 삭제할까요?')){
+            return;
+          }
+          $.ajax({
+            // 요청
+            type: 'post',
+            url: '/auction2/removeImage.do',
+            data: 'auctionImageNo=' + $(ev.target).parent().data('image_no'),
+            // 응답
+            dataType: 'json',
+            success: (resData) => {  // resData = {"removeResult": 1}
+              if(resData.removeResult === 1){
+                alert('해당 첨부 파일이 삭제되었습니다.');
+                fnImageList();
+              } else {
+                alert('해당 첨부 파일이 삭제되지 않았습니다.');
+              }
+            }
+          })
+        })
+      }
+      
+      fnAddImage();
+      fnImageList();
+      fnRemoveImage();
+      fnFileCheck();
       
     </script>
     

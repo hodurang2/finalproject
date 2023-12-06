@@ -8,13 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.service.AuctionService2;
 
 import lombok.RequiredArgsConstructor;
@@ -78,5 +78,32 @@ public class AuctionController2 {
     System.out.println("=컨트롤러서비스후리다이렉트후");
     return "redirect:/auction2/detail.do?auctionNo=" + request.getParameter("auctionNo");
   }
+  
+  @ResponseBody
+  @GetMapping(value="/getImageList.do", produces="application/json")
+  public Map<String, Object> getAttachList(HttpServletRequest request) {
+    return auctionService2.getImageList(request);
+  }
+  
+  @ResponseBody
+  @PostMapping(value="/addImage.do", produces="application/json")
+  public Map<String, Object> addAttach(MultipartHttpServletRequest multipartRequest) throws Exception {
+    return auctionService2.addImage(multipartRequest);
+  }
+  
+  @ResponseBody
+  @PostMapping(value="/removeImage.do", produces="application/json")
+  public Map<String, Object> removeAttach(HttpServletRequest request) {
+    return auctionService2.removeImage(request);
+  }
+  
+  @PostMapping("/removeAuction.do")
+  public String removeUpload(@RequestParam(value="auctionNo", required=false, defaultValue="0") int auctionNo
+                           , RedirectAttributes redirectAttributes) {
+    int removeResult = auctionService2.removeAuction(auctionNo);
+    redirectAttributes.addFlashAttribute("removeResult", removeResult);
+    return "redirect:/auction/";
+  }
+  
   
 }
