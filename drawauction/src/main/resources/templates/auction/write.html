@@ -96,24 +96,7 @@
     </div>
       
     <script>
-      /*const fnDate = () =>{
-        let now = new Date();
-        let today = now.toISOString().slice(0, 19);
-        let lastDay = new Date(now.setFullYear(now.getFullYear() + 1)).toISOString().slice(0, 19);
-        let endAt =  $('#endAt').val();
-        
-        $('#endAt').attr('min' , today);
-        $('#endAt').attr('max', lastDay);
-        
-        $('#endAt').on('change', () => {
-          if(endAt < today) {
-              alert('현재 시간보다 이전의 날짜는 설정할 수 없습니다.');
-               $('#endAt').val(today);
-              return;
-          }
-        })
-        
-      }*/
+      
       const fnDate = () => {
         // 현재 시간
         let now = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000);
