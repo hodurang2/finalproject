@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.gdu.drawauction.dto.AuctionImageDto;
 import com.gdu.drawauction.dto.BidDto;
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.DrawImageDto;
@@ -23,6 +24,8 @@ public interface MypageMapper {
 
   public List<BidDto> getAuctionBidList(Map<String, Object> map);   // 입찰 내역
   
+  public AuctionImageDto getMyAuctionImage(int auctionNo);    // 입찰 경매 이미지
+  
   public int getAuctionSalesCount(int sellerNo);   // 출품 작품수(종료, 진행 포함)
   
   public List<BidDto> getAuctionSalesList(Map<String, Object> map); // 출품 내역
@@ -31,7 +34,7 @@ public interface MypageMapper {
   
   public List<DrawDto> getMyDrawList(Map<String, Object> map);  // 나의 그려드림 목록
   
-  public List<DrawImageDto> getMyDrawImageList(int drawNo);  // 나의 그려드림 이미지 목록
+  public DrawImageDto getMyDrawImage(int drawNo);  // 나의 그려드림 이미지
   
   
   

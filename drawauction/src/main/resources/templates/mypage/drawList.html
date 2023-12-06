@@ -71,33 +71,28 @@
         // 응답
       dataType: 'json',
       success: (resData) => {
-        totalPage = resData.totalPage;
-        $.each(resData.myDrawList, (i, draw) => {
-          let drawNo = draw.drawNo;
-          let drawContainer = $('<div class="draw" data-draw_no="' + drawNo + '"></div>');
-          let drawContent = '<div>제목: ' + draw.title + '</div>';
-          drawContent += '<div>카테고리: ' + draw.categoryDto.categoryName + '</div>';
-          drawContent += '<div>가격: ' + draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</div>';
-          drawContent += '<div id="drawNo" style="display:none">글번호: ' + draw.drawNo + '</div>';
-          drawContainer.append(drawContent);
-  
-          $.ajax({
-            type: 'get',
-            url: '/mypage/getMyDrawImageList.do',
-            data: 'drawNo=' + drawNo,
-            dataType: 'json',
-            success: (resData) => {
-              let imageContainer = $('<div class="image-container"></div>');
-              let image = resData.myDrawImageList[0];
-              let imageContent = '<div class="image" data-draw_no="' + image.drawNo + '">';
-              imageContent += '<img src="' + image.path + '/s_' + image.filesystemName + '"  width="398" height="250">';
-              imageContent += '</div>';
-              imageContainer.append(imageContent);
-              drawContainer.prepend(imageContainer);
-            }
-          })
-          $('#my_draw_list').append(drawContainer);
-        })
+            totalPage = resData.totalPage;
+            $.each(resData.myDrawList,(i, draw) => {
+              let str = '<div class="draw" data-draw_no="' + draw.drawNo + '">';
+              str += '<div class="draw_image"><img src="' + draw.image.path + '/s_' + auction.image.filesystemName + '"></div>';
+              if(auction.status === 0){
+              str += '<div class="auction_ongoing">경매진행중</div>';
+              } else {
+              str += '<div class="auction_end">경매종료</div>';
+              }
+              str += '<div class="auction_heart_div"><i class="' + auction.heartClass + ' fa-heart fa-xl auction_heart"></i></div>';
+              str += '<div><span class="auction_category">' + auction.artDto.categoryDto.categoryName + '</span></div>';
+              str += '<div><span class="auction_title">'    + auction.artDto.title                    + '</span></div>';
+              str += '<div><span class="auction_nickname">' + auction.artDto.sellerDto.nickname       + '</span></div>';
+              str += '<div class="auction_end_wrap">';
+              str += '<div><span class="first_auction">시작가</span><span class="last_auction">'         + auction.startPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+              str += '<div><span class="first_auction">현재입찰가</span><span class="last_auction">'     + auction.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+              str += '<div><span class="first_auction">즉시 구매가</span><span class="last_auction">'    + auction.buyPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+              str += '<div><span class="first_auction">마감일</span><span class="last_auction"> '        + auction.endAt + '</span></div>'; // 상품가격 1000단위 콤마찍기
+              str += '</div>';
+              str += '</div>';
+              $('#auction_list').append(str);
+            })
       }
     })
   }

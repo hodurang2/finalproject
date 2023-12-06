@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import com.gdu.drawauction.dao.MypageMapper;
+import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.dto.BidDto;
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.DrawImageDto;
@@ -163,6 +164,15 @@ public class MypageServiceImpl implements MypageService {
       
       List<BidDto> bidList = mypageMapper.getAuctionBidList(map);
       
+      System.out.println("이미지 넣기 전");
+
+      for(BidDto bidDto : bidList) {
+        //System.out.println(mypageMapper.getMyAuctionImage(bidDto.getAuctionDto().getAuctionNo()));
+        bidDto.getAuctionDto().setImage(mypageMapper.getMyAuctionImage(bidDto.getAuctionDto().getAuctionNo()));
+      }
+      
+      System.out.println("이미지 넣은 후");
+      
       model.addAttribute("bidList", bidList);
       model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/mypage/auctionBidList.do"));
       model.addAttribute("beginNo", total - (page - 1) * display);
@@ -202,7 +212,6 @@ public class MypageServiceImpl implements MypageService {
   @Transactional(readOnly=true)
   @Override
   public Map<String, Object> getMyDrawList(HttpServletRequest request) {
-    System.out.println("서비스임플");
     
     Map<String, Object> map = new HashMap<>();
     
@@ -224,26 +233,19 @@ public class MypageServiceImpl implements MypageService {
                                                                  , "end", myPageUtils.getEnd()
                                                                  , "sellerNo", sellerNo));
 
+      for(DrawDto drawDto : myDrawList) {
+        //drawDto.setImage(mypageMapper.getMyDrawImage(drawDto.getDrawNo()));
+      }
+      
       map.put("myDrawList", myDrawList);
       map.put("totalPage", myPageUtils.getTotalPage());
 
-      
     } else {
       
       map.put("myDrawList", null);
       
     }
     return map;
-    
-  }
-  
-  @Override
-  public Map<String, Object> getMyDrawImageList(HttpServletRequest request) {
-    
-    Optional<String> opt = Optional.ofNullable(request.getParameter("drawNo"));
-    int drawNo = Integer.parseInt(opt.orElse("0"));
-    
-    return Map.of("myDrawImageList", mypageMapper.getMyDrawImageList(drawNo));
     
   }
 

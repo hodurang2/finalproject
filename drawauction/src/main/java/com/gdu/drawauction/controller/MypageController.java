@@ -79,10 +79,4 @@ public class MypageController {
     return mypageService.getMyDrawList(request);
   }
   
-  @ResponseBody
-  @GetMapping(value="/getMyDrawImageList.do", produces="application/json")
-  public Map<String, Object> getMyDrawImageList(HttpServletRequest request) {
-    return mypageService.getMyDrawImageList(request);
-  }
-  
 }

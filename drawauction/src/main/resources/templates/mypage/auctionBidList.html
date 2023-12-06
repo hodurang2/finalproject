@@ -71,7 +71,11 @@
         <tbody>
           <th:block th:each="b,vs:${bidList}">
             <tr>
-              <td th:text="작품이미지"></td>
+              <script>
+                console.log(b.auctionDto.image.path);
+                console.log(b.auctionDto.image.filesystemName);
+              </script>
+              <td class="auction_image"><img th:src="@{b.auctionDto.image.path}/s_@{b.auctionDto.image.filesystemName}"></td>
               <td th:text="|작품제목:${b.auctionDto.artDto.title} 작품설명:${b.auctionDto.artDto.contents}|"></td>
               <td th:text="${b.bidAt}"></td>
               <td th:text="${b.bidderDto.myPrice}"></td>
