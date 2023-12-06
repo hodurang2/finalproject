@@ -36,6 +36,19 @@
     border-bottom: 2px solid gray;
     color: white;
   }
+  
+  /* paging */
+  .paging {
+  text-align: center;
+  padding: 8px 0;
+  }
+  .paging a {
+    margin: 0 10px;
+  }
+  .paging .now_page {
+    color: #198754;
+    font-weight: 900;
+  }
 
 </style>
  
@@ -98,6 +111,11 @@
             </tr>
           </th:block>
         </tbody>
+        <tfoot th:if="${not #lists.isEmpty(bidList)}">
+          <tr>
+            <td colspans="5" th:utext="${paging}"></td>
+          </tr>
+        </tfoot>
       </table>
       
     </div>
