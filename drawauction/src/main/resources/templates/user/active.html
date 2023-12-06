@@ -9,11 +9,11 @@
   
   <div class="main_wrap">
     
-    <div class="wrap wrap_5" th:if="${session.user != null}">
+    <div class="wrap wrap_5" th:if="${session.user == null}">
     
       <h1 class="title">휴면계정안내</h1>
       
-      <div class="mt-5" th:text="|${session.inactiveUser.email}님은 1년 이상 로그인하지 않아 관계 법령에 의해서 휴면회원으로 전환되었습니다.|"></div>      
+      <div class="mt-5" th:text="|${session.inactiveUser.email}님은 6개월 이상 로그인하지 않아 관계 법령에 의해서 휴면회원으로 전환되었습니다.|"></div>      
       <div class="mt-5 text-center" th:text="|휴면전환일 : ${session.inactiveUser.inactivedAt}|"></div>
       
       <div class="mt-5 text-center">휴면해제를 위해서 휴면해제 버튼을 클릭하세요.</div>
@@ -21,7 +21,7 @@
     
     </div>
     
-    <script>
+    <script >
       const fnActive = () => {
         $('#btn_active').click(() => {
           location.href = '/user/active.do';
@@ -30,7 +30,7 @@
       fnActive();
     </script>
 
-    <div th:if="${session.user == null}">
+    <div th:if="${session.user != null}">
       로그아웃되었습니다.
     </div>
 

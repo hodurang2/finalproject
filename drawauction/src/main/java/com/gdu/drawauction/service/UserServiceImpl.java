@@ -1,7 +1,5 @@
 package com.gdu.drawauction.service;
 
-
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -31,6 +29,17 @@ import com.gdu.drawauction.util.MyJavaMailUtils;
 import com.gdu.drawauction.util.MySecurityUtils;
 
 import lombok.RequiredArgsConstructor;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.Console;
+import java.io.OutputStreamWriter;
+
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+
 
 @Transactional
 @Service
@@ -44,44 +53,55 @@ public class UserServiceImpl implements UserService {
   private final String client_id = "dxLQ_GbhqsM3QHNFLIB3";
   private final String client_secret = "CsMJ8FIn4F";
   
+  private final String client_id_kakao = "f9aea8ab0296365d0f73ddfd4d974156";
+  private final String kakao_secret = "TZtQDkJWjGagXBLi3g7QNlX9YILptstF";
+  
   @Override
   public void login(HttpServletRequest request, HttpServletResponse response) throws Exception {
     
-    String email = request.getParameter("email");
-    String pw = mySecurityUtils.getSHA256(request.getParameter("pw"));
-    
-    Map<String, Object> map = Map.of( "email", email, "pw", pw);
 
-    HttpSession session = request.getSession();
-    
-    // 휴면 계정인지 확인하기
-    InactiveUserDto inactiveUser = userMapper.getInactiveUser(map);
-    if(inactiveUser != null) {
-      session.setAttribute("inactiveUser", inactiveUser);
-      response.sendRedirect(request.getContextPath() + "/user/active.form");
+	    String email = request.getParameter("email");
+	    String pw = mySecurityUtils.getSHA256(request.getParameter("pw"));
+	    
+	    Map<String, Object> map = Map.of("email", email
+	                                   , "pw", pw);
+
+	    HttpSession session = request.getSession();
+	    
+	    // 휴면 계정인지 확인하기
+	    InactiveUserDto inactiveUser = userMapper.getInactiveUser(map);
+	    
+	    if(inactiveUser != null) {
+		      session.setAttribute("inactiveUser", inactiveUser);
+		      response.sendRedirect(request.getContextPath() + "/user/active.form");
+	    } else {
+	    	// 정상적인 로그인 처리하기
+	        UserDto user = userMapper.getUser(map);
+	    
+		    if(user != null) {
+		        request.getSession().setAttribute("user", user);
+		        userMapper.insertAccess(email);
+		        response.sendRedirect(request.getContextPath() + "/main.do");
+		      } else {
+		        response.setContentType("text/html; charset=UTF-8");
+		        PrintWriter out = response.getWriter();
+		        out.println("<script>");
+		        out.println("alert('일치하는 회원 정보가 없습니다.')");
+		        out.println("location.href='" + request.getContextPath() + "/main.do'");
+		        out.println("</script>");
+		        out.flush();
+		        out.close();
+		      }
+	    }
+
+	       
+    	
     }
-    
-    // 정상적인 로그인 처리하기
-    UserDto user = userMapper.getUser(map);
-    
-    if(user != null) {
-      request.getSession().setAttribute("user", user);
-      userMapper.insertAccess(email);
-      response.sendRedirect(request.getContextPath() + "/main.do");
-    } else {
-      response.setContentType("text/html; charset=UTF-8");
-      PrintWriter out = response.getWriter();
-      out.println("<script>");
-      out.println("alert('일치하는 회원 정보가 없습니다.')");
-      out.println("location.href='" + request.getContextPath() + "/main.do'");
-      out.println("</script>");
-      out.flush();
-      out.close();
-    }
-    
-    
-    
-  }
+    	
+  	 
+        
+
+  
 
   @Override
   public String getNaverLoginURL(HttpServletRequest request) throws Exception {
@@ -320,6 +340,7 @@ public class UserServiceImpl implements UserService {
     
   }
   
+  // 회원가입 
   @Override
   public void join(HttpServletRequest request, HttpServletResponse response) {
     
@@ -349,8 +370,7 @@ public class UserServiceImpl implements UserService {
                     .agree(event.equals("on") ? 1 : 0)
                     .build();
     
-    int joinResult = userMapper.insertUser(user);
-    
+    int joinResult = userMapper.insertUser(user);    
     try {
       
       response.setContentType("text/html; charset=UTF-8");
@@ -375,6 +395,7 @@ public class UserServiceImpl implements UserService {
     
   }
 
+  // 회원탈퇴
   @Override
   public void leave(HttpServletRequest request, HttpServletResponse response) {
   
@@ -425,50 +446,13 @@ public class UserServiceImpl implements UserService {
     
   }
   
-  @Override
-  public void inactiveUserBatch() {
-    userMapper.insertInactiveUser();
-    userMapper.deleteUserForInactive();
-  }
   
-  @Override
-  public void active(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
-  
-    InactiveUserDto inactiveUser = (InactiveUserDto)session.getAttribute("inactiveUser");
-    String email = inactiveUser.getEmail();
-    
-    int insertActiveUserResult = userMapper.insertActiveUser(email);
-    int deleteInactiveUserResult = userMapper.deleteInactiveUser(email);
-    
-    try {
-      response.setContentType("text/html; charset=UTF-8");
-      PrintWriter out = response.getWriter();
-      out.println("<script>");
-      if(insertActiveUserResult == 1 && deleteInactiveUserResult == 1) {
-        out.println("alert('휴면계정이 복구되었습니다. 계정 활성화를 위해서 곧바로 로그인 해 주세요.')");
-        out.println("location.href='" + request.getContextPath() + "/main.do'");  // 로그인 페이지로 보내면 로그인 후 다시 휴면 계정 복구 페이지로 돌아오므로 main으로 이동한다.
-      } else {
-        out.println("alert('휴면계정이 복구가 실패했습니다. 다시 시도하세요.')");
-        out.println("history.back()");
-      }
-      out.println("</script>");
-      out.flush();
-      out.close();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    
-  }
-
-  
-  // 아이디 찾기 
+  // ID/PW 찾기
   @Override
   public UserDto findId(UserDto user) {
     return userMapper.findId(user);
   }
-  
-  
-  // 비밀번호 찾기 
+
   @Override
   public void findPw(UserDto user, HttpServletResponse response) throws Exception {
     
@@ -504,8 +488,245 @@ public class UserServiceImpl implements UserService {
     }
     
   }
+
+  // 카카오톡 회원가입
+  @Override
+  public void kakaoJoin(HttpServletRequest request, HttpServletResponse response) {
+    
+    String email = request.getParameter("email");
+    String name = mySecurityUtils.preventXSS(request.getParameter("name"));
+    String gender = request.getParameter("gender");
+    String mobile = request.getParameter("mobile");
+    String postcode = request.getParameter("postcode");
+    String roadAddress = request.getParameter("roadAddress");
+    String jibunAddress = request.getParameter("jibunAddress");
+    String detailAddress = request.getParameter("detailAddress");
+    String nickname = request.getParameter("nickname");
+    String event = request.getParameter("event");
+    
+    UserDto user = UserDto.builder()
+                    .email(email)
+                    .name(name)
+                    .gender(gender)
+                    .mobile(mobile.replace("-", ""))
+                    .postcode(postcode)
+                    .roadAddress(roadAddress)
+                    .jibunAddress(jibunAddress)
+                    .detailAddress(detailAddress)
+                    .nickname(nickname)
+                    .agree(event != null ? 1 : 0)
+                    .build();
+    
+    int kakaoJoinResult = userMapper.insertKakaoUser(user);
+    
+    try {
+      
+      response.setContentType("text/html; charset=UTF-8");
+      PrintWriter out = response.getWriter();
+      out.println("<script>");
+      if(kakaoJoinResult == 1) {
+        request.getSession().setAttribute("user", userMapper.getUser(Map.of("email", email)));
+        userMapper.insertAccess(email);
+        out.println("alert('카카오 간편가입이 완료되었습니다.')");
+      } else {
+        out.println("alert('카카오 간편가입이 실패했습니다.')");
+      }
+      out.println("location.href='" + request.getContextPath() + "/main.do'");
+      out.println("</script>");
+      out.flush();
+      out.close();
+      
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    
+  }
+
+  @Override
+  public void kakaoLogin (HttpServletRequest request, HttpServletResponse response, UserDto kakaoProfile) throws Exception {
+    
+    String email = kakaoProfile.getEmail();
+    UserDto user = userMapper.getUser(Map.of("email", email));
+    
+    if(user != null) {
+      request.getSession().setAttribute("user", user);
+      userMapper.insertAccess(email);
+    } else {
+      response.setContentType("text/html; charset=UTF-8");
+      PrintWriter out = response.getWriter();
+      out.println("<script>");
+      out.println("alert('일치하는 회원 정보가 없습니다.')");
+      out.println("location.href='" + request.getContextPath() + "/main.do'");
+      out.println("</script>");
+      out.flush();
+      out.close();
+    }
+    
+  }
   
- 
+  
+  // 네이버 로그인처럼 그대로 따라해보기.
+  // 카카오로그인 -----------------------------
+  
+  @Override
+	public String getKakaoLoginURL(HttpServletRequest request) throws Exception {
+	  
+	  String apiURL = "https://kauth.kakao.com/oauth/authorize";
+	    String response_type = "code";
+	    String redirect_uri = URLEncoder.encode("http://localhost:8080" + request.getContextPath() + "/user/kakao/getKakaoAccessToken.do", "UTF-8");
+	    String state = new BigInteger(130, new SecureRandom()).toString();
+	  
+	    StringBuilder sb = new StringBuilder();
+	    sb.append(apiURL);
+	    sb.append("?response_type=").append(response_type);
+	    sb.append("&client_id=").append(client_id_kakao);
+	    sb.append("&redirect_uri=").append(redirect_uri);
+	    sb.append("&state=").append(state);
+	    
+	    return sb.toString();
+  
+  }
+
+  
+  @Override
+  public String getKakaoLoginAccessToken(HttpServletRequest request) throws Exception {
+    
+    // 네이버로그인-2
+    // 접근 토큰 발급 요청
+    // 네이버로그인-2를 수행하기 위해서는 네이버로그인-1의 응답 결과인 code와 state가 필요하다.
+    
+    // 네이버로그인-1의 응답 결과(access_token을 얻기 위해 요청 파라미터로 사용해야 함)
+    String code = request.getParameter("code");
+    String state = request.getParameter("state");
+    
+    String apiURL = "https://kauth.kakao.com/oauth/token";
+    String grant_type = "authorization_code";  // access_token 발급 받을 때 사용하는 값(갱신이나 삭제시에는 다른 값을 사용함)
+    
+    StringBuilder sb = new StringBuilder();
+    sb.append(apiURL);
+    sb.append("?grant_type=").append(grant_type);
+    sb.append("&client_id=").append(client_id_kakao);
+    sb.append("&client_secret=").append(kakao_secret);
+    sb.append("&code=").append(code);
+    sb.append("&state=").append(state);
+    
+    // 요청
+    URL url = new URL(sb.toString());
+    HttpURLConnection con = (HttpURLConnection)url.openConnection();
+    con.setRequestMethod("GET");  // 반드시 대문자로 작성
+    
+    // 응답
+    BufferedReader reader = null;
+    int responseCode = con.getResponseCode();
+    if(responseCode == 200) {
+      reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+    } else {
+      reader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+    }
+    
+    String line = null;
+    StringBuilder responseBody = new StringBuilder();
+    while ((line = reader.readLine()) != null) {
+      responseBody.append(line);
+    }
+    
+    JSONObject obj = new JSONObject(responseBody.toString());
+    return obj.getString("access_token");
+    
+  }
+  
+
+  
+  @Override
+  public UserDto getKakaoProfile(String accessToken) throws Exception {
+	// 네이버 로그인-3
+	    // 접근 토큰을 전달한 뒤 사용자의 프로필 정보(이름, 이메일, 성별, 휴대전화번호) 받아오기
+	    // 요청 헤더에 Authorization: Bearer accessToken 정보를 저장하고 요청함
+	    
+	    // 요청
+	    String apiURL = "https://kapi.kakao.com/v2/user/me";
+	    URL url = new URL(apiURL);
+	    HttpURLConnection con = (HttpURLConnection)url.openConnection();
+	    con.setRequestMethod("GET");
+	    con.setRequestProperty("Authorization", "Bearer " + accessToken);
+	    
+	    // 응답
+	    BufferedReader reader = null;
+	    int responseCode = con.getResponseCode();
+	    if(responseCode == 200) {
+	      reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+	    } else {
+	      reader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+	    }
+	    
+	    String line = null;
+	    StringBuilder responseBody = new StringBuilder();
+	    while ((line = reader.readLine()) != null) {
+	      responseBody.append(line);
+	    }
+	    
+	    // 응답 결과(프로필을 JSON으로 응답) -> UserDto 객체
+	    JSONObject obj = new JSONObject(responseBody.toString());
+	    JSONObject response = obj.getJSONObject("kakao_account");
+
+	    String nickname = response.getJSONObject("profile").getString("nickname");
+	    String email = response.getString("email");
+
+	    UserDto user = UserDto.builder()
+	            .name(nickname)
+	            .email(email)
+	            .build();
+	    
+	    return user;
+
+    
+  }
+
+//  
+  @Override
+  public void inactiveUserBatch() {
+    userMapper.insertInactiveUser();
+    userMapper.deleteUserForInactive();
+  }
+  
+  @Override
+  public void active(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+  
+    InactiveUserDto inactiveUser = (InactiveUserDto)session.getAttribute("inactiveUser");
+    String email =  inactiveUser.getEmail();
+    
+    int insertActiveUserResult = userMapper.insertActiveUser(email);
+    int deleteInactiveUserResult = userMapper.deleteInactiveUser(email);
+    
+    try {
+      response.setContentType("text/html; charset=UTF-8");
+      PrintWriter out = response.getWriter();
+      out.println("<script>");
+      if(insertActiveUserResult == 1 && deleteInactiveUserResult == 1) {
+        out.println("alert('휴면계정이 복구되었습니다. 계정 활성화를 위해서 곧바로 로그인 해 주세요.')");
+        out.println("location.href='" + request.getContextPath() + "/main.do'");  // 로그인 페이지로 보내면 로그인 후 다시 휴면 계정 복구 페이지로 돌아오므로 main으로 이동한다.
+      } else {
+        out.println("alert('휴면계정이 복구가 실패했습니다. 다시 시도하세요.')");
+        out.println("history.back()");
+      }
+      out.println("</script>");
+      out.flush();
+      out.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    
+  }
+  
+  
+  // 이름, 닉네임 중복체크
+  // 이름 중복 체크
+  
+  
+  
 }
-
-
+	   
+ 
+  
+  
+  

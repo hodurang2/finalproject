@@ -28,4 +28,9 @@ public interface UserMapper {
 	  
 	  public int findPw(UserDto user);
 	  public void updatePw(Map<String, Object> map);
+	  
+	  
+	  // 이름, 닉네임 중복체크
+	  public int nameCheck (UserDto user);
+	  public int nicknameCheck (UserDto user);
 }
