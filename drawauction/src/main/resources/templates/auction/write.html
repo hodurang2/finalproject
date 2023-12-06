@@ -211,7 +211,32 @@
     }
     })
     
-
+    const fnGetByteB = () => {
+    $('#frm_auction_add').submit((ev)=>{
+      let contents = $("#contents").val();
+      let title =  $("#title").val();
+      let byte = 0;
+      let byte2 = 0;
+      for (let i = 0; i < title.length; i++) {
+      (title.charCodeAt(i) > 127) ? byte += 3 : byte++ ;
+      }
+      for (let i = 0; i < contents.length; i++) {
+      (contents.charCodeAt(i) > 127) ? byte2 += 3 : byte2++ ;
+      }
+      
+      if(byte > 100){
+        alert("제목은 최대 한글 33자, 영문 100자 입니다.")
+          ev.preventDefault();
+          return;
+      } else if(byte2 > 4000){
+        alert("내용은 최대 4000BYTE 입니다.")
+          ev.preventDefault();
+          return;
+      }
+    })
+    }
+    
+      fnGetByteB();
       fnDate();
       fnFileCheck();
       fnSubmit();
