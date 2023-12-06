@@ -4,42 +4,79 @@
 <head th:replace="~{/layout/header::head('그려드림 게시판')}"></head>
 
 <style>
-  .draw_list {
+  body {
+	  width: 100%;
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f8f9fa;
+      margin: 0;
+      align-items: center;
+      justify-content: center;
+  }
+    
+  .main_wrap {
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .wrap_9{
+	width: 90%;
+  }
+  
+ .draw_list {
+	width: 90%;
     margin: 10px auto;
     display: flex;
     flex-wrap: wrap;
   }
+
   .draw {
-    width: 400px;
-    height: 400px;
+    width: 31.6%;
+    height: 500px;
     border: 1px solid gray;
     border-radius: 5px;
     text-align: left;
-    margin: 20px 20px;
-    display: flex;
-    flex-direction: column;
-    position: relative; 
-  }
-  .draw:hover {
-    background-color: silver;
-  }
-  .draw_image {
-    width: 398px;
-	height: 300px;
+    margin: 10px;
     overflow: hidden;
+    position: center;
+    font-size: 18px;
+  }
+
+  .draw:hover {
+    background-color: rgb(84, 186, 125);
+  }
+
+  .draw_image {
+    width: 100%;
+    height: 60%;
+    overflow: hidden;	
     position: relative;
   }
+
   .draw_image img {
-	width: 398px;
-	height: 300px;
-    object-fit: cover;
+    width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    cursor: pointer;
   }
-  
+
+  .draw_content {
+    padding: 10px;
+    flex-grow: 1;
+  }
+
   .wish_list {
     position: absolute;
-    bottom: 10px; 
-    right: 10px; 
+    bottom: 10px;
+    right: 10px;
     cursor: pointer;
+  }
+
+  .draw_list::after {
+    content: "";
+    display: table;
+    clear: both;
   }
 </style>
 
@@ -80,8 +117,8 @@
 	      $.each(resData.drawList, (i, draw) => {
 	        let drawNo = draw.drawNo;
 	        let str = '<div class="draw" data-draw_no="' + draw.drawNo + '">';
-			str += '<div class="draw_image" data-draw_no="' + draw.drawNo + '"><img src="' + draw.image.path + '/s_' + draw.image.filesystemName + '" width="398" height="262"></div>';
-	        str += '<div>제목: ' + draw.title + '</div>';
+			str += '<div class="draw_image" data-draw_no="' + draw.drawNo + '"><img src="' + draw.image.path + '/s_' + draw.image.filesystemName + '"></div>';
+	        str += '<div style="margin-top: 15px">제목: ' + draw.title + '</div>';
 	        str += '<div>카테고리: ' + draw.categoryDto.categoryName + '</div>';
 	        if (draw.userDto === null) {
 	          str += '<div>작가: 정보없음</div>';
