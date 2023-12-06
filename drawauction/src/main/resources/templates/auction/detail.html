@@ -29,9 +29,10 @@
           </th:block>
         </th:block>
       </div>
+      <div th:text="|카테고리 : ${auction.artDto.categoryDto.categoryName}|"></div>
       <div th:text="|작가 : ${auction.artDto.sellerDto.nickname}|"></div>
       <div th:text="|제목 : ${auction.artDto.title}|"></div> 
-      <div th:text="|카테고리 : ${auction.artDto.categoryDto.categoryName}|"></div>
+      <div th:text="|작품유형 : ${auction.artDto.artType}|"></div> 
       <div th:text="|시작가 : ${#numbers.formatInteger(auction.startPrice, 1, 'COMMA')}P|"></div>
       <div th:text="|현재입찰가 : ${#numbers.formatInteger(auction.price, 1, 'COMMA')}P|"></div>
       <div th:text="|즉시구매가 : ${#numbers.formatInteger(auction.buyPrice, 1, 'COMMA')}P|"></div>
