@@ -184,7 +184,7 @@
       #{buyPrice},
       SYSDATE,
       TO_DATE(#{endAt},'YYYY-MM-DD HH24:MI:SS'),
-      1
+      0
   )
   </insert>
   <insert id="insertImage" parameterType="AuctionImageDto">

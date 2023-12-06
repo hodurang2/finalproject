@@ -21,12 +21,36 @@
   <div class="wrap wrap_1">
     
     <h1 class="title">문의 상세</h1>
-    
+
     <div>
       <h1 th:text="${inquiry.title}"></h1>
-      <div th:text="|작성자    : ${inquiry.userDto.name}|"></div>
+      <div th:text="|작성자    : ${inquiry.userDto.nickname}|"></div>
       <div th:text="|작성일    : ${#dates.format(inquiry.inquiryCreatedAt, 'yyyy-MM-dd HH:mm:ss')}|"></div>
       <div th:text="|문의종류  : ${inquiry.inquiryType}|"></div>
+      
+      <hr class="inquiryattach-1">
+      
+      <h5>첨부 다운로드</h5>
+      <div>
+        <th:block th:if="${#lists.isEmpty(inquiryAttachList)}">
+          <div>첨부 없음</div>          
+        </th:block>
+        <th:block th:if="${not #lists.isEmpty(inquiryAttachList)}">
+          <th:block th:each="atc:${inquiryAttachList}">
+            <div class="inquiryAttach" th:data-inquiryAttachNo="${atc.inquiryNo}">
+              <th:block th:if="${atc.hasThumbnail == 1}">
+                <img th:src="@{|${atc.path}/s_${atc.filesystemName}|}" alt="썸네일" width="50">
+              </th:block>
+              <th:block th:if="${atc.hasThumbnail == 0}">
+                <img th:src="@{/image/attach2.png}" alt="썸네일" width="50">
+              </th:block>
+              <a th:text="${atc.originalFilename}"></a>
+            </div>
+          </th:block>
+          <div><a th:href="@{/inquiry/downloadAll.do(inquiryNo=${inquiry.inquiryNo})}">모두 다운로드</a></div>
+        </th:block>
+      </div>
+      
       <div>
        <th:block th:if="${session.user != null}">
         <th:block th:if="${session.user.userNo == inquiry.userDto.userNo}">
@@ -34,14 +58,13 @@
             <input type="hidden" name="inquiryNo" th:value="${inquiry.inquiryNo}">
             <input type="hidden" name="title" th:value="${inquiry.title}">
             <input type="hidden" name="content" th:value="${inquiry.content}">
-            <button type="button" id="btn_edit" class="btn btn-primary">편집</button>
-            <button type="button" id="btn_rmv"  class="btn btn-danger">삭제</button>
+            <button type="button" id="btn_list" class="btn btn-dark">목록</button>
             
           </form>
         </th:block>
        </th:block>
       </div>
-      <div th:text="${inquiry.content}"></div>
+      <div th:utext="${inquiry.content}"></div>
       
     </div>
     
@@ -59,6 +82,12 @@
   </div>
 
   <script th:inline="javascript">
+    
+     const fnInquiryList = () => {
+      $('#btn_list').click(() => {
+        window.location.href = '/inquiry/list.do';
+      });
+    }
     
     const fnAnswerAdd = () => {
         $('#btn_answer_add').click(() => {
@@ -102,7 +131,7 @@
             $('#answer_list').empty();
             $('#paging').empty();
             if(resData.answerList.length === 0){
-              $('#answer_list').text('첫 번째 댓글의 주인공이 되어 보세요');
+              $('#answer_list').text('댓글이 없습니다.');
               $('#paging').text('');
               return;
             }
@@ -199,10 +228,20 @@
       })
     }
     
+    const fnDownload = () => {
+      $('.inquiryAttach').click(function(){
+        if(confirm('다운로드 할까요?')){
+          location.href = '/inquiry/download.do?inquiryAttachNo=' + $(this).data('inquiryAttachNo');
+        }
+      })
+    }
+    
+    fnInquiryList();
     fnAnswerAdd();
     fnAnswerList();
     fnAnswerReplyAdd();
     fnBlind();
+    fnDownload();
       
   </script>
   
