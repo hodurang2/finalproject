@@ -13,6 +13,7 @@ public interface AuctionService2 {
   public Map<String, Object> controlAuctionWishlist(HttpServletRequest request);
   public ResponseEntity<Map<String, Object>> hasAuctionWishlist(HttpServletRequest request);
   public Map<String, Object> getBidCount(int auctionNo);
+  public int modifyAuction(HttpServletRequest request);
   
   
 }

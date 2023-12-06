@@ -6,17 +6,16 @@
 <body>
 
   <div th:replace="~{/layout/header::header}"></div>
-
+  
   <div class="main_wrap">
 
     <div class="wrap wrap_9">
     
-      <h1 class="title" th:text="|*{auctionNo}번 경매 편집|"></h1>
+      <h1 class="title" th:text="|*{auction.auctionNo}번 경매 편집|"></h1>
     
-      <form id="frm_auction_modify" method="post" th:action="@{/auction/modifyAuction.do}">
+      <form id="frm_auction_modify" method="post" th:action="@{/auction2/modify.do}">
         <div>
           <select class="form-select" name="categoryNo" id="categoryNo">
-            <option value="${auction.artDto.categoryDto.categoryNo}=='404'">카테고리</option>  
             <option th:selected="${auction.artDto.categoryDto.categoryNo}=='1'" value="1">포토그래픽</option>  
             <option th:selected="${auction.artDto.categoryDto.categoryNo}=='2'" value="2">원화</option>  
             <option th:selected="${auction.artDto.categoryDto.categoryNo}=='3'" value="3">드로잉</option>  
@@ -38,9 +37,9 @@
         <div class="mt-3">
           <label class="form-label target2">작품종류 필수</label>
           <div id="artType">
-            <input type="radio" name="artType" id="digital" class="form-check-input" th:value="${auction.artDto.artType}=='0'" checked>
+            <input type="radio" name="artType" id="digital" class="form-check-input" th:value="${auction.artDto.artType}" checked>
             <label for="digital" class="form-label target2">디지털</label>
-            <input type="radio" name="artType" id="real" class="form-check-input" th:value="${auction.artDto.artType}=='1'">
+            <input type="radio" name="artType" id="real" class="form-check-input" th:value="${auction.artDto.artType}">
             <label for="real" class="form-label target2">실물</label>
             <div>* 작품종류 선택은 필수사항 입니다.</div>
           </div>
@@ -67,24 +66,56 @@
         </div>
         
         <div class="mt-3">
-          <label for="files" class="form-label target2" id="target">대표이미지 필수 첫 번째 첨부이미지가 대표이미지 입니다.</label>
-          <input type="files" name="files" id="files" class="form-control" multiple>
-        </div>
-        <div id="image_container"></div>
-        
-        <div class="mt-3">
           <label for="width" class="form-label">작품 가로길이(cm)</label>
           <input type="number" name="width" id="width" class="form-control" th:value="${auction.artDto.width}">
           <label for="height" class="form-label">작품 세로길이(cm)</label>
           <input type="number" name="height" id="height" class="form-control" th:value="${auction.artDto.height}">
         </div>
         
-        <hr>
-        
         <div class="mt-3">
           <label for="contents" class="form-label target2">작품설명 필수</label>
           <textarea rows="8" name="contents" id="contents" class="form-control" th:text="${auction.artDto.contents}"></textarea>
         </div>
+        
+        <div class="mt-3">
+          <label for="files" class="form-label target2" id="target">대표이미지 필수 첫 번째 첨부이미지가 대표이미지 입니다.</label>
+          <input type="files" name="files" id="files" class="form-control" multiple>
+        </div>
+        <div id="image_container"></div>
+        <div>
+          <input type="hidden" name="artNo" th:value="${auction.artDto.artNo}">
+          <input type="hidden" name="auctionNo" th:value="${auction.auctionNo}">
+        </div>
+        <!-- 첨부 추가 -->
+        <!--
+        <th:block th:if="${session.user != null}">
+          <th:block th:if="${session.user.userNo == auction.artDto.userDto.userNo}">
+            <h5>신규 이미지 첨부</h5>
+            <div class="input-group">
+              <input type="hidden" name="userNo" th:value="${session.user.userNo}">
+              <input type="file" name="files" id="files"  class="form-control" multiple>
+              <button class="btn btn-outline-secondary" type="button" id="btn_add_image">첨부추가하기</button>
+            </div>
+            <div class="imageed_list mt-3" id="imageed_list"></div>
+          </th:block>
+        </th:block>
+        <hr class="my-3">
+    
+        <!/-/- 첨부 목록에서 삭제 /-/->
+        <h5>기존 첨부 이미지 목록</h5>
+        <th:block th:if="${session.user != null}">
+          <th:block th:if="${session.user.userNo == draw.userDto.userNo}">    
+            <div id="image_list"></div>
+            <div class="text-center my-3">
+              <a th:href="@{/draw/detail.do(drawNo=${draw.drawNo})}">
+                <button class="btn btn-secondary" type="button">돌아가기</button>
+              </a>
+              <input type="hidden" name="drawNo" th:value="${draw.drawNo}">
+              <button type="submit" id="btn_modify" class="btn btn-success">수정하기</button>
+            </div>
+          </th:block>
+        </th:block>
+        -->
         <div class="text-center mt-5" th:if="${session.user != null}">
           <a th:href="@{/auction/}">
             <button class="btn btn-secondary" type="button">수정취소</button>
@@ -96,21 +127,32 @@
     
     </div>
 
-    <script>
-      
-      const fnAuctionModify = () => {
-        $('#frm_auction_modify').submit((ev) => {
-        	if($('#title').val() === ''){
-        		alert('제목은 반드시 입력해야 합니다.');
-            $('#title').focus();
-            ev.preventDefault();
+    <script th:inline="javascript">
+      const fnFileCheck = () => {
+        $('#files').change((ev) => {
+          $('#image_list').empty();
+          let maxSize = 1024 * 1024 * 100;
+          let maxSizePerFile = 1024 * 1024 * 10;
+          let totalSize = 0;
+          let files = ev.target.files;
+          for(let i = 0; i < files.length; i++){
+            totalSize += files[i].size;
+            if(files[i].size > maxSizePerFile){
+              alert('각 첨부파일의 최대 크기는 10MB입니다.');
+              $(ev.target).val('');
+              $('#image_list').empty();
+              return;
+            }
+            $('#image_list').append('<div>' + files[i].name + '</div>');
+          }
+          if(totalSize > maxSize){
+            alert('전체 첨부파일의 최대 크기는 100MB입니다.');
+            $(ev.target).val('');
+            $('#image_list').empty();
             return;
-        	}
-          $('#contents').val($('#ckeditor').html());
+          }
         })
       }
-      
-      fnAuctionModify();
       
     </script>
     

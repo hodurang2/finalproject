@@ -144,6 +144,25 @@
      WHERE AUCTION_IMAGE_NO = #{auctionImageNo}
   </delete>
   
+  <update id="updateAuction" parameterType="Map">
+    UPDATE AUCTION_T
+       SET START_PRICE = #{startPrice}
+         , BUY_PRICE = #{buyPrice}
+         , END_AT = TO_DATE(#{endAt},'YYYY-MM-DD HH24:MI:SS')
+     WHERE AUCTION_NO = #{auctionNo}
+  </update>
+    
+  <update id="updateArt" parameterType="Map">
+    UPDATE ART_T
+       SET CATEGORY_NO = #{categoryNo}
+         , TITLE = #{title}
+         , ART_TYPE = #{artType}
+         , WIDTH = #{width}
+         , HEIGHT = #{height}
+         , CONTENTS = #{contents}
+     WHERE ART_NO = #{artNo}
+  </update>
+  
   
   
   

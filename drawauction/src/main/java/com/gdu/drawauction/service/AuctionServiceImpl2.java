@@ -96,9 +96,55 @@ public class AuctionServiceImpl2 implements AuctionService2 {
   
   @Override
   public Map<String, Object> getBidCount(int auctionNo) {
-    
     int bidCount = auctionMapper2.getBidCount(auctionNo);
     return Map.of("bidCount", bidCount);
+  }
+  
+  @Override
+  public int modifyAuction(HttpServletRequest request) {
+    
+    System.out.println("서비스임플");
+    int categoryNo = Integer.parseInt(request.getParameter("categoryNo"));
+    System.out.println(categoryNo);
+    String title = request.getParameter("title");
+    System.out.println(title);
+    int artType = Integer.parseInt(request.getParameter("artType"));
+    System.out.println(artType);
+    int buyPrice = Integer.parseInt(request.getParameter("buyPrice"));
+    System.out.println(buyPrice);
+    int startPrice = Integer.parseInt(request.getParameter("startPrice"));
+    System.out.println(startPrice);
+    int width = (request.getParameter("width").equals("")) ? 0 : Integer.parseInt(request.getParameter("width"));
+    System.out.println(width);
+    int height = (request.getParameter("height").equals("")) ? 0 : Integer.parseInt(request.getParameter("height"));
+    System.out.println(height);
+    String endAt = request.getParameter("endAt");
+    System.out.println(endAt);
+    String contents = request.getParameter("contents");
+    System.out.println(contents);
+    int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
+    System.out.println(auctionNo);
+    int artNo = Integer.parseInt(request.getParameter("artNo"));
+    System.out.println(artNo);
+    
+    Map<String, Object> map1 = Map.of("startPrice", startPrice
+                                    , "buyPrice", buyPrice
+                                    , "endAt", endAt
+                                    , "auctionNo", auctionNo);
+    Map<String, Object> map2 = Map.of("categoryNo", categoryNo
+                                    , "title", title
+                                    , "artType", artType
+                                    , "width", width
+                                    , "height", height
+                                    , "contents", contents
+                                    , "artNo", artNo);
+    
+    int result1 = auctionMapper2.updateAuction(map1);
+    int result2 = auctionMapper2.updateArt(map2);
+    
+    int modifyResult = result1 + result2;
+    
+    return modifyResult;
   }
   
 }

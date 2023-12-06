@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.service.AuctionService2;
@@ -66,6 +67,16 @@ public class AuctionController2 {
   @GetMapping(value="/checkBidCount.do", produces="application/json")
   public Map<String, Object> getBidCount (int auctionNo) {
     return auctionService2.getBidCount(auctionNo);
+  }
+  
+  @PostMapping("/modify.do")
+  public String modify(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    System.out.println("=컨트롤러서비스전");
+    int modifyResult = auctionService2.modifyAuction(request);
+    System.out.println("=컨트롤러서비스후");
+    redirectAttributes.addFlashAttribute("modifyResult", modifyResult);
+    System.out.println("=컨트롤러서비스후리다이렉트후");
+    return "redirect:/auction2/detail.do?auctionNo=" + request.getParameter("auctionNo");
   }
   
 }
