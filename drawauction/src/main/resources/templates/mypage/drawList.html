@@ -2,7 +2,46 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{/layout/header::head('그려드림내역')}"></head>
 
+<style>
+  .my_draw_list {
+  width: 90%;
+    margin: 10px auto;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .draw {
+    width: 400px;
+    height: 360px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    text-align: left;
+    margin: 20px 20px;
+    display: flex;
+    flex-direction: column;
+    position: relative; 
+  }
+  
+  .image-container {
+    flex: 1;
+  }
 
+  .image {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .draw-content {
+    padding: 10px;
+  }
+  
+  .draw:hover {
+    background-color: silver;
+  }
+  
+
+</style>
  
 <body>
   
@@ -17,7 +56,7 @@
   
   
   <script th:inline="javascript">
-    
+   
     // 전역 변수
     var page = 1;
     var totalPage = 0;
@@ -33,23 +72,19 @@
       dataType: 'json',
       success: (resData) => {
         totalPage = resData.totalPage;
-        sellerNo = reaData.sellerNo;
         $.each(resData.myDrawList, (i, draw) => {
           let drawNo = draw.drawNo;
-          let drawContainer = $('<div class="draw" data-draw_no="' + draw.drawNo + '"></div>');
+          let drawContainer = $('<div class="draw" data-draw_no="' + drawNo + '"></div>');
           let drawContent = '<div>제목: ' + draw.title + '</div>';
           drawContent += '<div>카테고리: ' + draw.categoryDto.categoryName + '</div>';
           drawContent += '<div>가격: ' + draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</div>';
           drawContent += '<div id="drawNo" style="display:none">글번호: ' + draw.drawNo + '</div>';
-          drawContent += '<div class="wish_list"><i class="' + draw.heart + ' fa-heart fa-2xl heart" style="color: #ff0000;"></i></div>';
           drawContainer.append(drawContent);
   
           $.ajax({
             type: 'get',
             url: '/mypage/getMyDrawImageList.do',
-            data: {
-              drawNo: drawNo
-            },
+            data: 'drawNo=' + drawNo,
             dataType: 'json',
             success: (resData) => {
               let imageContainer = $('<div class="image-container"></div>');
@@ -94,44 +129,16 @@
               return;              // 마지막 페이지를 보여준 이후에는 아래 코드를 수행하지 말 것 
             }
             page++;
-            fnGetDrawList();
+            fnGetMyDrawList();
           }
             
         }, 200);  // 200밀리초(0.2초) 후 동작(시간은 임의로 조정 가능함)
       })
     }
       
-    const fnAddResult = () => {
-      let addResult = /*[[${addResult}]]*/ null;
-      if(addResult !== null){
-        if(addResult === true){
-          alert('성공적으로 업로드 되었습니다.');
-          $('#draw_list').empty();
-        } else {
-           alert('업로드가 실패하였습니다.');
-        }
-      }
-    }
-      
-    const fnRemoveResult = () => {
-      let removeResult = /*[[${removeResult}]]*/ null;
-      if(removeResult !== null){
-        if(removeResult === 1){
-          alert('게시글이 삭제되었습니다.');
-          $('#draw_list').empty();
-        } else {
-          alert('게시글 삭제가 실패했습니다.');
-        }
-      }
-    }
-      
-    
-      
      fnGetMyDrawList();
      fnDrawDetail();
      fnScroll();
-     fnAddResult();
-     fnRemoveResult();
     
   </script>
   

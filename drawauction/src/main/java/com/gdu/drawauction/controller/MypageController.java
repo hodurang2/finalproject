@@ -68,18 +68,21 @@ public class MypageController {
     return "mypage/auctionSalesList";
   }
   
+  @GetMapping("/drawList.do")
+  public String list() {
+    return "mypage/drawList";
+  }
+  
   @ResponseBody
   @GetMapping(value="/getMyDrawList.do", produces="application/json")
   public Map<String, Object> getMyDrawList(HttpServletRequest request){
-    System.out.println("컨트롤러");
     return mypageService.getMyDrawList(request);
   }
   
   @ResponseBody
-  @GetMapping(value="/getDrawImageList.do", produces="application/json")
+  @GetMapping(value="/getMyDrawImageList.do", produces="application/json")
   public Map<String, Object> getMyDrawImageList(HttpServletRequest request) {
     return mypageService.getMyDrawImageList(request);
   }
-  
   
 }

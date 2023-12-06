@@ -218,18 +218,15 @@ public class MypageServiceImpl implements MypageService {
       int total = mypageMapper.getMyDrawCount(sellerNo);
       int display = 10;
 
-      System.out.println("유틸===="+sellerNo);
       myPageUtils.setPaging(page, total, display);
       
-      System.out.println("그려드림내역매퍼===="+sellerNo);
       List<DrawDto> myDrawList = mypageMapper.getMyDrawList(Map.of("begin", myPageUtils.getBegin()
                                                                  , "end", myPageUtils.getEnd()
                                                                  , "sellerNo", sellerNo));
-      System.out.println("그려드림내역매퍼끝===="+sellerNo);
+
       map.put("myDrawList", myDrawList);
       map.put("totalPage", myPageUtils.getTotalPage());
-      
-      System.out.println(myDrawList.size());
+
       
     } else {
       
@@ -243,30 +240,11 @@ public class MypageServiceImpl implements MypageService {
   @Override
   public Map<String, Object> getMyDrawImageList(HttpServletRequest request) {
     
-    Map<String, Object> map = new HashMap<>();
-    
     Optional<String> opt = Optional.ofNullable(request.getParameter("drawNo"));
     int drawNo = Integer.parseInt(opt.orElse("0"));
     
-    HttpSession session = request.getSession();
-    UserDto user = (UserDto)session.getAttribute("user");
-
-    if(user != null) {
-      
-      int sellerNo = user.getUserNo();
-      
-      List<DrawImageDto> myDrawImageList = mypageMapper.getMyDrawImageList(Map.of("sellerNo", sellerNo
-                                                                                , "drawNo", drawNo));
-      map.put("myDrawImageList", myDrawImageList);
-      
-    } else {
-      
-      map.put("myDrawImageList", null);
-      
-    }
-    
-    return map;
+    return Map.of("myDrawImageList", mypageMapper.getMyDrawImageList(drawNo));
     
   }
-  
+
 }

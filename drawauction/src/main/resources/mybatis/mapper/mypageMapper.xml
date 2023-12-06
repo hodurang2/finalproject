@@ -79,7 +79,7 @@
   </resultMap>
   
   <!-- DrawDto에 대한 resultMap -->
-    <resultMap type="DrawDto"      id="DrawMap">
+  <resultMap type="DrawDto"      id="DrawMap">
     <id      column="DRAW_NO"    property="drawNo"/>
     <result  column="TITLE"        property="title"/>
     <result  column="PRICE"        property="price"/>
@@ -207,21 +207,23 @@
   </select>  
  
   <select id="getMyDrawList" parameterType="Map" resultMap="DrawMap">
-     SELECT D.DRAW_NO, D.TITLE, D.PRICE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.WORK_TERM, D.USER_NO, C.CATEGORY_NAME, C.CATEGORY_NO
+    SELECT A.DRAW_NO, A.CATEGORY_NO, A.TITLE, A.PRICE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.WORK_TERM, A.USER_NO, A.NICKNAME, A.NAME, A.EMAIL, C.CATEGORY_NAME
       FROM (SELECT ROW_NUMBER() OVER(ORDER BY DRAW_NO DESC) AS RN,
-               DRAW_NO, CATEGORY_NO, TITLE, PRICE, CONTENTS, WIDTH, HEIGHT, WORK_TERM, USER_NO
-          FROM DRAW_T) D INNER JOIN CATEGORY_T C
-      ON D.CATEGORY_NO = C.CATEGORY_NO
-     WHERE D.USER_NO = #{sellerNo} AND D.RN BETWEEN #{begin} AND #{end}
-     ORDER BY D.DRAW_NO DESC
+                   D.DRAW_NO, D.CATEGORY_NO, D.TITLE, D.PRICE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.WORK_TERM,USR.USER_NO, USR.NICKNAME, USR.NAME, USR.EMAIL
+              FROM DRAW_T D LEFT OUTER JOIN USER_T USR
+                ON D.SELLER_NO = USR.USER_NO
+             WHERE USR.USER_NO = #{sellerNo}) A INNER JOIN CATEGORY_T C
+        ON A.CATEGORY_NO = C.CATEGORY_NO
+     WHERE A.RN BETWEEN #{begin} AND #{end}
+     ORDER BY A.DRAW_NO DESC
   </select>
   
-  <select id="getMyDrawImageList" parameterType="Map" resultMap="DrawMap"> 
-    SELECT DI.DRAW_IMAGE_NO, DI.DRAW_NO, DI.PATH, DI.FILESYSTEM_NAME, DI.IMAGE_ORIGINAL_NAME, DI.HAS_THUMBNAIL, D.SELLER_NO
-      FROM DRAW_IMAGE_T DI INNER JOIN DRAW_T D
-        ON DI.DRAW_NO = D.DRAW_NO
-     WHERE DI.DRAW_NO = #{drawNo} AND D.SELLER_NO = #{sellerNo}
+  <select id="getMyDrawImageList" parameterType="int" resultType="DrawImageDto"> 
+    SELECT DRAW_IMAGE_NO, DRAW_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+      FROM DRAW_IMAGE_T
+     WHERE DRAW_NO = #{drawNo}
   </select>
 
+  
   
 </mapper>

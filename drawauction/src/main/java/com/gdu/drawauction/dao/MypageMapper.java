@@ -31,6 +31,8 @@ public interface MypageMapper {
   
   public List<DrawDto> getMyDrawList(Map<String, Object> map);  // 나의 그려드림 목록
   
-  public List<DrawImageDto> getMyDrawImageList(Map<String, Object> map);  // 나의 그려드림 이미지 목록
+  public List<DrawImageDto> getMyDrawImageList(int drawNo);  // 나의 그려드림 이미지 목록
+  
+  
   
   }
