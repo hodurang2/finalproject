@@ -18,6 +18,9 @@ public interface InquiryMapper {
   public int insertInquiry(InquiryDto inquiry);
   
   public int insertInquiryAttach(InquiryAttachDto attach);
+  public List<InquiryAttachDto> getInquiryAttachList(int inquiryNo);
+  public InquiryAttachDto getInquiryAttach(int inquiryAttachNo);
+  public int updateDownloadCount(int inquiryAttachNo);
   
   public int insertAnswer(AnswerDto answer);
   public int getAnswerCount(int inquiryNo);

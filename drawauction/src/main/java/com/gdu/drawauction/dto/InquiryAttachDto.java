@@ -15,4 +15,5 @@ public class InquiryAttachDto {
   private String path;
   private String originalFilename;
   private String filesystemName;
+  private int hasThumbnail;
 }

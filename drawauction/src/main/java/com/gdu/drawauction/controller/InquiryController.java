@@ -4,6 +4,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -72,6 +74,27 @@ public class InquiryController {
     return inquiryService.addAnswerReply(request);
   }
   
+  @ResponseBody
+  @PostMapping(value="/addInquiryAttach.do", produces="application/json")
+  public Map<String, Object> addInquiryAttach(MultipartHttpServletRequest multipartRequest) throws Exception {
+    return inquiryService.addInquiryAttach(multipartRequest);
+  }
   
+  @ResponseBody
+  @GetMapping(value="/getInquiryAttachList.do", produces="application/json")
+  public Map<String, Object> getInquiryAttachList(HttpServletRequest request) {
+    return inquiryService.getInquiryAttachList(request);
+  }
+  
+  
+  @GetMapping("/download.do")
+  public ResponseEntity<Resource> download(HttpServletRequest request) {
+    return inquiryService.download(request);
+  }
+  
+  @GetMapping("/downloadAll.do")
+  public ResponseEntity<Resource> downloadAll(HttpServletRequest request) {
+    return inquiryService.downloadAll(request);
+  }
   
 }
