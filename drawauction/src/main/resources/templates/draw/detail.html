@@ -6,18 +6,18 @@
 <style>
   
   #btnKakao {
-  display: inline-block;
-  vertical-align: middle;
-  padding-top: 50px;
-  width: 43px; /* Set the width according to your icon size */
-  height: 30px; /* Set the height according to your icon size */
-  background-image: url(../../image/icon-kakao.png);
-  background-repeat: no-repeat;
-  position: absolute;
-  top: 11.6%; /* Adjust the top position to vertically center the icon */
-  right: 11%;
-  transform: translateY(-50%); /* Center the icon vertically */
-}
+	  display: inline-block;
+	  vertical-align: middle;
+	  padding-top: 50px;
+	  width: 43px; /* Set the width according to your icon size */
+	  height: 30px; /* Set the height according to your icon size */
+	  background-image: url(../../image/icon-kakao.png);
+	  background-repeat: no-repeat;
+	  position: absolute;
+	  top: 11.6%; /* Adjust the top position to vertically center the icon */
+	  right: 11%;
+	  transform: translateY(-50%); /* Center the icon vertically */
+	}
   
   body {
 	  width: 100%;
@@ -156,6 +156,7 @@
 	      <th:block th:if="${not #strings.isEmpty(draw.contents)}">
 	        <div th:text="${draw.contents}"></div>
 	      </th:block>
+	      <button type="button" id="btn_buy" class="btn btn-primary d-grid gap-2 col-3 mx-auto">주문/결제하기</button>
 	  </div>
       
       <hr>

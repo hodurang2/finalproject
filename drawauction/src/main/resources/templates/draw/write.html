@@ -165,7 +165,22 @@
 	    $(this).html($(this).html().replace(/(최대 14일)/g, '<span style="color: crimson">최대 14일</span>'));
 	  });
 	  
-      
+	  function getByteB(contents) {
+		$('#frm_draw_add').submit((ev)=>{
+		  var contents = $("#contents").val();
+		  var byte = 0;
+		  for (var i=0; i<contents.length; ++i) {
+		  (contents.charCodeAt(i) > 127) ? byte += 3 : byte++ ;
+		  }
+		  if(byte > 4000){
+		    alert("내용은 최대 4000BYTE 입니다.")
+    	    ev.preventDefault();
+    	    return;
+		  }
+		})
+	  }
+	  
+      getByteB();
       fnFileCheck();
       fnSubmit();
       
