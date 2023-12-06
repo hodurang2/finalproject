@@ -409,4 +409,23 @@ public class DrawServiceImpl implements DrawService{
 	    
 	  }
 	
+	@Override
+	public int addReview(HttpServletRequest request) {
+		
+		int drawNo = Integer.parseInt(request.getParameter("drawNo"));
+		int userNo = Integer.parseInt(request.getParameter("userNo"));
+		int rating = Integer.parseInt(request.getParameter("rating"));
+		String reviewContents = request.getParameter("reviewContents");
+		System.out.println(drawNo);
+		System.out.println(userNo);
+		System.out.println(rating);
+		System.out.println(reviewContents);
+		Map<String, Object> map = Map.of("drawNo", drawNo
+									   , "userNo", userNo
+									   , "rating", rating
+									   , "reviewContents", reviewContents);
+		
+		return drawMapper.addReview(map);
+	}
+	
 }

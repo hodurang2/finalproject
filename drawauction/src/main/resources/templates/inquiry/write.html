@@ -23,79 +23,82 @@
 
     <div class="wrap wrap_3">
 
+      <div>
+
+        <form id="frm_inquiry_add" method="post" th:action="@{/inquiry/addInquiry.do}">
+
+          <h1 style="text-align: center;">문의사항을 작성하세요</h1>
+
           <div>
-          
-            <form id="frm_inquiry_add" method="post" th:action="@{/inquiry/addInquiry.do}">
-              
-              <h1 style="text-align: center;">문의사항을 작성하세요</h1>
-              
-              <div>문의 종류
-                <select name="inquiryType">
-                  <option th:value="auction">경매신고</option>
-                  <option th:value="draw">그려드림 신고</option>
-                  <option th:value="badContent">부적절한 게시글</option>
-                  <option th:value="marketing">광고성 홍보</option>
-                  <option th:value="hacking">사칭 · 해킹문의</option>
-                  <option th:value="bug">버그문의</option>
-                  <option th:value="etc">기타</option>
-                </select>
-              </div>
-              
-              <div>
-                <label for="title">제목</label>
-                <input type="text" name="title" id="title" class="form-control">
-              </div>
-              
-              <div>
-                <label for="content">내용</label>
-                <textarea name="content" id="content" style="display: none;"></textarea>
-                <div id="toolbar-container"></div>
-                <div id="ckeditor"></div>
-              </div>
-              
-              <div>
-                <input type="hidden" name="userNo" th:value="${session.user.userNo}">
-                <button class="btn btn-primary col-12" type="submit">작성완료</button>
-              </div>
-              
-            </form>
-          
+            문의 종류
+            <select name="inquiryType">
+              <option th:value="auction">경매신고</option>
+              <option th:value="draw">그려드림 신고</option>
+              <option th:value="badContent">부적절한 게시글</option>
+              <option th:value="marketing">광고성 홍보</option>
+              <option th:value="hacking">사칭 · 해킹문의</option>
+              <option th:value="bug">버그문의</option>
+              <option th:value="etc">기타</option>
+            </select>
           </div>
-          
-          <script>
-            
-            const fnCkeditor = () => {
-              DecoupledEditor
-                .create(document.getElementById('ckeditor'), {
-                  ckfinder: {
-                    // 이미지 업로드 경로
-                    uploadUrl: '/inquiry/imageUpload.do'         
-                  }
-                })
-                .then(editor => {
-                  const toolbarContainer = document.getElementById('toolbar-container');
-                  toolbarContainer.appendChild(editor.ui.view.toolbar.element);
-                })
-                .catch(error => {
-                  console.error(error);
-                });
-            }
-            
-            const fnInquiryAdd = () => {
-              $('#frm_inquiry_add').submit(() => {
-                $('#content').val($('#ckeditor').html());
-              })
-            }
-            
-            fnCkeditor();
-            fnInquiryAdd();
-            
-          </script>
-          
+
+          <div>
+            <label for="title">제목</label>
+            <input type="text" name="title" id="title" class="form-control">
+          </div>
+
+          <div>
+            <label for="content">내용</label>
+            <textarea name="content" id="content" style="display: none;"></textarea>
+            <div id="toolbar-container"></div>
+            <div id="ckeditor"></div>
+          </div>
+
+          <div>
+            <input type="hidden" name="userNo" th:value="${session.user.userNo}">
+            <button class="btn btn-primary col-12" type="submit">작성완료</button>
+          </div>
+
+        </form>
+
+      </div>
+
+      <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        const fnCkeditor = () => {
+          DecoupledEditor
+            .create(document.getElementById('ckeditor'), {
+              ckfinder: {
+                // 이미지 업로드 경로
+                uploadUrl: /*[[@{/inquiry/imageUpload.do}]]*/ '/inquiry/imageUpload.do'
+              }
+            })
+            .then(editor => {
+              const toolbarContainer = document.getElementById('toolbar-container');
+              toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+            })
+            .catch(error => {
+              console.error(error);
+            });
+        }
+
+        const fnInquiryAdd = () => {
+          $('#frm_inquiry_add').submit(() => {
+            $('#content').val($('#ckeditor').html());
+          })
+        }
+
+        fnCkeditor();
+        fnInquiryAdd();
+
+        /*]]>*/
+      </script>
+
     </div>
   </div>
-  
-<div th:replace="~{/layout/footer::footer}"></div>
+
+  <div th:replace="~{/layout/footer::footer}"></div>
 
 </body>
 </html>

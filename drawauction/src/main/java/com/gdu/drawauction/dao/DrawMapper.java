@@ -28,4 +28,5 @@ public interface DrawMapper {
 	public int getReviewCount(int drawNo);
 	public List<DrawReviewDto> getReviewList(Map<String, Object> map);
 	public DrawOrderDto getOrderReview(Map<String, Object> map);
+	public int addReview(Map<String, Object> map);
 }

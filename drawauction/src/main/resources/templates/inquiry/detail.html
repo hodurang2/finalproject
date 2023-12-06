@@ -24,8 +24,8 @@
     
     <div>
       <h1 th:text="${inquiry.title}"></h1>
-      <div th:text="|작성자  : ${inquiry.userDto.nickname}|"></div>
-      <div th:text="|작성일  : ${#dates.format(inquiry.inquiryCreatedAt, 'yyyy-MM-dd HH:mm:ss')}|"></div>
+      <div th:text="|작성자    : ${inquiry.userDto.name}|"></div>
+      <div th:text="|작성일    : ${#dates.format(inquiry.inquiryCreatedAt, 'yyyy-MM-dd HH:mm:ss')}|"></div>
       <div th:text="|문의종류  : ${inquiry.inquiryType}|"></div>
       <div>
        <th:block th:if="${session.user != null}">
@@ -95,7 +95,7 @@
           // 요청
           type: 'get',
           url: '/inquiry/answerList.do',
-          data: 'page=' + page + '&inquiryNo=${inquiry.inquiryNo}',
+          data: 'page=' + page + '&inquiryNo=[[${inquiry.inquiryNo}]]',
           // 응답
           dataType: 'json',
           success: (resData) => {  // resData = {"answerList": [], "paging": "<div>...</div>"}

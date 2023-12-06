@@ -111,5 +111,12 @@ public class DrawController {
     return drawService.getReviewList(request);
   }
   
+  @PostMapping("/addReview.do")
+  public String addReview(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    int addReviewResult = drawService.addReview(request);
+    redirectAttributes.addFlashAttribute("addReviewResult", addReviewResult);
+    return "redirect:/draw/detail.do?drawNo=" + request.getParameter("drawNo");
+  }
+  
 
 }
