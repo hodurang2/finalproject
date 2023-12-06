@@ -22,7 +22,7 @@ public interface AuctionMapper2 {
   public int updateAuction(Map<String, Object> map);
   public int updateArt(Map<String, Object> map);
   public int deleteAuction(int auctionNo);
-  public int insertImage(DrawImageDto image);
-  public DrawImageDto getImage(int drawImageNo);
-  public int deleteImage(int drawImageNo);
+  public int insertImage(AuctionImageDto image);
+  public AuctionImageDto getImage(int auctionImageNo);
+  public int deleteImage(int auctionImageNo);
 }

@@ -168,13 +168,7 @@
         FROM AUCTION_T
        WHERE AUCTION_NO = #{auctionNo}
   </delete>
-
-  <select id="getImage" parameterType="int" resultType="AuctionImageDto">
-    SELECT AUCTION_IMAGE_NO, AUCTION_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
-      FROM AUCTION_IMAGE_T
-     WHERE AUCTION_IMAGE_NO = #{auctionImageNo}
-  </select>    
-    
+  
   <insert id="insertImage" parameterType="AuctionImageDto">
     INSERT INTO AUCTION_IMAGE_T (
         AUCTION_IMAGE_NO
@@ -190,13 +184,10 @@
       , #{filesystemName}
       , #{imageOriginalName}
       , #{hasThumbnail}
-    )    
-    
-  <delete id="deleteImage" parameterType="int">
-    DELETE
-      FROM AUCTION_IMAGE_T
-     WHERE AUCTION_IMAGE_NO = #{auctionImageNo}
-  </delete>
+    )  
+  </insert>
+  
+
   
   
 </mapper>

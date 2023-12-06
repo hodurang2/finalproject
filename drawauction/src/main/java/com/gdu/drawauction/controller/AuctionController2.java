@@ -30,11 +30,6 @@ public class AuctionController2 {
     return "auction/list";
   }
   
-  @GetMapping("/write.form")
-  public String write() {
-    return "auction/write";
-  }
-  
   @ResponseBody
   @GetMapping(value="/getList.do", produces="application/json")
   public Map<String, Object> getList(HttpServletRequest request){
@@ -71,11 +66,8 @@ public class AuctionController2 {
   
   @PostMapping("/modify.do")
   public String modify(HttpServletRequest request, RedirectAttributes redirectAttributes) {
-    System.out.println("=컨트롤러서비스전");
     int modifyResult = auctionService2.modifyAuction(request);
-    System.out.println("=컨트롤러서비스후");
     redirectAttributes.addFlashAttribute("modifyResult", modifyResult);
-    System.out.println("=컨트롤러서비스후리다이렉트후");
     return "redirect:/auction2/detail.do?auctionNo=" + request.getParameter("auctionNo");
   }
   

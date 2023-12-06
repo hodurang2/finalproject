@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 public interface AuctionService2 {
+  
   public Map<String, Object> getAuctionList(HttpServletRequest request);
   public void loadAuction(HttpServletRequest request, Model model); 
   public Map<String, Object> controlAuctionWishlist(HttpServletRequest request);
@@ -19,6 +20,5 @@ public interface AuctionService2 {
   public Map<String, Object> addImage(MultipartHttpServletRequest multipartRequest) throws Exception;
   public Map<String, Object> removeImage(HttpServletRequest request);
   public int removeAuction(int auctionNo);
-  
   
 }

@@ -20,13 +20,13 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.gdu.drawauction.dao.AuctionMapper2;
 import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.dto.AuctionImageDto;
-import com.gdu.drawauction.dto.DrawImageDto;
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.util.MyFileUtils;
 import com.gdu.drawauction.util.MyPageUtils;
 
 import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
+
 
 @Transactional
 @RequiredArgsConstructor
@@ -200,12 +200,12 @@ public class AuctionServiceImpl2 implements AuctionService2 {
                     .toFile(thumbnail);
         }
         
-        DrawImageDto image = DrawImageDto.builder()
+        AuctionImageDto image = AuctionImageDto.builder()
                             .path(path)
                             .imageOriginalName(imageOriginalName)
                             .filesystemName(filesystemName)
                             .hasThumbnail(hasThumbnail)
-                            .drawNo(Integer.parseInt(multipartRequest.getParameter("drawNo")))
+                            .auctionNo(Integer.parseInt(multipartRequest.getParameter("auctionNo")))
                             .build();
         
         ImageCount += auctionMapper2.insertImage(image);
@@ -222,10 +222,10 @@ public class AuctionServiceImpl2 implements AuctionService2 {
   @Override
   public Map<String, Object> removeImage(HttpServletRequest request) {
     
-    Optional<String> opt = Optional.ofNullable(request.getParameter("drawImageNo"));
-    int drawImageNo = Integer.parseInt(opt.orElse("0"));
+    Optional<String> opt = Optional.ofNullable(request.getParameter("auctionImageNo"));
+    int auctionImageNo = Integer.parseInt(opt.orElse("0"));
     
-    DrawImageDto image = auctionMapper2.getImage(drawImageNo);
+    AuctionImageDto image = auctionMapper2.getImage(auctionImageNo);
     File file = new File(image.getPath(), image.getFilesystemName());
     if(file.exists()) {
       file.delete();
@@ -238,7 +238,7 @@ public class AuctionServiceImpl2 implements AuctionService2 {
       }
     }
     
-    int removeResult = auctionMapper2.deleteImage(drawImageNo);
+    int removeResult = auctionMapper2.deleteImage(auctionImageNo);
     
     return Map.of("removeResult", removeResult);
     
