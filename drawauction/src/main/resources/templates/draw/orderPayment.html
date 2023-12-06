@@ -1,7 +1,37 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{/layout/header::head('그려드림 작성')}"></head>
+<head th:replace="~{/layout/header::head('주문/결제 페이지')}"></head>
+<style>
+ 
+  body {
+	  width: 100%;
+	  font-family: 'Arial', sans-serif;
+	  line-height: 1.6;
+	  color: #333;
+	  background-color: #f8f9fa;
+	  margin: 0;
+	  display: flex;
+	  flex-direction: column;
+	  align-items: center;
+	  justify-content: center;
+	  min-height: 100vh;
+	}
+
+    .main_wrap {
+      width: 90%;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .wrap_6 {
+      position: relative;
+      width: 80%;
+    }
+
+</style>
 
 <body>
   
@@ -11,178 +41,100 @@
 
     <div class="wrap wrap_6">
     
-      <h1 class="title">그려드림 게시글 작성</h1>
+      <h1 class="title">주문/결제 페이지</h1>
       
-      <form id="frm_draw_add" method="post" th:action="@{/draw/add.do}" enctype="multipart/form-data">
-        <div class="mt-3" th:if="${session.user != null}">
-          <label for="nickname" class="form-label">작성자</label>
-          <input type="text" id="nickname" class="form-control-plaintext" th:value="${session.user.nickname}" readonly>
+      <form id="frm_draw_add" method="post" th:action="@{/draw/orderPayment.do}" enctype="multipart/form-data">
+		<h4>주문 고객</h4>
+		<hr>
+        <div class="mt-3" th:if="${session.user != null}" style="display: flex; align-items: center;">
+          <label for="name" class="form-label" style="width: 150px; margin-top:9px;">이름</label>
+          <input type="text" id="name" class="form-control-plaintext" th:value="${session.user.name}" readonly>
         </div>
+        <div class="mt-3" style="display: flex; align-items: center;">
+          <label for="mobile" class="form-label" style="width: 150px; margin-top:9px;">전화번호</label>
+          <input type="text" id="mobile" class="form-control-plaintext" th:value="${session.user.mobile}" readonly>
+        </div>
+        <div class="mt-3" style="display: flex; align-items: center;">
+          <label for="email" class="form-label" style="width: 150px; margin-top:9px;">이메일</label>
+          <input type="text" id="email" class="form-control-plaintext" th:value="${session.user.email}" readonly>
+        </div>
+        <pre>
+		</pre>
+        <h4>배송 방식</h4>
+        <hr>
         <div class="mt-3">
-          <label for="title" class="form-label">카테고리</label>
-          <select class="col-sm-3" name="categoryNo" id="categoryNo">
-			<option value="1">포토그래픽</option>  
-			<option value="2">원화</option>  
-			<option value="3">드로잉</option>  
-			<option value="4">판화</option>  
-			<option value="5">서예</option>  
-			<option value="6">회화</option>  
-			<option value="7">동양화</option>  
-			<option value="8">공예</option>  
-			<option value="9">디지털아트</option>  
-			<option value="10">조각품</option>  
-			<option value="11">기타</option>  
-		  </select>
+		  <input type="radio" checked>&nbsp;&nbsp;디지털 이미지 : 이메일 발송
         </div>
-        <div class="mt-3">
-          <label for="title" class="form-label target2">제목 필수</label>
-          <input type="text" name="title" id="title" class="form-control">
+        <pre>
+		</pre>
+		<h4>배송 정보</h4>
+		<hr>
+        <div class="mt-3" style="display: flex; align-items: center;">
+          <label for="workTerm" class="form-label target2 target3" style="width: 130px; margin-top:9px;">이메일 입력</label>
+          <div class="col-sm-3"><input type="text" name="receiveEmail" class="form-control"></div>
         </div>
-        <div class="mt-3">
-          <label for="files" class="form-label target2" id="target">대표이미지 필수 첫 번째 첨부이미지가 대표이미지 입니다.</label>
-          <input type="file" name="files" id="files" class="form-control" multiple>
-        </div>
-        <div id="image_container"></div>
-        <div class="mt-3">
-          <label for="price" class="form-label target2">가격(P) 필수</label>
-          <input type="number" name="price" id="price" class="form-control" placeholder="0">
-        </div>
+        <pre>
+		</pre>
+		<h4>결제 수단</h4>
+		<hr>
 		<div class="mt-3">
-          <label for="width" class="form-label">작품 가로길이(px)</label>
-          <input type="number" name="width" id="width" class="form-control" placeholder="1024">
-          <label for="height" class="form-label">작품 세로길이(px)</label>
-          <input type="number" name="height" id="height" class="form-control" placeholder="1024">
+		  <input type="radio" checked>&nbsp;&nbsp;E-money 포인트 결제
         </div>
-        <div class="mt-3">
-          <label for="workTerm" class="form-label target2 target3">작업기간 필수 최대 14일</label>
-          <div>결제일로부터<input type="number" name="workTerm" id="workTerm" class="form-control-sm" placeholder="0">일</div>
-        </div>
-        <div class="mt-3">
-          <label for="contents" class="form-label target2">내용 필수</label>
-          <textarea rows="8" name="contents" id="contents" class="form-control"></textarea>
-        </div>
+        <pre>
+		</pre>
+	    <h4>작품 정보</h4>
+	    <hr>
+	    <div class="mt-3" style="display: flex; align-items: flex-start;">
+		  <img th:src="@{|${drawImage.path}/s_${drawImage.filesystemName}|}" alt="썸네일" width="300px" style="margin-right:30px">
+		  <ul style="list-style-type: none; padding: 0; margin: 0; display: flex; flex-direction: column;">
+		    <li style="display: flex; align-items: center;">
+		      <label for="drawTitle" class="form-label" style="width: 120px; margin-top:9px;">제목</label>
+		      <input type="text" id="drawTitle" class="form-control-plaintext" th:value="${draw.title}" readonly>
+		    </li>
+		    <li style="display: flex; align-items: center;">
+		      <label for="nickname" class="form-label" style="width: 120px; margin-top:9px;">작가</label>
+		      <input type="text" id="nickname" class="form-control-plaintext" th:value="${draw.userDto.nickname}" readonly>
+		    </li>
+		    <li style="display: flex; align-items: center;">
+		      <label for="price" class="form-label" style="width: 120px; margin-top:9px;">가격</label>
+		      <input type="text" name="price" id="price" class="form-control-plaintext" th:value="|${draw.price} P|" readonly>
+		    </li>
+		  </ul>
+		</div>
         <div class="text-center mt-5" th:if="${session.user != null}">
           <a th:href="@{/draw/list.do}">
-            <button class="btn btn-secondary" type="button">작성취소</button>
+            <button class="btn btn-secondary" type="button">주문취소</button>
           </a>
-          <input type="hidden" name="sellerNo" th:value="${session.user.userNo}">
-          <button type="submit" class="btn btn-primary">작성완료</button>
+          <input type="hidden" name="drawNo" id="drawNo" th:value="${draw.drawNo}">
+          <input type="hidden" name="buyerNo" id="buyerNo" th:value="${session.user.userNo}">
+          <button type="submit" class="btn btn-primary">주문하기</button>
         </div>
       </form>
       
     </div>
       
     <script>
-    
-      const fnFileCheck = () => {
-        $('#files').change((ev) => {
-          $('#image_container').empty();
-		  for (var image of event.target.files) {
-            var reader = new FileReader();
-            reader.onload = function(event) {
-              var img = document.createElement("img");
-              img.setAttribute("src", event.target.result);
-              img.setAttribute("width", "250px");
-              document.querySelector("#image_container").appendChild(img);
-            };
+		
+	  var userNo = $('#buyerNo').val();
+	  var drawNo = $('#drawNo').val();
+	  
+	  
+	  const fnCheckEmail = () => {
 
-            console.log(image);
-            reader.readAsDataURL(image);
-          }
-          $('#image_list').empty();
-          let maxSize = 1024 * 1024 * 100;
-          let maxSizePerFile = 1024 * 1024 * 10;
-          let totalSize = 0;
-          let files = ev.target.files;
-          for(let i = 0; i < files.length; i++){
-            totalSize += files[i].size;
-            if(files[i].size > maxSizePerFile){
-              alert('각 첨부파일의 최대 크기는 10MB입니다.');
-              $(ev.target).val('');
-              return;
-            }
-          }
-          if(totalSize > maxSize){
-            alert('전체 첨부파일의 최대 크기는 100MB입니다.');
-            $(ev.target).val('');
-            return;
-          }
-        })
-      }
-      
-      const fnSubmit = () => {
-    	$('#frm_draw_add').submit((ev) => {
-    	  if($('#title').val() === ''){
-    	    alert('제목은 반드시 입력해야 합니다.');
-    	    $('#title').focus();
-    	    ev.preventDefault();
-    		return;
-    	  } else if($("#files").val() === ''){
-		    alert('대표이미지는 반드시 추가해야 합니다');
-    	    ev.preventDefault();
-    		return;
-		  } else if($("#price").val() === ''){
-		    alert('가격은 반드시 입력해야 합니다');
-		    $('#price').focus();
-    	    ev.preventDefault();
-    		return;
-		  } else if($("#price").val() <= 0){
-		    alert('가격은 0보다 커야 합니다.');
-		    $('#price').focus();
-    	    ev.preventDefault();
-    		return;
-		  } else if($("#price").val() > 2100000000){
-		    alert('가격은 너무 큽니다.(21억 이하 입력)');
-		    $('#price').focus();
-    	    ev.preventDefault();
-    		return;
-		  } else if($("#contents").val() === ''){
-		    alert('내용은 반드시 입력해야 합니다');
-		    $('#contents').focus();
-    	    ev.preventDefault();
-    		return;
-		  } else if($("#workTerm").val() === ''){
-		    alert('작업기간은 반드시 입력해야 합니다');
-		    $('#workTerm').focus();
-    	    ev.preventDefault();
-    		return;
-		  } else if($("#workTerm").val() > 14 || $("#workTerm").val() <= 0){
-			alert('작업기간은 최소 1일 부터 최대 14일 입니다.');
-			ev.preventDefault();
-    		return;
-		  }
-        })
-      }
-      
-      $('#target').each(function() {
-	    $(this).html($(this).html().replace(/(첫 번째 첨부이미지가 대표이미지 입니다.)/g, '<span style="color: crimson">(첫 번째 첨부이미지가 대표이미지 입니다.)</span>'));
-	  });
+	  }
 	  
-      $('.target2').each(function() {
-	    $(this).html($(this).html().replace(/(필수)/g, '<span style="color: crimson">⁕</span>'));
-	  });
-      $('.target3').each(function() {
-	    $(this).html($(this).html().replace(/(최대 14일)/g, '<span style="color: crimson">최대 14일</span>'));
-	  });
-	  
-	  function getByteB(contents) {
-		$('#frm_draw_add').submit((ev)=>{
-		  var contents = $("#contents").val();
-		  var byte = 0;
-		  for (var i=0; i<contents.length; ++i) {
-		  (contents.charCodeAt(i) > 127) ? byte += 3 : byte++ ;
-		  }
-		  if(byte > 4000){
-		    alert("내용은 최대 4000BYTE 입니다.")
-    	    ev.preventDefault();
-    	    return;
+	  const fnCheckEmoney = () => {
+	    $.ajax({
+		  type: 'get',
+		  url: '/draw/checkEmoney.do',
+		  data: 'userNo=' + userNo,
+		  dataType: 'json',
+		  success: (resData) => {
+			
 		  }
 		})
 	  }
-	  
-      getByteB();
-      fnFileCheck();
-      fnSubmit();
+    
       
     </script>
       

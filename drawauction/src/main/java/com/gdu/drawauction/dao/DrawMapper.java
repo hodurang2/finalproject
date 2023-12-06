@@ -32,4 +32,5 @@ public interface DrawMapper {
 	public DrawOrderDto getOrderReview(Map<String, Object> map);
 	public int addReview(Map<String, Object> map);
 	public int reviewCheck(int userNo);
+	public int getEmoney(int userNo);
 }

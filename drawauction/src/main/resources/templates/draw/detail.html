@@ -262,10 +262,10 @@
       
       const fnEdit = () => {
         $('#btn_edit').click(() => {
-          frmBtn.attr('action', '/draw/edit.form');
-          frmBtn.attr('method', 'get');
-          frmBtn.submit();
-        })
+            frmBtn.attr('action', '/draw/edit.form');
+            frmBtn.attr('method', 'get');
+            frmBtn.submit();
+	    })
       }
       
       const fnRemove = () => {
@@ -279,10 +279,18 @@
       }
       
       const fnOrderPayment = () => {
-        $('#btn_orderPayment').click(() => {
-          $('#frm_buy_chat').attr('action', '/draw/orderPayment.form');
-          $('#frm_buy_chat').attr('method', 'get');
-          $('#frm_buy_chat').submit();
+		var userNo = /*[[${session.user != null ? session.user.userNo : null}]]*/ null;
+		var drawUserNo = /*[[${draw.userDto.userNo}]]*/ null;
+        $('#btn_orderPayment').click((ev) => {
+		  if(userNo != drawUserNo) {
+            $('#frm_buy_chat').attr('action', '/draw/orderPayment.form');
+            $('#frm_buy_chat').attr('method', 'get');
+            $('#frm_buy_chat').submit();
+		  } else {
+			alert("자신의 게시글은 주문/결제 할 수 없습니다.")
+			ev.preventDefault();
+			return;
+		  }
         })
       }
     
@@ -413,6 +421,7 @@
 	  });
 	}
     
+     
           
       fnReviewResult();    
 	  fnReviewtList();
