@@ -14,23 +14,20 @@ import com.gdu.drawauction.dto.UserDto;
 @Mapper
 public interface MypageMapper {
 
-  public int updateUser(UserDto user);    // 회원 정보 수정(ajax)
-  
+  // 회원
+  public int updateUser(UserDto user);                // 회원 정보 수정(ajax)
   public int updateUserIntroduction(UserDto user);    // 소개글 수정(ajax)
-  
-  public int updateUserPw(UserDto user);    // 비밀번호 변경
-  
-  public int getAuctionBidCount(int bidderNo);     // 입찰 작품수(종료, 진행 포함)
+  public int updateUserPw(UserDto user);              // 비밀번호 변경
 
+  // 경매
+  public int getAuctionBidCount(int bidderNo);        // 입찰 작품수(종료, 진행 포함)
   public List<BidDto> getAuctionBidList(Map<String, Object> map);   // 입찰 내역
-  
-  public AuctionImageDto getMyAuctionImage(int auctionNo);    // 입찰 경매 이미지
-  
-  public int getAuctionSalesCount(int sellerNo);   // 출품 작품수(종료, 진행 포함)
-  
+  public int getAuctionSalesCount(int sellerNo);      // 출품 작품수(종료, 진행 포함)
   public List<BidDto> getAuctionSalesList(Map<String, Object> map); // 출품 내역
-  
-  public int getMyDrawCount(int sellerNo);    // 내가 올린 그려드림 갯수
+  public AuctionImageDto getMyAuctionImage(int auctionNo);    // 경매 이미지
+
+  // 그려드림
+  public int getMyDrawCount(int sellerNo);          // 내가 올린 그려드림 갯수
   
   public List<DrawDto> getMyDrawList(Map<String, Object> map);  // 나의 그려드림 목록
   

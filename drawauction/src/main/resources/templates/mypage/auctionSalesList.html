@@ -73,7 +73,7 @@
         <tbody>
           <th:block th:each="s,vs:${salesList}">
             <tr>
-              <td th:text="작품이미지"></td>
+              <td class="auction_image"><img th:src="@{|${s.auctionDto.image.path}/s_${s.auctionDto.image.filesystemName}|}" alt="썸네일"></td>
               <td th:text="|작품제목:${s.auctionDto.artDto.title} 작품설명:${s.auctionDto.artDto.contents}|"></td>
               <td th:text="${s.auctionDto.startAt}"></td>
               <td th:text="${s.auctionDto.startPrice}"></td>

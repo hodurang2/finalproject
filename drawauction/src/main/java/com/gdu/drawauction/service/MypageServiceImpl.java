@@ -201,6 +201,15 @@ public class MypageServiceImpl implements MypageService {
       
       List<BidDto> salesList = mypageMapper.getAuctionSalesList(map);
       
+      System.out.println("이미지 넣기 전");
+
+      for(BidDto bidDto : salesList) {
+        bidDto.getAuctionDto().setImage(mypageMapper.getMyAuctionImage(bidDto.getAuctionDto().getAuctionNo()));
+      }
+      
+      System.out.println("이미지 넣은 후");
+ 
+      
       model.addAttribute("salesList", salesList);
       model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/mypage/auctionSalesList.do"));
       model.addAttribute("beginNo", total - (page - 1) * display);
