@@ -47,7 +47,8 @@ public class AuctionController2 {
   } 
   
   @GetMapping("/edit.form")
-  public String edit(@ModelAttribute("auction") AuctionDto auction) {
+  public String edit(HttpServletRequest request, Model model) {
+    auctionService2.loadAuction(request, model);
     return "auction/edit";
   }
   
