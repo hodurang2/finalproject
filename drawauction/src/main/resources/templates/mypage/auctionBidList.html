@@ -7,6 +7,7 @@
     width: 100%;
     height: 50px;
     border-bottom: 1px solid gray;
+    margin-top: 30px;
   }
   .mypage_list {
     display: flex;
@@ -25,11 +26,17 @@
     cursor: pointer;
     font-size: 20px;
   }
-  .mypage_list a:hover {
-    background-color: rgb(0, 128, 64);
-    border-bottom: 1px solid gray;
+  .bid {
+    background-color: rgb(84, 186, 125);
+    border-bottom: 2px solid gray;
+    color: white;
   }
-  
+  .mypage_list a:hover {
+    background-color: rgb(84, 186, 125);
+    border-bottom: 2px solid gray;
+    color: white;
+  }
+
 </style>
  
 <body>
@@ -42,8 +49,8 @@
     
     <div class="list_wrap">
       <ul class="mypage_list">
-        <li><a th:href="@{/mypage/auctionBidList.do}">입찰작품</a></li>
-        <li><a th:href="@{/mypage/auctionSalesList.do}">출품작품</a></li>
+        <li><a th:href="@{/mypage/getAuctionBidList.do}" class="bid">입찰작품</a></li>
+        <li><a th:href="@{/mypage/getAuctionSalesList.do}" class="sales">출품작품</a></li>
       </ul>
     </div>
     
@@ -53,19 +60,19 @@
           <tr>
             <td>작품이미지</td>
             <td>작품정보</td>
-            <td>입찰일시</td>
+            <td>입찰일</td>
             <td>내입찰가</td>
             <td>현재입찰가</td>
             <td>진행상태</td>
             <td>낙찰상태</td>
-            <td>경매종료일시</td>
+            <td>경매종료일</td>
           </tr>
         </thead>
         <tbody>
           <th:block th:each="b,vs:${bidList}">
             <tr>
-              <td th:text="작품이미지"></td>
-              <td th:text="|작품제목:${b.auctionDto.artDto.title} 작품설명:${b.auctionDto.artDto.contents}|"></td>
+              <td><img th:src="|${b.auctionDto.image.path}/s_${b.auctionDto.image.filesystemName}|" alt="썸네일" width="120px" height="100px"></td>
+              <td class="auction_title" th:text="${b.auctionDto.artDto.title}"></td>
               <td th:text="${b.bidAt}"></td>
               <td th:text="${b.bidderDto.myPrice}"></td>
               <td th:text="${b.price}"></td>
@@ -94,71 +101,11 @@
       </table>
       
     </div>
-    
-    
-    
-    <div class="table-responsive" id="salesList_wrap">
-      <table class="table align-middle">
-        <thead>
-          <tr>
-            <td>작품이미지</td>
-            <td>작품정보</td>
-            <td>경매시작일시</td>
-            <td>시작가</td>
-            <td>현재입찰가</td>
-            <td>진행상태</td>
-            <td>판매상태</td>
-            <td>경매종료일시</td>
-          </tr>
-        </thead>
-        <tbody>
-          <th:block th:each="s,vs:${salesList}">
-            <tr>
-              <td th:text="작품이미지"></td>
-              <td th:text="|작품제목:${s.auctionDto.artDto.title} 작품설명:${s.auctionDto.artDto.contents}|"></td>
-              <td th:text="${s.auctionDto.startAt}"></td>
-              <td th:text="${s.auctionDto.startPrice}"></td>
-              <td th:text="${s.price}"></td>
-              <th:block th:if="${s.auctionDto.status == 0}">
-                <td th:text="진행"></td>
-                <td th:text="판매진행중"></td>
-              </th:block>
-              <th:block th:if="${s.auctionDto.status == 1}">
-                <td th:text="종료"></td>
-                <th:block th:if="${s.price == null}">
-                  <td th:text="유찰"></td>
-                </th:block>
-                <th:block th:if="${s.price != null}">
-                  <td th:text="판매완료"></td>
-                </th:block>
-              </th:block>
-              <td th:text="${s.auctionDto.endAt}"></td>
-            </tr>
-          </th:block>
-        </tbody>
-      </table>
-      
-    </div>
-    
+  
   </div>
   
   
   <div th:replace="~{/layout/footer::footer}"></div>
-  
-  <script>
-
-    $(() => {
-      fnShow();
-    })
-
-    const fnShow = () => {
-      $('.mypage_list a').on('click', (ev) => {
-        $('.mypage_list').find('a').removeClass('show');
-        $(ev.target).addClass('show');
-      })
-    }
-    
-  </script>
   
 </body>
 </html>

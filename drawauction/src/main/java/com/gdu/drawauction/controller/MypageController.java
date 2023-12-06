@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gdu.drawauction.service.MypageService;
 
@@ -38,29 +39,7 @@ public class MypageController {
   public ResponseEntity<Map<String, Object>> modify(HttpServletRequest request) {
     return mypageService.modify(request);
   }
-  
-  @PostMapping(value="/modifyIntroduction.do", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Map<String, Object>> modifyIntroduction(HttpServletRequest request) {
-    return mypageService.modifyIntroduction(request);
-  }
-  
-  @GetMapping("/auctionBidList.do")
-  public String auctionBidList(HttpServletRequest request, Model model) {
-    mypageService.loadAuctionBidList(request, model);
-    return "mypage/auctionList";
-  }
-  
-  @GetMapping("/auctionSalesList.do")
-  public String auctionSalesList(HttpServletRequest request, Model model) {
-    mypageService.loadAuctionSalesList(request, model);
-    return "mypage/auctionList";
-  }
-  
-  @GetMapping("/drawList.do")
-  public String myDrawLsit() {
-    return "mypage/drawList";
-  }
-  
+
   @GetMapping("/modifyPw.form")
   public String modifyPw() {
     return "mypage/pw";
@@ -69,6 +48,35 @@ public class MypageController {
   @PostMapping("/modifyPw.do")
   public void modifyPw(HttpServletRequest request, HttpServletResponse response) {
     mypageService.modifyPw(request, response);
+  }
+  
+  @PostMapping(value="/modifyIntroduction.do", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Map<String, Object>> modifyIntroduction(HttpServletRequest request) {
+    return mypageService.modifyIntroduction(request);
+  }
+  
+  
+  @GetMapping("/getAuctionBidList.do")
+  public String getAuctionBidList(HttpServletRequest request, Model model) {
+    mypageService.getAuctionBidList(request, model);
+    return "mypage/auctionBidList";
+  }
+  
+  @GetMapping("/getAuctionSalesList.do")
+  public String getAuctionSalesList(HttpServletRequest request, Model model) {
+    mypageService.getAuctionSalesList(request, model);
+    return "mypage/auctionSalesList";
+  }
+  
+  @GetMapping("/drawList.do")
+  public String list() {
+    return "mypage/drawList";
+  }
+  
+  @ResponseBody
+  @GetMapping(value="/getMyDrawList.do", produces="application/json")
+  public Map<String, Object> getMyDrawList(HttpServletRequest request){
+    return mypageService.getMyDrawList(request);
   }
   
 }

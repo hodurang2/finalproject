@@ -75,8 +75,42 @@
       <result column="INTRODUCTION"     property="introduction"/>
       <result column="MY_PRICE"         property="myPrice" />
     </association>
-    
+  
   </resultMap>
+  
+  <!-- DrawDto에 대한 resultMap -->
+  <resultMap type="DrawDto"      id="DrawMap">
+    <id      column="DRAW_NO"    property="drawNo"/>
+    <result  column="TITLE"        property="title"/>
+    <result  column="PRICE"        property="price"/>
+    <result  column="CONTENTS"     property="contents"/>
+    <result  column="WIDTH"  property="width"/>
+    <result  column="HEIGHT" property="height"/>
+    <result  column="WORK_TERM" property="workTerm"/>
+    <association javaType="CategoryDto" property="categoryDto">
+      <id        column="CATEGORY_NO"   property="categoryNo"/>
+      <result    column="CATEGORY_NAME"          property="categoryName" />
+    </association>
+    <association javaType="UserDto"      property="userDto">
+      <id        column="USER_NO"        property="userNo"/>
+      <result    column="EMAIL"          property="email" />
+      <result    column="PW"             property="pw" />
+      <result    column="NAME"           property="name" />
+      <result    column="MOBILE"         property="mobile" />
+      <result    column="GENDER"         property="gender" />
+      <result    column="AGREE"          property="agree" />
+      <result    column="STATE"          property="state" />
+      <result    column="JOINED_AT"      property="joinedAt" />
+      <result    column="POSTCODE"       property="postcode" />
+      <result    column="ROAD_ADDRESS"   property="roadAddress" />
+      <result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      <result    column="DETAIL_ADDRESS" property="detailAddress" />
+      <result    column="NICKNAME" property="nickname" />
+      <result    column="INTRODUCTION" property="introduction" />
+    </association>
+  </resultMap>
+
+  
   
   <update id="updateUser" parameterType="UserDto">
     UPDATE USER_T
@@ -117,28 +151,36 @@
   </select> 
   
   <select id="getAuctionBidList" parameterType="Map" resultMap="BidMap">
-  SELECT Q1.ART_NO, Q1.TITLE, Q1.CONTENTS, Q1.BID_AT, Q1.MY_PRICE, Q2.PRICE, Q1.STATUS, Q1.END_AT
-  FROM (SELECT ART_NO, SELLER_NO, TITLE, CONTENTS, AUCTION_NO, END_AT, STATUS, BID_NO, BIDDER_NO, MY_PRICE, BID_AT, RN1, ROW_NUMBER() OVER(ORDER BY BID_AT ASC) AS RN
-          FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
-                       AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,
-                       B.BID_NO, B.BIDDER_NO, B.PRICE AS MY_PRICE, B.BID_AT,
-                       ROW_NUMBER() OVER (PARTITION BY ART.ART_NO ORDER BY B.PRICE DESC) AS RN1
-                  FROM ART_T ART INNER JOIN AUCTION_T AUC
-                    ON ART.ART_NO = AUC.AUCTION_NO INNER JOIN BID_T B
-                    ON AUC.AUCTION_NO = B.AUCTION_NO
-                 WHERE B.BIDDER_NO = #{bidderNo})
-        WHERE RN1 = 1) Q1 LEFT OUTER JOIN (SELECT ART_NO, PRICE
-                                             FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
-                                                          AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,
-                                                          B.BID_NO, B.BIDDER_NO, B.PRICE, B.BID_AT,
-                                                          ROW_NUMBER() OVER (PARTITION BY ART.ART_NO ORDER BY B.PRICE DESC) AS RN2
-                                                     FROM ART_T ART INNER JOIN AUCTION_T AUC
-                                                       ON ART.ART_NO = AUC.AUCTION_NO INNER JOIN BID_T B
-                                                       ON AUC.AUCTION_NO = B.AUCTION_NO)
-                                            WHERE RN2 = 1) Q2
-                                               ON Q1.ART_NO = Q2.ART_NO
-  WHERE RN BETWEEN #{begin} AND #{end}
+    SELECT Q1.ART_NO, Q1.TITLE, Q1.CONTENTS, Q1.BID_AT, Q1.MY_PRICE, Q2.PRICE, Q1.STATUS, Q1.END_AT, Q1.AUCTION_NO
+    FROM (SELECT ART_NO, SELLER_NO, TITLE, CONTENTS, AUCTION_NO, END_AT, STATUS, BID_NO, BIDDER_NO, MY_PRICE, BID_AT, RN1, ROW_NUMBER() OVER(ORDER BY BID_AT ASC) AS RN
+            FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
+                         AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,
+                         B.BID_NO, B.BIDDER_NO, B.PRICE AS MY_PRICE, B.BID_AT,
+                         ROW_NUMBER() OVER (PARTITION BY ART.ART_NO ORDER BY B.PRICE DESC) AS RN1
+                    FROM ART_T ART INNER JOIN AUCTION_T AUC
+                      ON ART.ART_NO = AUC.AUCTION_NO INNER JOIN BID_T B
+                      ON AUC.AUCTION_NO = B.AUCTION_NO
+                   WHERE B.BIDDER_NO = #{bidderNo})
+          WHERE RN1 = 1) Q1 LEFT OUTER JOIN (SELECT ART_NO, PRICE
+                                               FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
+                                                            AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,
+                                                            B.BID_NO, B.BIDDER_NO, B.PRICE, B.BID_AT,
+                                                            ROW_NUMBER() OVER (PARTITION BY ART.ART_NO ORDER BY B.PRICE DESC) AS RN2
+                                                       FROM ART_T ART INNER JOIN AUCTION_T AUC
+                                                         ON ART.ART_NO = AUC.AUCTION_NO INNER JOIN BID_T B
+                                                         ON AUC.AUCTION_NO = B.AUCTION_NO)
+                                              WHERE RN2 = 1) Q2
+                                                 ON Q1.ART_NO = Q2.ART_NO
+    WHERE RN BETWEEN #{begin} AND #{end}
 
+  </select>
+  
+  <select id="getMyAuctionImage" parameterType="int" resultType="AuctionImageDto">
+    SELECT AUCTION_IMAGE_NO, AUCTION_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+      FROM AUCTION_IMAGE_T
+     WHERE AUCTION_NO = #{auctionNo}
+       AND AUCTION_IMAGE_NO = (SELECT MIN(AUCTION_IMAGE_NO)
+                                 FROM AUCTION_IMAGE_T WHERE AUCTION_NO = #{auctionNo})
   </select>
   
     <select id="getAuctionSalesCount" parameterType="int" resultType="int">
@@ -161,5 +203,28 @@
                    GROUP BY A.AUCTION_NO, A.TITLE, A.CONTENTS, A.START_AT, A.START_PRICE, A.END_AT, A.STATUS, A.SELLER_NO, A.ART_NO)
    WHERE RN BETWEEN #{begin} AND #{end}
   </select>
+  
+  <select id="getMyDrawCount" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+      FROM (SELECT A.DRAW_NO, A.CATEGORY_NO, A.TITLE, A.PRICE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.WORK_TERM, A.SELLER_NO, C.CATEGORY_NAME
+              FROM (SELECT D.DRAW_NO, D.CATEGORY_NO, D.TITLE, D.PRICE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.WORK_TERM, D.SELLER_NO
+                      FROM DRAW_T D LEFT OUTER JOIN USER_T USR
+                        ON D.SELLER_NO = USR.USER_NO) A INNER JOIN CATEGORY_T C
+              ON A.CATEGORY_NO = C.CATEGORY_NO
+             WHERE A.SELLER_NO = #{sellerNo})
+  </select>  
+ 
+  <select id="getMyDrawList" parameterType="Map" resultMap="DrawMap">
+    SELECT A.DRAW_NO, A.CATEGORY_NO, A.TITLE, A.PRICE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.WORK_TERM, A.USER_NO, A.NICKNAME, A.NAME, A.EMAIL, C.CATEGORY_NAME
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY DRAW_NO DESC) AS RN,
+                   D.DRAW_NO, D.CATEGORY_NO, D.TITLE, D.PRICE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.WORK_TERM,USR.USER_NO, USR.NICKNAME, USR.NAME, USR.EMAIL
+              FROM DRAW_T D LEFT OUTER JOIN USER_T USR
+                ON D.SELLER_NO = USR.USER_NO
+             WHERE USR.USER_NO = #{sellerNo}) A INNER JOIN CATEGORY_T C
+        ON A.CATEGORY_NO = C.CATEGORY_NO
+     WHERE A.RN BETWEEN #{begin} AND #{end}
+     ORDER BY A.DRAW_NO DESC
+  </select>
+  
   
 </mapper>
