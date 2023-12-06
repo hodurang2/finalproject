@@ -80,7 +80,7 @@
         </thead>
         <tbody class="salesList">
           <th:block th:each="s,vs:${salesList}">
-            <tr class="auction" data-auction-no="${s.auctionDto.auctionNo}">
+            <tr class="auction" data-auction_no="${s.auctionDto.auctionNo}">
               <td><img th:src="|${s.auctionDto.image.path}/s_${s.auctionDto.image.filesystemName}|" alt="썸네일" width="120px" height="100px"></td>
               <td class="auction_title" th:text="${s.auctionDto.artDto.title}"></td>
               <td class="auction_date" th:text="${s.auctionDto.startAt}"></td>
@@ -122,12 +122,12 @@
        fnAuctionDetail();
       })
       
-      const fnAuctionDetail = () => {
-        $(document).on('click', '.auction', (ev) => {
-          console.log($(ev.target).data('auctionNo'));
-          location.href = '/auciton2/detail.do?auctionNo=' + $(ev.target).data('auctionNo');
-        })
-      }
+    const fnAuctionDetail = () => {
+      $(document).on('click', '.auction', function(ev) {
+        console.log($(ev.target).data('auction_no'));
+        location.href = '/auction2/detail.do?auctionNo=' + $(this).data('auctionNo');
+      })
+    }
       
     
   </script>
