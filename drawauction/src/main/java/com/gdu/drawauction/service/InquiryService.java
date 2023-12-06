@@ -4,6 +4,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -20,5 +22,9 @@ public interface InquiryService {
   public Map<String, Object> addAnswerReply(HttpServletRequest request);
   
   public Map<String, Object> imageUpload(MultipartHttpServletRequest multipartRequest);
+  public Map<String, Object> addInquiryAttach(MultipartHttpServletRequest multipartRequest) throws Exception;
+  public Map<String, Object> getInquiryAttachList(HttpServletRequest request);
   
+  public ResponseEntity<Resource> download(HttpServletRequest request);
+  public ResponseEntity<Resource> downloadAll(HttpServletRequest request);
 }

@@ -18,6 +18,4 @@ public class InquiryDto {
   private Date inquiryCreatedAt;
   private String inquiryType;
   private UserDto userDto;
-  private AuctionDto auctionDto;
-  private DrawDto drawDto;
 }

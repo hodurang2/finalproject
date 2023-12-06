@@ -34,7 +34,7 @@
   <select id="getInactiveUser" parameterType="Map" resultType="InactiveUserDto">
     SELECT USER_NO, EMAIL, PW, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION, INACTIVED_AT
       FROM INACTIVE_USER_T
-   <where>
+    <where>
       <if test="email != null">EMAIL = #{email}</if>
       <if test="pw != null">AND PW = #{pw}</if>
     </where>
@@ -126,27 +126,26 @@
   </insert>
   
   <delete id="deleteUserForInactive">
-    DELETE
-        FROM USER_T
-	   WHERE EMAIL IN(SELECT U.EMAIL
-                  FROM USER_T U LEFT OUTER JOIN ACCESS_T A
-                    ON U.EMAIL = A.EMAIL
-                 WHERE MONTHS_BETWEEN(SYSDATE, LOGIN_AT) >= 6
-                    OR (LOGIN_AT IS NULL AND  MONTHS_BETWEEN(SYSDATE, JOINED_AT) >= 6))
+        DELETE
+      FROM USER_T
+     WHERE EMAIL IN(SELECT U.EMAIL
+                      FROM USER_T U LEFT OUTER JOIN ACCESS_T A
+                        ON U.EMAIL = A.EMAIL
+                     WHERE MONTHS_BETWEEN(SYSDATE, LOGIN_AT) >= 6
+                        OR (LOGIN_AT IS NULL AND MONTHS_BETWEEN(SYSDATE, JOINED_AT) >= 6))
   </delete>
 
   <insert id="insertActiveUser" parameterType="String">  
     INSERT INTO USER_T (
       SELECT USER_NO, EMAIL, PW, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION
         FROM INACTIVE_USER_T
-       WHERE EMAIL = #{email}
-    )
+       WHERE EMAIL = #{email})
   </insert>
 
   <delete id="deleteInactiveUser" parameterType="String">
     DELETE
       FROM INACTIVE_USER_T
-     WHERE EMAIL = #{email}  
+     WHERE EMAIL = #{email}
   </delete>
 
 <!--/* 소셜로그인 */-->
@@ -154,19 +153,67 @@
 <!--/* 네이버 로그인 mapper*/-->
 	 <insert id="insertNaverUser" parameterType="UserDto">
     INSERT INTO USER_T (
-			USER_NO, EMAIL, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME
+			USER_NO
+		  , EMAIL
+		  , NAME
+		  , MOBILE
+		  , GENDER
+		  , AGREE
+		  , STATE
+		  , JOINED_AT
+		  , POSTCODE
+		  , ROAD_ADDRESS
+		  , JIBUN_ADDRESS
+		  , DETAIL_ADDRESS
+		  , NICKNAME
     ) VALUES (
-    	USER_SEQ.NEXTVAL, #{email}, #{name}, #{mobile}, #{gender}, #{agree}, 1, SYSDATE, #{postcode}, #{roadAddress}, #{jibunAddress}, #{detailAddress}, #{nickname}
+    	USER_SEQ.NEXTVAL
+    	, #{email}
+    	, #{name}
+    	, #{mobile}
+    	, #{gender}
+    	, #{agree}
+    	, 1
+    	, SYSDATE
+    	, #{postcode}
+    	, #{roadAddress}
+    	, #{jibunAddress}
+    	, #{detailAddress}
+    	, #{nickname}
     )
   </insert>
   
 <!--/* 카카오 로그인 mapper*/-->
   	<insert id="insertKakaoUser" parameterType="UserDto">
     INSERT INTO USER_T (
-			USER_NO, EMAIL, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME
+			USER_NO
+		  , EMAIL
+		  , NAME
+		  , MOBILE
+		  , GENDER
+		  , AGREE
+		  , STATE
+		  , JOINED_AT
+		  , POSTCODE
+		  , ROAD_ADDRESS
+		  , JIBUN_ADDRESS
+		  , DETAIL_ADDRESS
+		  , NICKNAME
     ) VALUES (
-    	USER_SEQ.NEXTVAL, #{email}, #{name}, #{mobile}, #{gender}, #{agree}, 2, SYSDATE, #{postcode}, #{roadAddress}, #{jibunAddress}, #{detailAddress}, #{nickname}
-    ) 
+    	USER_SEQ.NEXTVAL
+    	, #{email}
+    	, #{name}
+    	, #{mobile}
+    	, #{gender}
+    	, #{agree}
+    	, 2
+    	, SYSDATE
+    	, #{postcode}
+    	, #{roadAddress}
+    	, #{jibunAddress}
+    	, #{detailAddress}
+    	, #{nickname}
+    )
 	</insert>
   
 
@@ -196,5 +243,16 @@
        AND NAME = #{name}
   </update>
   
+  
+  <!--/* 이름 중복 체크 */-->
+  	<select id="nameCheck" resultType="int">
+		SELECT COUNT(*) FROM USER_T
+		   WHERE NAME = #{name}
+	</select>
 
+  <!--/* 닉네임 중복 체크 */-->
+  	<select id="nicknameCheck" resultType="int">
+		SELECT COUNT(*) FROM USER_T
+		   WHERE NICKNAME = #{nickname}
+	</select>
 </mapper>
