@@ -183,7 +183,7 @@
       #{startPrice},
       #{buyPrice},
       SYSDATE,
-      #{endAt},
+      TO_DATE(#{endAt},'YYYY-MM-DD HH24:MI:SS'),
       1
   )
   </insert>

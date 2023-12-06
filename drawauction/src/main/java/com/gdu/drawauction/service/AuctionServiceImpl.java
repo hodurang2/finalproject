@@ -181,17 +181,13 @@ public class AuctionServiceImpl implements AuctionService {
     int artType = Integer.parseInt(multipartRequest.getParameter("artType"));
     Optional<String> optBuyPrice = Optional.ofNullable(multipartRequest.getParameter("buyPrice"));
     int buyPrice = Integer.parseInt(optBuyPrice.orElse("-1"));
-    System.out.println(buyPrice);
     int startPrice = Integer.parseInt(multipartRequest.getParameter("startPrice")); 
-    String endAtStr = multipartRequest.getParameter("endAt");
+    String endAt = multipartRequest.getParameter("endAt").replace("T", " ");
     String title = multipartRequest.getParameter("title");
     String contents = multipartRequest.getParameter("contents");
     
     HttpSession session = multipartRequest.getSession();
     UserDto seller = (UserDto) session.getAttribute("user");
-    
-    DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-    LocalDateTime endAt = LocalDateTime.parse(endAtStr, inputFormatter);
     
     
      Map<String, Object> art = Map.of("title", title,
