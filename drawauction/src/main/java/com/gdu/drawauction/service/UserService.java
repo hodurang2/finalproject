@@ -1,7 +1,9 @@
 package com.gdu.drawauction.service;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -27,7 +29,16 @@ public interface UserService {
 	  public void inactiveUserBatch();
 	  public void active(HttpSession session, HttpServletRequest request, HttpServletResponse response);
 	  public UserDto findId(UserDto user);
-
 	  public void findPw(UserDto user, HttpServletResponse response) throws Exception;
+	  
+	  
+	  // 카카오톡 
+	  public void kakaoJoin(HttpServletRequest request, HttpServletResponse response);
+	  public void kakaoLogin(HttpServletRequest request, HttpServletResponse response, UserDto kakaoProfile) throws Exception;
+	  
+	  public String getKakaoLoginURL(HttpServletRequest request) throws Exception;
+	  public String getKakaoLoginAccessToken(HttpServletRequest request) throws Exception;
+	  public UserDto getKakaoProfile(String accesskakaoToken) throws Exception;
+
 	  
 }
