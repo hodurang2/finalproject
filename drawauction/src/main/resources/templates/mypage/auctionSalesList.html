@@ -46,6 +46,20 @@
   .column_name {
     text-align: center;
   }
+  
+  /* paging */
+  .paging {
+  text-align: center;
+  padding: 8px 0;
+  }
+  .paging a {
+    margin: 0 10px;
+  }
+  .paging .now_page {
+    color: #198754;
+    font-weight: 900;
+  }
+  
 
 </style>
  
@@ -80,7 +94,7 @@
         </thead>
         <tbody class="salesList">
           <th:block th:each="s,vs:${salesList}">
-            <tr class="auction" data-auction-no="${s.auctionDto.auctionNo}">
+            <tr class="auction" th:onClick="|location.href='@{/auction2/detail.do(auctionNo=${s.auctionDto.auctionNo})}'|" style="cursor:pointer;">
               <td><img th:src="|${s.auctionDto.image.path}/s_${s.auctionDto.image.filesystemName}|" alt="썸네일" width="120px" height="100px"></td>
               <td class="auction_title" th:text="${s.auctionDto.artDto.title}"></td>
               <td class="auction_date" th:text="${s.auctionDto.startAt}"></td>
@@ -107,6 +121,11 @@
             </tr>
           </th:block>
         </tbody>
+        <tfoot th:if="${not #lists.isEmpty(salesList)}">
+          <tr>
+            <td colspans="5" th:utext="${paging}"></td>
+          </tr>
+        </tfoot>
       </table>
       
     </div>
@@ -115,22 +134,6 @@
   
   
   <div th:replace="~{/layout/footer::footer}"></div>
-  
-  <script>
-
-    $(() => {
-       fnAuctionDetail();
-      })
-      
-      const fnAuctionDetail = () => {
-        $(document).on('click', '.auction', (ev) => {
-          console.log($(ev.target).data('auctionNo'));
-          location.href = '/auciton2/detail.do?auctionNo=' + $(ev.target).data('auctionNo');
-        })
-      }
-      
-    
-  </script>
   
 </body>
 </html>

@@ -191,7 +191,7 @@ public class MypageServiceImpl implements MypageService {
     if(user != null) {
       int sellerNo = user.getUserNo();
       int total = mypageMapper.getAuctionSalesCount(sellerNo);
-      int display = 10;
+      int display = 1;
       
       myPageUtils.setPaging(page, total, display);
       
@@ -206,7 +206,7 @@ public class MypageServiceImpl implements MypageService {
       }
  
       model.addAttribute("salesList", salesList);
-      model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/mypage/auctionSalesList.do"));
+      model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/mypage/getAuctionSalesList.do"));
       model.addAttribute("beginNo", total - (page - 1) * display);
       
     }

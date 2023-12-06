@@ -92,6 +92,102 @@
                AND (B.PRICE IS NULL OR B.PRICE = (SELECT MAX(PRICE) FROM BID_T WHERE AUCTION_NO = AUC.AUCTION_NO))
                AND AUC.AUCTION_NO = #{auctionNo}) D
   </select>
- 
+  
+  <insert id="insertAuctionWishlist" parameterType="Map">
+    INSERT INTO AUCTION_WISHLIST_T (
+        AUCTION_WISH_NO,
+        AUCTION_NO,
+        USER_NO,
+        WISHED_AT
+        ) VALUES (
+        AUCTION_WISHLIST_SEQ.NEXTVAL,
+        #{auctionNo},
+        #{userNo},
+        SYSDATE
+    )
+  </insert>
+  
+  <delete id="deleteAuctionWishlist" parameterType="Map">
+    DELETE AUCTION_WISHLIST_T
+     WHERE AUCTION_NO = #{auctionNo}
+       AND USER_NO = #{userNo}
+  </delete>
+  
+  <select id="hasAuctionWishlist" resultType="int"  parameterType="Map">
+    SELECT COUNT(*)
+      FROM AUCTION_WISHLIST_T
+     WHERE AUCTION_NO = #{auctionNo}
+       AND USER_NO = #{userNo}
+  </select>
+  
+  <select id="getBidCount" resultType="int" parameterType="int">
+    SELECT COUNT(*)
+      FROM BID_T
+     WHERE AUCTION_NO = #{auctionNo}
+  </select>
+  
+  <select id="getImageList" parameterType="int" resultType="AuctionImageDto">
+    SELECT AUCTION_IMAGE_NO, AUCTION_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+    FROM AUCTION_IMAGE_T
+   WHERE AUCTION_NO = #{auctionNo}
+  </select>
+  
+  <select id="getImage" parameterType="int" resultType="AuctionImageDto">
+    SELECT AUCTION_IMAGE_NO, AUCTION_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+      FROM AUCTION_IMAGE_T
+     WHERE AUCTION_IMAGE_NO = #{auctionImageNo}
+  </select>
+  
+  <delete id="deleteImage" parameterType="int">
+    DELETE
+      FROM AUCTION_IMAGE_T
+     WHERE AUCTION_IMAGE_NO = #{auctionImageNo}
+  </delete>
+  
+  <update id="updateAuction" parameterType="Map">
+    UPDATE AUCTION_T
+       SET START_PRICE = #{startPrice}
+         , BUY_PRICE = #{buyPrice}
+         , END_AT = TO_DATE(#{endAt},'YYYY-MM-DD HH24:MI:SS')
+     WHERE AUCTION_NO = #{auctionNo}
+  </update>
+    
+  <update id="updateArt" parameterType="Map">
+    UPDATE ART_T
+       SET CATEGORY_NO = #{categoryNo}
+         , TITLE = #{title}
+         , ART_TYPE = #{artType}
+         , WIDTH = #{width}
+         , HEIGHT = #{height}
+         , CONTENTS = #{contents}
+     WHERE ART_NO = #{artNo}
+  </update>
+  
+  <delete id="deleteAuction" parameterType="int">
+      DELETE
+        FROM AUCTION_T
+       WHERE AUCTION_NO = #{auctionNo}
+  </delete>
+  
+  <insert id="insertImage" parameterType="AuctionImageDto">
+    INSERT INTO AUCTION_IMAGE_T (
+        AUCTION_IMAGE_NO
+      , AUCTION_NO
+      , PATH
+      , FILESYSTEM_NAME
+      , IMAGE_ORIGINAL_NAME
+      , HAS_THUMBNAIL
+    ) VALUES (
+        AUCTION_IMAGE_SEQ.NEXTVAL
+      , #{auctionNo}
+      , #{path}
+      , #{filesystemName}
+      , #{imageOriginalName}
+      , #{hasThumbnail}
+    )  
+  </insert>
+  
+
+  
   
 </mapper>
