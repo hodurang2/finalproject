@@ -15,14 +15,13 @@ public interface InquiryService {
 
   public void loadInquiryList(HttpServletRequest request, Model model);
   public InquiryDto getInquiry(int inquiryNo, Model model);
-  public int addInquiry(HttpServletRequest request);
+  public boolean addInquiry(MultipartHttpServletRequest multipartRequest) throws Exception;
   
   public Map<String, Object> addAnswer(HttpServletRequest request);
   public Map<String, Object> loadAnswerList(HttpServletRequest request);
   public Map<String, Object> addAnswerReply(HttpServletRequest request);
   
   public Map<String, Object> imageUpload(MultipartHttpServletRequest multipartRequest);
-  public Map<String, Object> addInquiryAttach(MultipartHttpServletRequest multipartRequest) throws Exception;
   public Map<String, Object> getInquiryAttachList(HttpServletRequest request);
   
   public ResponseEntity<Resource> download(HttpServletRequest request);

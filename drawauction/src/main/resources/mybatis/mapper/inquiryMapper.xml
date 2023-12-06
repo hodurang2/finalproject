@@ -136,7 +136,6 @@
       , HAS_THUMBNAIL
     ) VALUES (
         INQUIRY_ATTACH_SEQ.NEXTVAL
-      , #{inquiryAttachNo}
       , #{inquiryNo}
       , #{path}
       , #{originalFilename}
@@ -159,10 +158,5 @@
      WHERE INQUIRY_ATTACH_NO = #{inquiryAttachNo}
   </select>
   
-  <update id="updateDownloadCount" parameterType="int">
-    UPDATE INQUIRY_ATTACH_T
-       SET DOWNLOAD_COUNT = DOWNLOAD_COUNT + 1
-     WHERE INQUIRY_ATTACH_NO = #{inquiryAttachNo}
-  </update>
   
 </mapper>

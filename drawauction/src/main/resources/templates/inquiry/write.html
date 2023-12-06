@@ -25,7 +25,7 @@
 
       <div>
 
-        <form id="frm_inquiry_add" method="post" th:action="@{/inquiry/addInquiry.do}">
+        <form id="frm_inquiry_add" method="post" th:action="@{/inquiry/addInquiry.do}" enctype="multipart/form-data">
 
           <h1 style="text-align: center;">문의사항을 작성하세요</h1>
 
@@ -48,10 +48,10 @@
           </div>
           
           <div class="mt-3">
-            <label for="files" class="form-label">첨부</label>
-            <input type="file" name="files" id="files" class="form-control" multiple>
+          <label for="files" class="form-label">첨부</label>
+          <input type="file" name="files" id="files" class="form-control" multiple>
           </div>
-          <div class="inquiryAttachList mt-2" id="inquiryAttachList"></div>
+          <div class="inquiryAttached_list mt-2" id="image_container"></div>
 
           <div>
             <label for="content">내용</label>
@@ -95,9 +95,21 @@
           })
         }
         
-         const fnFileCheck = () => {
+        const fnFileCheck = () => {
         $('#files').change((ev) => {
-          $('#inquiryAttachList').empty();
+          $('#image_container').empty();
+      for (var image of event.target.files) {
+            var reader = new FileReader();
+            reader.onload = function(event) {
+              var img = document.createElement("img");
+              img.setAttribute("src", event.target.result);
+              img.setAttribute("width", "250px");
+              document.querySelector("#image_container").appendChild(img);
+            };
+
+            console.log(image);
+            reader.readAsDataURL(image);
+          }
           let maxSize = 1024 * 1024 * 100;
           let maxSizePerFile = 1024 * 1024 * 10;
           let totalSize = 0;
@@ -107,15 +119,12 @@
             if(files[i].size > maxSizePerFile){
               alert('각 첨부파일의 최대 크기는 10MB입니다.');
               $(ev.target).val('');
-              $('#inquiryAttachList').empty();
               return;
             }
-            $('#inquiryAttachList').append('<div>' + files[i].name + '</div>');
           }
           if(totalSize > maxSize){
             alert('전체 첨부파일의 최대 크기는 100MB입니다.');
             $(ev.target).val('');
-            $('#inquiryAttachList').empty();
             return;
           }
         })
