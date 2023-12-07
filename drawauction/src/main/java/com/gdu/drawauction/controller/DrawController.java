@@ -125,8 +125,8 @@ public class DrawController {
   }
   
   @GetMapping("/checkEmoney.do")
-  public Map<String, Object> checkEmoney(HttpServletRequest request) {
-	return drawService.getEmoney(request);
+  public void checkEmoney(HttpServletRequest request) {
+	drawService.getEmoney(request);
   }
   
 
