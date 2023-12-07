@@ -205,7 +205,8 @@ public class DrawServiceImpl implements DrawService{
 	  model.addAttribute("orderReview", drawMapper.getOrderReview(orderMap));
 	  model.addAttribute("draw", drawMapper.getDraw(drawNo));
 	  model.addAttribute("imageList", drawMapper.getImageList(drawNo));
-	    
+	  model.addAttribute("drawImage", drawMapper.getDrawImage(drawNo));
+	  
 	}
 	
 	// 그려드림 찜목록 insert, delete
@@ -432,6 +433,12 @@ public class DrawServiceImpl implements DrawService{
 									   , "reviewContents", reviewContents);
 		
 		return drawMapper.addReview(map);
+	}
+	
+	@Override
+	public Map<String, Object> getEmoney(HttpServletRequest request) {
+		
+		return null;
 	}
 	
 }

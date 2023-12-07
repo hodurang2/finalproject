@@ -165,7 +165,7 @@
 	    $(this).html($(this).html().replace(/(최대 14일)/g, '<span style="color: crimson">최대 14일</span>'));
 	  });
 	  
-	  function getByteB(contents) {
+	  const fnGetByte = () => {
 		$('#frm_draw_add').submit((ev)=>{
 		  var contents = $("#contents").val();
 		  var byte = 0;
@@ -180,7 +180,7 @@
 		})
 	  }
 	  
-      getByteB();
+      fnGetByte();
       fnFileCheck();
       fnSubmit();
       
