@@ -154,11 +154,15 @@ public class InquiryServiceImpl implements InquiryService{
   public Map<String, Object> addAnswer(HttpServletRequest request) {
     
     int inquiryNo = Integer.parseInt(request.getParameter("inquiryNo"));
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
     String contents = request.getParameter("contents");
     
     
     AnswerDto answer = AnswerDto.builder()
                           .inquiryNo(inquiryNo)
+                          .userDto(UserDto.builder()
+                                    .userNo(userNo)
+                                    .build())
                           .contents(contents)
                           .build();
     
@@ -194,9 +198,13 @@ public class InquiryServiceImpl implements InquiryService{
   public Map<String, Object> addAnswerReply(HttpServletRequest request) {
     String contents = request.getParameter("contents");
     int inquiryNo = Integer.parseInt(request.getParameter("inquiryNo"));
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
 
     AnswerDto answer = AnswerDto.builder()
                           .inquiryNo(inquiryNo)
+                          .userDto(UserDto.builder()
+                                    .userNo(userNo)
+                                    .build())
                           .contents(contents)
                           .build();
     

@@ -6,11 +6,36 @@
 <mapper namespace="com.gdu.drawauction.dao.InquiryMapper">
   
   <resultMap type="InquiryDto" id="InquiryMap">
-    <id     column="INQUIRY_NO"           property="inquiryNo" />
+    <id     column="INQUIRY_NO"   property="inquiryNo" />
     <result column="TITLE"        property="title"/>
     <result column="CONTENT"      property="content"/>
     <result column="INQUIRY_CREATED_AT"   property="inquiryCreatedAt"/>
     <result column="INQUIRY_TYPE"         property="inquiryType"/>
+    <association  javaType="UserDto"          property="userDto">
+      <id         column="USER_NO"            property="userNo" />
+      <result     column="EMAIL"              property="email" />
+      <result     column="PW"                 property="pw" />
+      <result     column="NAME"               property="name" />
+      <result     column="MOBILE"             property="mobile" />
+      <result     column="GENDER"             property="gender" />
+      <result     column="AGREE"              property="agree" />
+      <result     column="STATE"              property="state" />
+      <result     column="JOINED_AT"          property="joinedAt" />
+      <result     column="POSTCODE"           property="postcode" />
+      <result     column="ROAD_ADDRESS"       property="road_address" />
+      <result     column="JIBUN_ADDRESS"      property="jibun_address" />
+      <result     column="DETAIL_ADDRESS"     property="detail_address" />
+      <result     column="NICKNAME"           property="nickname" />
+      <result     column="INTRODUCTION"       property="introduction" />
+    </association>
+  </resultMap>
+  
+  <resultMap type="AnswerDto" id="AnswerMap">
+    <id     column="INQUIRY_NO"     property="inquiryNo" />
+    <result column="USER_NO"        property="userNo"/>
+    <result column="CONTENTS"       property="contents"/>
+    <result column="CREATED_AT"     property="createdAt"/>
+    <result column="STATUS"         property="status"/>
     <association  javaType="UserDto"          property="userDto">
       <id         column="USER_NO"            property="userNo" />
       <result     column="EMAIL"              property="email" />
@@ -81,14 +106,16 @@
   <insert id="insertAnswer" parameterType="AnswerDto">
     INSERT INTO ANSWER_T (
         INQUIRY_NO
+      , USER_NO
       , CONTENTS
       , CREATED_AT
       , STATUS
     ) VALUES (
         #{inquiryNo}
+      , #{userDto.userNo}
       , #{contents}
       , SYSDATE
-      , #{status}
+      , 1
     )
   </insert>
   
@@ -100,26 +127,12 @@
   </select>
   
   <!-- 1:1문의 답변 리스트 -->
-  <select id="getAnswerList" parameterType="Map" resultType="AnswerDto">
-    SELECT INQUIRY_NO, CONTENTS, CREATED_AT, STATUS
-      FROM ANSWER_T
+  <select id="getAnswerList" parameterType="Map" resultMap="AnswerMap">
+    SELECT A.INQUIRY_NO, A.USER_NO, A.CONTENTS, A.CREATED_AT, A.STATUS, U.NICKNAME
+      FROM USER_T U INNER JOIN ANSWER_T A
+        ON U.USER_NO = A.USER_NO 
      WHERE INQUIRY_NO = #{inquiryNo}
   </select>
-  
-  <!-- 1:1문의 답변 댓글 등록하기 -->
-  <insert id="insertAnswerReply" parameterType="AnswerDto">
-    INSERT INTO ANSWER_T (
-        INQUIRY_NO
-      , CONTENTS
-      , CREATED_AT
-      , STATUS
-    ) VALUES (
-        #{inquiryNo}
-      , #{contents}
-      , SYSDATE
-      , #{status}
-    )
-  </insert>
   
   <!-- 1:1문의 첨부파일 추가하기 -->
   <insert id="insertInquiryAttach" parameterType="InquiryAttachDto">
