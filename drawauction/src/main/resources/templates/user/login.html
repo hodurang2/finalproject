@@ -3,6 +3,30 @@
 	
 <head th:replace="~{/layout/header::head('로그인')}"></head>
 
+<style>
+	.logo{
+		text-align: center;
+	}
+	
+		.atag {
+			font-size: 85%;
+	  color: gray;
+	  text-decoration: none; /* Remove underline */
+	}
+	
+	.separator {
+		font-size: 80%;
+	  margin: 0 10px; /* Adjust the spacing between elements */
+	  color: gray;
+	}
+	
+	.socialTitle{
+		color: darkgray;
+		font-size: 100%;
+		text-align: center;
+	}
+
+</style>
 
 <body>
   
@@ -11,43 +35,67 @@
   <div class="main_wrap">
 
   <div class="wrap wrap_5">
-    <h3 class="title">로그인</h3>
+	<div class="logo"><img th:src="@{/image/minilogo.png}" height="80px"></div>
+    <h3 class="title" style="margin: 10%;" >들어옥션 로그인</h3>
+   	
+   	
     <form method="post" th:action="@{/user/login.do}">
-      <div class="input-box">
-		<label for="email">아이디</label>		  
-        <input type="text" name="email" id="email" placeholder="이메일" >
-      </div>
-      <div class="input-box">
-		<label for="pw">비밀번호</label>  
-        <input type="password" name="pw" id="pw" placeholder="비밀번호">
-      </div>
-      <div class="d-grid gap-2">
+		<div class="row mb-2" style="margin: 4%;">
+		<label for="email" class="col-sm-3 col-form-label">아이디</label>	  
+        <div class="col-sm-9"><input type="text" name="email" id="email" placeholder="아이디" class="form-control"></div>
+        <div class="col-sm-3"></div>
+   		</div>   
+   		 
+   		<div class="row mb-2"  style="margin: 4%;">
+		<label for="pw" class="col-sm-3 col-form-label">비밀번호</label>	  
+        <div class="col-sm-9"><input type="password" name="pw" id="pw" placeholder="비밀번호" class="form-control"></div>
+        <div class="col-sm-3"></div>
+   		</div>    
+      
+      <div class="d-grid gap-2" style="margin: 4%;">
         <input type="hidden" name="referer" value="${referer}">
         <button class="btn btn-outline-success btn-lg" type="submit">로그인</button>
       </div>
     </form>
     
     <!--/* 회원가입, 아이디/비밀번호 찾기 */-->
-    <ul class="sub_menu">
-      <li><a class="atag" th:href="@{/user/agree.form}">회원가입</a></li>
-      <li><a class="atag" th:href="@{/user/find.form}">아이디/비밀번호 찾기</a></li>
-    </ul>
     
-    <hr>
-    <!--/* 네이버 로그인 */-->
-    <div class="text-center" style="margin-top: 70px;">
-      <a th:href="${naverLoginURL}">
-        <img th:src="@{/image/btnG_완성형.png}" width="200px">
-      </a>
+<!--    <div class="container text-left">
+  <div class="row sub_menu" style="margin: 4%;">
+    <div class="col">
+      <a class="atag" th:href="@{/user/agree.form}">회원가입</a>
+      <a class="atag" th:href="@{/user/find.form}" >아이디/비밀번호 찾기</a>
     </div>
 
-		<!--/* 카카오 로그인 */-->
-	<div class="text-center">
-			<a th:href="${kakaoLoginURL}">
-	    <img th:src="@{/image/kakaologin.png}" width="200px"></a>
-		
-	</div>
-    
+  </div>
+  -->
+  
+  <div class="row sub_menu" style="margin-left: 2%; margin-top: 5%;  margin-bottom: 10%;">
+  <div class="col">
+    <a class="atag" th:href="@{/user/agree.form}">회원가입</a>
+    <span class="separator">|</span> <!-- Add a separator -->
+    <a class="atag" th:href="@{/user/find.form}" >아이디/비밀번호 찾기</a>
+  </div>
+</div>
+
+    <hr>
+
+			<div class="socialTitle" style="margin: 7%;">소셜 로그인</div>
+
+			<div class="text-center" style="margin: 10%;">
+				<!--/* 네이버 로그인 */-->
+			    <a th:href="${naverLoginURL}"><img th:src="@{/image/btnG_아이콘원형.png}" width="20%"></a>
+			
+			    <!--/* 간격 조절 */-->
+			    <span style="margin-right: 20px;"></span>
+			
+			    <!--/* 카카오 로그인 */-->
+			    <a th:href="${kakaoLoginURL}"><img th:src="@{/image/icon-kakao.png}" width="21%"></a>
+			
+		</div>
+
+
+
     
   </div>
   

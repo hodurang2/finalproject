@@ -26,7 +26,8 @@ public class MypageController {
   private final MypageService mypageService;
   
   @GetMapping("/detail.do")
-  public String detail() {
+  public String detail(HttpServletRequest request, Model model) {
+    mypageService.getCount(request, model);
     return "mypage/detail";
   }
   
@@ -54,7 +55,6 @@ public class MypageController {
   public ResponseEntity<Map<String, Object>> modifyIntroduction(HttpServletRequest request) {
     return mypageService.modifyIntroduction(request);
   }
-  
   
   @GetMapping("/getAuctionBidList.do")
   public String getAuctionBidList(HttpServletRequest request, Model model) {

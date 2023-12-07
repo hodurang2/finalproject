@@ -72,13 +72,13 @@
           <td class="delete_right">찜한 그려드림</td>
           <td>E-MONEY</td>
         </tr>
-        <tr class="val">
-          <td>1</td>
-          <td>2</td>
-          <td>3</td>
-          <td>4</td>
-          <td>5</td>
-        </tr>
+          <tr class="val">
+            <td th:text="${artForSaleCount}"></td>
+            <td th:text="${biddingCount}"></td>
+            <td>3</td>
+            <td>4</td>
+            <td>5</td>
+          </tr>
       </tbody>
     </table>
     
@@ -123,5 +123,8 @@
     
     }
   </script>
+  
+  <div th:replace="~{/layout/footer::footer}"></div>
+  
 </body>
 </html>

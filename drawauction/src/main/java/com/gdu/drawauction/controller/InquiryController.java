@@ -70,12 +70,6 @@ public class InquiryController {
   }
   
   @ResponseBody
-  @PostMapping(value="/addAnswerReply.do", produces="application/json")
-  public Map<String, Object> addAnswerReply(HttpServletRequest request) {
-    return inquiryService.addAnswerReply(request);
-  }
-  
-  @ResponseBody
   @GetMapping(value="/getInquiryAttachList.do", produces="application/json")
   public Map<String, Object> getInquiryAttachList(HttpServletRequest request) {
     return inquiryService.getInquiryAttachList(request);

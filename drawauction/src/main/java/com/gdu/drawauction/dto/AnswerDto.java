@@ -1,7 +1,5 @@
 package com.gdu.drawauction.dto;
 
-import java.sql.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,8 +11,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AnswerDto {
   private int inquiryNo;
+  private int userNo;
   private String contents;
-  private Date createdAt;
+  private String createdAt;
   private int status;
-
+  private UserDto userDto;
 }
