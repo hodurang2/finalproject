@@ -14,9 +14,16 @@ body, div, ul, li, ol {
   box-sizing: border-box;
 }
 body {
-  width: 1280px;
-  margin: 0 auto;
+	margin : 0 auto;
 }
+
+.wrap{
+	width: 1280px;
+	margin : 0 auto;
+}
+
+
+
 a {
   text-decoration: none;
   color: #333333;
