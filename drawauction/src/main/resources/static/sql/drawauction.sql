@@ -398,7 +398,7 @@ ALTER TABLE DRAW_REVIEW_T ADD CONSTRAINT FK_USER_T_TO_DRAW_REVIEW_T_2 FOREIGN KE
 
 -------------INSERT---------------
 -- 관리자
-INSERT INTO USER_T VALUES(USER_SEQ.NEXTVAL, 'admin01@naver.com',STANDARD_HASH('1111', 'SHA256'), '관리자', '010-0000-0000', 'F', '0', '0', SYSDATE, '00000', 'DORO', 'JIBUN', 'SANGSE', '관리자자', '관리자입니다.');
+INSERT INTO USER_T VALUES(USER_SEQ.NEXTVAL, 'admin01@naver.com',STANDARD_HASH('1111', 'SHA256'), '관리자', '010-0000-0000', 'F', '0', '0', SYSDATE, '00000', 'DORO', 'JIBUN', 'SANGSE', '관리자', '관리자입니다.');
 
 -- 회원
 INSERT INTO USER_T VALUES(USER_SEQ.NEXTVAL, 'user01@naver.com', STANDARD_HASH('1111', 'SHA256'), '사용자1', '01011111111', 'M', 0, 0, TO_DATE('220111', 'YYMMDD'), '1111','서울', '가산동', 'KM타워', '용사1', '용사입니다');

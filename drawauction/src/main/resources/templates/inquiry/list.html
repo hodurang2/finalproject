@@ -112,7 +112,7 @@
         <div class="support_right_wrap">
             <div class="inquiry_head">
                 <div class="inquiry_title">1:1문의</div>
-                <div th:if="${session.user.userNo == 1}"> 
+                <div th:if="${session.user.userNo != null}"> 
                     <a th:href="@{/inquiry/write.form}">
                         <button type="button" class="btn btn-dark btn_write">문의하기</button>
                     </a>
@@ -128,18 +128,21 @@
                 </thead>
                 <tbody>
                     <th:block th:each="i,vx:${inquiryList}">
+                        <!-- 회원은 자신의 글만 볼 수 있고 관리자는 모든 회원의 문의글을 볼 수 있다. -->
+                        <th:block th:if="${session.user.userNo == i.userDto.userNo or session.user.userNo == 1}">
                         <tr>
                             <td th:text="${i.inquiryNo}"></td>
                             <td>
                                 <a class="inquiry_list_title" th:href="@{/inquiry/detail.do(inquiryNo=${i.inquiryNo})}" th:text="${i.title}"></a>
                             </td>
-                            <td th:text="${i.inquiryCreatedAt}"></td>
+                            <td th:utext="${i.inquiryCreatedAt}"></td>
                         </tr>
+                        </th:block>
                     </th:block>
                 </tbody>
                 <tfoot> 
                     <tr>
-                        <td colspan="3">${paging}</td>
+                        <td colspan="3" th:utext="${paging}"></td>
                     </tr>
                 </tfoot>
             </table>    

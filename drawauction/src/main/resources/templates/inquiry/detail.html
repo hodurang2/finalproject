@@ -68,11 +68,12 @@
       
     </div>
     
-    <div>
+    <div th:if="${session.user.userNo == 1}" >
       <form id="frm_answer_add">
         <textarea rows="3" cols="50" name="contents" id="contents" placeholder="댓글을 작성해 주세요"></textarea>
         <input type="hidden" name="inquiryNo" th:value="${inquiry.inquiryNo}">
-        <button type="button" id="btn_answer_add">작성완료</button>
+        <input type="hidden" name="userNo" th:value="${session.user.userNo}">
+        <button type="button" id="btn_answer_add">답변등록</button>
       </form>
     </div>
     <div style="width: 100%;border-bottom: 1px solid gray;"></div>
@@ -140,7 +141,7 @@
               if(answer.status === 0){
                 str += '<div>삭제된 댓글입니다.</div>';
               } else {
-                str += '  <div>' + answer.userDto.userNo + '</div>';
+                str += '  <div>' + answer.userDto.nickname + '</div>';
                 str += '  <div>' + answer.contents + '</div>';
                 str += '  <div style="font-size: 12px;">' + answer.createdAt + '</div>';
               }
@@ -177,36 +178,6 @@
       })
     }
     
-    const fnAnswerReplyAdd = () => {
-      $(document).on('click', '.btn_add_reply', (ev) => {
-        if('${session.user}' === ''){
-          if(confirm('로그인이 필요한 기능입니다. 로그인할까요?')){
-            location.href = '/user/login.form';
-          } else {
-            return;
-          }
-        }
-        var frmAddReply = $(ev.target).closest('.frm_add_reply');
-        $.ajax({
-          // 요청
-          type: 'post',
-          url: '/inquiry/addAnswerReply.do',
-          data: frmAddReply.serialize(),
-          // 응답
-          dataType: 'json',
-          success: (resData) => {  // resData = {"addCommentReplyResult": 1}
-            if(resData.addAnswerReplyResult === 1){
-              alert('답글이 등록되었습니다.');
-              fnAnswerList();
-              frmAddReply.find('textarea').val('');
-            } else {
-              alert('답글이 등록되지 않았습니다.');
-            }
-          }
-        })
-      })
-    }
-    
     const fnDownload = () => {
       $('.inquiryAttach').click(function(){
         if(confirm('다운로드 할까요?')){
@@ -218,7 +189,6 @@
     fnInquiryList();
     fnAnswerAdd();
     fnAnswerList();
-    fnAnswerReplyAdd();
     fnBlind();
     fnDownload();
       
