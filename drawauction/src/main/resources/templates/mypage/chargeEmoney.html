@@ -33,7 +33,7 @@
         IMP.init('imp00705751');
         var money = $('input[name="cp_item"]:checked').val();
         console.log(money);
-
+        let userNo = /*[[${session.user.userNo}]]*/ null;
         IMP.request_pay({
             pg: "kakaopay.TC0ONETIME",
             pay_method: "card",
@@ -56,7 +56,7 @@
                 msg += '카드 승인번호 : ' + rsp.apply_num;
                 $.ajax({
                     type: "GET", 
-                    url: "/user/mypage/charge/point", //충전 금액값을 보낼 url 설정
+                    url: "/user/chargeEmoney.do", //충전 금액값을 보낼 url 설정
                     data: {
                         "amount" : money
                     },
@@ -66,7 +66,7 @@
                 msg += '에러내용 : ' + rsp.error_msg;
             }
             alert(msg);
-            // document.location.href="/mypage/detail.do"; //alert창 확인 후 이동할 url 설정
+            document.location.href="/mypage/detail.do"; //alert창 확인 후 이동할 url 설정
         });
       });
       
