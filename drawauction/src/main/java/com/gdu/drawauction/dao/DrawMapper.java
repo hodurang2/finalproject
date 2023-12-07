@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.gdu.drawauction.dto.AuctionImageDto;
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.DrawImageDto;
 import com.gdu.drawauction.dto.DrawOrderDto;
@@ -30,8 +29,10 @@ public interface DrawMapper {
 	public int deleteDraw(int drawNo);
 	public int getReviewCount(int drawNo);
 	public List<DrawReviewDto> getReviewList(Map<String, Object> map);
-	public DrawOrderDto getOrderReview(Map<String, Object> map);
+	public List<DrawOrderDto> getOrderReview(Map<String, Object> map);
 	public int addReview(Map<String, Object> map);
-	public int reviewCheck(int userNo);
+	public int addDrawOrder(Map<String, Object> map);
+	public int reviewCheck(Map<String, Object> map);
 	public EmoneyDto getEmoney(int userNo);
+	public void updateBuyerEmoney(Map<String, Object> map);
 }

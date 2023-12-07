@@ -125,11 +125,11 @@
   </resultMap>
   
   <resultMap type="DrawOrderDto" id="DrawOrderMap">
-	<id 	column="ORDER_NO" property="orderNo"/>
-	<result column="ORDER_DATE" property="orderDate"/>
-	<result column="PRICE" property="price"/>
-	<result column="RECEIVE_EMAIL" property="receiveEmail"/>
-	<association javaType="DrawDto"    property="drawDto">
+	<id 	column="ORDER_NO"        property="orderNo"/>
+	<result column="ORDER_DATE"      property="orderDate"/>
+	<result column="PRICE"           property="price"/>
+	<result column="RECEIVE_EMAIL"   property="receiveEmail"/>
+	<association javaType="DrawDto"  property="drawDto">
 	  <id      column="DRAW_NO"      property="drawNo"/>
 	  <result  column="TITLE"        property="title"/>
 	  <result  column="PRICE"        property="price"/>
@@ -176,6 +176,29 @@
       	<result    column="NICKNAME"	   property="nickname" />
       	<result    column="INTRODUCTION"   property="introduction" />
       </association>
+  </resultMap>
+  
+  <resultMap type="EmoneyDto" id="EmoneyMap">
+  	<id column="EMONEY_NO" 			property="emoneyNo"/>
+	<result column="EMONEY_HISTORY" property="emoneyHistory"/>
+	<result column="EMONEY_DATE"    property="emoneyDate"/>
+	<association javaType="UserDto"      property="userDto">
+      <id        column="USER_NO"        property="userNo"/>
+      <result    column="EMAIL"          property="email" />
+      <result    column="PW"             property="pw" />
+      <result    column="NAME"           property="name" />
+      <result    column="MOBILE"         property="mobile" />
+      <result    column="GENDER"         property="gender" />
+      <result    column="AGREE"          property="agree" />
+      <result    column="STATE"          property="state" />
+      <result    column="JOINED_AT"      property="joinedAt" />
+      <result    column="POSTCODE"       property="postcode" />
+      <result    column="ROAD_ADDRESS"   property="roadAddress" />
+      <result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      <result    column="DETAIL_ADDRESS" property="detailAddress" />
+      <result    column="NICKNAME"	   property="nickname" />
+      <result    column="INTRODUCTION"   property="introduction" />
+    </association>
   </resultMap>
   
   <insert id="insertDraw" parameterType="DrawDto">
@@ -362,19 +385,43 @@
 	)
   </insert>
   
+  <insert id="addDrawOrder" parameterType="Map">
+    INSERT INTO DRAW_ORDER_T (
+	  ORDER_NO
+	, DRAW_NO
+	, BUYER_NO
+	, ORDER_DATE
+	, PRICE
+	, RECEIVE_EMAIL
+	) VALUES (
+	  DRAW_ORDER_SEQ.NEXTVAL
+	, #{drawNo}
+	, #{buyerNo}
+	, SYSDATE
+	, #{price}
+	, #{receiveEmail}
+	)
+	  
+  </insert>
+  
   <select id="reviewCheck" parameterType="int" resultType="int">
 	SELECT COUNT(*)
-	  FROM DRAW_T D INNER JOIN DRAW_ORDER_T DO
-	    ON D.DRAW_NO = DO.DRAW_NO INNER JOIN DRAW_REVIEW_T DR
-	    ON DO.DRAW_NO = DR.DRAW_NO INNER JOIN USER_T U
-	    ON DR.BUYER_NO = U.USER_NO
-	 WHERE U.USER_NO = #{userNo}
+  FROM DRAW_REVIEW_T DR INNER JOIN DRAW_ORDER_T DO
+    ON DR.BUYER_NO = DO.BUYER_NO
+ WHERE DR.BUYER_NO = #{userNo}
+   AND DR.DRAW_NO = #{drawNo}
   </select>
   
-  <select id="getEmoney" parameterType="int" resultType="EmoneyDto">
-    SELECT EMONEY_HISTORY
+  <select id="getEmoney" parameterType="int" resultMap="EmoneyMap">
+    SELECT EMONEY_NO, USER_NO, EMONEY_HISTORY, EMONEY_DATE
       FROM EMONEY_T
      WHERE USER_NO = #{userNo}
   </select>
+  
+  <update id="updateBuyerEmoney" parameterType="Map" >
+    UPDATE EMONEY_T
+       SET EMONEY_HISTORY = EMONEY_HISTORY - ${price}
+     WHERE USER_NO = #{buyerNo}
+  </update>
   
 </mapper>

@@ -75,6 +75,7 @@ public class DrawController {
   @GetMapping("/orderPayment.form")
   public String orderPayment(HttpServletRequest request, Model model) {
 	drawService.loadDraw(request, model);
+	drawService.getEmoney(request, model);
 	return "draw/orderPayment";
   }
   
@@ -124,10 +125,13 @@ public class DrawController {
     return "redirect:/draw/detail.do?drawNo=" + request.getParameter("drawNo");
   }
   
-  @GetMapping("/checkEmoney.do")
-  public void checkEmoney(HttpServletRequest request) {
-	drawService.getEmoney(request);
+  @PostMapping("/orderPayment.do")
+  public String addDrawOrder(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+	int addDrawOrderResult = drawService.addDrawOrder(request);
+	redirectAttributes.addFlashAttribute("addDrawOrderResult", addDrawOrderResult);
+	return "redirect:/draw/detail.do?drawNo=" + request.getParameter("drawNo");
   }
+  
   
 
 }

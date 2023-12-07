@@ -112,6 +112,26 @@
       
       const fnSubmit = () => {
     	$('#frm_draw_add').submit((ev) => {
+		  var contents = $("#contents").val();
+		  var title = $("#title").val();
+		  var byte1 = 0;
+		  var byte2 = 0;
+		  for (var i=0; i<contents.length; ++i) {
+		  (contents.charCodeAt(i) > 127) ? byte1 += 3 : byte1++ ;
+		  }
+		  if(byte1 > 4000){
+		    alert("내용은 최대 4000BYTE 입니다.")
+    	    ev.preventDefault();
+    	    return;
+		  }
+		  for (var i=0; i<title.length; ++i) {
+		  (title.charCodeAt(i) > 127) ? byte2 += 3 : byte2++ ;
+		  }
+		  if(byte2 > 200){
+		    alert("제목은 최대 200BYTE 입니다.")
+    	    ev.preventDefault();
+    	    return;
+		  }
     	  if($('#title').val() === ''){
     	    alert('제목은 반드시 입력해야 합니다.');
     	    $('#title').focus();
@@ -131,9 +151,29 @@
 		    $('#price').focus();
     	    ev.preventDefault();
     		return;
+		  } else if($("#width").val() < 0){
+		    alert('작품길이는 0보다 작을 수 없습니다.');
+		    $('#width').focus();
+    	    ev.preventDefault();
+    		return;
+		  } else if($("#height").val() < 0){
+		    alert('작품길이는 0보다 작을 수 없습니다.');
+		    $('#height').focus();
+    	    ev.preventDefault();
+    		return;
 		  } else if($("#price").val() > 2100000000){
-		    alert('가격은 너무 큽니다.(21억 이하 입력)');
+		    alert('가격이 너무 큽니다.(21억 이하 입력)');
 		    $('#price').focus();
+    	    ev.preventDefault();
+    		return;
+		  } else if($("#width").val() > 2100000000){
+		    alert('작품 가로길이가 너무 큽니다.');
+		    $('#width').focus();
+    	    ev.preventDefault();
+    		return;
+		  } else if($("#height").val() > 2100000000){
+		    alert('작품 세로길이가 너무 큽니다.');
+		    $('#height').focus();
     	    ev.preventDefault();
     		return;
 		  } else if($("#contents").val() === ''){
@@ -165,22 +205,7 @@
 	    $(this).html($(this).html().replace(/(최대 14일)/g, '<span style="color: crimson">최대 14일</span>'));
 	  });
 	  
-	  const fnGetByte = () => {
-		$('#frm_draw_add').submit((ev)=>{
-		  var contents = $("#contents").val();
-		  var byte = 0;
-		  for (var i=0; i<contents.length; ++i) {
-		  (contents.charCodeAt(i) > 127) ? byte += 3 : byte++ ;
-		  }
-		  if(byte > 4000){
-		    alert("내용은 최대 4000BYTE 입니다.")
-    	    ev.preventDefault();
-    	    return;
-		  }
-		})
-	  }
 	  
-      fnGetByte();
       fnFileCheck();
       fnSubmit();
       

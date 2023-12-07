@@ -18,11 +18,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.gdu.drawauction.dao.DrawMapper;
-import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.dto.CategoryDto;
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.DrawImageDto;
+import com.gdu.drawauction.dto.DrawOrderDto;
 import com.gdu.drawauction.dto.DrawReviewDto;
+import com.gdu.drawauction.dto.EmoneyDto;
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.util.MyFileUtils;
 import com.gdu.drawauction.util.MyPageUtils;
@@ -199,10 +200,18 @@ public class DrawServiceImpl implements DrawService{
 	      drawDto.setHeart(heart);
 	    }
 	  Map<String, Object> orderMap = Map.of("drawNo", drawDto.getDrawNo(), "userNo", userNo);
-	  int reviewCheck = drawMapper.reviewCheck(userNo);
+	  int reviewCheck = drawMapper.reviewCheck(orderMap);
+	  
+	  List<DrawOrderDto> orderReviewList = drawMapper.getOrderReview(orderMap);
+	  if(!orderReviewList.isEmpty()) {
+		  DrawOrderDto orderReivew = orderReviewList.get(0);
+		  model.addAttribute("orderReview", orderReivew);
+	  } else {
+		  String orderReivew = "";
+		  model.addAttribute("orderReview", orderReivew);
+	  }
 	  
 	  model.addAttribute("reviewCheck", reviewCheck);
-	  model.addAttribute("orderReview", drawMapper.getOrderReview(orderMap));
 	  model.addAttribute("draw", drawMapper.getDraw(drawNo));
 	  model.addAttribute("imageList", drawMapper.getImageList(drawNo));
 	  model.addAttribute("drawImage", drawMapper.getDrawImage(drawNo));
@@ -423,10 +432,6 @@ public class DrawServiceImpl implements DrawService{
 		int userNo = Integer.parseInt(request.getParameter("userNo"));
 		int rating = Integer.parseInt(request.getParameter("rating"));
 		String reviewContents = request.getParameter("reviewContents");
-		System.out.println(drawNo);
-		System.out.println(userNo);
-		System.out.println(rating);
-		System.out.println(reviewContents);
 		Map<String, Object> map = Map.of("drawNo", drawNo
 									   , "userNo", userNo
 									   , "rating", rating
@@ -436,9 +441,37 @@ public class DrawServiceImpl implements DrawService{
 	}
 	
 	@Override
-	public Map<String, Object> getEmoney(HttpServletRequest request) {
+	public void getEmoney(HttpServletRequest request, Model model) {
 		
-		return null;
+		int userNo = Integer.parseInt(request.getParameter("userNo"));
+		EmoneyDto emoney = drawMapper.getEmoney(userNo);
+		
+		model.addAttribute("emoney", emoney);
+		
+	}
+	
+	@Override
+	public int addDrawOrder(HttpServletRequest request) {
+		
+		int drawNo = Integer.parseInt(request.getParameter("drawNo"));
+		int buyerNo = Integer.parseInt(request.getParameter("buyerNo"));
+		int price = Integer.parseInt(request.getParameter("price"));
+		int userNo = Integer.parseInt(request.getParameter("userNo"));
+		String receiveEmail = request.getParameter("receiveEmail");
+		
+		Map<String, Object> drawOrderMap = Map.of("drawNo", drawNo
+											    , "buyerNo", buyerNo
+											    , "price", price
+											    , "receiveEmail", receiveEmail);
+		
+		Map<String, Object> emoneyUpdateMap = Map.of("userNo", userNo
+										     	   , "price", price
+										     	   , "buyerNo", buyerNo);
+		
+			
+		drawMapper.updateBuyerEmoney(emoneyUpdateMap);
+		
+		return drawMapper.addDrawOrder(drawOrderMap);
 	}
 	
 }
