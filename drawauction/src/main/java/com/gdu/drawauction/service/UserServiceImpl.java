@@ -9,6 +9,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,11 +22,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 
+import com.gdu.drawauction.dao.MypageMapper;
 import com.gdu.drawauction.dao.UserMapper;
+import com.gdu.drawauction.dto.BidDto;
 import com.gdu.drawauction.dto.InactiveUserDto;
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.util.MyJavaMailUtils;
+import com.gdu.drawauction.util.MyPageUtils;
 import com.gdu.drawauction.util.MySecurityUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -46,9 +51,13 @@ import com.google.gson.JsonParser;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
   
+  // mapper
   private final UserMapper userMapper;
+  private final MypageMapper mypageMapper;
+  
   private final MySecurityUtils mySecurityUtils;
   private final MyJavaMailUtils myJavaMailUtils;
+  private final MyPageUtils myPageUtils;
   
   private final String client_id = "dxLQ_GbhqsM3QHNFLIB3";
   private final String client_secret = "CsMJ8FIn4F";
@@ -448,11 +457,17 @@ public class UserServiceImpl implements UserService {
   
   
   // ID/PW 찾기
+//  @Override
+//  public UserDto findId(UserDto user) {
+//    return userMapper.findId(user);
+//  }
+
   @Override
-  public UserDto findId(UserDto user) {
-    return userMapper.findId(user);
+  public List<UserDto> findId(UserDto user) {
+      return userMapper.findId(user);
   }
 
+  
   @Override
   public void findPw(UserDto user, HttpServletResponse response) throws Exception {
     
@@ -719,8 +734,66 @@ public class UserServiceImpl implements UserService {
   }
   
   
-  // 이름, 닉네임 중복체크
-  // 이름 중복 체크
+  // 입찰, 출품목록 가져오기.
+  @Override
+  public void loadAuctionBidList(HttpServletRequest request, Model model) {
+    
+    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(opt.orElse("1"));
+    
+    HttpSession session = request.getSession();
+    UserDto user = (UserDto)session.getAttribute("user");
+    
+    if(user != null) {
+      int bidderNo = user.getUserNo();
+      int total = mypageMapper.getAuctionBidCount(bidderNo);
+      int display = 10;
+      
+      myPageUtils.setPaging(page, total, display);
+      
+      Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
+                                     , "end", myPageUtils.getEnd()
+                                     , "bidderNo", bidderNo);
+      
+      List<BidDto> bidList = mypageMapper.getAuctionBidList(map);
+      
+      model.addAttribute("bidList", bidList);
+      model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/mypage/auctionBidList.do"));
+      model.addAttribute("beginNo", total - (page - 1) * display);
+    }
+  }
+
+  @Override
+  public void loadAuctionSalesList(HttpServletRequest request, Model model) {
+    
+    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(opt.orElse("1"));
+    
+    HttpSession session = request.getSession();
+    UserDto user = (UserDto)session.getAttribute("user");
+    
+    if(user != null) {
+      int sellerNo = user.getUserNo();
+      int total = mypageMapper.getAuctionSalesCount(sellerNo);
+      System.out.println(total);
+      int display = 10;
+      
+      myPageUtils.setPaging(page, total, display);
+      
+      Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
+                                     , "end", myPageUtils.getEnd()
+                                     , "sellerNo", sellerNo);
+      
+      List<BidDto> salesList = mypageMapper.getAuctionSalesList(map);
+      
+      System.out.println(salesList.size());
+      
+      model.addAttribute("salesList", salesList);
+      model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/mypage/auctionSalesList.do"));
+      model.addAttribute("beginNo", total - (page - 1) * display);
+    }
+  }
+  
   
   
   

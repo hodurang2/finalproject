@@ -1,6 +1,7 @@
 package com.gdu.drawauction.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.service.UserService;
@@ -33,7 +35,7 @@ public class UserController {
   public String loginForm(HttpServletRequest request, Model model) throws Exception {
     // referer : 이전 주소가 저장되는 요청 Header 값
     String referer = request.getHeader("referer");
-    String[] exceptUrl = {"/agree.form", "/join.form", "/join_option.form", "/find_id.form", "/find_pw.form"};
+    String[] exceptUrl = {"/agree.form", "/join.form", "/join_option.form", "/find_id.form", "/find_pw.form", "/artistProfile.form"};
     String ret = "";
     if(referer != null) {
       for(String url : exceptUrl) {
@@ -129,6 +131,11 @@ public class UserController {
     return "user/agree";
   }
   
+  @GetMapping("/artistProfile.form")
+  public String artistProfileForm() {
+    return "user/artistProfile";
+  }
+  
   @GetMapping("/join.form")
   public String joinForm(@RequestParam(value="service", required=false, defaultValue="off") String service
                        , @RequestParam(value="event", required=false, defaultValue="off") String event
@@ -184,16 +191,25 @@ public class UserController {
     return "user/find";
   }
   
+//  @PostMapping("/findId.do")
+//  public String findId(HttpServletRequest request, Model model, UserDto user) {
+//    
+//	user.setName(request.getParameter("name"));
+//	user.setMobile(request.getParameter("mobile"));
+//    UserDto findId = userService.findId(user);
+//    
+//    model.addAttribute("findId", findId);
+//    
+//    return "user/find_id";
+//  }
+//  
+  
   @PostMapping("/findId.do")
   public String findId(HttpServletRequest request, Model model, UserDto user) {
-    
-	user.setName(request.getParameter("name"));
-	user.setMobile(request.getParameter("mobile"));
-    UserDto findId = userService.findId(user);
-    
-    model.addAttribute("findId", findId);
-    
-    return "user/find_id";
+      user.setName(request.getParameter("name"));
+      List<UserDto> findIds = userService.findId(user);
+      model.addAttribute("findIds", findIds);
+      return "user/find_id";
   }
   
   @PostMapping("/findPw.do")
