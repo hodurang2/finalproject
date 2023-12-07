@@ -81,7 +81,7 @@ public class MypageController {
   
   @GetMapping("/emoneyList.do")
   public String Emoney() {
-    return "mypage/emoneyList";
+    return "mypage/chargeEmoney";
   }
   
 }
