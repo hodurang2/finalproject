@@ -1,57 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{/layout/header::head('경매이용내역')}"></head>
-
-<style>
-  .list_wrap {
-    width: 100%;
-    height: 50px;
-    border-bottom: 1px solid gray;
-    margin-top: 30px;
-  }
-  .mypage_list {
-    display: flex;
-    justify-content: space-between;
-    flex: 4;
-  }
-  .mypage_list li {
-    width: 100%;
-    
-  }
-  .mypage_list a {
-    display: block;
-    width: 100%;
-    text-align: center;
-    line-height: 50px;
-    cursor: pointer;
-    font-size: 20px;
-  }
-  .bid {
-    background-color: rgb(84, 186, 125);
-    border-bottom: 2px solid gray;
-    color: white;
-  }
-  .mypage_list a:hover {
-    background-color: rgb(84, 186, 125);
-    border-bottom: 2px solid gray;
-    color: white;
-  }
-  
-  /* paging */
-  .paging {
-  text-align: center;
-  padding: 8px 0;
-  }
-  .paging a {
-    margin: 0 10px;
-  }
-  .paging .now_page {
-    color: #198754;
-    font-weight: 900;
-  }
-
-</style>
+<head th:replace="~{/layout/header::head('출품작품목록')}"></head>
+<link rel="stylesheet" th:href="@{/css/auctionList.css(ver=1.0)}" />
  
+<style>
+  .bid {
+  background-color: rgb(84, 186, 125);
+  color: white;
+}
+</style> 
+
 <body>
   
   <div th:replace="~{/layout/header::header}"></div>
@@ -81,33 +39,33 @@
             <td>경매종료일</td>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="bidList">
           <th:block th:each="b,vs:${bidList}">
-            <tr>
-              <td><img th:src="|${b.auctionDto.image.path}/s_${b.auctionDto.image.filesystemName}|" alt="썸네일" width="120px" height="100px"></td>
+            <tr class="auction" th:onClick="|location.href='@{/auction2/detail.do(auctionNo=${b.auctionDto.auctionNo})}'|" style="cursor:pointer;">
+              <td class="auction_image"><img th:src="|${b.auctionDto.image.path}/s_${b.auctionDto.image.filesystemName}|" class="image" alt="썸네일" width="120px" height="100px"></td>                
               <td class="auction_title" th:text="${b.auctionDto.artDto.title}"></td>
-              <td th:text="${b.bidAt}"></td>
-              <td th:text="${b.bidderDto.myPrice}"></td>
-              <td th:text="${b.price}"></td>
+              <td class="auction_date" th:text="${b.bidAt}"></td>
+              <td class="auction_price" th:text="${b.bidderDto.myPrice}"></td>
+              <td class="auction_price" th:text="${b.price}"></td>
               <th:block th:if="${b.auctionDto.status == 0}">
-                <td th:text="진행"></td>
+                <td class="auction_status" th:text="진행"></td>
                 <th:block th:if="${b.price > b.bidderDto.myPrice}">
-                  <td th:text="재입찰요망"></td>
+                  <td class="auction_status" th:text="재입찰요망"></td>
                 </th:block>
                 <th:block th:if="${b.price <= b.bidderDto.myPrice}">
-                  <td th:text="최고가입찰중"></td>
+                  <td class="auction_status" th:text="최고가입찰중"></td>
                 </th:block>
               </th:block>
               <th:block th:if="${b.auctionDto.status == 1}">
-                <td th:text="종료"></td>
+                <td class="auction_status" th:text="종료"></td>
                 <th:block th:if="${b.price > b.bidderDto.myPrice}">
-                  <td th:text="낙찰실패"></td>
+                  <td class="auction_status" th:text="낙찰실패"></td>
                 </th:block>
                 <th:block th:if="${b.price <= b.bidderDto.myPrice}">
-                  <td th:text="낙찰성공"></td>
+                  <td class="auction_status" th:text="낙찰성공"></td>
                 </th:block>
               </th:block>
-              <td th:text="${b.auctionDto.endAt}"></td>
+              <td class="auction_date" th:text="${b.auctionDto.endAt}"></td>
             </tr>
           </th:block>
         </tbody>

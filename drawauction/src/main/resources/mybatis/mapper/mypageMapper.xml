@@ -138,6 +138,36 @@
      WHERE USER_NO = #{userNo}
   </update>
   
+  
+  
+  <select id="getArtForSaleCount" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+      FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.CATEGORY_NO, ART.TITLE, ART.CONTENTS, ART.ART_TYPE, ART.WIDTH, ART.HEIGHT, 
+                   AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS
+              FROM ART_T ART INNER JOIN AUCTION_T AUC
+                ON ART.ART_NO = AUC.ART_NO
+             WHERE AUC.STATUS = 0 AND ART.SELLER_NO = #{sellerNo})
+  </select>
+  
+  <select id="getBiddingCount" parameterType="int" resultType="int">
+    SELECT COUNT(DISTINCT ART_NO)
+      FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.CATEGORY_NO, ART.TITLE, ART.CONTENTS, ART.ART_TYPE, ART.WIDTH, ART.HEIGHT,
+                   AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS,
+                   BID.BID_NO, BID.BIDDER_NO, BID.PRICE, BID.BID_AT, BID.POSTCODE, BID.ROAD_ADDRESS, BID.JIBUN_ADDRESS, BID.DETAIL_ADDRESS
+              FROM ART_T ART INNER JOIN AUCTION_T AUC
+                ON ART.ART_NO = AUC.ART_NO RIGHT OUTER JOIN BID_T BID
+                ON AUC.AUCTION_NO = BID.AUCTION_NO
+             WHERE AUC.STATUS = 0 AND BID.BIDDER_NO = #{bidderNo})
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <select id="getAuctionBidCount" parameterType="int" resultType="int">
     SELECT COUNT(*) FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
                               AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,

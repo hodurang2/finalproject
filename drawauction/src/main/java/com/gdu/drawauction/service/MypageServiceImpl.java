@@ -1,6 +1,7 @@
 package com.gdu.drawauction.service;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -143,6 +144,32 @@ public class MypageServiceImpl implements MypageService {
   }
   
   @Override
+  public void getCount(HttpServletRequest request, Model model) {
+
+    HttpSession session = request.getSession();
+    UserDto user = (UserDto)session.getAttribute("user");
+    
+    if(user != null) {
+      int sellerNo = user.getUserNo();
+      int bidderNo = user.getUserNo();
+      
+      int artForSaleCount = mypageMapper.getArtForSaleCount(sellerNo);
+      int biddingCount = mypageMapper.getBiddingCount(bidderNo);
+      
+//      List<Integer> countList = new ArrayList<>();
+//      
+//      countList.add(artForSaleCount);
+//      countList.add(biddingCount);
+      
+      model.addAttribute("artForSaleCount", artForSaleCount);
+      model.addAttribute("biddingCount", biddingCount);
+      
+    }
+    
+  }
+  
+  
+  @Override
   public void getAuctionBidList(HttpServletRequest request, Model model) {
     
     Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
@@ -191,8 +218,8 @@ public class MypageServiceImpl implements MypageService {
     if(user != null) {
       int sellerNo = user.getUserNo();
       int total = mypageMapper.getAuctionSalesCount(sellerNo);
-      int display = 1;
-      
+      int display = 10;
+          
       myPageUtils.setPaging(page, total, display);
       
       Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
