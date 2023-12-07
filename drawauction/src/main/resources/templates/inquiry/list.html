@@ -133,13 +133,13 @@
                             <td>
                                 <a class="inquiry_list_title" th:href="@{/inquiry/detail.do(inquiryNo=${i.inquiryNo})}" th:text="${i.title}"></a>
                             </td>
-                            <td th:text="${i.inquiryCreatedAt}"></td>
+                            <td th:utext="${i.inquiryCreatedAt}"></td>
                         </tr>
                     </th:block>
                 </tbody>
                 <tfoot> 
                     <tr>
-                        <td colspan="3">${paging}</td>
+                        <td colspan="3" th:utext="${paging}"></td>
                     </tr>
                 </tfoot>
             </table>    

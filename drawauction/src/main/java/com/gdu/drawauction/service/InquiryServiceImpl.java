@@ -154,11 +154,15 @@ public class InquiryServiceImpl implements InquiryService{
   public Map<String, Object> addAnswer(HttpServletRequest request) {
     
     int inquiryNo = Integer.parseInt(request.getParameter("inquiryNo"));
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
     String contents = request.getParameter("contents");
     
     
     AnswerDto answer = AnswerDto.builder()
                           .inquiryNo(inquiryNo)
+                          .userDto(UserDto.builder()
+                                    .userNo(userNo)
+                                    .build())
                           .contents(contents)
                           .build();
     
@@ -174,36 +178,19 @@ public class InquiryServiceImpl implements InquiryService{
     int page = Integer.parseInt(request.getParameter("page"));
     int total = inquiryMapper.getAnswerCount(inquiryNo);
     int display = 10;
-    
+
     myPageUtils.setPaging(page, total, display);
     
     Map<String, Object> map = Map.of("inquiryNo", inquiryNo
                                    , "begin", myPageUtils.getBegin()
                                    , "end", myPageUtils.getEnd());
-    
+
     List<AnswerDto> answerList = inquiryMapper.getAnswerList(map);
     String paging = myPageUtils.getAjaxPaging();
-    
     Map<String, Object> result = new HashMap<String, Object>();
     result.put("answerList", answerList);
     result.put("paging", paging);
     return result;
-  }
-  
-  @Override
-  public Map<String, Object> addAnswerReply(HttpServletRequest request) {
-    String contents = request.getParameter("contents");
-    int inquiryNo = Integer.parseInt(request.getParameter("inquiryNo"));
-
-    AnswerDto answer = AnswerDto.builder()
-                          .inquiryNo(inquiryNo)
-                          .contents(contents)
-                          .build();
-    
-    int addAnswerReplyResult = inquiryMapper.insertAnswerReply(answer);
-    
-    return Map.of("addAnswerReplyResult", addAnswerReplyResult);
-    
   }
   
   @Override

@@ -16,6 +16,8 @@ public interface MypageService {
   
   public void modifyPw(HttpServletRequest request, HttpServletResponse response);   // 비밀번호 변경
 
+  public void getCount(HttpServletRequest request, Model model);   // 갯수
+  
   public void getAuctionBidList(HttpServletRequest request, Model model);    // 입찰 목록
   
   public void getAuctionSalesList(HttpServletRequest request, Model model);  // 출품 목록
