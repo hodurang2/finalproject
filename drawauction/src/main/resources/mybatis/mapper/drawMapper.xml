@@ -371,4 +371,10 @@
 	 WHERE U.USER_NO = #{userNo}
   </select>
   
+  <select id="getEmoney" parameterType="int" resultType="int">
+    SELECT EMONEY_HISTORY
+      FROM EMONEY_T
+     WHERE USER_NO = #{userNo}
+  </select>
+  
 </mapper>

@@ -123,10 +123,10 @@
                AND AUC.AUCTION_NO = B.AUCTION_NO(+)
                AND (B.PRICE IS NULL OR B.PRICE = (SELECT MAX(PRICE) FROM BID_T WHERE AUCTION_NO = AUC.AUCTION_NO))
            <choose>
-             <when test="auctionType != '' and auctionType == 'all'">
+             <when test="auctionType != '' and auctionType == 'all' and searchWord != ''">
                AND (A.TITLE LIKE '%' || #{searchWord} || '%' OR A.CONTENTS LIKE '%' || #{searchWord} || '%')
              </when>
-             <when test="auctionType != '' and auctionType != 'all'">
+             <when test="auctionType != '' and auctionType != 'all' and searchWord != ''">
                AND ${auctionType} LIKE '%' || #{searchWord} || '%'
              </when>
            </choose>

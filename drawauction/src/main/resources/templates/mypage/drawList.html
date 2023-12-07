@@ -1,11 +1,143 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="utf-8">
-</head>
+<head th:replace="~{/layout/header::head('그려드림내역')}"></head>
+
+<style>
+  .my_draw_list {
+  width: 90%;
+    margin: 10px auto;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .draw {
+    width: 400px;
+    height: 360px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    text-align: left;
+    margin: 20px 20px;
+    display: flex;
+    flex-direction: column;
+    position: relative; 
+  }
+  
+  .image-container {
+    flex: 1;
+  }
+
+  .image {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .draw-content {
+    padding: 10px;
+  }
+  
+  .draw:hover {
+    background-color: silver;
+  }
+  
+
+</style>
+ 
 <body>
   
-  <h1>파이널 화이팅</h1>
+  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{/mypage/menu::side-menu}"></div>
   
+  <div class="right_wrap">
+    <h3>그려드림 내역</h3>
+    <div id="my_draw_list" class="my_draw_list"></div>  
+  </div>
+
+  
+  
+  <script th:inline="javascript">
+   
+    // 전역 변수
+    var page = 1;
+    var totalPage = 0;
+  
+    const fnGetMyDrawList = () => {
+      
+      $.ajax({
+        // 요청
+        type: 'get',
+        url: '/mypage/getMyDrawList.do',
+        data: 'page=' + page,
+        // 응답
+      dataType: 'json',
+      success: (resData) => {
+            totalPage = resData.totalPage;
+            $.each(resData.myDrawList,(i, draw) => {
+              let str = '<div class="draw" data-draw_no="' + draw.drawNo + '">';
+              str += '<div class="draw_image"><img src="' + draw.image.path + '/s_' + auction.image.filesystemName + '"></div>';
+              if(auction.status === 0){
+              str += '<div class="auction_ongoing">경매진행중</div>';
+              } else {
+              str += '<div class="auction_end">경매종료</div>';
+              }
+              str += '<div class="auction_heart_div"><i class="' + auction.heartClass + ' fa-heart fa-xl auction_heart"></i></div>';
+              str += '<div><span class="auction_category">' + auction.artDto.categoryDto.categoryName + '</span></div>';
+              str += '<div><span class="auction_title">'    + auction.artDto.title                    + '</span></div>';
+              str += '<div><span class="auction_nickname">' + auction.artDto.sellerDto.nickname       + '</span></div>';
+              str += '<div class="auction_end_wrap">';
+              str += '<div><span class="first_auction">시작가</span><span class="last_auction">'         + auction.startPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+              str += '<div><span class="first_auction">현재입찰가</span><span class="last_auction">'     + auction.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+              str += '<div><span class="first_auction">즉시 구매가</span><span class="last_auction">'    + auction.buyPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+              str += '<div><span class="first_auction">마감일</span><span class="last_auction"> '        + auction.endAt + '</span></div>'; // 상품가격 1000단위 콤마찍기
+              str += '</div>';
+              str += '</div>';
+              $('#auction_list').append(str);
+            })
+      }
+    })
+  }
+      
+    const fnDrawDetail = () => {
+      $(document).on('click', '.image', function(){
+        location.href = '/draw/detail.do?drawNo=' + $(this).data('draw_no');
+      })
+    }
+    
+    const fnScroll = () => {
+        
+      var timerId;  // 최초 undefined 상태
+        
+      $(window).on('scroll', () => {
+          
+        if(timerId){  // timerId가 undefined이면 false로 인식, timerId가 값을 가지면 true로 인식
+          clearTimeout(timerId);
+        }
+          
+        timerId = setTimeout(() => {  // setTimeout 실행 전에는 timerId가 undefined 상태, setTimeout이 한 번이라도 동작하면 timerId가 값을 가짐
+            
+          let scrollTop = $(window).scrollTop();     // 스크롤바 위치(스크롤 된 길이)
+          let windowHeight = $(window).height();     // 화면 전체 크기
+          let documentHeight = $(document).height(); // 문서 전체 크기
+            
+          if((scrollTop + windowHeight + 100) >= documentHeight) {  // 스크롤이 바닥에 닿기 100px 전에 true가 됨
+            if(page > totalPage){  // 마지막 페이지를 보여준 이후에 true가 됨
+              return;              // 마지막 페이지를 보여준 이후에는 아래 코드를 수행하지 말 것 
+            }
+            page++;
+            fnGetMyDrawList();
+          }
+            
+        }, 200);  // 200밀리초(0.2초) 후 동작(시간은 임의로 조정 가능함)
+      })
+    }
+      
+     fnGetMyDrawList();
+     fnDrawDetail();
+     fnScroll();
+    
+  </script>
+  
+  <div th:replace="~{/layout/footer::footer}"></div>
+
 </body>
 </html>
