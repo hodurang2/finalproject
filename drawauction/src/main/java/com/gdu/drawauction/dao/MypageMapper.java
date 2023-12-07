@@ -19,6 +19,11 @@ public interface MypageMapper {
   public int updateUserIntroduction(UserDto user);    // 소개글 수정(ajax)
   public int updateUserPw(UserDto user);              // 비밀번호 변경
 
+  // 갯수
+  public int getArtForSaleCount(int sellerNo);   // 판매 중 작품 수
+  public int getBiddingCount(int bidderNo);      // 입찰 중 작품 수
+  
+  
   // 경매
   public int getAuctionBidCount(int bidderNo);        // 입찰 작품수(종료, 진행 포함)
   public List<BidDto> getAuctionBidList(Map<String, Object> map);   // 입찰 내역

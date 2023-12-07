@@ -51,7 +51,12 @@
 .right_wrap {
   float: left;
   margin-top: 40px;
-  margin-left: 80px;
+  margin-left: 60px;
+  margin-right: 20px;
   width: 1000px;
   height: 900px;
+  margin-bottom: 400px;
+}
+.footer_wrap {
+  clear: both;
 }
