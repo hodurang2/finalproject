@@ -72,6 +72,7 @@
       <form id="frm_answer_add">
         <textarea rows="3" cols="50" name="contents" id="contents" placeholder="댓글을 작성해 주세요"></textarea>
         <input type="hidden" name="inquiryNo" th:value="${inquiry.inquiryNo}">
+        <input type="hidden" name="userNo" th:value="${session.user.userNo}">
         <button type="button" id="btn_answer_add">작성완료</button>
       </form>
     </div>
@@ -140,7 +141,7 @@
               if(answer.status === 0){
                 str += '<div>삭제된 댓글입니다.</div>';
               } else {
-                str += '  <div>' + answer.userDto.userNo + '</div>';
+                str += '  <div>' + answer.userDto.nickname + '</div>';
                 str += '  <div>' + answer.contents + '</div>';
                 str += '  <div style="font-size: 12px;">' + answer.createdAt + '</div>';
               }

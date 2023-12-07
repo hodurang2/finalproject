@@ -51,14 +51,12 @@ public class InquiryServiceImpl implements InquiryService{
     int page = Integer.parseInt(opt.orElse("1"));
     int total = inquiryMapper.getInquiryCount();
     int display = 5;
-    
     myPageUtils.setPaging(page, total, display);
     
     Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
                                    , "end", myPageUtils.getEnd());
-    
     List<InquiryDto> inquiryList = inquiryMapper.getInquiryList(map);
-    
+
     model.addAttribute("inquiryList", inquiryList);
     model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/inquiry/list.do"));
     model.addAttribute("beginNo", total - (page - 1) * display);
@@ -178,40 +176,17 @@ public class InquiryServiceImpl implements InquiryService{
     int page = Integer.parseInt(request.getParameter("page"));
     int total = inquiryMapper.getAnswerCount(inquiryNo);
     int display = 10;
-    
     myPageUtils.setPaging(page, total, display);
     
     Map<String, Object> map = Map.of("inquiryNo", inquiryNo
                                    , "begin", myPageUtils.getBegin()
                                    , "end", myPageUtils.getEnd());
-    
     List<AnswerDto> answerList = inquiryMapper.getAnswerList(map);
     String paging = myPageUtils.getAjaxPaging();
-    
     Map<String, Object> result = new HashMap<String, Object>();
     result.put("answerList", answerList);
     result.put("paging", paging);
     return result;
-  }
-  
-  @Override
-  public Map<String, Object> addAnswerReply(HttpServletRequest request) {
-    String contents = request.getParameter("contents");
-    int inquiryNo = Integer.parseInt(request.getParameter("inquiryNo"));
-    int userNo = Integer.parseInt(request.getParameter("userNo"));
-
-    AnswerDto answer = AnswerDto.builder()
-                          .inquiryNo(inquiryNo)
-                          .userDto(UserDto.builder()
-                                    .userNo(userNo)
-                                    .build())
-                          .contents(contents)
-                          .build();
-    
-    int addAnswerReplyResult = inquiryMapper.insertAnswerReply(answer);
-    
-    return Map.of("addAnswerReplyResult", addAnswerReplyResult);
-    
   }
   
   @Override
