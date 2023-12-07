@@ -79,4 +79,9 @@ public class MypageController {
     return mypageService.getMyDrawList(request);
   }
   
+  @GetMapping("/emoneyList.do")
+  public String Emoney() {
+    return "mypage/emoneyList";
+  }
+  
 }
