@@ -42,12 +42,7 @@
         <tbody class="bidList">
           <th:block th:each="b,vs:${bidList}">
             <tr class="auction" th:onClick="|location.href='@{/auction2/detail.do(auctionNo=${b.auctionDto.auctionNo})}'|" style="cursor:pointer;">
-              <th:block th:if="${b.auctionDto.image.path == null}">
-                <td><i class="fa-regular fa-image"></i></td>
-              </th:block>
-              <th:block th:if="${b.auctionDto.image.path != null}">
-                <t d class="auction_image"><img th:src="|${b.auctionDto.image.path}/s_${b.auctionDto.image.filesystemName}|" class="image" alt="썸네일" width="120px" height="100px"></td>                
-              </th>
+              <td class="auction_image"><img th:src="|${b.auctionDto.image.path}/s_${b.auctionDto.image.filesystemName}|" class="image" alt="썸네일" width="120px" height="100px"></td>                
               <td class="auction_title" th:text="${b.auctionDto.artDto.title}"></td>
               <td class="auction_date" th:text="${b.bidAt}"></td>
               <td class="auction_price" th:text="${b.bidderDto.myPrice}"></td>
