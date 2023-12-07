@@ -68,12 +68,12 @@
       
     </div>
     
-    <div>
+    <div th:if="${session.user.userNo == 1}" >
       <form id="frm_answer_add">
         <textarea rows="3" cols="50" name="contents" id="contents" placeholder="댓글을 작성해 주세요"></textarea>
         <input type="hidden" name="inquiryNo" th:value="${inquiry.inquiryNo}">
         <input type="hidden" name="userNo" th:value="${session.user.userNo}">
-        <button type="button" id="btn_answer_add">작성완료</button>
+        <button type="button" id="btn_answer_add">답변등록</button>
       </form>
     </div>
     <div style="width: 100%;border-bottom: 1px solid gray;"></div>
