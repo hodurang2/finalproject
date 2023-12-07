@@ -178,36 +178,6 @@
       })
     }
     
-    const fnAnswerReplyAdd = () => {
-      $(document).on('click', '.btn_add_reply', (ev) => {
-        if('${session.user}' === ''){
-          if(confirm('로그인이 필요한 기능입니다. 로그인할까요?')){
-            location.href = '/user/login.form';
-          } else {
-            return;
-          }
-        }
-        var frmAddReply = $(ev.target).closest('.frm_add_reply');
-        $.ajax({
-          // 요청
-          type: 'post',
-          url: '/inquiry/addAnswerReply.do',
-          data: frmAddReply.serialize(),
-          // 응답
-          dataType: 'json',
-          success: (resData) => {  // resData = {"addCommentReplyResult": 1}
-            if(resData.addAnswerReplyResult === 1){
-              alert('답글이 등록되었습니다.');
-              fnAnswerList();
-              frmAddReply.find('textarea').val('');
-            } else {
-              alert('답글이 등록되지 않았습니다.');
-            }
-          }
-        })
-      })
-    }
-    
     const fnDownload = () => {
       $('.inquiryAttach').click(function(){
         if(confirm('다운로드 할까요?')){
@@ -219,7 +189,6 @@
     fnInquiryList();
     fnAnswerAdd();
     fnAnswerList();
-    fnAnswerReplyAdd();
     fnBlind();
     fnDownload();
       
