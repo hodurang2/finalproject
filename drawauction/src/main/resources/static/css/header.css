@@ -3,48 +3,77 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css');
 
-.header_wrap {
-  width: 100%;
-  margin: 0 auto;
-  padding-top: 50px; 
+
+
+/* 로고 */
+/* ///////////////////////// */
+.header_menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
-.logo {
-  margin: 50px auto;
-  cursor: pointer;
+
+.logo img {
+    display: block; /* 이미지에 대한 추가 스타일링 */
+    max-width: 100%;
+    height: auto;
 }
+
+.header_menu > div {
+    display: flex;
+    gap: 10px; /* 요소 사이의 간격을 조절하세요 */
+}
+
+.header_menu li {
+    list-style: none; /* 리스트 스타일 제거 */
+}
+
+/* ///////////////////////// */
+/* 로그인 영역 */
 .login_wrap {
   width: 100%;
-  height: 64px;
+  height: 40px;
 }
+
 .ico_user_group {
+  margin: 0.5%;
   position: absolute;
   right: 0;
 }
-.ico_user_group i {
-  width: 24px;
+.ico_user_group li {
+    display: inline-block;
+    margin-right: 10px; /* 각 li 요소 사이의 간격을 조절합니다. */
+    vertical-align: middle; /* li 요소를 행의 중간에 배치합니다. */
 }
+
+/* ///////////////////////// */
+/* 메뉴바 */
 .gnb_wrap {
   width: 100%;
-  height: 48px;
+  height: 0 auto;
 }
+
 .gnb {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: space-between;
-  border-top: 1px solid gray;
-  border-bottom: 1px solid gray;
+vertical-align: middle; /* li 요소를 행의 중간에 배치합니다. */
+
 }
 .gnb li {
-  width: 100%;
+	margin: 0.5%;
+	margin-left: 2%;
+	display: inline-block;
+    margin-right: 10px; /* 각 li 요소 사이의 간격을 조절합니다. */
+
 }
 .gnb a {
   display: block;
   width: 100%;
-  text-align: center;
   line-height: 48px;
   cursor: pointer;
 }
+
+
+/* ///////////////////////// */
+/* ///////////////////////// */
 
 .header_menu {
 	display: flex;
@@ -52,3 +81,11 @@
     align-items: center; /* 요소들을 세로 중앙에 배치합니다. */
     padding: 20px; /* 필요에 따라 페이지 패딩을 조절합니다. */
 }
+
+.back{
+	background-color: #F6F6F6;
+}
+
+ span {
+    color: red; /* 변경하고자 하는 색상으로 지정하세요. */
+  }
