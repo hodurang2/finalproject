@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gdu.drawauction.dao.AdminMapper">
+
+
+	<!--admin01@naver.com 계정을 제외한 모든 계정을 가입일 기준으로 select-->
+	<select id="userList" resultType="UserDto">
+		SELECT USER_NO, EMAIL, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION, MY_PRICE
+  		  FROM USER_T
+ 	     WHERE EMAIL NOT IN ('admin01@naver.com') 
+ 		 ORDER BY JOINED_AT DESC
+	</select>
+	
+
+</mapper>
