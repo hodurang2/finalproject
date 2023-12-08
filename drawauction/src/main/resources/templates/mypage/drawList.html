@@ -3,43 +3,76 @@
 <head th:replace="~{/layout/header::head('그려드림내역')}"></head>
 
 <style>
-  .my_draw_list {
-  width: 90%;
-    margin: 10px auto;
-    display: flex;
-    flex-wrap: wrap;
-  }
-  
+.list_wrap {
+  width: 100%;
+  height: 50px;
+  border-bottom: 1px solid gray;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.mypage_list {
+  display: flex;
+  justify-content: space-between;
+  flex: 4;
+}
+.mypage_list li {
+  width: 100%;
+}
+.mypage_list a {
+  display: block;
+  width: 100%;
+  text-align: center;
+  line-height: 50px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.mypage_list a:hover {
+  background-color: rgb(84, 186, 125);
+  color: white;
+}
+
+  /* 네모박스 */
   .draw {
-    width: 400px;
+    cursor: pointer;
+    border: 1px solid grey;
+    width: 300px;
     height: 360px;
-    border: 1px solid gray;
     border-radius: 5px;
     text-align: left;
-    margin: 20px 20px;
-    display: flex;
-    flex-direction: column;
-    position: relative; 
-  }
-  
-  .image-container {
-    flex: 1;
-  }
-
-  .image {
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-  }
-
-  .draw-content {
+    margin: 20px 15px;
+    float: left;
+    width: 30%;
     padding: 10px;
   }
-  
   .draw:hover {
-    background-color: silver;
+    -webkit-transform: scale(1.001);
+    transform: scale(1.001);
+    border: 1px solid darkgreen;
+    }
+   .draw_image_wrap {
+     width: 275px;
+     height: 200px;
+     margin: auto;
+     margin-bottom: 3px;
+   }
+    .image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
   }
-  
+  .draw_info_wrap {
+    height: 145px;
+  }
+  .draw_info {
+    margin-left: 10px;
+    font-weight: 500;
+  }
+  .draw_value {
+    float: right;
+  }
+
+
 
 </style>
  
@@ -50,7 +83,17 @@
   
   <div class="right_wrap">
     <h3>그려드림 내역</h3>
+    
+    <div class="list_wrap">
+      <ul class="mypage_list">
+        <li><a href="javascript:fnShowMy()" id="my">올린 그려드림</a></li>
+        <li><a href="javascript:fnShowOrder()" id="order">주문한 그려드림</a></li>
+      </ul>
+    </div>
+    
     <div id="my_draw_list" class="my_draw_list"></div>  
+    <div id="order_draw_list" class="order_draw_list"></div>
+
   </div>
 
   
@@ -62,43 +105,64 @@
     var totalPage = 0;
   
     const fnGetMyDrawList = () => {
-      
       $.ajax({
         // 요청
         type: 'get',
         url: '/mypage/getMyDrawList.do',
         data: 'page=' + page,
         // 응답
-      dataType: 'json',
-      success: (resData) => {
-            totalPage = resData.totalPage;
-            $.each(resData.myDrawList,(i, draw) => {
-              let str = '<div class="draw" data-draw_no="' + draw.drawNo + '">';
-              str += '<div class="draw_image"><img src="' + draw.image.path + '/s_' + auction.image.filesystemName + '"></div>';
-              if(auction.status === 0){
-              str += '<div class="auction_ongoing">경매진행중</div>';
-              } else {
-              str += '<div class="auction_end">경매종료</div>';
-              }
-              str += '<div class="auction_heart_div"><i class="' + auction.heartClass + ' fa-heart fa-xl auction_heart"></i></div>';
-              str += '<div><span class="auction_category">' + auction.artDto.categoryDto.categoryName + '</span></div>';
-              str += '<div><span class="auction_title">'    + auction.artDto.title                    + '</span></div>';
-              str += '<div><span class="auction_nickname">' + auction.artDto.sellerDto.nickname       + '</span></div>';
-              str += '<div class="auction_end_wrap">';
-              str += '<div><span class="first_auction">시작가</span><span class="last_auction">'         + auction.startPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
-              str += '<div><span class="first_auction">현재입찰가</span><span class="last_auction">'     + auction.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
-              str += '<div><span class="first_auction">즉시 구매가</span><span class="last_auction">'    + auction.buyPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
-              str += '<div><span class="first_auction">마감일</span><span class="last_auction"> '        + auction.endAt + '</span></div>'; // 상품가격 1000단위 콤마찍기
-              str += '</div>';
-              str += '</div>';
-              $('#auction_list').append(str);
-            })
-      }
-    })
-  }
+        dataType: 'json',
+        success: (resData) => {
+          totalPage = resData.totalPage;
+          $.each(resData.myDrawList,(i, draw) => {
+            let str = '<div class="draw" data-draw_no="' + draw.drawNo + '">';
+            str +=   '<div class="draw_image_wrap" data-draw_no="' + draw.drawNo + '"><img class="image" src="' + draw.image.path + '/s_' + draw.image.filesystemName + '"></div>';
+            str +=   '<div class="draw_info_wrap">';
+            str +=     '<div class="draw_title"><span class="draw_info">제목</span><span class="draw_value">' + draw.title + '</span></div>';
+            str +=     '<div class="draw_category"><span class="draw_info">카테고리</span><span class="draw_value">' + draw.categoryDto.categoryName + '</span></div>';
+            str +=     '<div class="draw_workTerm"><span class="draw_info">작업기간</span><span class="draw_value">' + draw.workTerm + '일</span></div>';
+            str +=     '<div class="draw_price"><span class="draw_info">가격</span><span class="draw_value">' + draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>';
+            str +=     '<div id="drawNo" style="display:none">글번호: ' + draw.drawNo + '</div>';
+            str +=   '</div>';
+            str += '</div>';
+            $('#my_draw_list').append(str);
+          })
+        }
+      })
+    }
+
+    const fnGetDrawOrderList = () => {
+      $.ajax({
+        // 요청
+        type: 'get',
+        url: '/mypage/getDrawOrderList.do',
+        data: 'page=' + page,
+        // 응답
+        dataType: 'json',
+        success: (resData) => {
+          totalPage = resData.totalPage;
+          $.each(resData.drawOrderList,(i, order) => {
+            let draw = order.drawDto;
+            let str = '<div class="draw" data-draw_no="' + draw.drawNo + '">';
+            str +=   '<div class="draw_image_wrap" data-draw_no="' + draw.drawNo + '"><img class="image" src="' + draw.image.path + '/s_' + draw.image.filesystemName + '"></div>';
+            str +=   '<div class="draw_info_wrap">';
+            str +=     '<div class="draw_title"><span class="draw_info">제목</span><span class="draw_value">' + draw.title + '</span></div>';
+            str +=     '<div class="draw_category"><span class="draw_info">카테고리</span><span class="draw_value">' + draw.categoryDto.categoryName + '</span></div>';
+            str +=     '<div class="draw_orderDate"><span class="draw_info">주문날짜</span><span class="draw_value">' + order.orderDate + '</span></div>';
+            str +=     '<div class="draw_workTerm"><span class="draw_info">작업기간</span><span class="draw_value">' + draw.workTerm + '일</span></div>';
+            str +=     '<div class="draw_email"><span class="draw_info">수령이메일</span><span class="draw_value">' + order.receiveEmail + '</span></div>';
+            str +=     '<div class="draw_price"><span class="draw_info">가격</span><span class="draw_value">' + draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>';
+            str +=     '<div id="drawNo" style="display:none">글번호: ' + draw.drawNo + '</div>';
+            str +=   '</div>';
+            str += '</div>';
+            $('#order_draw_list').append(str);
+          })
+        }
+      })
+    }
       
     const fnDrawDetail = () => {
-      $(document).on('click', '.image', function(){
+      $(document).on('click', '.draw', function(){
         location.href = '/draw/detail.do?drawNo=' + $(this).data('draw_no');
       })
     }
@@ -119,19 +183,47 @@
           let windowHeight = $(window).height();     // 화면 전체 크기
           let documentHeight = $(document).height(); // 문서 전체 크기
             
-          if((scrollTop + windowHeight + 100) >= documentHeight) {  // 스크롤이 바닥에 닿기 100px 전에 true가 됨
+          if((scrollTop + windowHeight + 1000) >= documentHeight) {  // 스크롤이 바닥에 닿기 100px 전에 true가 됨
             if(page > totalPage){  // 마지막 페이지를 보여준 이후에 true가 됨
               return;              // 마지막 페이지를 보여준 이후에는 아래 코드를 수행하지 말 것 
             }
             page++;
-            fnGetMyDrawList();
+            if ($('#order_draw_list').is(':visible')) {
+              fnGetMyDrawList();
+            } else if ($('#my_draw_list').is(':visible')) {
+              fnGetDrawOrderList();
+            }
           }
             
         }, 200);  // 200밀리초(0.2초) 후 동작(시간은 임의로 조정 가능함)
       })
     }
+     
+    $(document).ready(function() {
+      // 초기에는 #my_draw_list가 보이도록 설정
+      $('#my_draw_list').show();
+      $('#order_draw_list').hide();
+    });
+    
+    const fnShowMy = () => {
+      // fnGetDrawOrderList()에서 추가한 내용 숨기기
+      $('#order_draw_list').hide();
       
+      // fnGetMyDrawList()에서 추가한 내용 보이기
+      $('#my_draw_list').show();
+
+    }
+    
+    const fnShowOrder = () => {
+      // fnGetMyDrawList()에서 추가한 내용 숨기기
+      $('#my_draw_list').hide();
+      
+      // fnGetDrawOrderList()에서 추가한 내용 보이기
+      $('#order_draw_list').show();
+    }
+     
      fnGetMyDrawList();
+     fnGetDrawOrderList();
      fnDrawDetail();
      fnScroll();
     

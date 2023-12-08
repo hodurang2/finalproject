@@ -1,7 +1,6 @@
 package com.gdu.drawauction.service;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,10 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import com.gdu.drawauction.dao.MypageMapper;
-import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.dto.BidDto;
 import com.gdu.drawauction.dto.DrawDto;
-import com.gdu.drawauction.dto.DrawImageDto;
+import com.gdu.drawauction.dto.DrawOrderDto;
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.util.MyPageUtils;
 import com.gdu.drawauction.util.MySecurityUtils;
@@ -156,11 +154,6 @@ public class MypageServiceImpl implements MypageService {
       int artForSaleCount = mypageMapper.getArtForSaleCount(sellerNo);
       int biddingCount = mypageMapper.getBiddingCount(bidderNo);
       
-//      List<Integer> countList = new ArrayList<>();
-//      
-//      countList.add(artForSaleCount);
-//      countList.add(biddingCount);
-      
       model.addAttribute("artForSaleCount", artForSaleCount);
       model.addAttribute("biddingCount", biddingCount);
       
@@ -181,6 +174,7 @@ public class MypageServiceImpl implements MypageService {
     if(user != null) {
       int bidderNo = user.getUserNo();
       int total = mypageMapper.getAuctionBidCount(bidderNo);
+      System.out.println(total);
       int display = 10;
       
       myPageUtils.setPaging(page, total, display);
@@ -257,16 +251,18 @@ public class MypageServiceImpl implements MypageService {
     
       int sellerNo = user.getUserNo();
       int total = mypageMapper.getMyDrawCount(sellerNo);
-      int display = 10;
+      int display = 9;
 
       myPageUtils.setPaging(page, total, display);
       
       List<DrawDto> myDrawList = mypageMapper.getMyDrawList(Map.of("begin", myPageUtils.getBegin()
                                                                  , "end", myPageUtils.getEnd()
                                                                  , "sellerNo", sellerNo));
-
+      
+      
+      
       for(DrawDto drawDto : myDrawList) {
-        //drawDto.setImage(mypageMapper.getMyDrawImage(drawDto.getDrawNo()));
+        drawDto.setImage(mypageMapper.getDrawImage(drawDto.getDrawNo()));
       }
       
       map.put("myDrawList", myDrawList);
@@ -275,6 +271,48 @@ public class MypageServiceImpl implements MypageService {
     } else {
       
       map.put("myDrawList", null);
+      
+    }
+    return map;
+    
+  }
+  
+  @Transactional(readOnly=true)
+  @Override
+  public Map<String, Object> getDrawOrderList(HttpServletRequest request) {
+    
+    Map<String, Object> map = new HashMap<>();
+    
+    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(opt.orElse("1"));
+    
+    HttpSession session = request.getSession();
+    UserDto user = (UserDto)session.getAttribute("user");
+
+    if(user != null) {
+    
+      int buyerNo = user.getUserNo();
+      int total = mypageMapper.getDrawOrderCount(buyerNo);
+      int display = 9;
+
+      myPageUtils.setPaging(page, total, display);
+      
+      List<DrawOrderDto> drawOrderList = mypageMapper.getDrawOrderList(Map.of("begin", myPageUtils.getBegin()
+                                                                 , "end", myPageUtils.getEnd()
+                                                                 , "buyerNo", buyerNo));
+      
+      
+      
+      for(DrawOrderDto drawOrderDto : drawOrderList) {
+        drawOrderDto.getDrawDto().setImage(mypageMapper.getDrawImage(drawOrderDto.getDrawDto().getDrawNo()));
+      }
+      
+      map.put("drawOrderList", drawOrderList);
+      map.put("totalPage", myPageUtils.getTotalPage());
+
+    } else {
+      
+      map.put("drawOrderList", null);
       
     }
     return map;

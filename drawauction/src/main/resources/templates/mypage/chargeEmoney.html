@@ -58,7 +58,8 @@
                     type: "GET", 
                     url: "/user/chargeEmoney.do", //충전 금액값을 보낼 url 설정
                     data: {
-                        "amount" : money
+                        "amount" : money,
+                        "userNo" : userNo
                     },
                 });
             } else {

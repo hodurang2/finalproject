@@ -54,6 +54,10 @@ public interface UserMapper {
 		
 		// 사용자가 업로드한 그려드림 전체보기
 		public List<DrawDto> getUserDrawings(int userNo);
+		
+		// Emoney충전(kakaopay)
+		public int insertDefaultEmoney();
+    public int insertEmoney(int userNo, int amount);
 
 
 }

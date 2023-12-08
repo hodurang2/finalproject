@@ -533,7 +533,7 @@ public class UserServiceImpl implements UserService {
                     .build();
     
     int kakaoJoinResult = userMapper.insertKakaoUser(user);
-    
+    userMapper.insertDefaultEmoney();
     try {
       
       response.setContentType("text/html; charset=UTF-8");
@@ -795,8 +795,9 @@ public class UserServiceImpl implements UserService {
   }
   
   @Override
-  public void chargeEmoney(int userNo) {
+  public void chargeEmoney(int userNo, int amount) {
     
+    userMapper.insertEmoney(userNo, amount);
     
   }
   
