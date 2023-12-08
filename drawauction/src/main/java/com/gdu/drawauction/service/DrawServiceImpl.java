@@ -23,7 +23,6 @@ import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.DrawImageDto;
 import com.gdu.drawauction.dto.DrawOrderDto;
 import com.gdu.drawauction.dto.DrawReviewDto;
-import com.gdu.drawauction.dto.EmoneyDto;
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.util.MyFileUtils;
 import com.gdu.drawauction.util.MyPageUtils;
@@ -242,6 +241,7 @@ public class DrawServiceImpl implements DrawService{
 		
 	}
 	
+	// 그려드림 상세보기에서 찜 check
 	@Override
 	public ResponseEntity<Map<String, Object>> wishCheck(HttpServletRequest request) {
 	  
@@ -255,6 +255,7 @@ public class DrawServiceImpl implements DrawService{
 	  return new ResponseEntity<>(Map.of("wishCheckResult", wishCheckResult), HttpStatus.OK);
 	}
 	
+	// 그려드림 편집 페이지 이동할때 게시글 정보 가져오기
 	@Transactional(readOnly=true)
     @Override
     public void getDraw(HttpServletRequest request, Model model) {
@@ -265,6 +266,7 @@ public class DrawServiceImpl implements DrawService{
 		model.addAttribute("imageList", drawMapper.getImageList(drawNo));
     }
 	
+	// 그려드림 게시글 편집
 	@Override
 	public int modifyDraw(HttpServletRequest request) {
 		
@@ -289,6 +291,7 @@ public class DrawServiceImpl implements DrawService{
 	    return drawMapper.updateDraw(map);
 	}
 	
+	// 그려드림 첨부 이미지 목록 조회
 	@Override
 	public Map<String, Object> getImageList(HttpServletRequest request) {
 	    
@@ -299,6 +302,7 @@ public class DrawServiceImpl implements DrawService{
 	    
 	}
 	
+	// 그려드림 편집 이미지 추가
 	@Override
 	public Map<String, Object> addImage(MultipartHttpServletRequest multipartRequest) throws Exception {
 	    
@@ -355,6 +359,7 @@ public class DrawServiceImpl implements DrawService{
 	    
 	}
 	
+	// 그려드림 편집 이미지 삭제
 	@Override
 	public Map<String, Object> removeImage(HttpServletRequest request) {
 	    
@@ -380,6 +385,7 @@ public class DrawServiceImpl implements DrawService{
 	    
 	  }
 	
+	// 그려드림 게시글 삭제
 	@Override
 	public int removeDraw(int drawNo) {
 	    
@@ -402,6 +408,7 @@ public class DrawServiceImpl implements DrawService{
 	    return drawMapper.deleteDraw(drawNo);
 	}
 	
+	// 그려드림 상세페이지 해당 게시물 후기 목록 조회
 	@Transactional(readOnly=true)
 	@Override
 	public Map<String, Object> getReviewList(HttpServletRequest request) {
@@ -425,6 +432,7 @@ public class DrawServiceImpl implements DrawService{
 	    
 	  }
 	
+	// 그려드림 상세페이지 후기 등록
 	@Override
 	public int addReview(HttpServletRequest request) {
 		
@@ -440,16 +448,18 @@ public class DrawServiceImpl implements DrawService{
 		return drawMapper.addReview(map);
 	}
 	
+	// 그려드림 주문/결제 페이지 보유Emoney 조회
 	@Override
 	public void getEmoney(HttpServletRequest request, Model model) {
 		
 		int userNo = Integer.parseInt(request.getParameter("userNo"));
-		EmoneyDto emoney = drawMapper.getEmoney(userNo);
+		int emoney = drawMapper.getEmoney(userNo);
 		
 		model.addAttribute("emoney", emoney);
 		
 	}
 	
+	// 그려드림 주문/결제
 	@Override
 	public int addDrawOrder(HttpServletRequest request) {
 		
@@ -464,14 +474,18 @@ public class DrawServiceImpl implements DrawService{
 											    , "price", price
 											    , "receiveEmail", receiveEmail);
 		
-		Map<String, Object> emoneyUpdateMap = Map.of("userNo", userNo
+		Map<String, Object> emoneyMap = Map.of("userNo", userNo
 										     	   , "price", price
 										     	   , "buyerNo", buyerNo);
 		
 			
-		drawMapper.updateBuyerEmoney(emoneyUpdateMap);
+		int buyerResult = drawMapper.insertBuyerEmoney(emoneyMap);
+		int sellerResult = drawMapper.insertSellerEmoney(emoneyMap);
+		int addDrawOrderResult = drawMapper.addDrawOrder(drawOrderMap);
 		
-		return drawMapper.addDrawOrder(drawOrderMap);
+		int resultSum = buyerResult + sellerResult + addDrawOrderResult;
+		
+		return resultSum;
 	}
 	
 }

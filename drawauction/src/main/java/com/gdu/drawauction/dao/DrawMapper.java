@@ -9,7 +9,6 @@ import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.DrawImageDto;
 import com.gdu.drawauction.dto.DrawOrderDto;
 import com.gdu.drawauction.dto.DrawReviewDto;
-import com.gdu.drawauction.dto.EmoneyDto;
 
 @Mapper
 public interface DrawMapper {
@@ -33,6 +32,7 @@ public interface DrawMapper {
 	public int addReview(Map<String, Object> map);
 	public int addDrawOrder(Map<String, Object> map);
 	public int reviewCheck(Map<String, Object> map);
-	public EmoneyDto getEmoney(int userNo);
-	public void updateBuyerEmoney(Map<String, Object> map);
+	public int getEmoney(int userNo);
+	public int insertBuyerEmoney(Map<String, Object> map);
+	public int insertSellerEmoney(Map<String, Object> map);
 }

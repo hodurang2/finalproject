@@ -127,8 +127,8 @@ public class DrawController {
   
   @PostMapping("/orderPayment.do")
   public String addDrawOrder(HttpServletRequest request, RedirectAttributes redirectAttributes) {
-	int addDrawOrderResult = drawService.addDrawOrder(request);
-	redirectAttributes.addFlashAttribute("addDrawOrderResult", addDrawOrderResult);
+	int resultSum = drawService.addDrawOrder(request);
+	redirectAttributes.addFlashAttribute("resultSum", resultSum);
 	return "redirect:/draw/detail.do?drawNo=" + request.getParameter("drawNo");
   }
   
