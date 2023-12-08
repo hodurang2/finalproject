@@ -188,10 +188,10 @@
               return;              // 마지막 페이지를 보여준 이후에는 아래 코드를 수행하지 말 것 
             }
             page++;
-            if($('#order_draw_list').hide()) {
+            if ($('#order_draw_list').is(':visible')) {
               fnGetMyDrawList();
-            } else if($('#my_draw_list').hide()) {
-              fnGetDrawOrderList;
+            } else if ($('#my_draw_list').is(':visible')) {
+              fnGetDrawOrderList();
             }
           }
             
@@ -221,8 +221,6 @@
       // fnGetDrawOrderList()에서 추가한 내용 보이기
       $('#order_draw_list').show();
     }
-  
-
      
      fnGetMyDrawList();
      fnGetDrawOrderList();
