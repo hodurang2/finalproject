@@ -259,7 +259,7 @@ public class UserServiceImpl implements UserService {
                     .build();
     
     int naverJoinResult = userMapper.insertNaverUser(user);
-    
+    userMapper.insertDefaultEmoney();
     try {
       
       response.setContentType("text/html; charset=UTF-8");
@@ -380,6 +380,7 @@ public class UserServiceImpl implements UserService {
                     .build();
     
     int joinResult = userMapper.insertUser(user);    
+    userMapper.insertDefaultEmoney();
     try {
       
       response.setContentType("text/html; charset=UTF-8");
