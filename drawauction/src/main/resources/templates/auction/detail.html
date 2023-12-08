@@ -11,12 +11,10 @@
   
   <div class="main_wrap">
 
-	
-	<div class="wrap">
+  <div class="wrap">
 		
-		   <div class="wrap wrap_2">
+    <div class="wrap wrap_2">
 
-		
     <div class="grid-container">
 		<div class="grid-item1">
 			<div class="artist">
@@ -26,7 +24,7 @@
 			</div>
 		</div>
 		<div class="grid_item">
-		<div class="mody_delete">
+		  <div class="mody_delete">
         <th:block th:if="${session.user != null}">
             <th:block th:if="${session.user.userNo == auction.artDto.sellerDto.userNo}">
                 <th:block th:if="${bidCount == 0}">
@@ -34,10 +32,10 @@
                         <input type="hidden" id="auctionNo" name="auctionNo" th:value="${auction.auctionNo}">
                         <button type="button" id="btn_edit" class="modify_btn">편집</button>
                         <button type="button" id="btn_remove" class="delete_btn">삭제</button>
-		                    </form>
-		                </th:block>
-		            </th:block>
-		        </th:block>
+                      </form>
+                  </th:block>
+              </th:block>
+          </th:block>
 		    </div>
 		</div>
 		</div>
@@ -177,13 +175,11 @@
                 return;
               }
             }
-          let userNo = /*[[${session.user.userNo}]]*/ null;
           $.ajax({
           type: 'post',
             url: '/auction2/controlWishlist.do',
             data: { 
-              auctionNo: auctionNo,
-              userNo: userNo
+              auctionNo: auctionNo
                 },
             dataType: 'json',
             success: (resData) => {
@@ -200,13 +196,11 @@
       }
     
       const fnWishCheck = () => {
-        let userNo = /*[[${session.user.userNo}]]*/ null;
         $.ajax({
           type: 'get',
           url: '/auction2/wishCheck.do',
           data: { 
-              auctionNo: auctionNo,
-              userNo: userNo
+              auctionNo: auctionNo
               },
           dataType: 'json',
           success: (resData) => {
@@ -223,7 +217,7 @@
       fnModifyResult();
       fnWishListControll();
       fnModifyResult();
-      
+      fnWishCheck();
     </script>
       
   </div>

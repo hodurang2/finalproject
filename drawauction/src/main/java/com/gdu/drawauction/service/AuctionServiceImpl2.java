@@ -63,19 +63,52 @@ public class AuctionServiceImpl2 implements AuctionService2 {
     
     Optional<String> opt = Optional.ofNullable(request.getParameter("auctionNo"));
     int auctionNo = Integer.parseInt(opt.orElse("0"));
-    int bidCount = auctionMapper2.getBidCount(auctionNo);
+    AuctionDto auctionDto = auctionMapper2.getAuction(auctionNo);
+    
+    int userNo;
+    
+    HttpSession session = request.getSession();
+    
+    if(session.getAttribute("user") == null) {
+      auctionDto.setHeartClass("fa-regular");
+      userNo = 0;
+    } else {
+      UserDto user = (UserDto) session.getAttribute("user");
+      userNo = user.getUserNo();
+      Map<String, Object> wishMap = Map.of("auctionNo", auctionDto.getAuctionNo(), "userNo", userNo);
+      int wishCheck = auctionMapper2.hasAuctionWishlist(wishMap);
+      String heart;
+      if(wishCheck == 0) {
+        heart = "fa-regular";
+      } else {
+        heart = "fa-solid";
+      }
+      auctionDto.setHeartClass(heart);
+    }
+    
     
     model.addAttribute("auction", auctionMapper2.getAuction(auctionNo));
-    model.addAttribute("bidCount", bidCount);
     model.addAttribute("imageList", auctionMapper2.getImageList(auctionNo));
   }
   
   @Override
   public Map<String, Object> controlAuctionWishlist(HttpServletRequest request) {
-    int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
+    
+    Optional<String> opt = Optional.ofNullable(request.getParameter("auctionNo"));
+    int auctionNo = Integer.parseInt(opt.orElse("0"));
+    AuctionDto auctionDto = auctionMapper2.getAuction(auctionNo);
+    
+    int userNo;
+    
     HttpSession session = request.getSession();
-    UserDto user = (UserDto) session.getAttribute("user");
-    int userNo = user.getUserNo();
+    
+    if(session.getAttribute("user") == null) {
+      auctionDto.setHeartClass("fa-regular");
+      userNo = 0;
+    } else {
+      UserDto user = (UserDto) session.getAttribute("user");
+      userNo = user.getUserNo();
+    }
     
     Map<String, Object> map = Map.of("auctionNo", auctionNo, "userNo", userNo);
     
@@ -91,8 +124,21 @@ public class AuctionServiceImpl2 implements AuctionService2 {
   @Override
   public ResponseEntity<Map<String, Object>> hasAuctionWishlist(HttpServletRequest request) {
     
-    int auctionNo = Integer.parseInt(request.getParameter("auctionNo")); 
-    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    Optional<String> opt = Optional.ofNullable(request.getParameter("auctionNo"));
+    int auctionNo = Integer.parseInt(opt.orElse("0"));
+    AuctionDto auctionDto = auctionMapper2.getAuction(auctionNo);
+    
+    int userNo;
+    
+    HttpSession session = request.getSession();
+    
+    if(session.getAttribute("user") == null) {
+      auctionDto.setHeartClass("fa-regular");
+      userNo = 0;
+    } else {
+      UserDto user = (UserDto) session.getAttribute("user");
+      userNo = user.getUserNo();
+    }
     
     Map<String, Object> map = Map.of("auctionNo", auctionNo, "userNo", userNo);
     
