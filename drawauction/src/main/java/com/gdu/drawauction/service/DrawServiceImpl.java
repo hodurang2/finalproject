@@ -454,9 +454,9 @@ public class DrawServiceImpl implements DrawService{
 	public int addDrawOrder(HttpServletRequest request) {
 		
 		int drawNo = Integer.parseInt(request.getParameter("drawNo"));
-		int buyerNo = Integer.parseInt(request.getParameter("buyerNo"));
+		int buyerNo = Integer.parseInt(request.getParameter("buyerNo"));  // 구매자 userNo
 		int price = Integer.parseInt(request.getParameter("price"));
-		int userNo = Integer.parseInt(request.getParameter("userNo"));
+		int userNo = Integer.parseInt(request.getParameter("userNo"));    // 판매자 userNo
 		String receiveEmail = request.getParameter("receiveEmail");
 		
 		Map<String, Object> drawOrderMap = Map.of("drawNo", drawNo

@@ -181,7 +181,7 @@
   <resultMap type="EmoneyDto" id="EmoneyMap">
   	<id column="EMONEY_NO" 			property="emoneyNo"/>
 	<result column="EMONEY_HISTORY" property="emoneyHistory"/>
-	<result column="EMONEY_DATE"    property="emoneyDate"/>
+	<result column="EMONEY_DATE"    property="emoneyDate" javaType="java.sql.Date"/>
 	<association javaType="UserDto"      property="userDto">
       <id        column="USER_NO"        property="userNo"/>
       <result    column="EMAIL"          property="email" />
