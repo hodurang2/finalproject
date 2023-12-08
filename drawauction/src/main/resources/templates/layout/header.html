@@ -77,15 +77,48 @@
   
 <div class="wrap">
 <div class="header_menu">
-    <div class="logo"><img th:src="@{../../image/한글로고.png}" width="250px"></div>
+    <div class="logo"><a th:href="@{/main.do}"><img th:src="@{../../image/한글로고.png}" width="250px"></a></div>
     <div>
-		<!--/* 추후에 조장이 아이콘 직접 만들 예정. 건들지마세요.*/-->
-        <li><a th:href="@{/mypage/detail.do}"><i class="fa-regular fa-user"></i></a></li>		<!--/* 마이페이지 */-->
-        <li><i class="fa-regular fa-bell"></i></li>
-        <li><i class="fa-regular fa-comments"></i></li>
+		<li><i class="fas fa-regular fa-user mypage_event" id="mypage" style="cursor: pointer;"></i></li>
+		<li><i class="fas fa-regular fa-bell mypage_event" style="cursor: pointer;"></i></li>
+		<li><i class="fas fa-regular fa-comments mypage_event" style="cursor: pointer;"></i></li>
+
+    
     </div>
 </div>
 </div>
+
+	<!--아이콘-->
+	<script th:inline="javascript">
+    const fnIconsClickEvent = () => {
+        $(document).on('click', '.mypage_event', function(event) {
+            let user = /*[[${session.user}]]*/ null;
+            if (user === null) {
+                if (confirm('로그인이 필요한 기능입니다. 로그인하시겠습니까?')) {
+                    location.href = '/user/login.form';
+                }
+
+                event.preventDefault();
+                return;
+            }
+        });
+    };
+
+	const fnMyPage = () => {
+		$(document).on('click', '#mypage', function(event) {
+            let user = /*[[${session.user}]]*/ null;
+            if (user != null) {
+				location.href = '/mypage/detail.do';
+            }
+            
+               event.preventDefault();
+                return;
+        });
+    };
+
+    fnIconsClickEvent(); // 함수 호출
+    fnMyPage();
+</script>
 
     
     
@@ -112,10 +145,10 @@
     
   </div>
 		
-		
-		
-		
 	</div>
+
+
+
  
   
 </body>
