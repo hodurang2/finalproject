@@ -412,16 +412,38 @@
    AND DR.DRAW_NO = #{drawNo}
   </select>
   
-  <select id="getEmoney" parameterType="int" resultMap="EmoneyMap">
-    SELECT EMONEY_NO, USER_NO, EMONEY_HISTORY, EMONEY_DATE
+  <select id="getEmoney" parameterType="int" resultType="int">
+    SELECT SUM(EMONEY_HISTORY)
       FROM EMONEY_T
      WHERE USER_NO = #{userNo}
   </select>
   
-  <update id="updateBuyerEmoney" parameterType="Map" >
-    UPDATE EMONEY_T
-       SET EMONEY_HISTORY = EMONEY_HISTORY - ${price}
-     WHERE USER_NO = #{buyerNo}
-  </update>
+  <insert id="insertBuyerEmoney" parameterType="Map">
+    INSERT INTO EMONEY_T (
+           EMONEY_NO
+         , USER_NO
+         , EMONEY_HISTORY
+         , EMONEY_DATE
+         ) VALUES (
+           EMONEY_SEQ.NEXTVAL
+         , #{buyerNo}
+         , -#{price}
+         , SYSDATE
+         )
+  </insert>
+  
+  <insert id="insertSellerEmoney" parameterType="Map">
+    INSERT INTO EMONEY_T (
+           EMONEY_NO
+         , USER_NO
+         , EMONEY_HISTORY
+         , EMONEY_DATE
+         ) VALUES (
+           EMONEY_SEQ.NEXTVAL
+         , #{userNo}
+         , #{price}
+         , SYSDATE
+         )
+  </insert>
   
 </mapper>

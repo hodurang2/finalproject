@@ -19,32 +19,6 @@
 	  transform: translateY(-50%); 
 	}
   
-  body {
-	  width: 1280px;
-	  font-family: 'Arial', sans-serif;
-	  line-height: 1.6;
-	  color: #333;
-	  background-color: #f8f9fa;
-	  margin: 0;
-	  display: flex;
-	  flex-direction: column;
-	  align-items: center;
-	  justify-content: center;
-	  min-height: 100vh;
-	}
-
-    .main_wrap {
-      width: 90%;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #fff;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .wrap_6 {
-      position: relative;
-      width: 80%;
-    }
     .ctr_info{
       position: relative;
       max-width: 650px;
@@ -111,14 +85,6 @@
       margin-top: 20px;
     }
     
-    .header {
-	  text-align: center;
-	}
-	
-	.header h2 {
-	  margin: 0;
-	}
-	
 	.d-grid.justify-content-md-end {
 	  margin-right: 60px; 
     }
@@ -305,9 +271,9 @@
       }
       
       const fnAddDrawOrderResult = () => {
-        let addDrawOrderResult = /*[[${addDrawOrderResult}]]*/ null;
-        if(addDrawOrderResult !== null){
-          if(addDrawOrderResult === 1){
+        let resultSum = /*[[${resultSum}]]*/ null;
+        if(resultSum !== null){
+          if(resultSum === 3){
             alert('결제가 완료되었습니다.');
           } else {
             alert('결제가 실패했습니다.');

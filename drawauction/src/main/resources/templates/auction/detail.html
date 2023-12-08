@@ -2,48 +2,8 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{/layout/header::head(|경매|)}"></head>
-<style>
-  #wish_list{
-	cursor: pointer;
-  }
-  
-  .auction_ongoing {
-    -webkit-box-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    justify-content: center;
-    width: 68px;
-    height: 28px;
-    padding: 1px 0px;
-    font-size: 12px;
-    font-family: "Spoqa Han Sans Neo";
-    font-weight: 700;
-    white-space: nowrap;
-    background: rgb(220, 245, 236);
-    color: rgb(19, 189, 126);
-    display: inline-flex;
-    border-radius: 4px;
-    margin-left: 10px;
-  }
-  .auction_end {
-    -webkit-box-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    justify-content: center;
-    width: 68px;
-    height: 28px;
-    padding: 1px 0px;
-    font-size: 12px;
-    font-family: "Spoqa Han Sans Neo";
-    font-weight: 700;
-    white-space: nowrap;
-    background: rgb(254, 238, 223);
-    color: rgb(253, 53, 53);
-    display: inline-flex;
-    border-radius: 4px;
-    margin-left: 10px;
-  }
-</style>
+
+<link rel="stylesheet" th:href="@{/css/auctionDetail.css(ver=1.0)}" />
 
 <body>
   
@@ -51,71 +11,125 @@
   
   <div class="main_wrap">
 
-    <div class="wrap wrap_6">
-      <h1 class="title">경매 게시글</h1>
-      
-      <div class="text-center mb-5">
+	
+	<div class="wrap">
+		
+		   <div class="wrap wrap_2">
+
+		
+    <div class="grid-container">
+		<div class="grid-item1">
+			<div class="artist">
+			        <div>작가사진</div>
+			        <div th:text="|${auction.artDto.sellerDto.nickname}|" class="nick"></div>
+			        <div th:text="|${auction.artDto.sellerDto.introduction}|" class="intro"></div>
+			</div>
+		</div>
+		<div class="grid_item">
+		<div class="mody_delete">
         <th:block th:if="${session.user != null}">
-          <th:block th:if="${session.user.userNo == auction.artDto.sellerDto.userNo}">
-            <th:block th:if="${bidCount == 0}">
-              <form id="frm_btn">
-                <input type="hidden" id="auctionNo" name="auctionNo" th:value="${auction.auctionNo}">
-                <button type="button" id="btn_edit" class="btn btn-warning btn-sm">편집</button>
-                <button type="button" id="btn_remove" class="btn btn-danger btn-sm">삭제</button>
-              </form>
-            </th:block>
-          </th:block>
-        </th:block>
+            <th:block th:if="${session.user.userNo == auction.artDto.sellerDto.userNo}">
+                <th:block th:if="${bidCount == 0}">
+                    <form id="frm_btn">
+                        <input type="hidden" id="auctionNo" name="auctionNo" th:value="${auction.auctionNo}">
+                        <button type="button" id="btn_edit" class="modify_btn">편집</button>
+                        <button type="button" id="btn_remove" class="delete_btn">삭제</button>
+		                    </form>
+		                </th:block>
+		            </th:block>
+		        </th:block>
+		    </div>
+		</div>
+		</div>
+		
+      <div class="text-center mb-5">
+       
       </div>
       
-      <!--오-->
-      <div class="container overflow-hidden text-center">
-	  <div class="row gx-5">
-	    <div class="col">
-	     <div class="p-3">Custom column padding</div>
-	    </div>
-	    <div class="col">
-	      <div class="p-3">Custom column padding</div>
-	    </div>
-	  </div>
-	</div>
-		<div th:text="${aution.}"
-      
-      <div th:text="|카테고리 : ${auction.artDto.categoryDto.categoryName}|"></div>
-      <div th:text="|작가 : ${auction.artDto.sellerDto.nickname}|"></div>
-      <div th:text="|제목 : ${auction.artDto.title}|"></div> 
-      <div th:text="|작품유형 : ${auction.artDto.artType}|"></div> 
-      <div th:text="|시작가 : ${#numbers.formatInteger(auction.startPrice, 1, 'COMMA')}P|"></div>
-      <div th:text="|현재입찰가 : ${#numbers.formatInteger(auction.price, 1, 'COMMA')}P|"></div>
-      <div th:text="|즉시구매가 : ${#numbers.formatInteger(auction.buyPrice, 1, 'COMMA')}P|"></div>
-      <div th:text="|마감일 : ${auction.endAt}"></div>
-      
-      
-      <!--왼-->
+        <!-- 첫 번째 그리드 -->
+    <div class="grid-container">
+        <div class="grid-item1">
+		 	<div>
+		        <th:block th:if="${#lists.isEmpty(imageList)}">
+		          <div>첨부 없음</div>          
+		        </th:block>
+		        <th:block th:if="${not #lists.isEmpty(imageList)}">
+		          <th:block th:each="atc:${imageList}">
+		            <div class="image" th:data-image_no="${atc.auctionImageNo}"> 
+		              <img th:src="@{|${atc.path}/s_${atc.filesystemName}|}" alt="썸네일">
+		            </div>
+		          </th:block>
+		        </th:block>
+		      </div>
+	
+		</div>
+		<div class="grid_item"> <!--작품명, 시작가 등등..-->
+		<div style="text-align: right;">
+			 <i id="wish_list" class="fa-regular fa-heart fa-2xl" style="color: rgb(84, 186, 125); margin-bottom: 15%;"></i>      
+		</div>
+			
+			
+			
+			<div th:text="${auction.artDto.categoryDto.categoryName}|" class="category"></div>
+			
+			<div th:text="|${auction.artDto.title}|" class="art_title"></div> 
+			
+			
+			<div class="grid_2">
+				<div class="sub_title">시작가</div>
+				<div th:text="|${#numbers.formatInteger(auction.startPrice, 1, 'COMMA')}P|" class="sub_contents"></div>
+			</div>
+
+			<div class="grid_2">
+				<div class="sub_title">현재입찰가</div>
+				<div th:text="|${#numbers.formatInteger(auction.price, 1, 'COMMA')}P|" class="sub_contents"></div>
+			</div>	
+
+			<div class="grid_2">
+			    <div class="sub_title">즉시구매가</div>
+			    <div th:text="| ${#numbers.formatInteger(auction.buyPrice, 1, 'COMMA')}P|" class="sub_contents_now"></div>
+			</div>
+			
+			<div class="grid_2">
+				<div class="sub_title">마감일</div>
+				<div th:text="| ${auction.endAt}"></div>
+			</div>
+			
+			<div class="grid_2">
+				<div class="sub_title">작품유형</div>
+				<div th:text="|${auction.artDto.artType}|"></div> 
+			</div>
+			
+			<div style="margin-top: 10%;">
+				<button class="btn_buy" type="submit" style="background-color: rgb(84, 186, 125);">즉시구매</button>
+				<button class="btn_buy" type="submit" style="background-color: black; color: white;">응찰하기</button>
+			</div>
+
+
+			
+
+		</div>
+		
+		
+	  <div style="margin-top: 10%; margin-bottom: 40%;">
+	  <div class="art_detail">작품정보</div>
       <div th:text="|작품 가로길이(cm) : ${auction.artDto.width}|"></div>
       <div th:text="|작품 세로길이(cm) : ${auction.artDto.height}|"></div>
       <input type="hidden" id="auctionNo2" name="auctionNo2" th:value="${auction.auctionNo}">
-      <div>내용</div>
+      
+      <div class="art_contents">작품설명</div>
       <th:block th:if="${#strings.isEmpty(auction.artDto.contents)}">
         <div>내용없음</div>
       </th:block>
       <th:block th:if="${not #strings.isEmpty(auction.artDto.contents)}">
         <div th:text="${auction.artDto.contents}"></div>
       </th:block>
-      <div>
-        <th:block th:if="${#lists.isEmpty(imageList)}">
-          <div>첨부 없음</div>          
-        </th:block>
-        <th:block th:if="${not #lists.isEmpty(imageList)}">
-          <th:block th:each="atc:${imageList}">
-            <div class="image" th:data-image_no="${atc.auctionImageNo}">
-              <img th:src="@{|${atc.path}/s_${atc.filesystemName}|}" alt="썸네일">
-            </div>
-          </th:block>
-        </th:block>
-      </div>
-      <hr>
-  	  <i id="wish_list" class="fa-regular fa-heart fa-2xl" style="color: #ff0000;"></i>      
+		      
+			
+		</div>
+    </div>
+
+ 
     </div>
       
     <script th:inline="javascript">
@@ -214,6 +228,13 @@
       
   </div>
   
+		
+		
+		
+		
+	</div>
+
+ 
   <div th:replace="~{/layout/footer::footer}"></div>
   
 </body>
