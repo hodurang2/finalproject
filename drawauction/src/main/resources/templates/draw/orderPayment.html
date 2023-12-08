@@ -39,6 +39,16 @@
         <div class="mt-3">
 		  <input type="radio" checked>&nbsp;&nbsp;디지털 이미지 : 이메일 발송
         </div>
+        <div class="mt-3" style="display: flex; align-items: center;">
+          <label class="form-label" style="width: 150px; margin-top:9px;">판매자 이메일</label>
+          <input type="text" class="form-control-plaintext" th:value="${draw.userDto.email}" readonly>
+        </div>
+        <div class="mt-3" style="display: flex; align-items: center;">
+          <div  class="form-label" style=" margin-top:9px; color: crimson;">* 주문 완료후 판매자 이메일로 그리고싶은 사진을 직접 보내주시면 됩니다.</div>
+        </div>
+        <div class="mt-3" style="display: flex; align-items: center;">
+          <div  class="form-label" style="color: crimson;">* 글로 설명 하시는 경우는 하단의 요청 사항에 적어주세요</div>
+        </div>
         <pre>
 		</pre>
 		<h4>배송 정보</h4>
@@ -47,12 +57,9 @@
           <label for="receiveEmail" class="form-label target2 target3" style="width: 130px; margin-top:9px;">이메일 입력</label>
           <div class="col-sm-3"><input type="text" id="receiveEmail" name="receiveEmail" class="form-control"></div>
         </div>
-        <pre>
-		</pre>
-		<h4>결제 수단</h4>
-		<hr>
-		<div class="mt-3">
-		  <input type="radio" checked>&nbsp;&nbsp;E-money 포인트 결제
+        <div class="mt-3" style="display: flex; align-items: center;">
+          <label class="form-label" style="width: 150px; margin-top:9px;">요청사항</label>
+          <textarea rows="8" class="form-control"></textarea>
         </div>
         <pre>
 		</pre>
@@ -77,6 +84,13 @@
 		  </ul>
 		</div>
 		<pre>
+		</pre>
+		<h4>결제 수단</h4>
+		<hr>
+		<div class="mt-3">
+		  <input type="radio" checked>&nbsp;&nbsp;E-money 포인트 결제
+        </div>
+        <pre>
 		</pre>
 	    <h4>결제 정보</h4>
 	    <hr>
@@ -119,7 +133,7 @@
 	        ev.preventDefault();
 	        return;
 	      }
-		  if(confirm('결제 금액 : ' + price + '  결제 하시겠습니까? (결제 후 잔액  ' + balance + ')')){
+		  if(confirm('결제 금액 : ' + price + '  결제 하시겠습니까? (결제 후 잔액  ' + balance + ')  결제 후 판매자 이메일로 사진을 꼭 보내주세요.')){
 			$('#frm_orderPayment').submit();
 		  }
 		})
