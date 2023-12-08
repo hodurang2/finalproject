@@ -109,6 +109,61 @@
       <result    column="INTRODUCTION" property="introduction" />
     </association>
   </resultMap>
+  
+  <!-- DrawOrderDto에 대한 resultMap -->
+  <resultMap type="DrawOrderDto" id="DrawOrderMap">
+    <id   column="ORDER_NO" property="orderNo"/>
+    <result column="ORDER_DATE" property="orderDate"/>
+    <result column="PRICE" property="price"/>
+    <result column="RECEIVE_EMAIL" property="receiveEmail"/>
+    <association javaType="DrawDto"    property="drawDto">
+      <id      column="DRAW_NO"      property="drawNo"/>
+      <result  column="TITLE"        property="title"/>
+      <result  column="PRICE"        property="price"/>
+      <result  column="CONTENTS"     property="contents"/>
+      <result  column="WIDTH"      property="width"/>
+      <result  column="HEIGHT"     property="height"/>
+      <result  column="WORK_TERM"    property="workTerm"/>
+      <association javaType="CategoryDto" property="categoryDto">
+        <id        column="CATEGORY_NO"   property="categoryNo"/>
+        <result    column="CATEGORY_NAME"          property="categoryName" />
+      </association>
+      <association javaType="UserDto"      property="userDto">
+        <id        column="USER_NO"        property="userNo"/>
+        <result    column="EMAIL"          property="email" />
+        <result    column="PW"             property="pw" />
+        <result    column="NAME"           property="name" />
+        <result    column="MOBILE"         property="mobile" />
+        <result    column="GENDER"         property="gender" />
+        <result    column="AGREE"          property="agree" />
+        <result    column="STATE"          property="state" />
+        <result    column="JOINED_AT"      property="joinedAt" />
+        <result    column="POSTCODE"       property="postcode" />
+        <result    column="ROAD_ADDRESS"   property="roadAddress" />
+        <result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+        <result    column="DETAIL_ADDRESS" property="detailAddress" />
+        <result    column="NICKNAME"     property="nickname" />
+        <result    column="INTRODUCTION"   property="introduction" />
+      </association>
+    </association>
+    <association javaType="UserDto"      property="userDto">
+      <id        column="USER_NO"        property="userNo"/>
+      <result    column="EMAIL"          property="email" />
+      <result    column="PW"             property="pw" />
+      <result    column="NAME"           property="name" />
+      <result    column="MOBILE"         property="mobile" />
+      <result    column="GENDER"         property="gender" />
+      <result    column="AGREE"          property="agree" />
+      <result    column="STATE"          property="state" />
+      <result    column="JOINED_AT"      property="joinedAt" />
+      <result    column="POSTCODE"       property="postcode" />
+      <result    column="ROAD_ADDRESS"   property="roadAddress" />
+      <result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      <result    column="DETAIL_ADDRESS" property="detailAddress" />
+      <result    column="NICKNAME"     property="nickname" />
+      <result    column="INTRODUCTION"   property="introduction" />
+    </association>
+  </resultMap>
 
   
   
@@ -169,15 +224,15 @@
   
   
   <select id="getAuctionBidCount" parameterType="int" resultType="int">
-    SELECT COUNT(*) FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
-                              AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,
-                              B.BID_NO, B.BIDDER_NO, B.PRICE AS 내입찰가, B.BID_AT,
-                              ROW_NUMBER() OVER (PARTITION BY ART.ART_NO ORDER BY B.PRICE DESC) AS RN
-                         FROM ART_T ART INNER JOIN AUCTION_T AUC
-                           ON ART.ART_NO = AUC.AUCTION_NO INNER JOIN BID_T B
-                           ON AUC.AUCTION_NO = B.AUCTION_NO
-                        WHERE B.BIDDER_NO = #{bidderNo})
-        WHERE RN = 1
+  SELECT COUNT(*) FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
+                                AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,
+                                B.BID_NO, B.BIDDER_NO, B.PRICE AS MY_PRICE, B.BID_AT,
+                                ROW_NUMBER() OVER (PARTITION BY ART.ART_NO ORDER BY B.PRICE DESC) AS RN
+                           FROM ART_T ART INNER JOIN AUCTION_T AUC
+                             ON ART.ART_NO = AUC.AUCTION_NO INNER JOIN BID_T B
+                             ON AUC.AUCTION_NO = B.AUCTION_NO
+                           WHERE B.BIDDER_NO = #{bidderNo})
+          WHERE RN = 1
   </select> 
   
   <select id="getAuctionBidList" parameterType="Map" resultMap="BidMap">
@@ -256,5 +311,32 @@
      ORDER BY A.DRAW_NO DESC
   </select>
   
-  
+  <select id="getDrawImage" parameterType="int" resultType="DrawImageDto">
+    SELECT DRAW_IMAGE_NO, DRAW_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+      FROM DRAW_IMAGE_T
+     WHERE DRAW_NO = #{drawNo}
+       AND DRAW_IMAGE_NO = (SELECT MIN(DRAW_IMAGE_NO) FROM DRAW_IMAGE_T WHERE DRAW_NO = #{drawNo})
+   </select>
+   
+   <select id="getDrawOrderCount" parameterType="int" resultType="int">
+     SELECT COUNT(*)
+       FROM DRAW_ORDER_T
+      WHERE BUYER_NO = #{buyerNo}
+   </select>
+   
+   <select id="getDrawOrderList" parameterType="Map" resultMap="DrawOrderMap">
+    SELECT A.DRAW_NO, A.CATEGORY_NO, C.CATEGORY_NAME, A.TITLE, A.CONTENTS, A.PRICE,
+           A.ORDER_NO, A.BUYER_NO, A.ORDER_DATE, A.RECEIVE_EMAIL
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY ORDER_DATE DESC) AS RN,
+                   D.DRAW_NO, D.CATEGORY_NO, D.TITLE, D.CONTENTS, D.PRICE,
+                   DO.ORDER_NO, DO.BUYER_NO, DO.ORDER_DATE, DO.RECEIVE_EMAIL
+              FROM DRAW_T D RIGHT OUTER JOIN DRAW_ORDER_T DO
+                ON D.DRAW_NO = DO.DRAW_NO
+             WHERE BUYER_NO = #{buyerNo}) A INNER JOIN CATEGORY_T C
+                ON A.CATEGORY_NO = C.CATEGORY_NO
+     WHERE A.RN BETWEEN #{begin} AND #{end}
+     ORDER BY ORDER_DATE DESC
+   </select>
+   
+   
 </mapper>
