@@ -222,8 +222,8 @@ public class UserController {
   }
 
   @GetMapping("/chargeEmoney.do")
-  public void chargeEmoney(@RequestParam("userNo") int userNo, int amount) {
-    userService.chargeEmoney(userNo);
+  public void chargeEmoney(int userNo, int amount) {
+    userService.chargeEmoney(userNo, amount);
   }
   
   
