@@ -45,7 +45,60 @@
     font-size: 14px;
     text-decoration: none;
   }
+  .three_wrap {
+    display: flex;
+  }
+  .one_wrap {
+    width: 300px;
+    height:350px;
+    margin: 20px;
+  }
+  
+  .info {
+    margin-left: 10px;
+    font-weight: 500;
+  }
+  .value {
+    margin-right: 10px;
+    float: right;
+  }
 
+  .auction_ongoing {
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    width: 68px;
+    height: 28px;
+    padding: 1px 0px;
+    font-size: 12px;
+    font-family: "Spoqa Han Sans Neo";
+    font-weight: 700;
+    white-space: nowrap;
+    background: rgb(220, 245, 236);
+    color: rgb(19, 189, 126);
+    display: inline-flex;
+    border-radius: 4px;
+    margin-left: 10px;
+  }
+  .auction_end {
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    width: 68px;
+    height: 28px;
+    padding: 1px 0px;
+    font-size: 12px;
+    font-family: "Spoqa Han Sans Neo";
+    font-weight: 700;
+    white-space: nowrap;
+    background: rgb(254, 238, 223);
+    color: rgb(253, 53, 53);
+    display: inline-flex;
+    border-radius: 4px;
+    margin-left: 10px;
+  }
   
 </style>
   
@@ -83,46 +136,120 @@
       </tbody>
     </table>
     
-    <div id="bid_list_2">
+    <div id="bid_list">
       <h2>
         입찰작품
         <a th:href="@{/mypage/getAuctionBidList.do}"class="arrow_btn">자세히보기 ></a>
       </h2>
       <hr>
+      
+      <div class="three_wrap">
+        <th:block th:each="b,vs:${bidList}">
+          <div class="one_wrap auction" style="border: 1px solid grey" th:attr="data-auction_no=${b.auctionDto.auctionNo}">
+            <div class="auction_image"><img th:src="|${b.auctionDto.image.path}/s_${b.auctionDto.image.filesystemName}|" class="image" alt="썸네일" width="200px" hegiht="200px"></div>
+            <div class="auction_title"><span class="info">제목</span><span class="value" th:text="${b.auctionDto.artDto.title}"></span></div>
+            <div class="auction_price"><span class="info">내입찰가</span><span class="value" th:text="${b.bidderDto.myPrice}"></span></div>
+            <div class="auction_price"><span class="info">현재입찰가</span><span class="value" th:text="${b.price}"></span></div>
+            
+            <th:block th:if="${b.auctionDto.status == 0}">
+              <div class="auction_status1 auction_ongoing" th:text="경매진행중"><span class="info" style="display:none">진행상태</span></div>
+              <th:block th:if="${b.price > b.bidderDto.myPrice}">
+                <div class="auction_status2" th:text="재입찰요망" style="color: crimson"><span class="info" style="display:none">낙찰상태</span></div>
+              </th:block>
+              <th:block th:if="${b.price <= b.bidderDto.myPrice}">
+                <div class="auction_status2" th:text="최고가입찰중" style="color: blue"><span class="info" style="display:none">낙찰상태</span></div>
+              </th:block>
+            </th:block>
+            
+            <th:block th:if="${b.auctionDto.status == 1}">
+              <div class="auction_status1 auction_end" th:text="경매종료"><span class="info" style="display:none">진행상태</span></div>
+              <th:block th:if="${b.price > b.bidderDto.myPrice}">
+                <div class="auction_status2" th:text="낙찰실패"><span class="info" style="display:none">낙찰상태</span></div>
+              </th:block>
+              <th:block th:if="${b.price <= b.bidderDto.myPrice}">
+                <div class="auction_status2" th:text="낙찰성공"><span class="info" style="display:none">낙찰상태</span></div>
+              </th:block>
+            </th:block>
+
+            <div class="auction_date"><span class="info">종료</span><span class="value" th:text="${b.auctionDto.endAt}"></span></div>
+          </div>
+        </th:block>
+      </div>
+      
     </div>
     
-    <div id="sale_list_2">
+    <div id="sale_list">
       <h2>
         출품작품
         <a th:href="@{/mypage/getAuctionSalesList.do}"class="arrow_btn">자세히보기 ></a>
       </h2>
       <hr>
+      
+      <div class="three_wrap">
+        <th:block th:each="s,vs:${salesList}">
+          <div class="one_wrap auction" style="border: 1px solid grey" th:attr="data-auction_no=${s.auctionDto.auctionNo}">
+            <div class="auction_image"><img th:src="|${b.auctionDto.image.path}/s_${s.auctionDto.image.filesystemName}|" class="image" alt="썸네일" width="200px" hegiht="200px"></div>
+            <div class="auction_title"><span class="info">제목</span><span class="value" th:text="${s.auctionDto.artDto.title}"></span></div>
+            <div class="auction_price"><span class="info">시작가</span><span class="value" th:text="${#numbers.formatInteger(s.auctionDto.startPrice, 1, 'COMMA')}"></span></div>
+            <div class="auction_price"><span class="info">현재입찰가</span><span class="value" th:text="${#numbers.formatInteger(s.price, 1, 'COMMA')}"></span></div>
+            
+            <th:block th:if="${s.auctionDto.status == 0}">
+              <div class="auction_status1 auction_ongoing" th:text="경매진행중"><span class="info" style="display:none">진행상태</span></div>
+              <div class="auction_status2" th:text="판매진행중"><span class="info" style="display:none">판매상태</span></div>
+            </th:block>
+            
+            <th:block th:if="${s.auctionDto.status == 1}">
+              <div class="auction_status1 auction_end" th:text="경매종료"><span class="info" style="display:none">진행상태</span></div>
+              <th:block th:if="${s.price == null}">
+                <div class="auction_status2" th:text="유찰"><span class="info" style="display:none">판매상태</span></div>
+              </th:block>
+              <th:block th:if="${s.price != null}">
+                <div class="auction_status2" th:text="판매완료"><span class="info" style="display:none">판매상태</span></div>
+              </th:block>
+            </th:block>
+
+            <div class="auction_date"><span class="info">종료</span><span class="value" th:text="${s.auctionDto.endAt}"></span></div>
+          </div>
+        </th:block>
+      </div>
+      
     </div>
     
-    <div id="draw_list_2">
+    <div id="draw_list">
       <h2>
         내가 올린 그려드림
         <a th:href="@{/mypage/drawList.do}"class="arrow_btn">자세히보기 ></a>
       </h2>
       <hr>
+      
+      <div class="three_wrap">
+        
+      </div>
+      
     </div>
     
-    <div id="draw_list_2">
+    <div id="draw_list">
       <h2>
         주문한 그려드림
         <a th:href="@{/mypage/drawList.do}"class="arrow_btn">자세히보기 ></a>
       </h2>
       <hr>
+      
+      <div id="three">
+        
+      </div>
+      
     </div>
     
     
   </div>
 
-  <script>
+  <script th:inline="javascript">
     
    $(() => {
      fnModify();
      fnCharge();
+     fnAuctionDetail();
    })
     
     const fnModify = () => {
@@ -130,7 +257,6 @@
       $('#btn_modify').click(() => {
         location.href = '/mypage/modify.form';
       })
-    
     }
     
     const fnCharge = () => {
@@ -139,6 +265,40 @@
       })
     }
     
+    const fnAuctionDetail = () => {
+      $(document).on('click', '.auction', function(ev) {
+        location.href = '/auction2/detail.do?auctionNo=' + $(this).data('auction_no');
+      })
+    }
+    
+    /*
+    setInterval(function(){
+
+      var now = new Date();               // 2023-08-30
+      var rest = $('')
+      var dday = new Date(2023, 10, 16);  // 2023-11-16(주의!)
+      
+      var timestamp = dday.getTime() - now.getTime(); // dday - now로 계산해도 타임스탬프 결과가 나옴
+      var totalSecond = parseInt(timestamp / 1000);   // 밀리초를 초 단위로 변환함(parseInt : 소수점 제거됨)
+      var restDay = parseInt(totalSecond / 60 / 60/ 24);    // 초 -> 분 -> 시간 -> 남은 일
+      var restHour = parseInt(totalSecond / 60 / 60) % 24;  // 초 -> 분 -> 남은 시간
+      var restMinute = parseInt(totalSecond / 60) % 60;     // 초 -> 남은 분
+
+      var str = 'D';
+      if(totalSecond > 0){
+        str += '-';
+        if(restDay >= 1){
+          str += restDay + '&nbsp;';
+        } else{ str += 'DAY&nbsp;'}
+        str += String(restHour).padStart(2, '0') + ':' + String(restMinute).padStart(2, '0');
+      } else {
+        str += ''
+      }
+
+      document.getElementById('dday').innerHTML = '<h1>' + str + '</h1>';
+
+    }, 1000);
+    */
   </script>
   
   <div th:replace="~{/layout/footer::footer}"></div>

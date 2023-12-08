@@ -28,6 +28,8 @@ public class MypageController {
   @GetMapping("/detail.do")
   public String detail(HttpServletRequest request, Model model) {
     mypageService.getCount(request, model);
+    mypageService.getAuctionBidList(request, model);
+    mypageService.getAuctionSalesList(request, model);
     return "mypage/detail";
   }
   
