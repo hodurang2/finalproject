@@ -79,6 +79,12 @@ public class MypageController {
     return mypageService.getMyDrawList(request);
   }
   
+  @ResponseBody
+  @GetMapping(value="/getDrawOrderList.do", produces="application/json")
+  public Map<String, Object> getDrawOrderList(HttpServletRequest request){
+    return mypageService.getDrawOrderList(request);
+  }
+  
   @GetMapping("/emoneyList.do")
   public String Emoney() {
     return "mypage/emoneyList";

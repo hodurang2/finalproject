@@ -9,6 +9,7 @@ import com.gdu.drawauction.dto.AuctionImageDto;
 import com.gdu.drawauction.dto.BidDto;
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.DrawImageDto;
+import com.gdu.drawauction.dto.DrawOrderDto;
 import com.gdu.drawauction.dto.UserDto;
 
 @Mapper
@@ -36,8 +37,10 @@ public interface MypageMapper {
   
   public List<DrawDto> getMyDrawList(Map<String, Object> map);  // 나의 그려드림 목록
   
-  public DrawImageDto getMyDrawImage(int drawNo);  // 나의 그려드림 이미지
+  public DrawImageDto getDrawImage(int drawNo);  // 그려드림 이미지
   
+  public int getDrawOrderCount(int buyerNo);      // 내가 주문한 그려드림 갯수
   
+  public List<DrawOrderDto> getDrawOrderList(Map<String, Object> map); // 내가 주문한 그려드림 목록
   
   }
