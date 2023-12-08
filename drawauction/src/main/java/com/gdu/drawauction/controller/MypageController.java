@@ -28,6 +28,8 @@ public class MypageController {
   @GetMapping("/detail.do")
   public String detail(HttpServletRequest request, Model model) {
     mypageService.getCount(request, model);
+    mypageService.getAuctionBidList(request, model);
+    mypageService.getAuctionSalesList(request, model);
     return "mypage/detail";
   }
   
@@ -84,9 +86,9 @@ public class MypageController {
   public Map<String, Object> getDrawOrderList(HttpServletRequest request){
     return mypageService.getDrawOrderList(request);
   }
-  
-  @GetMapping("/emoneyList.do")
-  public String Emoney() {
+
+  @GetMapping("/charge.do")
+  public String emoneyCharge() {
     return "mypage/chargeEmoney";
   }
   

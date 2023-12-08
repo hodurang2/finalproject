@@ -1,6 +1,7 @@
 package com.gdu.drawauction.service;
 
 import java.io.PrintWriter;
+import java.lang.StackWalker.Option;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -184,15 +185,11 @@ public class MypageServiceImpl implements MypageService {
                                      , "bidderNo", bidderNo);
       
       List<BidDto> bidList = mypageMapper.getAuctionBidList(map);
-      
-      System.out.println("이미지 넣기 전");
 
       for(BidDto bidDto : bidList) {
         //System.out.println(mypageMapper.getMyAuctionImage(bidDto.getAuctionDto().getAuctionNo()));
         bidDto.getAuctionDto().setImage(mypageMapper.getMyAuctionImage(bidDto.getAuctionDto().getAuctionNo()));
       }
-      
-      System.out.println("이미지 넣은 후");
       
       model.addAttribute("bidList", bidList);
       model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/mypage/auctionBidList.do"));
