@@ -221,5 +221,10 @@ public class UserController {
 	    userService.findPw(user, response);
   }
 
-
+  @GetMapping("/chargeEmoney.do")
+  public void chargeEmoney(@RequestParam("userNo") int userNo, int amount) {
+    userService.chargeEmoney(userNo);
+  }
+  
+  
 }

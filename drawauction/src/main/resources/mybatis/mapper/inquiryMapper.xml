@@ -131,7 +131,7 @@
     SELECT A.INQUIRY_NO, A.USER_NO, A.CONTENTS, A.CREATED_AT, A.STATUS, U.NICKNAME
       FROM USER_T U INNER JOIN ANSWER_T A
         ON U.USER_NO = A.USER_NO 
-     WHERE INQUIRY_NO = #{inquiryNo}
+     WHERE A.INQUIRY_NO = #{inquiryNo}
   </select>
   
   <!-- 1:1문의 첨부파일 추가하기 -->

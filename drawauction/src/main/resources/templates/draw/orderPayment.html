@@ -43,7 +43,7 @@
     
       <h1 class="title">주문/결제 페이지</h1>
       
-      <form id="frm_draw_add" method="post" th:action="@{/draw/orderPayment.do}" enctype="multipart/form-data">
+      <form id="frm_orderPayment" method="post" th:action="@{/draw/orderPayment.do}">
 		<h4>주문 고객</h4>
 		<hr>
         <div class="mt-3" th:if="${session.user != null}" style="display: flex; align-items: center;">
@@ -58,6 +58,10 @@
           <label for="email" class="form-label" style="width: 150px; margin-top:9px;">이메일</label>
           <input type="text" id="email" class="form-control-plaintext" th:value="${session.user.email}" readonly>
         </div>
+        <div class="mt-3" style="display: flex; align-items: center;">
+          <label for="email" class="form-label" style="width: 150px; margin-top:9px;">이메일</label>
+          <input type="text" id="email" class="form-control-plaintext" th:value="${session.user}" readonly>
+        </div>
         <pre>
 		</pre>
         <h4>배송 방식</h4>
@@ -70,8 +74,8 @@
 		<h4>배송 정보</h4>
 		<hr>
         <div class="mt-3" style="display: flex; align-items: center;">
-          <label for="workTerm" class="form-label target2 target3" style="width: 130px; margin-top:9px;">이메일 입력</label>
-          <div class="col-sm-3"><input type="text" name="receiveEmail" class="form-control"></div>
+          <label for="receiveEmail" class="form-label target2 target3" style="width: 130px; margin-top:9px;">이메일 입력</label>
+          <div class="col-sm-3"><input type="text" id="receiveEmail" name="receiveEmail" class="form-control"></div>
         </div>
         <pre>
 		</pre>
@@ -96,18 +100,36 @@
 		      <input type="text" id="nickname" class="form-control-plaintext" th:value="${draw.userDto.nickname}" readonly>
 		    </li>
 		    <li style="display: flex; align-items: center;">
-		      <label for="price" class="form-label" style="width: 120px; margin-top:9px;">가격</label>
-		      <input type="text" name="price" id="price" class="form-control-plaintext" th:value="|${draw.price} P|" readonly>
+		      <label for="price" class="form-label" style="width: 120px; margin-top:9px; ">가격</label>
+		      <input type="text" class="form-control-plaintext" th:value="|${#numbers.formatInteger(draw.price, 0, 'COMMA')} P|" readonly>
+		      <input type="hidden" name="price" th:value="${draw.price}">
 		    </li>
 		  </ul>
 		</div>
+		<pre>
+		</pre>
+	    <h4>결제 정보</h4>
+	    <hr>
+	    <div class="mt-3" th:if="${session.user != null}" style="display: flex; align-items: center;">
+		  <label for="emoneyHistory" class="form-label" style="width: 150px; margin-top:9px;">보유 포인트</label>
+		  <input type="text" name="emoneyHistory" id="emoneyHistory" class="form-control-plaintext" th:value="|${#numbers.formatInteger(session.user.myPrice, 0, 'COMMA')} P|" readonly>
+        </div>
+	    <div class="mt-3" th:if="${session.user != null}" style="display: flex; align-items: center;">
+		  <label for="price" class="form-label" style="width: 150px; margin-top:9px;">결제 금액</label>
+		  <input type="text" id="price" class="form-control-plaintext" th:value="|${#numbers.formatInteger(draw.price, 0, 'COMMA')} P|" readonly>
+        </div>
+	    <div class="mt-3" th:if="${session.user != null}" style="display: flex; align-items: center;">
+		  <label for="balance" class="form-label" style="width: 150px; margin-top:9px;">결제 후 잔액</label>
+		  <input type="text" id="balance" class="form-control-plaintext" th:value="|${#numbers.formatInteger((session.user.myPrice - draw.price),  0, 'COMMA')} P|" readonly>
+        </div>
         <div class="text-center mt-5" th:if="${session.user != null}">
           <a th:href="@{/draw/list.do}">
             <button class="btn btn-secondary" type="button">주문취소</button>
           </a>
           <input type="hidden" name="drawNo" id="drawNo" th:value="${draw.drawNo}">
           <input type="hidden" name="buyerNo" id="buyerNo" th:value="${session.user.userNo}">
-          <button type="submit" class="btn btn-primary">주문하기</button>
+          <input type="hidden" name="userNo" id="userNo" th:value="${draw.userDto.userNo}">
+          <button type="button" class="btn_orderPayment btn btn-primary">주문하기</button>
         </div>
       </form>
       
@@ -115,27 +137,31 @@
       
     <script>
 		
-	  var userNo = $('#buyerNo').val();
-	  var drawNo = $('#drawNo').val();
+	  var price = $('#price').val();
+	  var balance = $('#balance').val();
 	  
-	  
-	  const fnCheckEmail = () => {
-
-	  }
-	  
-	  const fnCheckEmoney = () => {
-	    $.ajax({
-		  type: 'get',
-		  url: '/draw/checkEmoney.do',
-		  data: 'userNo=' + userNo,
-		  dataType: 'json',
-		  success: (resData) => {
-			
+	  const fnOrderConfirm = () => {
+		$('.btn_orderPayment').click((ev) => {
+	 	  var receiveEmail = $('#receiveEmail').val();
+		  var regEmail = /^[A-Za-z0-9-_]+@[A-Za-z0-9]{2,}([.][A-Za-z]{2,6}){1,2}$/;
+		  if(!regEmail.test(receiveEmail)){
+	        alert('잘못된 이메일 입니다. 이메일을 확인하세요.');
+	        ev.preventDefault();
+	        return;
+	      }
+		  if(confirm('결제 금액 : ' + price + '  결제 하시겠습니까? (결제 후 잔액  ' + balance + ')')){
+			$('#frm_orderPayment').submit();
 		  }
 		})
 	  }
-    
-      
+	  
+	  const fnEmailCheck = () => {
+		  
+	  }
+	  
+	  
+	  fnOrderConfirm();
+	  
     </script>
       
   </div>

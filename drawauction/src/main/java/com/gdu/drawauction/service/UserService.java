@@ -50,6 +50,7 @@ public interface UserService {
 	  public String getKakaoLoginURL(HttpServletRequest request) throws Exception;
 	  public String getKakaoLoginAccessToken(HttpServletRequest request) throws Exception;
 	  public UserDto getKakaoProfile(String accesskakaoToken) throws Exception;
+    public void chargeEmoney(int userNo);
 	
 
 

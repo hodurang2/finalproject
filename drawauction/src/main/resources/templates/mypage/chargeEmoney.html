@@ -2,6 +2,8 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
+  <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
 </head>
 <body>
   
@@ -18,8 +20,62 @@
     <label class="box-radio-input"><input type="radio" name="cp_item" value="50000"><span>50,000원</span></label>
     <p  style="color: #ac2925; margin-top: 30px">카카오페이의 최소 충전금액은 5,000원이며 <br/>최대 충전금액은 50,000원 입니다.</p>
     <button type="button" class="btn btn-lg btn-block  btn-custom" id="charge_kakao">충 전 하 기</button>
- </div>
+  </div>
+
+
   
   
+  <script th:inline="javascript">
+    const fnChargeKakao = () => {
+      $('#charge_kakao').click(function () {
+        // getter
+        var IMP = window.IMP;
+        IMP.init('imp00705751');
+        var money = $('input[name="cp_item"]:checked').val();
+        console.log(money);
+        let userNo = /*[[${session.user.userNo}]]*/ null;
+        IMP.request_pay({
+            pg: "kakaopay.TC0ONETIME",
+            pay_method: "card",
+            merchant_uid: 'merchant_' + new Date().getTime(),
+
+            name: '들어옥션 : 카카오페이 결제창',
+            amount: money,
+            buyer_email: /*[[${session.user.email}]]*/ null,
+            buyer_name: /*[[${session.user.name}]]*/ null,
+            buyer_tel: /*[[${session.user.mobile}]]*/ null,
+            buyer_addr: /*[[${session.user.roadAddress}]]*/ null,
+            buyer_postcode: /*[[${session.user.postcode}]]*/ null,
+        }, function (rsp) {
+            console.log(rsp);
+            if (rsp.success) {
+                var msg = '결제가 완료되었습니다.';
+                msg += '고유ID : ' + rsp.imp_uid;
+                msg += '상점 거래ID : ' + rsp.merchant_uid;
+                msg += '결제 금액 : ' + rsp.paid_amount;
+                msg += '카드 승인번호 : ' + rsp.apply_num;
+                $.ajax({
+                    type: "GET", 
+                    url: "/user/chargeEmoney.do", //충전 금액값을 보낼 url 설정
+                    data: {
+                        "amount" : money
+                    },
+                });
+            } else {
+                var msg = '결제에 실패하였습니다.';
+                msg += '에러내용 : ' + rsp.error_msg;
+            }
+            alert(msg);
+            document.location.href="/mypage/detail.do"; //alert창 확인 후 이동할 url 설정
+        });
+      });
+      
+    }
+    
+    fnChargeKakao();
+    
+  </script>
+
+
 </body>
 </html>

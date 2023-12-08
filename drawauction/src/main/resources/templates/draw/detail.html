@@ -181,7 +181,6 @@
 	    </div>
       
       <hr>
-      
       <h5>그림 예시</h5>
       <div class="image-container">
         <th:block th:if="${#lists.isEmpty(imageList)}">
@@ -200,6 +199,7 @@
           </th:block>
         </th:block>
       </div>
+      <div></div>
       
       <hr>
       
@@ -211,7 +211,7 @@
               <input type="hidden" name="userNo" th:value="0">
             </th:block>
             <!-- 로그인 한 경우 -->
-            <th:block th:if="${session.user != null and orderReview != null and session.user.userNo == orderReview.userDto.userNo and reviewCheck == 0}">
+            <th:block th:if="${session.user != null and orderReview != '' and session.user.userNo == orderReview.userDto.userNo and reviewCheck == 0}">
               <input type="hidden" name="userNo" th:value="${session.user.userNo}">
               <input type="hidden" name="drawNo" th:value="${draw.drawNo}">
               <div>
@@ -227,7 +227,7 @@
 				</div>
 			  </div>
               <textarea rows="5" name="reviewContents" class="form-control" id="reviewContents" placeholder="후기를 작성해 주세요"></textarea>
-              <button type="submit" class="btn btn-primary btn-sm" id="btn_review_add">작성완료</button>
+              <button type="button" class="btn btn-primary btn-sm" id="btn_review_add">작성완료</button>
             </th:block>
           </div>
         </form>
@@ -259,7 +259,6 @@
       var page = 1;
       var totalPage = 0;
       var drawNo = $('#drawNo').val();
-      
       const fnEdit = () => {
         $('#btn_edit').click(() => {
             frmBtn.attr('action', '/draw/edit.form');
@@ -301,6 +300,17 @@
             alert('게시글이 수정되었습니다.');
           } else {
             alert('게시글이 수정되지 않았습니다.');
+          }
+        }
+      }
+      
+      const fnAddDrawOrderResult = () => {
+        let addDrawOrderResult = /*[[${addDrawOrderResult}]]*/ null;
+        if(addDrawOrderResult !== null){
+          if(addDrawOrderResult === 1){
+            alert('결제가 완료되었습니다.');
+          } else {
+            alert('결제가 실패했습니다.');
           }
         }
       }
@@ -420,9 +430,27 @@
 	    }
 	  });
 	}
-    
+	
+	const fnReviewConfirm = () => {
+	  $('#btn_review_add').click((ev) => {
+		var reviewContents = $('#reviewContents').val();
+		  var byte = 0;
+		  for (var i=0; i<reviewContents.length; ++i) {
+		  (reviewContents.charCodeAt(i) > 127) ? byte += 3 : byte++ ;
+		  }
+		  if(byte > 200){
+		    alert("후기내용은 최대 200BYTE 입니다.")
+    	    ev.preventDefault();
+    	    return;
+		  }
+	      if(confirm('후기는 삭제하거나 수정할 수 없습니다. 작성을 완료하시겠습니까?')){
+		  $('#frm_review_add').submit();
+		}
+	  })
+	}
+	
      
-          
+      fnAddDrawOrderResult();
       fnReviewResult();    
 	  fnReviewtList();
       fnScroll();
@@ -432,6 +460,7 @@
       fnWishListControll();
       fnReviewtList();
       fnOrderPayment();
+      fnReviewConfirm();
       
     </script>
       

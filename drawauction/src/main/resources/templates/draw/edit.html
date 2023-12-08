@@ -36,11 +36,11 @@
 		  </select>
         </div>
         <div class="mt-3">
-          <label for="title" class="form-label">제목</label>
+          <label for="title" class="form-label target2">제목 필수</label>
           <input type="text" name="title" id="title" class="form-control" th:value="${draw.title}">
         </div>
         <div class="mt-3">
-          <label for="price" class="form-label">가격(P)</label>
+          <label for="price" class="form-label target2">가격(P) 필수</label>
           <input type="number" name="price" id="price" class="form-control" th:value="${draw.price}" >
         </div>
 		<div class="mt-3">
@@ -50,11 +50,11 @@
           <input type="number" name="height" id="height" class="form-control" th:value="${draw.height}">
         </div>
         <div class="mt-3">
-          <label for="workTerm" class="form-label">작업기간</label>
+          <label for="workTerm" class="form-label target2 target3">작업기간 필수 최대 14일</label>
           <div>결제일로부터<input type="number" name="workTerm" id="workTerm" class="form-control-sm" th:value="${draw.workTerm}">일</div>
         </div>
         <div class="mt-3">
-          <label for="contents" class="form-label">내용</label>
+          <label for="contents" class="form-label target2">내용 필수</label>
           <textarea rows="8" name="contents" id="contents" class="form-control" th:text="${draw.contents}"></textarea>
         </div>
         
@@ -191,6 +191,11 @@
           if(!confirm('해당 첨부 파일을 삭제할까요?')){
             return;
           }
+          if ($('#image_list').children().length <= 1) {
+            alert('이미지는 1개 이상이어야 합니다. 신규 이미지를 먼저 첨부하시고 기존 이미지를 삭제해주세요.');
+            ev.preventDefault();
+            return;
+          }
           $.ajax({
             // 요청
             type: 'post',
@@ -210,16 +215,66 @@
         })
       }
       
-      const fnModifyImage = () => {
+      const fnModifyDraw = () => {
     	$('#frm_draw_edit').submit((ev) => {
-          if($('#title').val() === ''){
-            alert('제목은 반드시 입력해야 합니다.');
-            $('#title').focus();
-            ev.preventDefault();
-            return;
-          } else if($("#price").val() === ''){
+          var contents = $("#contents").val();
+		  var title = $("#title").val();
+		  var byte1 = 0;
+		  var byte2 = 0;
+		  for (var i=0; i<contents.length; ++i) {
+		  (contents.charCodeAt(i) > 127) ? byte1 += 3 : byte1++ ;
+		  }
+		  if(byte1 > 4000){
+		    alert("내용은 최대 4000BYTE 입니다.")
+    	    ev.preventDefault();
+    	    return;
+		  }
+		  for (var i=0; i<title.length; ++i) {
+		  (title.charCodeAt(i) > 127) ? byte2 += 3 : byte2++ ;
+		  }
+		  if(byte2 > 200){
+		    alert("제목은 최대 200BYTE 입니다.")
+    	    ev.preventDefault();
+    	    return;
+		  }
+    	  if($('#title').val() === ''){
+    	    alert('제목은 반드시 입력해야 합니다.');
+    	    $('#title').focus();
+    	    ev.preventDefault();
+    		return;
+    	  } else if($("#price").val() === ''){
 		    alert('가격은 반드시 입력해야 합니다');
 		    $('#price').focus();
+    	    ev.preventDefault();
+    		return;
+		  } else if($("#price").val() <= 0){
+		    alert('가격은 0보다 커야 합니다.');
+		    $('#price').focus();
+    	    ev.preventDefault();
+    		return;
+		  } else if($("#width").val() < 0){
+		    alert('작품길이는 0보다 작을 수 없습니다.');
+		    $('#width').focus();
+    	    ev.preventDefault();
+    		return;
+		  } else if($("#height").val() < 0){
+		    alert('작품길이는 0보다 작을 수 없습니다.');
+		    $('#height').focus();
+    	    ev.preventDefault();
+    		return;
+		  } else if($("#price").val() > 2100000000){
+		    alert('가격이 너무 큽니다.(21억 이하 입력)');
+		    $('#price').focus();
+    	    ev.preventDefault();
+    		return;
+		  } else if($("#width").val() > 2100000000){
+		    alert('작품 가로길이가 너무 큽니다.');
+		    $('#width').focus();
+    	    ev.preventDefault();
+    		return;
+		  } else if($("#height").val() > 2100000000){
+		    alert('작품 세로길이가 너무 큽니다.');
+		    $('#height').focus();
     	    ev.preventDefault();
     		return;
 		  } else if($("#contents").val() === ''){
@@ -232,25 +287,36 @@
 		    $('#workTerm').focus();
     	    ev.preventDefault();
     		return;
+		  } else if($("#workTerm").val() > 14 || $("#workTerm").val() <= 0){
+			alert('작업기간은 최소 1일 부터 최대 14일 입니다.');
+			ev.preventDefault();
+    		return;
 		  } else if($('#files').val() !== ''){
         	alert('새로운 첨부가 있는 경우 첨부추가하기 버튼을 먼저 클릭해 주세요.');
         	$('#btn_add_image').focus();
         	ev.preventDefault();
             return;
-          } else if($('#image_list').val() !== ''){
-        	alert('대표이미지 첨부는 반드시 있어야 합니다.');
+          } else if(($('#image_list').children().length === 0)){
+        	alert('이미지는 1개 이상 반드시 있어야 합니다.');
         	$('#btn_add_image').focus();
         	ev.preventDefault();
             return;
           }
     	})
       }
+      
+      $('.target2').each(function() {
+	    $(this).html($(this).html().replace(/(필수)/g, '<span style="color: crimson">⁕</span>'));
+	  });
+      $('.target3').each(function() {
+	    $(this).html($(this).html().replace(/(최대 14일)/g, '<span style="color: crimson">최대 14일</span>'));
+	  });
     
       fnFileCheck();
       fnAddImage();
       fnImageList();
       fnRemoveImage();
-      fnModifyImage();
+      fnModifyDraw();
       
     </script>
   

@@ -5,7 +5,9 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.dto.BidDto;
+import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.InactiveUserDto;
 import com.gdu.drawauction.dto.LeaveUserDto;
 import com.gdu.drawauction.dto.UserDto;
@@ -42,5 +44,16 @@ public interface UserMapper {
 	  public int findPw(UserDto user);
 	  public void updatePw(Map<String, Object> map);
 	  
+	  
+		// 작가페이지
+		// 사용자 닉네임 및 한줄평 조회
+		public UserDto getUserInfo(int userNo);
+		
+		// 사용자가 업로드한 경매 전체보기
+		public List<AuctionDto> getUserAuctions(int userNo);
+		
+		// 사용자가 업로드한 그려드림 전체보기
+		public List<DrawDto> getUserDrawings(int userNo);
+
 
 }
