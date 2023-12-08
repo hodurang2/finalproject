@@ -35,8 +35,8 @@ public class WebSocketChatt {
   public void onMessage(String msg, Session session) throws Exception {
     System.out.println("받은 메시지 : " + msg);
     for(Session s : clients) {
-          System.out.println("보낸 메시지 : " + msg);
-          s.getBasicRemote().sendText(msg);
+        System.out.println("보낸 메시지 : " + msg);
+        s.getBasicRemote().sendText(msg);
     }
   }
   

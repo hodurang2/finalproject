@@ -133,6 +133,7 @@
     var talk = getId('talk');
     var msg = getId('msg');
     
+    
     btnLogin.onclick = function(){
       ws = new WebSocket("ws://" + location.host + "/chat");
       
@@ -140,6 +141,8 @@
         var data = JSON.parse(msg.data);
         var css;
         
+        console.log('data:' + data);
+        console.log('data.mid:' + data.mid);
         if(data.mid == mid.value){
           css = 'class=me';
         }else{
@@ -150,13 +153,14 @@
                         <span><b>${data.mid}</b></span> [ ${data.date} ]<br/>
                           <span>${data.msg}</span>
                 </div>`;
-              
+        console.log('talk.innerHTML:' + talk.innerHTML);      
         talk.innerHTML += item;
         talk.scrollTop=talk.scrollHeight;//스크롤바 하단으로 이동
       }
     }
     
     msg.onkeyup = function(ev){
+      console.log('ev.keyCode:' + ev.keyCode);      
       if(ev.keyCode == 13){
         send();
       }
@@ -174,6 +178,7 @@
         var temp = JSON.stringify(data);
         ws.send(temp);
       }
+      console.log('temp:' + temp);
       msg.value ='';
       
     }
