@@ -183,17 +183,15 @@
           let windowHeight = $(window).height();     // 화면 전체 크기
           let documentHeight = $(document).height(); // 문서 전체 크기
             
-          if((scrollTop + windowHeight + 100) >= documentHeight) {  // 스크롤이 바닥에 닿기 100px 전에 true가 됨
+          if((scrollTop + windowHeight + 1000) >= documentHeight) {  // 스크롤이 바닥에 닿기 100px 전에 true가 됨
             if(page > totalPage){  // 마지막 페이지를 보여준 이후에 true가 됨
               return;              // 마지막 페이지를 보여준 이후에는 아래 코드를 수행하지 말 것 
             }
             page++;
             if($('#order_draw_list').hide()) {
-              console.log('my실행');
               fnGetMyDrawList();
             } else if($('#my_draw_list').hide()) {
               fnGetDrawOrderList;
-              console.log('order실행');
             }
           }
             

@@ -251,7 +251,7 @@ public class MypageServiceImpl implements MypageService {
     
       int sellerNo = user.getUserNo();
       int total = mypageMapper.getMyDrawCount(sellerNo);
-      int display = 3;
+      int display = 9;
 
       myPageUtils.setPaging(page, total, display);
       
@@ -293,7 +293,7 @@ public class MypageServiceImpl implements MypageService {
     
       int buyerNo = user.getUserNo();
       int total = mypageMapper.getDrawOrderCount(buyerNo);
-      int display = 3;
+      int display = 9;
 
       myPageUtils.setPaging(page, total, display);
       
