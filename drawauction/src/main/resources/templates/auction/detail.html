@@ -6,6 +6,43 @@
   #wish_list{
 	cursor: pointer;
   }
+  
+  .auction_ongoing {
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    width: 68px;
+    height: 28px;
+    padding: 1px 0px;
+    font-size: 12px;
+    font-family: "Spoqa Han Sans Neo";
+    font-weight: 700;
+    white-space: nowrap;
+    background: rgb(220, 245, 236);
+    color: rgb(19, 189, 126);
+    display: inline-flex;
+    border-radius: 4px;
+    margin-left: 10px;
+  }
+  .auction_end {
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    width: 68px;
+    height: 28px;
+    padding: 1px 0px;
+    font-size: 12px;
+    font-family: "Spoqa Han Sans Neo";
+    font-weight: 700;
+    white-space: nowrap;
+    background: rgb(254, 238, 223);
+    color: rgb(253, 53, 53);
+    display: inline-flex;
+    border-radius: 4px;
+    margin-left: 10px;
+  }
 </style>
 
 <body>
@@ -30,6 +67,20 @@
           </th:block>
         </th:block>
       </div>
+      
+      <!--오-->
+      <div class="container overflow-hidden text-center">
+	  <div class="row gx-5">
+	    <div class="col">
+	     <div class="p-3">Custom column padding</div>
+	    </div>
+	    <div class="col">
+	      <div class="p-3">Custom column padding</div>
+	    </div>
+	  </div>
+	</div>
+		<div th:text="${aution.}"
+      
       <div th:text="|카테고리 : ${auction.artDto.categoryDto.categoryName}|"></div>
       <div th:text="|작가 : ${auction.artDto.sellerDto.nickname}|"></div>
       <div th:text="|제목 : ${auction.artDto.title}|"></div> 
@@ -38,6 +89,9 @@
       <div th:text="|현재입찰가 : ${#numbers.formatInteger(auction.price, 1, 'COMMA')}P|"></div>
       <div th:text="|즉시구매가 : ${#numbers.formatInteger(auction.buyPrice, 1, 'COMMA')}P|"></div>
       <div th:text="|마감일 : ${auction.endAt}"></div>
+      
+      
+      <!--왼-->
       <div th:text="|작품 가로길이(cm) : ${auction.artDto.width}|"></div>
       <div th:text="|작품 세로길이(cm) : ${auction.artDto.height}|"></div>
       <input type="hidden" id="auctionNo2" name="auctionNo2" th:value="${auction.auctionNo}">
