@@ -1,10 +1,8 @@
 package com.gdu.drawauction.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -50,7 +48,7 @@ public interface UserService {
 	  public String getKakaoLoginURL(HttpServletRequest request) throws Exception;
 	  public String getKakaoLoginAccessToken(HttpServletRequest request) throws Exception;
 	  public UserDto getKakaoProfile(String accesskakaoToken) throws Exception;
-    public void chargeEmoney(int userNo);
+    public void chargeEmoney(int userNo, int amount);
 	
 
 
