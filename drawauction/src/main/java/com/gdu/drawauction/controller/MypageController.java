@@ -84,9 +84,9 @@ public class MypageController {
   public Map<String, Object> getDrawOrderList(HttpServletRequest request){
     return mypageService.getDrawOrderList(request);
   }
-  
-  @GetMapping("/emoneyList.do")
-  public String Emoney() {
+
+  @GetMapping("/charge.do")
+  public String emoneyCharge() {
     return "mypage/chargeEmoney";
   }
   

@@ -62,6 +62,7 @@
         <tr>
           <td colspan="4" id="my_info_text">내 정보</td>
           <td><button class="btn btn-primary" id="btn_modify">회원정보수정</button></td>
+          <td><button class="btn btn-primary" id="btn_charge">E-MONEY 충전</button></td>
         </tr>      
       </thead>
       <tbody class="ing">
@@ -113,6 +114,7 @@
     
    $(() => {
      fnModify();
+     fnCharge();
    })
     
     const fnModify = () => {
@@ -122,6 +124,13 @@
       })
     
     }
+    
+    const fnCharge = () => {
+      $('#btn_charge').click(() => {
+        location.href = '/mypage/charge.do';
+      })
+    }
+    
   </script>
   
   <div th:replace="~{/layout/footer::footer}"></div>
