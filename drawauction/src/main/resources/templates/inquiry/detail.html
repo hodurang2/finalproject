@@ -4,11 +4,181 @@
 <head th:replace="~{layout/header::head(|${inquiry.inquiryNo}번 게시글|)}"></head>
 
 <style>
-  .blind {
-    display: none;
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    margin: 0;
+    padding: 0;
   }
-  .ico_remove_comment {
+
+  .main_wrap {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+
+  h1 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  div > div {
+    font-size: 15px;
+    margin-bottom: 10px;
+    color: #555;
+  }
+
+  hr.inquiryattach-1 {
+    margin: 20px 0;
+    border: none;
+    border-top: 1px solid #ddd;
+  }
+
+  h5 {
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  .inquiryAttach {
+    margin: 10px 0;
+  }
+
+  .inquiryAttach img {
+    margin-right: 10px;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  #btn_answer_add {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
     cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+  }
+
+  #btn_list {
+    background-color: #343a40;
+    color: #fff;
+  }
+
+  #btn_list:hover {
+    background-color: #23272b;
+  }
+
+  #btn_answer_add {
+    background-color: #28a745;
+    color: #fff;
+  }
+
+  #btn_answer_add:hover {
+    background-color: #218838;
+  }
+
+  #frm_answer_add {
+    margin-top: 20px;
+  }
+
+  textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+  }
+
+  #answer_list {
+    margin-top: 20px;
+  }
+
+  .answer {
+    width: 740px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #f8f9fa;
+  }
+
+  .answer .user-nickname {
+    font-size: 16px;
+    font-weight: bold;
+    color: #007bff;
+  }
+
+  .answer .contents {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1.6;
+    color: #333;
+  }
+
+  .answer .timestamp {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 10px;
+  }
+
+  .answer .remove-btn {
+    font-size: 14px;
+    color: #dc3545;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .answer .remove-btn:hover {
+    text-decoration: underline;
+  }
+
+  .answer hr {
+    margin: 15px 0;
+    border: 0;
+    border-top: 1px solid #ced4da;
+  }
+  
+  .answer_line {
+    width: 740px;
+    border-bottom: 1px solid gray;
+  }
+  
+  .contents-text {
+    width: 740px;
+  }
+  
+  .originalFilename {
+    cursor: pointer;
+  }
+
+  .imgFile {
+    cursor: pointer;
+  }
+  
+  .iq-content {
+    width: 740px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: rgb(255, 255, 255);
   }
 </style>
 
@@ -30,7 +200,7 @@
       
       <hr class="inquiryattach-1">
       
-      <h5>첨부 다운로드</h5>
+      <h5>*첨부파일 다운로드</h5>
       <div>
         <th:block th:if="${#lists.isEmpty(inquiryAttachList)}">
           <div>첨부 없음</div>          
@@ -39,12 +209,12 @@
           <th:block th:each="atc:${inquiryAttachList}">
             <div class="inquiryAttach" th:data-inquiry_attach_no="${atc.inquiryAttachNo}">
               <th:block th:if="${atc.hasThumbnail == 1}">
-                <img th:src="@{|${atc.path}/s_${atc.filesystemName}|}" alt="썸네일" width="100">
+                <img th:src="@{|${atc.path}/s_${atc.filesystemName}|}" class="imgFile" alt="썸네일" width="100">
               </th:block>
               <th:block th:if="${atc.hasThumbnail == 0}">
                 <img th:src="@{/image/attach2.png}" alt="썸네일" width="50">
               </th:block>
-              <a th:text="${atc.originalFilename}"></a>
+              <a th:text="${atc.originalFilename}" class="originalFilename"></a>
             </div>
           </th:block>
           <div><a th:href="@{/inquiry/downloadAll.do(inquiryNo=${inquiry.inquiryNo})}">모두 다운로드</a></div>
@@ -58,29 +228,29 @@
             <input type="hidden" name="inquiryNo" th:value="${inquiry.inquiryNo}">
             <input type="hidden" name="title" th:value="${inquiry.title}">
             <input type="hidden" name="content" th:value="${inquiry.content}">
-            <button type="button" id="btn_list" class="btn btn-dark">목록</button>
-            
           </form>
         </th:block>
        </th:block>
       </div>
-      <div th:utext="${inquiry.content}"></div>
+      <div th:utext="${inquiry.content}" class="iq-content"></div>
+      <div><button type="button" id="btn_list" class="btn btn-dark">목록</button></div>
+
       
     </div>
     
     <div th:if="${session.user.userNo == 1}" >
       <form id="frm_answer_add">
-        <textarea rows="3" cols="50" name="contents" id="contents" placeholder="댓글을 작성해 주세요"></textarea>
+        <textarea rows="3" cols="50" name="contents" class="contents-text" id="contents" placeholder="답변을 작성해 주세요."></textarea>
         <input type="hidden" name="inquiryNo" th:value="${inquiry.inquiryNo}">
         <input type="hidden" name="userNo" th:value="${session.user.userNo}">
-        <button type="button" id="btn_answer_add">답변등록</button>
+        <div><button type="button" id="btn_answer_add">답변등록</button></div>
       </form>
     </div>
-    <div style="width: 100%;border-bottom: 1px solid gray;"></div>
+    <div class="answer_line"></div>
     <div id="answer_list"></div>
-    <div id="paging"></div>
     
   </div>
+
 
   <script th:inline="javascript">
     
@@ -121,7 +291,7 @@
     var page = 1;
     
     const fnAnswerList = () => {
-        $.ajax({
+      $.ajax({
           // 요청
           type: 'get',
           url: '/inquiry/answerList.do',
@@ -130,28 +300,35 @@
           dataType: 'json',
           success: (resData) => {  // resData = {"answerList": [], "paging": "<div>...</div>"}
             $('#answer_list').empty();
-            $('#paging').text('');
+            $('#paging').empty();
             if(resData.answerList.length === 0){
               $('#answer_list').text('댓글이 없습니다.');
               $('#paging').text('');
               return;
             }
-            $.each(resData.answerList, (i, answer) => {
-              let str = '';
-              if(answer.status === 0){
-                str += '<div>삭제된 댓글입니다.</div>';
-              } else {
-                str += '  <div>' + answer.userDto.nickname + '</div>';
-                str += '  <div>' + answer.contents + '</div>';
-                str += '  <div style="font-size: 12px;">' + answer.createdAt + '</div>';
+           $.each(resData.answerList, (i, answer) => {
+            let str = '';
+            if (answer.status === 0) {
+              str += '<div>삭제된 댓글입니다.</div>';
+            } else {
+              str += '<div class="answer">';
+              str += '  <div class="user-nickname">' + answer.userDto.nickname + '</div>';
+              str += '  <div class="contents">' + answer.contents + '</div>';
+              str += '  <div class="timestamp">' + answer.createdAt + '</div>';
+              str += '  <div class="remove-btn">';
+              let user = /*[[${session.user}]]*/ null;
+              if (user !== null && user.userNo === answer.userDto.userNo) {
+                str += '    <input type="hidden" value="' + answer.inquiryNo + '">';
+                str += '    <i class="fa-regular fa-circle-xmark ico_remove_answer"></i>';
               }
+              str += '  </div>';
               str += '</div>';
-              $('#answer_list').append(str);
-            })
-            $('#paging').append(resData.paging);  // fnAjaxPaging() 함수가 호출되는 곳
-          }
-        })
-      }
+            }
+            $('#answer_list').append(str);
+          })
+        }
+      })
+    }
     
     
     const fnAjaxPaging = (p) => {
@@ -186,11 +363,36 @@
       })
     }
     
+    const fnAnswerRemove = () => {
+          $(document).on('click', '.ico_remove_answer', (ev) => {
+            if(!confirm('해당 댓글을 삭제할까요?')){
+              return;
+            }
+            $.ajax({
+              // 요청
+              type: 'post',
+              url: '/inquiry/removeAnswer.do',
+              data: 'inquiryNo=' + $(ev.target).prev().val(),
+              // 응답
+              dataType: 'json',
+              success: (resData) => {  // resData = {"removeResult": 1}
+                if(resData.removeResult === 1){
+                  alert('해당 댓글이 삭제되었습니다.');
+                  fnAnswerList();
+                } else {
+                  alert('댓글이 삭제되지 않았습니다.');
+                }
+              }
+            })
+          })
+        }
+    
     fnInquiryList();
     fnAnswerAdd();
     fnAnswerList();
     fnBlind();
     fnDownload();
+    fnAnswerRemove();
       
   </script>
   
