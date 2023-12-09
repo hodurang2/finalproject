@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gdu.drawauction.dao.AlarmMapper">
+	
+	<resultMap type="AlarmDto"          id="AlarmMap">
+    <id      column="ALARM_NO"          property="alarmNo"/>
+    <result  column="ALARM_CONTENTS"    property="alarmContents"/>
+    <result  column="ALARM_TYPE"        property="alarmType"/>
+    <result  column="CREATED_AT"        property="createdAt"/>
+    <association javaType="UserDto"      property="userDto">
+      <id        column="USER_NO"        property="userNo"/>
+      <result    column="EMAIL"          property="email" />
+      <result    column="PW"             property="pw" />
+      <result    column="NAME"           property="name" />
+      <result    column="MOBILE"         property="mobile" />
+      <result    column="GENDER"         property="gender" />
+      <result    column="AGREE"          property="agree" />
+      <result    column="STATE"          property="state" />
+      <result    column="JOINED_AT"      property="joinedAt" />
+      <result    column="POSTCODE"       property="postcode" />
+      <result    column="ROAD_ADDRESS"   property="roadAddress" />
+      <result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      <result    column="DETAIL_ADDRESS" property="detailAddress" />
+      <result    column="NICKNAME" property="nickname" />
+      <result    column="INTRODUCTION" property="introduction" />
+    </association>
+    <association javaType="AuctionDto" property="auctionDto">
+      <id column="AUCTION_NO"          property="auctionNo"/>
+      <result column="START_PRICE"     property="startPrice"/>
+      <result column="BUY_PRICE"       property="buyPrice"/>
+      <result column="START_AT"        property="startAt"/>
+      <result column="END_AT"          property="endAt"/>
+      <result column="STATUS"          property="status"/>
+      <result column="PRICE"           property="price"/>
+      <association javaType="ArtDto"   property="artDto">
+        <id column="ART_NO"            property="artNo"/>
+        <result column="TITLE"         property="title"/>
+        <result column="CONTENTS"     property="contents"/>
+        <result column="ART_TYPE"     property="artType"/>
+        <result column="WIDTH"        property="width"/>
+        <result column="HEIGHT"       property="height"/>
+        <association javaType="UserDto"    property="sellerDto">
+          <id column="USER_NO"              property="userNo"/>
+          <result column="EMAIL"            property="email"/>
+          <result column="PW"               property="pw"/>
+          <result column="NAME"             property="name"/>
+          <result column="MOBILE"           property="mobile"/>
+          <result column="GENDER"           property="gender"/>
+          <result column="AGREE"            property="agree"/>
+          <result column="STATE"            property="state"/>
+          <result column="JOINED_AT"        property="joinedAt"/>
+          <result column="POSTCODE"         property="postcode"/>
+          <result column="ROAD_ADDRESS"     property="roadAddress"/>
+          <result column="JIBUN_ADDRESS"    property="jibunAddress"/>
+          <result column="DETAIL_ADDRESS"   property="detailAddress"/>
+          <result column="NICKNAME"         property="nickname"/>
+          <result column="INTRODUCTION"     property="introduction"/>
+        </association>
+        <association javaType="CategoryDto"   property="categoryDto">
+          <id        column="CATEGORY_NO"     property="categoryNo"/>
+          <result    column="CATEGORY_NAME"   property="categoryName" />
+        </association>
+      </association>
+    </association>
+    <association javaType="DrawDto"    	   property="drawDto">
+	  <id      column="DRAW_NO"      	   property="drawNo"/>
+	  <result  column="TITLE"        	   property="title"/>
+	  <result  column="PRICE"        	   property="price"/>
+	  <result  column="CONTENTS"     	   property="contents"/>
+	  <result  column="WIDTH"  		 	   property="width"/>
+	  <result  column="HEIGHT" 		 	   property="height"/>
+	  <result  column="WORK_TERM" 	       property="workTerm"/>
+	  <association javaType="CategoryDto"  property="categoryDto">
+	  	<id        column="CATEGORY_NO"    property="categoryNo"/>
+	  	<result    column="CATEGORY_NAME"  property="categoryName" />
+	  </association>
+      <association javaType="UserDto"      property="userDto">
+      	<id        column="USER_NO"        property="userNo"/>
+      	<result    column="EMAIL"          property="email" />
+      	<result    column="PW"             property="pw" />
+      	<result    column="NAME"           property="name" />
+      	<result    column="MOBILE"         property="mobile" />
+      	<result    column="GENDER"         property="gender" />
+      	<result    column="AGREE"          property="agree" />
+      	<result    column="STATE"          property="state" />
+      	<result    column="JOINED_AT"      property="joinedAt" />
+      	<result    column="POSTCODE"       property="postcode" />
+      	<result    column="ROAD_ADDRESS"   property="roadAddress" />
+      	<result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      	<result    column="DETAIL_ADDRESS" property="detailAddress" />
+      	<result    column="NICKNAME"	   property="nickname" />
+      	<result    column="INTRODUCTION"   property="introduction" />
+      </association>
+	</association>
+	<association javaType="NoticeDto"      property="noticeDto">
+	  <id        column="NOTICE_NO"        property="noticeNo"/>
+      <result    column="TITLE"            property="title" />
+      <result    column="CONTENTS"         property="contents" />
+      <result    column="CREATED_AT"       property="createdAt" />
+	</association>
+	<association javaType="InquiryDto" property="inquiryDto">
+    <id     column="INQUIRY_NO"   property="inquiryNo" />
+    <result column="TITLE"        property="title"/>
+    <result column="CONTENT"      property="content"/>
+    <result column="INQUIRY_CREATED_AT"   property="inquiryCreatedAt"/>
+    <result column="INQUIRY_TYPE"         property="inquiryType"/>
+    <association  javaType="UserDto"          property="userDto">
+      <id         column="USER_NO"            property="userNo" />
+      <result     column="EMAIL"              property="email" />
+      <result     column="PW"                 property="pw" />
+      <result     column="NAME"               property="name" />
+      <result     column="MOBILE"             property="mobile" />
+      <result     column="GENDER"             property="gender" />
+      <result     column="AGREE"              property="agree" />
+      <result     column="STATE"              property="state" />
+      <result     column="JOINED_AT"          property="joinedAt" />
+      <result     column="POSTCODE"           property="postcode" />
+      <result     column="ROAD_ADDRESS"       property="road_address" />
+      <result     column="JIBUN_ADDRESS"      property="jibun_address" />
+      <result     column="DETAIL_ADDRESS"     property="detail_address" />
+      <result     column="NICKNAME"           property="nickname" />
+      <result     column="INTRODUCTION"       property="introduction" />
+    </association>
+    </association>    </resultMap>
+    
+    <insert id="insertDrawAlarm" parameterType="Map">
+      INSERT INTO ALARM_T (
+        ALARM_NO
+      , ALARM_CONTENTS
+      , ALARM_TYPE
+      , CREATED_AT
+      , USER_NO
+      , DRAW_NO
+      ) VALUES (
+        ALARM_SEQ.NEXTVAL
+      , #{alarmContents}
+      , #{alarmType}
+      , SYSDATE
+      , #{userNo}
+      , #{drawNo}
+      )
+	</insert>
+    
+
+	
+</mapper>
