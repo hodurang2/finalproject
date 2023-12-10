@@ -5,6 +5,19 @@
 
 <mapper namespace="com.gdu.drawauction.dao.AdminMapper">
 
+<resultMap id="AdminDto" type=""></resultMap>
+
+
+		<select id="getAdminUser" parameterType="Map" resultType="UserDto">
+		SELECT USER_NO, EMAIL, PW, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION
+		  FROM USER_T
+		<where>
+	      <if test="email != null">EMAIL = #{email}</if>
+	      <if test="pw != null">AND PW = #{pw}</if>
+	      <if test="userNo != null">AND USER_NO = #{userNo}</if>
+	    </where>
+	</select>
+
 
 	<!--admin01@naver.com 계정을 제외한 모든 계정을 가입일 기준으로 select-->
 	<select id="userList" resultType="UserDto">
