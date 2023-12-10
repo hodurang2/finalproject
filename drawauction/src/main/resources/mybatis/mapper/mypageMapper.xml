@@ -399,7 +399,8 @@
               FROM EMONEY_T E RIGHT OUTER JOIN USER_T U
                 ON E.USER_NO = U.USER_NO
              WHERE U.USER_NO = #{userNo}) A
-     WHERE RN BETWEEN #{no} AND (SELECT COUNT(*) FROM EMONEY_T)
+     WHERE RN BETWEEN #{no} AND (SELECT COUNT(*) FROM EMONEY_T
+                                  WHERE USER_NO = #{userNo})
   </select>  
     
   <select id="getEmoneyList" parameterType="Map" resultMap="EmoneyMap">

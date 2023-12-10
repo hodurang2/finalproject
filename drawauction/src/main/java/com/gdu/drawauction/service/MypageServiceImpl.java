@@ -465,8 +465,8 @@ public class MypageServiceImpl implements MypageService {
       int display = 5;
       
       List<Integer> balanceList = new ArrayList<>();
-      for(int i = 0; i < total; i++) {
-        balanceList.add(mypageMapper.getEmoneyBalance(Map.of("userNo", userNo, "no", total-i)));
+      for(int i = total; i > 0; i--) {
+        balanceList.add(mypageMapper.getEmoneyBalance(Map.of("userNo", userNo, "no", i)));
       }
       
       int balance = balanceList.get(total-1);
@@ -479,6 +479,7 @@ public class MypageServiceImpl implements MypageService {
       
       List<EmoneyDto> emoneyList = mypageMapper.getEmoneyList(map);
       
+      model.addAttribute("total", total);
       model.addAttribute("balanceList", balanceList);
       model.addAttribute("balance", balance);
       model.addAttribute("emoneyList", emoneyList);

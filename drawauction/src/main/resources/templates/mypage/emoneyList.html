@@ -14,7 +14,7 @@
       
       <div class="emoney_wrap">
         
-        <div class="balance_wrap" style="width: 80%;">
+        <div class="balance_wrap">
           <table style="border:1px solid grey" class="table align-middle">
             <tbody>
               <tr>
@@ -29,7 +29,7 @@
         </div>
         
         <div class="emoneyList_wrap">
-          <h4>이용내역</h4>
+          <h4 style="margin-top: 50px;">이용내역</h4>
           <table class="table align-middle">
             <thead>
               <tr>
@@ -54,10 +54,10 @@
                     <td></td>   
                     <td class="history" th:text="|${#numbers.formatInteger(e.emoneyHistory, 1, 'COMMA')} P|"></td>
                   </th:block>
-                  <td class="balance">
-                    <span th:text="|${#numbers.formatInteger(balanceList[emoneyList.size() - vs.index], 1, 'COMMA')}|"></span>
-                    <span th:text="' P'"></span>
-                  </td>
+                  
+
+                    <td th:text="|${#numbers.formatInteger(balanceList[vs.index], 1, 'COMMA')} P ${vs.index}|"></td>                    
+
                 </tr>
               </th:block>
             </tbody>
