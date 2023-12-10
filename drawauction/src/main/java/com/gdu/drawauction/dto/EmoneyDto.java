@@ -15,5 +15,5 @@ public class EmoneyDto {
 	private int emoneyNo;
 	private UserDto userDto; // userNo
 	private int emoneyHistory;
-	private Date emoneyDate;
+	private String emoneyDate;
 }

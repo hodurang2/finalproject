@@ -29,4 +29,5 @@ public interface MypageService {
   public Map<String, Object> getDrawOrderList(HttpServletRequest request);    // 주문한 그려드림 목록
  
   public void getEmoneyList(HttpServletRequest request, Model model);   // E-MONEY 내역
+  
 }

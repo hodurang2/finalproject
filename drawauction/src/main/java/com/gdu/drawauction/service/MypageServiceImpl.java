@@ -3,6 +3,7 @@ package com.gdu.drawauction.service;
 import java.io.File;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import com.gdu.drawauction.dao.MypageMapper;
 import com.gdu.drawauction.dto.BidDto;
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.DrawOrderDto;
+import com.gdu.drawauction.dto.EmoneyDto;
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.dto.UserImageDto;
 import com.gdu.drawauction.util.MyFileUtils;
@@ -460,23 +462,27 @@ public class MypageServiceImpl implements MypageService {
     if(user != null) {
       int userNo = user.getUserNo();
       int total = mypageMapper.getEmoneyCount(userNo);
-      int display = 10;
+      int display = 5;
+      
+      List<Integer> balanceList = new ArrayList<>();
+      for(int i = 0; i < total; i++) {
+        balanceList.add(mypageMapper.getEmoneyBalance(Map.of("userNo", userNo, "no", total-i)));
+      }
+      
+      int balance = balanceList.get(total-1);
       
       myPageUtils.setPaging(page, total, display);
       
       Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
                                      , "end", myPageUtils.getEnd()
-                                     , "bidderNo", bidderNo);
+                                     , "userNo", userNo);
       
-      List<BidDto> bidList = mypageMapper.getAuctionBidList(map);
-
-      for(BidDto bidDto : bidList) {
-        //System.out.println(mypageMapper.getMyAuctionImage(bidDto.getAuctionDto().getAuctionNo()));
-        bidDto.getAuctionDto().setImage(mypageMapper.getMyAuctionImage(bidDto.getAuctionDto().getAuctionNo()));
-      }
+      List<EmoneyDto> emoneyList = mypageMapper.getEmoneyList(map);
       
-      model.addAttribute("bidList", bidList);
-      model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/mypage/auctionBidList.do"));
+      model.addAttribute("balanceList", balanceList);
+      model.addAttribute("balance", balance);
+      model.addAttribute("emoneyList", emoneyList);
+      model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/mypage/getEmoneyList.do"));
       model.addAttribute("beginNo", total - (page - 1) * display);
     }
   }
