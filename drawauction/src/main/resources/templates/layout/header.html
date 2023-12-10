@@ -49,10 +49,7 @@
 		   <div class="login_wrap">
       <th:block th:if="${session.user == null}">
         <ul class="ico_user_group">
-      		  <th:block th:if="${session.user.email == 'admin01@naver.com'}">
-			  <a th:href="@{/admin/login.form}">관리자페이지</a>
-			  <li>│</li>
-		  </th:block>
+
           <li><a th:href="@{/user/login.form}">로그인</a></li>
           <li>│</li>
           <li><a th:href="@{/user/agree.form}">회원가입</a></li>

@@ -30,8 +30,6 @@
 
 <body>
   
-  <div th:replace="~{/layout/header::header}"></div>
-  
   <div class="main_wrap">
 
   <div class="wrap wrap_5">
@@ -39,7 +37,7 @@
     <h3 class="title" style="margin: 10%;" >관리자 로그인</h3>
    	
    	
-    <form method="post" th:action="@{/user/login.do}">
+    <form method="post" th:action="@{/admin/login.do}">
 		<div class="row mb-2" style="margin: 4%;">
 		<label for="email" class="col-sm-3 col-form-label">아이디</label>	  
         <div class="col-sm-9"><input type="text" name="email" id="email" placeholder="아이디" class="form-control"></div>

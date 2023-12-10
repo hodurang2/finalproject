@@ -11,10 +11,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AdminDto {
 
-	private String email;
-	private String pw;
-	private String name;
-	private int state;
+	private int AdminNo;
+	private String AdminEmail;
+	private String AdminPw;
+	private String Admin;
+	private int AdminState;
 	private UserDto userDto;
 	
 }
