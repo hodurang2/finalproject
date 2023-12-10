@@ -194,6 +194,12 @@ public class InquiryServiceImpl implements InquiryService{
   }
   
   @Override
+  public Map<String, Object> removeAnswer(int inquiryNo) {
+    int removeResult = inquiryMapper.deleteAnswer(inquiryNo);
+    return Map.of("removeResult", removeResult);
+  }
+  
+  @Override
   public Map<String, Object> imageUpload(MultipartHttpServletRequest multipartRequest) {
     
     // 이미지가 저장될 경로

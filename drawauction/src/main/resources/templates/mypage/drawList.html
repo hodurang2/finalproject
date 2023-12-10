@@ -79,23 +79,24 @@
 <body>
   
   <div th:replace="~{/layout/header::header}"></div>
-  <div th:replace="~{/mypage/menu::side-menu}"></div>
+  <div class="wrap">
+    <div th:replace="~{/mypage/menu::side-menu}"></div>
+    
+    <div class="right_wrap">
+      <h3>그려드림 내역</h3>
+      
+      <div class="list_wrap">
+        <ul class="mypage_list">
+          <li><a href="javascript:fnShowMy()" id="my">올린 그려드림</a></li>
+          <li><a href="javascript:fnShowOrder()" id="order">주문한 그려드림</a></li>
+        </ul>
+      </div>
+      
+      <div id="my_draw_list" class="my_draw_list"></div>  
+      <div id="order_draw_list" class="order_draw_list"></div>
   
-  <div class="right_wrap">
-    <h3>그려드림 내역</h3>
-    
-    <div class="list_wrap">
-      <ul class="mypage_list">
-        <li><a href="javascript:fnShowMy()" id="my">올린 그려드림</a></li>
-        <li><a href="javascript:fnShowOrder()" id="order">주문한 그려드림</a></li>
-      </ul>
     </div>
-    
-    <div id="my_draw_list" class="my_draw_list"></div>  
-    <div id="order_draw_list" class="order_draw_list"></div>
-
   </div>
-
   
   
   <script th:inline="javascript">

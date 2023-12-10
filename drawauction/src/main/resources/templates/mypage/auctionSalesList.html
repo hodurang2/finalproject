@@ -14,72 +14,73 @@
 <body>
   
   <div th:replace="~{/layout/header::header}"></div>
-  <div th:replace="~{/mypage/menu::side-menu}"></div>
-  
-  <div class="right_wrap">
-    <h3>경매 이용 내역</h3>
+  <div class="wrap">
+    <div th:replace="~{/mypage/menu::side-menu}"></div>
     
-    <div class="list_wrap">
-      <ul class="mypage_list">
-        <li><a th:href="@{/mypage/getAuctionBidList.do}" class="bid">입찰작품</a></li>
-        <li><a th:href="@{/mypage/getAuctionSalesList.do}" class="sales">출품작품</a></li>
-      </ul>
-    </div>
+    <div class="right_wrap">
+      <h3>경매 이용 내역</h3>
       
-    <div class="table-responsive" id="salesList_wrap">
-      <table class="table align-middle">
-        <thead>
-          <tr class="column_name">
-            <td>작품이미지</td>
-            <td>작품제목</td>
-            <td>경매시작일</td>
-            <td>시작가</td>
-            <td>입찰가</td>
-            <td>진행상태</td>
-            <td>판매상태</td>
-            <td>경매종료일</td>
-          </tr>
-        </thead>
-        <tbody class="salesList">
-          <th:block th:each="s,vs:${salesList}">
-            <tr class="auction" th:onClick="|location.href='@{/auction2/detail.do(auctionNo=${s.auctionDto.auctionNo})}'|" style="cursor:pointer;">
-              <td class="auction_image"><img th:src="|${s.auctionDto.image.path}/s_${s.auctionDto.image.filesystemName}|" class="image" alt="썸네일" width="120px" height="100px"></td>
-              <td class="auction_title" th:text="${s.auctionDto.artDto.title}"></td>
-              <td class="auction_date" th:text="${s.auctionDto.startAt}"></td>
-              <td class="auction_price" th:text="${#numbers.formatInteger(s.auctionDto.startPrice, 1, 'COMMA')}"></td>
-              <td class="auction_price" th:text="${#numbers.formatInteger(s.price, 1, 'COMMA')}"></td>
-              <th:block th:if="${s.auctionDto.status == 0}">
-                <td class="auction_status" th:text="진행"></td>
-                <td class="auction_status" th:text="판매진행중"></td>
-              </th:block>
-              <th:block th:if="${s.auctionDto.status == 1}">
-                <td class="auction_status" th:text="종료"></td>
-                <th:block th:if="${s.price == null}">
+      <div class="list_wrap">
+        <ul class="mypage_list">
+          <li><a th:href="@{/mypage/getAuctionBidList.do}" class="bid">입찰작품</a></li>
+          <li><a th:href="@{/mypage/getAuctionSalesList.do}" class="sales">출품작품</a></li>
+        </ul>
+      </div>
+        
+      <div class="table-responsive" id="salesList_wrap">
+        <table class="table align-middle">
+          <thead>
+            <tr class="column_name">
+              <td>작품이미지</td>
+              <td>작품제목</td>
+              <td>경매시작일</td>
+              <td>시작가</td>
+              <td>입찰가</td>
+              <td>진행상태</td>
+              <td>판매상태</td>
+              <td>경매종료일</td>
+            </tr>
+          </thead>
+          <tbody class="salesList">
+            <th:block th:each="s,vs:${salesList}">
+              <tr class="auction" th:onClick="|location.href='@{/auction2/detail.do(auctionNo=${s.auctionDto.auctionNo})}'|" style="cursor:pointer;">
+                <td class="auction_image"><img th:src="|${s.auctionDto.image.path}/s_${s.auctionDto.image.filesystemName}|" class="image" alt="썸네일" width="120px" height="100px"></td>
+                <td class="auction_title" th:text="${s.auctionDto.artDto.title}"></td>
+                <td class="auction_date" th:text="${s.auctionDto.startAt}"></td>
+                <td class="auction_price" th:text="${#numbers.formatInteger(s.auctionDto.startPrice, 1, 'COMMA')}"></td>
+                <td class="auction_price" th:text="${#numbers.formatInteger(s.price, 1, 'COMMA')}"></td>
+                <th:block th:if="${s.auctionDto.status == 0}">
+                  <td class="auction_status" th:text="진행"></td>
+                  <td class="auction_status" th:text="판매진행중"></td>
+                </th:block>
+                <th:block th:if="${s.auctionDto.status == 1}">
+                  <td class="auction_status" th:text="종료"></td>
+                  <th:block th:if="${s.price == null}">
+                    <td class="auction_status" th:text="유찰"></td>
+                  </th:block>
+                  <th:block th:if="${s.price != null}">
+                    <td class="auction_status" th:text="판매완료"></td>
+                  </th:block>
+                </th:block>
+                <th:block th:if="${s.auctionDto.status == -1}">
+                  <td class="auction_status" th:text="종료"></td>
                   <td class="auction_status" th:text="유찰"></td>
                 </th:block>
-                <th:block th:if="${s.price != null}">
-                  <td class="auction_status" th:text="판매완료"></td>
-                </th:block>
-              </th:block>
-              <th:block th:if="${s.auctionDto.status == -1}">
-                <td class="auction_status" th:text="종료"></td>
-                <td class="auction_status" th:text="유찰"></td>
-              </th:block>
-              <td class="auction_date" th:text="${s.auctionDto.endAt}"></td>
+                <td class="auction_date" th:text="${s.auctionDto.endAt}"></td>
+              </tr>
+            </th:block>
+          </tbody>
+          <tfoot th:if="${not #lists.isEmpty(salesList)}">
+            <tr>
+              <td colspans="10" th:utext="${paging}"></td>
             </tr>
-          </th:block>
-        </tbody>
-        <tfoot th:if="${not #lists.isEmpty(salesList)}">
-          <tr>
-            <td colspans="10" th:utext="${paging}"></td>
-          </tr>
-        </tfoot>
-      </table>
+          </tfoot>
+        </table>
+        
+      </div>
       
     </div>
-    
   </div>
-  
   
   <div th:replace="~{/layout/footer::footer}"></div>
   
