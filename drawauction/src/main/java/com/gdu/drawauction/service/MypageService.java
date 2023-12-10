@@ -12,10 +12,12 @@ public interface MypageService {
 
   public ResponseEntity<Map<String, Object>> modify(HttpServletRequest request);  // 회원 정보 수정
   
-  public ResponseEntity<Map<String, Object>> modifyIntroduction(HttpServletRequest request);  // 소개글 수정
-  
   public void modifyPw(HttpServletRequest request, HttpServletResponse response);   // 비밀번호 변경
+  
+  public ResponseEntity<Map<String, Object>> modifyIntroduction(HttpServletRequest request);  // 소개글 수정
 
+  //public Map<String, Object> addUserImage(MultipartHttpServletRequest multipartRequest) throws Exception;
+  
   public void getCount(HttpServletRequest request, Model model);   // 갯수
   
   public void getAuctionBidList(HttpServletRequest request, Model model);    // 입찰 목록
@@ -26,4 +28,5 @@ public interface MypageService {
 
   public Map<String, Object> getDrawOrderList(HttpServletRequest request);    // 주문한 그려드림 목록
  
+  public void getEmoneyList(HttpServletRequest request, Model model);   // E-MONEY 내역
 }

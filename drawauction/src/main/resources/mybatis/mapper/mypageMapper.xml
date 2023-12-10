@@ -194,6 +194,27 @@
   </update>
   
   
+  <!--/*
+  <insert id="insertUserImage" parameterType="UserImageDto">
+    INSERT INTO USER_IMAGE_T (
+      USER_IMAGE_NO
+    , USER_NO
+    , PATH
+    , FILESYSTEM_NAME
+    , IMAGE_ORIGINAL_NAME
+    , HAS_THUMBNAIL
+  ) VALUES (
+      USER_IMAGE_SEQ.NEXTVAL
+    , #{userNo}
+    , #{path}
+    , #{filesystemName}
+    , #{imageOriginalName}
+    , #{hasThumbnail}
+  )
+  </insert>
+  */-->
+  
+  
   
   <select id="getArtForSaleCount" parameterType="int" resultType="int">
     SELECT COUNT(*)
