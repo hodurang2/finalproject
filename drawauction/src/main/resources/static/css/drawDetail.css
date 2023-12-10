@@ -1,0 +1,173 @@
+@charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css');
+  
+
+.wrap_6{
+	letter-spacing:-0.5px;
+}
+
+  
+#wish_list{
+	cursor: pointer;
+  }
+  
+  /* 건들지마시오 */
+  /* 그리드 컨테이너 스타일 */
+    .grid-container {
+        display: grid;
+        grid-template-columns: 2fr 1fr; /* 2개의 열을 갖는 그리드 */
+        gap: 1px; /* 열 간의 간격 설정 */
+    }
+    
+     .grid-item1 {
+		 width: 70%;
+		text-align: left;
+    }
+
+    /* 그리드 아이템 스타일 */
+    .grid-item {
+        padding: 20px;
+    }
+  
+  
+  .grid_2{
+	  margin-top: 4%;
+	   display: flex;
+        justify-content: space-between; /* 두 요소 사이의 간격을 최대로 벌림 */
+  }
+  
+  
+  
+  
+  
+  
+  /* 작가정보 */
+  .artist{
+	  margin-top: 5%;
+	  margin-bottom: 5%;
+  }
+  
+  .nick{
+	  font-size: 20px;
+	  color: gray;
+	  border: 2px;
+  }
+  
+  .intro{
+	  font-size: 16px;
+	  color: lightgray;
+  }
+  
+  .flex-container {
+    display: flex;
+    justify-content: space-between; /* 요소들 간 간격을 최대로 벌리기 */
+}
+
+	.btn_buy{
+		border: none;
+  		outline: none; /* 선택 시 포커스 테두리 제거 */
+		width: 100%; 
+		height: 70px;
+		border-radius: 10px; 
+		transition: background-color 0.3s ease; 
+		margin-top: 3%;
+		font-size: 150%;
+		font-weight: 800;
+	 }
+
+
+#btn_chat, 
+#btn_orderPayment{
+		border: none;
+  		outline: none; /* 선택 시 포커스 테두리 제거 */
+		width: 100%; 
+		height: 70px;
+		border-radius: 10px; 
+		transition: background-color 0.3s ease; 
+		margin-top: 3%;
+		font-size: 150%;
+		font-weight: 800;
+		color: white;
+}
+
+
+.art_title{
+	font-weight: 600;
+	font-size: 230%;
+	margin-bottom: 10%;
+}
+
+.category{
+	margin-bottom: 5%;
+	font-size: 100%;
+	color:  dimgray;
+}
+
+.sub_title{
+	font-weight: 700;
+	color: dimgray;
+	
+}
+
+.sub_contents_now{
+	font-weight: 900;
+	color: rgb(84, 186, 125);
+}
+
+
+.image{
+	width: 700px;
+	height: 0 auto;
+	border: 1px lightgray;
+}
+
+.image img{
+	width: 100%;
+}
+
+/* 편집, 삭제버튼 css */
+.mody_delete {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center; /* 세로 정렬을 위해 추가 */
+}
+
+.modify_btn,
+.delete_btn {
+	margin-left: 10px;
+	padding: 10px;
+	border: 2px solid lightgray;
+	background-color: white;
+	border-radius: 8px; 
+	transition: background-color 0.3s ease; 
+  
+}
+
+
+/* 작품설명, 작품정보 css */
+.art_detail{
+	margin-top: 5%;
+	font-size: 110%;
+	font-weight: 700;
+}
+.art_contents{
+	margin-top: 11%;
+	font-size: 110%;
+	font-weight: 700;
+}
+
+
+/* 카카오 공유 */
+  #btnKakao {
+	  width: 43px;
+	  height: 43px; 
+	  background-image: url(../../image/icon-kakao.png);
+	  background-repeat: no-repeat;
+	  position: absolute;
+	  top: 11.6%;
+	  right: 11%;
+	  transform: translateY(-50%); 
+	}
+  
