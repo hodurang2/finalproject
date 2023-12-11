@@ -361,7 +361,7 @@
   </select>
   
   <select id="getOrderReview" parameterType="Map" resultMap="DrawOrderMap">
-	SELECT O.ORDER_NO, O.DRAW_NO, O.BUYER_NO, O.ORDER_DATE, O.PRICE, O.RECEIVE_EMAIL, U.NICKNAME, U.USER_NO
+	SELECT O.ORDER_NO, O.DRAW_NO, O.BUYER_NO, O.ORDER_DATE, O.PRICE, O.RECEIVE_EMAIL, O.DRAW_REQUEST, U.NICKNAME, U.USER_NO
 	  FROM DRAW_ORDER_T O INNER JOIN DRAW_T D
 	    ON O.DRAW_NO = D.DRAW_NO INNER JOIN USER_T U
 	    ON U.USER_NO = O.BUYER_NO
@@ -393,6 +393,7 @@
 	, ORDER_DATE
 	, PRICE
 	, RECEIVE_EMAIL
+	, DRAW_REQUEST
 	) VALUES (
 	  DRAW_ORDER_SEQ.NEXTVAL
 	, #{drawNo}
@@ -400,6 +401,7 @@
 	, SYSDATE
 	, #{price}
 	, #{receiveEmail}
+	, #{drawRequest}
 	)
 	  
   </insert>
