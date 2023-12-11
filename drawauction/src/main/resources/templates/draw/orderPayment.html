@@ -130,8 +130,6 @@
 	  var price2 =  $('.price').val();
 	  var balance2 = $('.balance').val();
 	  var emoney2 = $('.emoneyHistory').val();
-	  console.log(price);
-	  console.log(emoney);
 	  const fnOrderConfirm = () => {
 		$('.btn_orderPayment').click((ev) => {
 	 	  var receiveEmail = $('#receiveEmail').val();
@@ -141,7 +139,9 @@
 	        ev.preventDefault();
 	        return;
 		  } else if(price > emoney){
-			alert('Emoney가 모자랍니다.');
+		    if(confirm('Emoney가 모자랍니다. 충전하러 가시겠습니까?')){
+			  location.href = '/mypage/charge.do';
+			};
 			ev.preventDefault();
 			return;
 	      } else if(confirm('결제 금액 : ' + price2 + '  결제 하시겠습니까? (결제 후 잔액  ' + balance2 + ')  결제 후 판매자 이메일로 사진을 꼭 보내주세요.')){
