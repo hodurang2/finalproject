@@ -58,8 +58,8 @@
           <div class="col-sm-3"><input type="text" id="receiveEmail" name="receiveEmail" class="form-control"></div>
         </div>
         <div class="mt-3" style="display: flex; align-items: center;">
-          <label class="form-label" style="width: 150px; margin-top:9px;">요청사항</label>
-          <textarea rows="8" class="form-control"></textarea>
+          <label for="drawRequest" class="form-label" style="width: 150px; margin-top:9px;">요청사항</label>
+          <textarea rows="8" name="drawRequest" id="drawRequest" class="form-control"></textarea>
         </div>
         <pre>
 		</pre>
@@ -96,15 +96,18 @@
 	    <hr>
 	    <div class="mt-3" th:if="${session.user != null}" style="display: flex; align-items: center;">
 		  <label for="emoneyHistory" class="form-label" style="width: 150px; margin-top:9px;">보유 포인트</label>
-		  <input type="text" name="emoneyHistory" id="emoneyHistory" class="form-control-plaintext" th:value="|${#numbers.formatInteger(emoney, 0, 'COMMA')} P|" readonly>
+		  <input type="text" class="form-control-plaintext emoneyHistory" th:value="|${#numbers.formatInteger(emoney, 0, 'COMMA')} P|" readonly>
+		  <input type="hidden" name="emoneyHistory" id="emoneyHistory" class="form-control-plaintext" th:value="${emoney}" readonly>
         </div>
 	    <div class="mt-3" th:if="${session.user != null}" style="display: flex; align-items: center;">
 		  <label for="price" class="form-label" style="width: 150px; margin-top:9px;">결제 금액</label>
-		  <input type="text" id="price" class="form-control-plaintext" th:value="|${#numbers.formatInteger(draw.price, 0, 'COMMA')} P|" readonly>
+		  <input type="text" class="form-control-plaintext price" th:value="|${#numbers.formatInteger(draw.price, 0, 'COMMA')} P|" readonly>
+		  <input type="hidden" id="price" class="form-control-plaintext" th:value="${draw.price}" readonly>
         </div>
 	    <div class="mt-3" th:if="${session.user != null}" style="display: flex; align-items: center;">
 		  <label for="balance" class="form-label" style="width: 150px; margin-top:9px;">결제 후 잔액</label>
-		  <input type="text" id="balance" class="form-control-plaintext" th:value="|${#numbers.formatInteger((emoney - draw.price),  0, 'COMMA')} P|" readonly>
+		  <input type="text" class="form-control-plaintext balance" th:value="|${#numbers.formatInteger((emoney - draw.price),  0, 'COMMA')} P|" readonly>
+		  <input type="hidden" id="balance" class="form-control-plaintext" th:value="${(emoney - draw.price)}" readonly>
         </div>
         <div class="text-center mt-5" th:if="${session.user != null}">
           <a th:href="@{/draw/list.do}">
@@ -121,9 +124,14 @@
       
     <script>
 		
-	  var price = $('#price').val();
-	  var balance = $('#balance').val();
-	  
+	  var price = parseInt($('#price').val(), 10);
+      var balance = parseInt($('#balance').val(), 10);
+	  var emoney = parseInt($('#emoneyHistory').val(), 10);
+	  var price2 =  $('.price').val();
+	  var balance2 = $('.balance').val();
+	  var emoney2 = $('.emoneyHistory').val();
+	  console.log(price);
+	  console.log(emoney);
 	  const fnOrderConfirm = () => {
 		$('.btn_orderPayment').click((ev) => {
 	 	  var receiveEmail = $('#receiveEmail').val();
@@ -132,10 +140,14 @@
 	        alert('잘못된 이메일 입니다. 이메일을 확인하세요.');
 	        ev.preventDefault();
 	        return;
-	      }
-		  if(confirm('결제 금액 : ' + price + '  결제 하시겠습니까? (결제 후 잔액  ' + balance + ')  결제 후 판매자 이메일로 사진을 꼭 보내주세요.')){
+		  } else if(price > emoney){
+			alert('Emoney가 모자랍니다.');
+			ev.preventDefault();
+			return;
+	      } else if(confirm('결제 금액 : ' + price2 + '  결제 하시겠습니까? (결제 후 잔액  ' + balance2 + ')  결제 후 판매자 이메일로 사진을 꼭 보내주세요.')){
 			$('#frm_orderPayment').submit();
 		  }
+	      
 		})
 	  }
 	  

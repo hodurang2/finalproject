@@ -479,11 +479,13 @@ public class DrawServiceImpl implements DrawService{
 		int price = Integer.parseInt(request.getParameter("price"));
 		int userNo = Integer.parseInt(request.getParameter("userNo"));    // 판매자 userNo
 		String receiveEmail = request.getParameter("receiveEmail");
+		String drawRequest = request.getParameter("drawRequest");
 		
 		Map<String, Object> drawOrderMap = Map.of("drawNo", drawNo
 											    , "buyerNo", buyerNo
 											    , "price", price
-											    , "receiveEmail", receiveEmail);
+											    , "receiveEmail", receiveEmail
+											    , "drawRequest", drawRequest);
 		
 		Map<String, Object> emoneyMap = Map.of("userNo", userNo
 										     	   , "price", price
