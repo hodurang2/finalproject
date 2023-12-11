@@ -171,5 +171,11 @@
      WHERE INQUIRY_ATTACH_NO = #{inquiryAttachNo}
   </select>
   
+  <!-- 1:1문의 답변 삭제 -->
+  <update id="deleteAnswer" parameterType="int">
+    UPDATE ANSWER_T
+       SET STATUS = 0
+     WHERE INQUIRY_NO = #{inquiryNo}
+  </update>
   
 </mapper>

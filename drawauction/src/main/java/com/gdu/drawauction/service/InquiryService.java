@@ -19,6 +19,7 @@ public interface InquiryService {
   
   public Map<String, Object> addAnswer(HttpServletRequest request);
   public Map<String, Object> loadAnswerList(HttpServletRequest request);
+  public Map<String, Object> removeAnswer(int inquiryNo);
   
   public Map<String, Object> imageUpload(MultipartHttpServletRequest multipartRequest);
   public Map<String, Object> getInquiryAttachList(HttpServletRequest request);

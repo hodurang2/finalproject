@@ -5,6 +5,7 @@
 
 .my_wrap {
   float: left;
+  margin-bottom: 100px;
 }
 .my_profile {
   margin-top: 40px;
@@ -50,12 +51,10 @@
 }
 .right_wrap {
   float: left;
-  margin-top: 40px;
-  margin-left: 60px;
-  margin-right: 20px;
   width: 1000px;
-  height: 900px;
-  margin-bottom: 400px;
+  margin-left: 50px;
+  margin-top: 40px;
+  margin-bottom: 50px;
 }
 .footer_wrap {
   clear: both;
