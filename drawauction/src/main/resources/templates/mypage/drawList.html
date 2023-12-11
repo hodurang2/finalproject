@@ -89,11 +89,13 @@
         <ul class="mypage_list">
           <li><a href="javascript:fnShowMy()" id="my">올린 그려드림</a></li>
           <li><a href="javascript:fnShowOrder()" id="order">주문한 그려드림</a></li>
+          <li><a href="javascript:fnShowReceivedOrder()" id="received">주문받은 그려드림</a></li>
         </ul>
       </div>
       
       <div id="my_draw_list" class="my_draw_list"></div>  
       <div id="order_draw_list" class="order_draw_list"></div>
+      <div id="received_order_draw_list" class="received_order_draw_list"></div>
   
     </div>
   </div>
@@ -161,6 +163,36 @@
         }
       })
     }
+    
+    const fnGetDrawReceivedOrderList = () => {
+      $.ajax({
+        // 요청
+        type: 'get',
+        url: '/mypage/getDrawReceivedOrderList.do',
+        data: 'page=' + page,
+        // 응답
+        dataType: 'json',
+        success: (resData) => {
+          totalPage = resData.totalPage;
+          $.each(resData.drawReceivedOrderList,(i, r) => {
+            let draw = r.drawDto;
+            let str = '<div class="draw" data-draw_no="' + draw.drawNo + '">';
+            str +=   '<div class="draw_image_wrap" data-draw_no="' + draw.drawNo + '"><img class="image" src="' + draw.image.path + '/s_' + draw.image.filesystemName + '"></div>';
+            str +=   '<div class="draw_info_wrap">';
+            str +=     '<div class="draw_title"><span class="draw_info">제목</span><span class="draw_value">' + draw.title + '</span></div>';
+            str +=     '<div class="draw_category"><span class="draw_info">카테고리</span><span class="draw_value">' + draw.categoryDto.categoryName + '</span></div>';
+            str +=     '<div class="draw_orderDate"><span class="draw_info">주문날짜</span><span class="draw_value">' + order.orderDate + '</span></div>';
+            str +=     '<div class="draw_workTerm"><span class="draw_info">작업기간</span><span class="draw_value">' + draw.workTerm + '일</span></div>';
+            str +=     '<div class="draw_email"><span class="draw_info">수령이메일</span><span class="draw_value">' + order.receiveEmail + '</span></div>';
+            str +=     '<div class="draw_price"><span class="draw_info">가격</span><span class="draw_value">' + draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>';
+            str +=     '<div id="drawNo" style="display:none">글번호: ' + draw.drawNo + '</div>';
+            str +=   '</div>';
+            str += '</div>';
+            $('#received_order_draw_list').append(str);
+          })
+        }
+      })
+    }
       
     const fnDrawDetail = () => {
       $(document).on('click', '.draw', function(){
@@ -193,6 +225,8 @@
               fnGetDrawOrderList();
             } else if ($('#my_draw_list').is(':visible')) {
               fnGetMyDrawList();
+            } else if ($('#received_order_draw_list').is(':visible')) {
+              fnGetDrawReceivedOrderList();
             }
           }
             
@@ -207,8 +241,9 @@
     });
     
     const fnShowMy = () => {
-      // fnGetDrawOrderList()에서 추가한 내용 숨기기
+
       $('#order_draw_list').hide();
+      $('#received_order_draw_list').hide();
       
       // fnGetMyDrawList()에서 추가한 내용 보이기
       $('#my_draw_list').show();
@@ -216,15 +251,25 @@
     }
     
     const fnShowOrder = () => {
-      // fnGetMyDrawList()에서 추가한 내용 숨기기
+
       $('#my_draw_list').hide();
+      $('#received_order_draw_list').hide();
       
       // fnGetDrawOrderList()에서 추가한 내용 보이기
       $('#order_draw_list').show();
     }
+    
+    const fnShowReceivedOrder = () => {
+      $('#my_draw_list').hide();
+      $('#order_draw_list').hide();
+      
+      // fnGetDrawReceivedOrderList()에서 추가한 내용 보이기
+      $('#received_order_draw_list').show();
+    }
      
      fnGetMyDrawList();
      fnGetDrawOrderList();
+     fnShowReceivedOrder();
      fnDrawDetail();
      fnScroll();
     

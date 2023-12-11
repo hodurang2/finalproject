@@ -27,6 +27,8 @@ public interface MypageService {
   public Map<String, Object> getMyDrawList(HttpServletRequest request);    // 나의 그려드림 목록
 
   public Map<String, Object> getDrawOrderList(HttpServletRequest request);    // 주문한 그려드림 목록
+  
+  public Map<String, Object> getDrawReceivedOrderList(HttpServletRequest request);    // 주문받은 그려드림 목록
  
   public void getEmoneyList(HttpServletRequest request, Model model);   // E-MONEY 내역
   

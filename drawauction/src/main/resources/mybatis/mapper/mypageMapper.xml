@@ -384,6 +384,17 @@
      WHERE A.RN BETWEEN #{begin} AND #{end}
      ORDER BY ORDER_DATE DESC
   </select>
+  
+  <select id="getDrawReceivedOrderCount" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+      FROM DRAW_ORDER_T DO LEFT OUTER JOIN DRAW_T D
+        ON D.DRAW_NO = DO.DRAW_NO
+     WHERE SELLER_NO = #{sellerNo}
+  </select>
+   
+  <select id="getDrawReceivedOrderList" parameterType="Map" resultMap="DrawOrderMap">
+
+  </select>
    
   <select id="getEmoneyCount" parameterType="int" resultType="int">
     SELECT COUNT(*)

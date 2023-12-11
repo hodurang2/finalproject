@@ -451,6 +451,48 @@ public class MypageServiceImpl implements MypageService {
     
   }
   
+  @Transactional(readOnly=true)
+  @Override
+  public Map<String, Object> getDrawReceivedOrderList(HttpServletRequest request) {
+    
+    Map<String, Object> map = new HashMap<>();
+    
+    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(opt.orElse("1"));
+    
+    HttpSession session = request.getSession();
+    UserDto user = (UserDto)session.getAttribute("user");
+
+    if(user != null) {
+    
+      int sellerNo = user.getUserNo();
+      int total = mypageMapper.getDrawReceivedOrderCount(sellerNo);
+      int display = 9;
+
+      myPageUtils.setPaging(page, total, display);
+      
+      List<DrawOrderDto> drawReceivedOrderList = mypageMapper.getDrawReceivedOrderList(Map.of("begin", myPageUtils.getBegin()
+                                                                                           , "end", myPageUtils.getEnd()
+                                                                                           , "sellerNo", sellerNo));
+      
+      
+      // 여기 다시 체크
+      for(DrawOrderDto drawOrderDto : drawReceivedOrderList) {
+        drawOrderDto.getDrawDto().setImage(mypageMapper.getDrawImage(drawOrderDto.getDrawDto().getDrawNo()));
+      }
+      
+      map.put("drawReceivedOrderList", drawReceivedOrderList);
+      map.put("totalPage", myPageUtils.getTotalPage());
+
+    } else {
+      
+      map.put("drawReceivedOrderList", null);
+      
+    }
+    return map;
+    
+  }
+  
   @Override
   public void getEmoneyList(HttpServletRequest request, Model model) {
     
@@ -471,7 +513,8 @@ public class MypageServiceImpl implements MypageService {
       }
       
       int balance = balanceList.get(total-1);
-      Collections.reverse(balanceList);
+      
+      Collections.reverse(balanceList);     // balanceList 역순으로 저장
       
       myPageUtils.setPaging(page, total, display);
       
