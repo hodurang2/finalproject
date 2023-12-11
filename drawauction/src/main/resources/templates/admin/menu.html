@@ -4,28 +4,40 @@
 <head th:replace="~{/layout/header::head('관리자 로그인')}"></head>
 
 
+
 <body>
+<!-- templates/admin/menu.html -->
+<div th:fragment="menu">
+
+<div class="offcanvas offcanvas-start show" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+  <div class="offcanvas-header">
+	<img th:src="@{/image/minilogo.png}" width="60px">
+    <h5 class="offcanvas-title" id="offcanvasLabel">관리자</h5>
+  </div>
+  <div class="offcanvas-body">
+    <ul style="font-size: 130%;">
+		
+		<hr>
+		<li style="margin-top: 6%; font-weight: 700; font-size: 120%;">회원관리</li>
+		<li><a th:href="|@{/admin/userList.do}|">사용자</a></li>
+		<hr>
+		<li style="margin-top: 6%; font-weight: 700; font-size: 120%;">게시글관리</li>
+		<li><a th:href="@{/admin/auctionListAdmin.do}">경매글관리</a></li>
+		<li><a th:href="@{/admin/drawListAdmin.do}">그려드림관리</a></li>
+				<hr>
+		<li style="margin-top: 6%; font-weight: 700; font-size: 120%;">고객센터관리</li>
+		<li><a th:href="@{/admin/auctionListAdmin.do}">공지사항관리</a></li>
+	</ul>
+  </div>
+</div>
 	
-	<!--관리자님 환영해요^^-->
-	<div>
-		<span th:text="|${session.user.name}|"></span> 님 환영합니다.
-	</div>
- 	
-	<!--회원관리-->
-	<ul>
-        <li><a th:href="@{/admin/userList.do}">회원관리</a></li>
-    </ul>
- 	
- 	<!--게시글관리-->
- 	<ul>
-		 <li><a th:href="@{/admin/.do}">경매글 관리</a></li>
-		 <li><a th:href="@{/admin/.do}">그려드림 관리</a></li>
-	 </ul>
- 
- 	<!--고객센터 관리-->
- 	<ul>
-		 <li><a th:href="@{/admin/.do}">공지사항 관리</a></li>	<!--1:1문의는 이야기해보기.-->		 
-	 </ul>
+
+
+    
+</div>
+
+
+	
   
   </body>
   </html>
