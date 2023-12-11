@@ -59,6 +59,9 @@
       </th:block>
       <th:block th:if="${session.user != null}">
         <ul class="ico_user_group">
+		<th:block th:if="${session.user != null and session.user.email == 'admin01@naver.com'}">
+			<a th:href="@{/admin/home.form}">관리자페이지</a>
+		</th:block>
 			<li>
 			  <a th:href="@{/mypage/detail.do}">
 			    <span th:text="|${session.user.name}|"></span> 님 환영합니다
