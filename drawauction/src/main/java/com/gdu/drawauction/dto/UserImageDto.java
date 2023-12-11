@@ -1,7 +1,5 @@
 package com.gdu.drawauction.dto;
 
-import java.sql.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,9 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class EmoneyDto {
-	private int emoneyNo;
-	private UserDto userDto; // userNo
-	private int emoneyHistory;
-	private String emoneyDate;
+public class UserImageDto {
+	private int userImageNo;
+	private int userNo;
+	private String path;
+	private String filesystemName;
+	private String imageOriginalName;
+	private int hasThumbnail;
 }

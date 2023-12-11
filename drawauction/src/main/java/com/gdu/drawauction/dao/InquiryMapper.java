@@ -22,9 +22,9 @@ public interface InquiryMapper {
   public InquiryAttachDto getInquiryAttach(int inquiryAttachNo);
   
   public int insertAnswer(AnswerDto answer);
+  public int deleteAnswer(int inquiryNo);
   public int getAnswerCount(int inquiryNo);
   public List<AnswerDto> getAnswerList(Map<String, Object> map);
-  public int insertAnswerReply(AnswerDto answer);
   
   
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.gdu.drawauction.dao.AdminMapper">
+
+
+
+		<select id="getAdminUser" parameterType="Map" resultType="AdminDto">
+		SELECT USER_NO, EMAIL, PW, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION
+		  FROM USER_T
+		<where>
+	      <if test="email != null">EMAIL = #{email}</if>
+	      <if test="pw != null">AND PW = #{pw}</if>
+	      <if test="userNo != null">AND USER_NO = #{userNo}</if>
+	    </where>
+	</select>
+
+	
+	  <insert id="insertAccess" parameterType="String">
+	    INSERT INTO ACCESS_T (
+	    	EMAIL, LOGIN_AT
+	    ) VALUES (
+			#{email}, SYSDATE
+	    )
+  	</insert>
+	
+
+</mapper>

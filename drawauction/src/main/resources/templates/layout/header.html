@@ -49,6 +49,7 @@
 		   <div class="login_wrap">
       <th:block th:if="${session.user == null}">
         <ul class="ico_user_group">
+
           <li><a th:href="@{/user/login.form}">로그인</a></li>
           <li>│</li>
           <li><a th:href="@{/user/agree.form}">회원가입</a></li>
@@ -80,12 +81,28 @@
     <div class="logo"><a th:href="@{/main.do}"><img th:src="@{../../image/한글로고.png}" width="250px"></a></div>
     <div>
 		<li><i class="fas fa-regular fa-user mypage_event" id="mypage" style="cursor: pointer;"></i></li>
-		<li><i class="fas fa-regular fa-bell mypage_event" style="cursor: pointer;"></i></li>
+		<li><i id="btn-modal" class="fas fa-regular fa-bell mypage_event" style="cursor: pointer;"></i></li>
 		<li><i class="fas fa-regular fa-comments mypage_event" style="cursor: pointer;"></i></li>
 
     
     </div>
 </div>
+</div>
+
+<div id="container"></div>
+<div id="modal" class="modal-overlay">
+    <div class="modal-window">
+        <div class="title">
+            <h2>모달</h2>
+        </div>
+        <div class="close-area">X</div>
+        <div class="content">
+            <p>가나다라마바사 아자차카타파하</p>
+            <p>가나다라마바사 아자차카타파하</p>
+            <p>가나다라마바사 아자차카타파하</p>
+            <p>가나다라마바사 아자차카타파하</p>
+        </div>
+    </div>
 </div>
 
 	<!--아이콘-->
@@ -115,7 +132,40 @@
                 return;
         });
     };
+    
+    const modal = document.getElementById("modal")
+	function modalOn() {
+	    modal.style.display = "flex"
+	}
+	function isModalOn() {
+	    return modal.style.display === "flex"
+	}
+	function modalOff() {
+	    modal.style.display = "none"
+	}
+	const btnModal = document.getElementById("btn-modal")
+	btnModal.addEventListener("click", e => {
+	    modalOn()
+	})
+	const closeBtn = modal.querySelector(".close-area")
+	closeBtn.addEventListener("click", e => {
+	    modalOff()
+	})
+	modal.addEventListener("click", e => {
+	    const evTarget = e.target
+	    if(evTarget.classList.contains("modal-overlay")) {
+	        modalOff()
+	    }
+	})
+	window.addEventListener("keyup", e => {
+	    if(isModalOn() && e.key === "Escape") {
+	        modalOff()
+	    }
+	})
 
+	modalOn();
+	isModalOn();
+	modalOff();
     fnIconsClickEvent(); // 함수 호출
     fnMyPage();
 </script>

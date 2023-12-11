@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.gdu.drawauction.dao.AlarmMapper;
 import com.gdu.drawauction.dao.DrawMapper;
 import com.gdu.drawauction.dto.CategoryDto;
 import com.gdu.drawauction.dto.DrawDto;
@@ -36,6 +37,7 @@ import net.coobird.thumbnailator.Thumbnails;
 public class DrawServiceImpl implements DrawService{
 	
 	private final DrawMapper drawMapper;
+	private final AlarmMapper alarmMapper;
 	private final MyFileUtils myFileUtils;
 	private final MyPageUtils myPageUtils;
 	
@@ -437,13 +439,22 @@ public class DrawServiceImpl implements DrawService{
 	public int addReview(HttpServletRequest request) {
 		
 		int drawNo = Integer.parseInt(request.getParameter("drawNo"));
-		int userNo = Integer.parseInt(request.getParameter("userNo"));
+		int userNo = Integer.parseInt(request.getParameter("userNo"));      // 리뷰작성자 userNo
 		int rating = Integer.parseInt(request.getParameter("rating"));
+		int sellerNo = Integer.parseInt(request.getParameter("sellerNo"));  // 판매자 userNo
 		String reviewContents = request.getParameter("reviewContents");
 		Map<String, Object> map = Map.of("drawNo", drawNo
 									   , "userNo", userNo
 									   , "rating", rating
 									   , "reviewContents", reviewContents);
+		// 알림에 보낼 Map
+		String alarmContents = "그려드림 상품후기가 등록되었습니다.";
+		String alarmType = "그려드림";
+		Map<String, Object> alarmMap = Map.of("userNo", sellerNo
+											, "drawNo", drawNo
+											, "alarmContents", alarmContents
+											, "alarmType", alarmType);
+		alarmMapper.insertDrawAlarm(alarmMap);
 		
 		return drawMapper.addReview(map);
 	}
@@ -477,6 +488,15 @@ public class DrawServiceImpl implements DrawService{
 		Map<String, Object> emoneyMap = Map.of("userNo", userNo
 										     	   , "price", price
 										     	   , "buyerNo", buyerNo);
+		
+		// 알림에 보낼 Map
+		String alarmContents = "그려드림 주문신청이 있습니다. 마이페이지에서 확인해주세요.";
+		String alarmType = "그려드림";
+		Map<String, Object> alarmMap = Map.of("userNo", userNo
+											, "drawNo", drawNo
+											, "alarmContents", alarmContents
+											, "alarmType", alarmType);
+		alarmMapper.insertDrawAlarm(alarmMap);
 		
 			
 		int buyerResult = drawMapper.insertBuyerEmoney(emoneyMap);

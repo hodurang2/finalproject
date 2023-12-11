@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gdu.drawauction.service.MypageService;
 
@@ -57,6 +59,12 @@ public class MypageController {
   public ResponseEntity<Map<String, Object>> modifyIntroduction(HttpServletRequest request) {
     return mypageService.modifyIntroduction(request);
   }
+  /*
+  @PostMapping(value="/addUserImage.do", produces="application/json")
+  public Map<String, Object> addUserImage(MultipartHttpServletRequest multipartRequest) throws Exception {
+    return mypageService.addUserImage(multipartRequest);
+  }
+  */
   
   @GetMapping("/getAuctionBidList.do")
   public String getAuctionBidList(HttpServletRequest request, Model model) {
@@ -90,6 +98,12 @@ public class MypageController {
   @GetMapping("/charge.do")
   public String emoneyCharge() {
     return "mypage/chargeEmoney";
+  }
+  
+  @GetMapping("/getEmoneyList.do")
+  public String emoneyList(HttpServletRequest request, Model model) {
+    mypageService.getEmoneyList(request, model);
+    return "mypage/emoneyList";
   }
   
 }
