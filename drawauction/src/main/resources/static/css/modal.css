@@ -1,0 +1,47 @@
+@charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css');
+
+#modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgb(192, 192, 192);
+  width: 100%;
+  height: 400px;
+  max-width: 600px;
+  padding: 20px;
+  border-radius: 8px;
+  z-index: 1000;
+}
+
+.modal-window {
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.modal-title {
+  background: rgb(84, 186, 125);
+  text-align: center;
+  color: #fff;
+  padding: 10px;
+}
+
+.close-area {
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-weight: bold;
+  font-size: 18px;
+  color: #fff;
+}
+
+.content {
+  padding: 10px;
+}
