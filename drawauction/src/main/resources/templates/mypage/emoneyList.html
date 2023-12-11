@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/layout/header::head('출품작품목록')}"></head>
+
+
+<body>
+  
+  <div th:replace="~{/layout/header::header}"></div>
+  <div class="wrap">
+    <div th:replace="~{/mypage/menu::side-menu}"></div>
+    
+    <div class="right_wrap">
+      <h3>E-Money 입출금 내역</h3>
+      
+      <div class="emoney_wrap">
+        
+        <div class="balance_wrap">
+          <table style="border:1px solid grey" class="table align-middle">
+            <tbody>
+              <tr>
+                <th>나의 E-MONEY 잔액</th>
+                <td class="d-grid gap-2 d-md-flex justify-content-md-end"><button type="button" class="btn_charge btn btn-primary me-md-2">충전하기</button></td>
+              </tr>
+              <tr>
+                <td colspan="2" th:text="|${#numbers.formatInteger(balance, 1, 'COMMA')} P|" style="color: crimson; font-weight: 600; font-size: x-large; text-align: right;"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="emoneyList_wrap">
+          <h4 style="margin-top: 50px;">이용내역</h4>
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <td>일자</td>
+                <td>입금</td>
+                <td>출금</td>
+                <td>잔액</td>
+              </tr>
+            </thead>
+            <tbody class="emoneyList">
+              <th:block th:each="e,vs:${emoneyList}">
+                <tr class="emoney">
+                  <td class="date" th:text="${e.emoneyDate}"></td>
+                  <th:block th:if="${e.emoneyHistory == 0}">
+                    <td></td><td></td>
+                  </th:block>
+                  <th:block th:if="${e.emoneyHistory > 0}">
+                    <td class="history" th:text="|${#numbers.formatInteger(e.emoneyHistory, 1, 'COMMA')} P|"></td>
+                    <td></td>         
+                  </th:block>
+                  <th:block th:if="${e.emoneyHistory < 0}">
+                    <td></td>   
+                    <td class="history" th:text="|${#numbers.formatInteger(e.emoneyHistory, 1, 'COMMA')} P|"></td>
+                  </th:block>
+                  
+
+                    <td th:text="|${#numbers.formatInteger(balanceList[vs.index], 1, 'COMMA')} P ${vs.index}|"></td>                    
+
+                </tr>
+              </th:block>
+            </tbody>
+            <tfoot th:if="${not #lists.isEmpty(emoneyList)}">
+              <tr>
+                <td colspans="5" th:utext="${paging}"></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        
+      </div>
+    
+    </div>
+  </div>
+  
+  
+  <div th:replace="~{/layout/footer::footer}"></div>
+  
+  <script>
+    
+    $(() => {
+      fnCharge();
+    })
+    
+    
+    const fnCharge = () => {
+      $(document).on('click', '.btn_charge', () => {
+        location.href='/mypage/charge.do';
+      })
+    }
+    
+  </script>
+  
+</body>
+</html>

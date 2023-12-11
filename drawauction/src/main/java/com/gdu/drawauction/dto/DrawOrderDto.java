@@ -18,4 +18,5 @@ public class DrawOrderDto {
   private String receiveEmail;
   private DrawDto drawDto;
   private UserDto userDto;
+  private String drawRequest;
 }

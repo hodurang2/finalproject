@@ -110,6 +110,30 @@
     </association>
   </resultMap>
   
+  <!-- EmoneyDto에 대한 resultMap -->
+  <resultMap    type="EmoneyDto"        id="EmoneyMap">
+    <id         column="EMONEY_NO"      property="emoneyNo" />
+    <result     column="EMONEY_HISTORY" property="emoneyHistory" />
+    <result     column="EMONEY_DATE"    property="emoneyDate" />
+    <association javaType="UserDto"      property="userDto">
+      <id        column="USER_NO"        property="userNo"/>
+      <result    column="EMAIL"          property="email" />
+      <result    column="PW"             property="pw" />
+      <result    column="NAME"           property="name" />
+      <result    column="MOBILE"         property="mobile" />
+      <result    column="GENDER"         property="gender" />
+      <result    column="AGREE"          property="agree" />
+      <result    column="STATE"          property="state" />
+      <result    column="JOINED_AT"      property="joinedAt" />
+      <result    column="POSTCODE"       property="postcode" />
+      <result    column="ROAD_ADDRESS"   property="roadAddress" />
+      <result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      <result    column="DETAIL_ADDRESS" property="detailAddress" />
+      <result    column="NICKNAME"       property="nickname" />
+      <result    column="INTRODUCTION"   property="introduction" />
+    </association>
+  </resultMap>
+  
   <!-- DrawOrderDto에 대한 resultMap -->
   <resultMap type="DrawOrderDto" id="DrawOrderMap">
     <id   column="ORDER_NO" property="orderNo"/>
@@ -164,6 +188,8 @@
       <result    column="INTRODUCTION"   property="introduction" />
     </association>
   </resultMap>
+  
+  
 
   
   
@@ -192,6 +218,27 @@
        SET PW = #{pw}
      WHERE USER_NO = #{userNo}
   </update>
+  
+  
+  <!--/*
+  <insert id="insertUserImage" parameterType="UserImageDto">
+    INSERT INTO USER_IMAGE_T (
+      USER_IMAGE_NO
+    , USER_NO
+    , PATH
+    , FILESYSTEM_NAME
+    , IMAGE_ORIGINAL_NAME
+    , HAS_THUMBNAIL
+  ) VALUES (
+      USER_IMAGE_SEQ.NEXTVAL
+    , #{userNo}
+    , #{path}
+    , #{filesystemName}
+    , #{imageOriginalName}
+    , #{hasThumbnail}
+  )
+  </insert>
+  */-->
   
   
   
@@ -316,15 +363,15 @@
       FROM DRAW_IMAGE_T
      WHERE DRAW_NO = #{drawNo}
        AND DRAW_IMAGE_NO = (SELECT MIN(DRAW_IMAGE_NO) FROM DRAW_IMAGE_T WHERE DRAW_NO = #{drawNo})
-   </select>
+  </select>
+ 
+  <select id="getDrawOrderCount" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+      FROM DRAW_ORDER_T
+     WHERE BUYER_NO = #{buyerNo}
+  </select>
    
-   <select id="getDrawOrderCount" parameterType="int" resultType="int">
-     SELECT COUNT(*)
-       FROM DRAW_ORDER_T
-      WHERE BUYER_NO = #{buyerNo}
-   </select>
-   
-   <select id="getDrawOrderList" parameterType="Map" resultMap="DrawOrderMap">
+  <select id="getDrawOrderList" parameterType="Map" resultMap="DrawOrderMap">
     SELECT A.DRAW_NO, A.CATEGORY_NO, C.CATEGORY_NAME, A.TITLE, A.CONTENTS, A.PRICE,
            A.ORDER_NO, A.BUYER_NO, A.ORDER_DATE, A.RECEIVE_EMAIL
       FROM (SELECT ROW_NUMBER() OVER(ORDER BY ORDER_DATE DESC) AS RN,
@@ -336,7 +383,33 @@
                 ON A.CATEGORY_NO = C.CATEGORY_NO
      WHERE A.RN BETWEEN #{begin} AND #{end}
      ORDER BY ORDER_DATE DESC
-   </select>
+  </select>
    
+  <select id="getEmoneyCount" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+    FROM (SELECT E.EMONEY_NO, E.USER_NO, E.EMONEY_HISTORY, E.EMONEY_DATE
+            FROM EMONEY_T E RIGHT OUTER JOIN USER_T U
+              ON E.USER_NO = U.USER_NO
+           WHERE U.USER_NO = #{userNo})
+  </select> 
+    
+  <select id="getEmoneyBalance" parameterType="Map" resultType="int">
+    SELECT SUM(A.EMONEY_HISTORY)
+      FROM (SELECT E.EMONEY_HISTORY, ROW_NUMBER() OVER (ORDER BY E.EMONEY_NO DESC) AS RN
+              FROM EMONEY_T E RIGHT OUTER JOIN USER_T U
+                ON E.USER_NO = U.USER_NO
+             WHERE U.USER_NO = #{userNo}) A
+     WHERE RN BETWEEN #{no} AND (SELECT COUNT(*) FROM EMONEY_T
+                                  WHERE USER_NO = #{userNo})
+  </select>  
+    
+  <select id="getEmoneyList" parameterType="Map" resultMap="EmoneyMap">
+    SELECT EMONEY_NO, USER_NO, EMONEY_HISTORY, EMONEY_DATE
+      FROM (SELECT E.EMONEY_NO, E.USER_NO, E.EMONEY_HISTORY, E.EMONEY_DATE, ROW_NUMBER() OVER (ORDER BY E.EMONEY_NO DESC) AS RN
+              FROM EMONEY_T E RIGHT OUTER JOIN USER_T U
+                ON E.USER_NO = U.USER_NO
+             WHERE U.USER_NO = #{userNo})
+     WHERE RN BETWEEN #{begin} AND #{end}
+  </select>
    
 </mapper>

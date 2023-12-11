@@ -10,8 +10,20 @@
   <aside class="my_wrap" th:fragment="side-menu">
   
     <div class="my_profile">    
-      <div>
+      <div id="profile_image">
         <h2>프로필사진</h2>       <!--/* 사용자 프로필 사진 넣어야 함 */-->
+        <!--/*
+        <form id="frm_profile_image" method="post" th:action="@{/mypage/addProfileImage.do}" enctype="multipart/form-data">
+          <input type="hidden" name="userNo" th:value="${session.user.userNo}">
+          <div id="profile_image">
+            <input type="file" name="file" id="file" multiple>
+            <div id="profile_image container"></div>
+          </div>
+          <div class="btn_profile_image_wrap">
+            <button type="submit" class="btn_profile_image">프로필 이미지 변경</button>
+          </div>
+        </form>
+        */-->
       </div>
       <div th:text="${session.user.nickname}" style="text-align: center;"></div>
       <div>
@@ -31,7 +43,7 @@
       <ul>
         <li><a th:href="@{/mypage/getAuctionBidList.do}">경매 이용 내역</a></li>
         <li><a th:href="@{/mypage/drawList.do}">그려드림 내역</a></li>
-        <li><a th:href="@{/mypage/charge.do}">E-MONEY</a></li>
+        <li><a th:href="@{/mypage/getEmoneyList.do}">E-MONEY</a></li>
         <li><a th:href="@{/mypage/wishList.do}">찜목록</a></li>
         <li><a th:href="@{/mypage/inquiryList.do}">1:1 문의</a></li>
         <li><a th:href="@{/mypage/reviewList.do}">리뷰</a></li>

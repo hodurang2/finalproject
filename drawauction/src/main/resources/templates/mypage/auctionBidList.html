@@ -46,8 +46,8 @@
                 <td class="auction_image"><img th:src="|${b.auctionDto.image.path}/s_${b.auctionDto.image.filesystemName}|" class="image" alt="썸네일" width="120px" height="100px"></td>                
                 <td class="auction_title" th:text="${b.auctionDto.artDto.title}"></td>
                 <td class="auction_date" th:text="${b.bidAt}"></td>
-                <td class="auction_price" th:text="${b.bidderDto.myPrice}"></td>
-                <td class="auction_price" th:text="${b.price}"></td>
+                <td class="auction_price" th:text="${#numbers.formatInteger(b.bidderDto.myPrice, 1, 'COMMA')}"></td>
+                <td class="auction_price" th:text="${#numbers.formatInteger(b.price, 1, 'COMMA')}"></td>
                 <th:block th:if="${b.auctionDto.status == 0}">
                   <td class="auction_status" th:text="진행"></td>
                   <th:block th:if="${b.price > b.bidderDto.myPrice}">
