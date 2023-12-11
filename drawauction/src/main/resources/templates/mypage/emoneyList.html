@@ -56,7 +56,7 @@
                   </th:block>
                   
 
-                    <td th:text="|${#numbers.formatInteger(balanceList[vs.index], 1, 'COMMA')} P ${vs.index}|"></td>                    
+                    <td th:text="|${#numbers.formatInteger(balanceList[vs.index + 5 * (page-1)], 1, 'COMMA')} P|"></td>                    
 
                 </tr>
               </th:block>

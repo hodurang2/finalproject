@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -470,6 +471,7 @@ public class MypageServiceImpl implements MypageService {
       }
       
       int balance = balanceList.get(total-1);
+      Collections.reverse(balanceList);
       
       myPageUtils.setPaging(page, total, display);
       
@@ -479,6 +481,7 @@ public class MypageServiceImpl implements MypageService {
       
       List<EmoneyDto> emoneyList = mypageMapper.getEmoneyList(map);
       
+      model.addAttribute("page", page);
       model.addAttribute("total", total);
       model.addAttribute("balanceList", balanceList);
       model.addAttribute("balance", balance);
