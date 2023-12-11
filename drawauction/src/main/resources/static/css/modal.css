@@ -9,20 +9,46 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgb(192, 192, 192);
+  background: rgb(255, 255, 255);
   width: 100%;
   height: 400px;
   max-width: 600px;
   padding: 20px;
   border-radius: 8px;
   z-index: 1000;
+  border: solid rgb(84, 186, 125) 5px;
+}
+#modal2 {
+  display: none;
+  position: absolute;
+  top: 25%;
+  right: 15.7%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  z-index: 999;
+  max-width: 200px; 
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  color: crimson;
+}
+
+#modal2::before {
+  content: '';
+  position: absolute;
+  border-style: solid;
+  border-width: 8px 8px 0;
+  border-color: #fff transparent transparent transparent;
+  top: 100%; /* Position the triangle below the modal content */
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .modal-window {
   width: 100%;
   background: #fff;
   border-radius: 8px;
-  overflow: hidden;
+  overflow-y: auto; 
+  max-height: 400px;
 }
 
 .modal-title {

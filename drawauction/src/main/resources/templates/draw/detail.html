@@ -296,8 +296,8 @@
             return;
           }
           $.each(resData.reviewList, (i, r) => {
-         var createdAt = new Date(r.createdAt);
-         var formattedCreatedAt = createdAt.toISOString().slice(0, 16).replace('T', ' ');
+            var createdAt = new Date(r.createdAt);
+            var formattedCreatedAt = createdAt.toISOString().slice(0, 16).replace('T', ' ');
             let str = '<tr>';
             str += '<td style="color: #1E90FF">' + r.userDto.nickname + '</td>';
             str += '<td>' + r.rating + '</td>';
