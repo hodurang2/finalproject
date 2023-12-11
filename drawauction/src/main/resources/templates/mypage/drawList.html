@@ -31,6 +31,10 @@
   background-color: rgb(84, 186, 125);
   color: white;
 }
+.clicked {
+  background-color: rgb(84, 186, 125);
+  color: white;
+}
 
   /* 네모박스 */
   .draw {
@@ -145,7 +149,7 @@
         success: (resData) => {
           totalPage = resData.totalPage;
           $.each(resData.drawOrderList,(i, order) => {
-            let draw = order.drawDto;
+            let draw = order.drawDto2;
             let str = '<div class="draw" data-draw_no="' + draw.drawNo + '">';
             str +=   '<div class="draw_image_wrap" data-draw_no="' + draw.drawNo + '"><img class="image" src="' + draw.image.path + '/s_' + draw.image.filesystemName + '"></div>';
             str +=   '<div class="draw_info_wrap">';
@@ -175,15 +179,15 @@
         success: (resData) => {
           totalPage = resData.totalPage;
           $.each(resData.drawReceivedOrderList,(i, r) => {
-            let draw = r.drawDto;
+            let draw = r.drawDto2;
             let str = '<div class="draw" data-draw_no="' + draw.drawNo + '">';
             str +=   '<div class="draw_image_wrap" data-draw_no="' + draw.drawNo + '"><img class="image" src="' + draw.image.path + '/s_' + draw.image.filesystemName + '"></div>';
             str +=   '<div class="draw_info_wrap">';
             str +=     '<div class="draw_title"><span class="draw_info">제목</span><span class="draw_value">' + draw.title + '</span></div>';
             str +=     '<div class="draw_category"><span class="draw_info">카테고리</span><span class="draw_value">' + draw.categoryDto.categoryName + '</span></div>';
-            str +=     '<div class="draw_orderDate"><span class="draw_info">주문날짜</span><span class="draw_value">' + order.orderDate + '</span></div>';
+            str +=     '<div class="draw_orderDate"><span class="draw_info">주문날짜</span><span class="draw_value">' + r.orderDate + '</span></div>';
             str +=     '<div class="draw_workTerm"><span class="draw_info">작업기간</span><span class="draw_value">' + draw.workTerm + '일</span></div>';
-            str +=     '<div class="draw_email"><span class="draw_info">수령이메일</span><span class="draw_value">' + order.receiveEmail + '</span></div>';
+            str +=     '<div class="draw_email"><span class="draw_info">수령이메일</span><span class="draw_value">' + r.receiveEmail + '</span></div>';
             str +=     '<div class="draw_price"><span class="draw_info">가격</span><span class="draw_value">' + draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>';
             str +=     '<div id="drawNo" style="display:none">글번호: ' + draw.drawNo + '</div>';
             str +=   '</div>';
@@ -238,15 +242,22 @@
       // 초기에는 #my_draw_list가 보이도록 설정
       $('#my_draw_list').show();
       $('#order_draw_list').hide();
+      
+      $('#order').removeClass('clicked');
+      $('#received').removeClass('clicked');
+      $('#my').addClass('clicked');
     });
     
     const fnShowMy = () => {
 
       $('#order_draw_list').hide();
       $('#received_order_draw_list').hide();
+      $('#order').removeClass('clicked');
+      $('#received').removeClass('clicked');
       
       // fnGetMyDrawList()에서 추가한 내용 보이기
       $('#my_draw_list').show();
+      $('#my').addClass('clicked');
 
     }
     
@@ -254,22 +265,28 @@
 
       $('#my_draw_list').hide();
       $('#received_order_draw_list').hide();
+      $('#my').removeClass('clicked');
+      $('#received').removeClass('clicked');
       
       // fnGetDrawOrderList()에서 추가한 내용 보이기
       $('#order_draw_list').show();
+      $('#order').addClass('clicked');
     }
     
     const fnShowReceivedOrder = () => {
       $('#my_draw_list').hide();
       $('#order_draw_list').hide();
+      $('#my').removeClass('clicked');
+      $('#order').removeClass('clicked');
       
       // fnGetDrawReceivedOrderList()에서 추가한 내용 보이기
       $('#received_order_draw_list').show();
+      $('#received').addClass('clicked');
     }
      
      fnGetMyDrawList();
      fnGetDrawOrderList();
-     fnShowReceivedOrder();
+     fnGetDrawReceivedOrderList();
      fnDrawDetail();
      fnScroll();
     

@@ -26,6 +26,7 @@ import com.gdu.drawauction.dao.MypageMapper;
 import com.gdu.drawauction.dto.BidDto;
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.DrawOrderDto;
+import com.gdu.drawauction.dto.DrawOrderDto2;
 import com.gdu.drawauction.dto.EmoneyDto;
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.dto.UserImageDto;
@@ -429,14 +430,14 @@ public class MypageServiceImpl implements MypageService {
 
       myPageUtils.setPaging(page, total, display);
       
-      List<DrawOrderDto> drawOrderList = mypageMapper.getDrawOrderList(Map.of("begin", myPageUtils.getBegin()
+      List<DrawOrderDto2> drawOrderList = mypageMapper.getDrawOrderList(Map.of("begin", myPageUtils.getBegin()
                                                                  , "end", myPageUtils.getEnd()
                                                                  , "buyerNo", buyerNo));
       
       
       
-      for(DrawOrderDto drawOrderDto : drawOrderList) {
-        drawOrderDto.getDrawDto().setImage(mypageMapper.getDrawImage(drawOrderDto.getDrawDto().getDrawNo()));
+      for(DrawOrderDto2 drawOrderDto2 : drawOrderList) {
+        drawOrderDto2.getDrawDto2().setImage(mypageMapper.getDrawImage(drawOrderDto2.getDrawDto2().getDrawNo()));
       }
       
       map.put("drawOrderList", drawOrderList);
@@ -471,14 +472,12 @@ public class MypageServiceImpl implements MypageService {
 
       myPageUtils.setPaging(page, total, display);
       
-      List<DrawOrderDto> drawReceivedOrderList = mypageMapper.getDrawReceivedOrderList(Map.of("begin", myPageUtils.getBegin()
+      List<DrawOrderDto2> drawReceivedOrderList = mypageMapper.getDrawReceivedOrderList(Map.of("begin", myPageUtils.getBegin()
                                                                                            , "end", myPageUtils.getEnd()
                                                                                            , "sellerNo", sellerNo));
       
-      
-      // 여기 다시 체크
-      for(DrawOrderDto drawOrderDto : drawReceivedOrderList) {
-        drawOrderDto.getDrawDto().setImage(mypageMapper.getDrawImage(drawOrderDto.getDrawDto().getDrawNo()));
+      for(DrawOrderDto2 drawOrderDto2 : drawReceivedOrderList) {
+        drawOrderDto2.getDrawDto2().setImage(mypageMapper.getDrawImage(drawOrderDto2.getDrawDto2().getDrawNo()));
       }
       
       map.put("drawReceivedOrderList", drawReceivedOrderList);
