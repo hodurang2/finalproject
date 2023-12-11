@@ -6,39 +6,29 @@
 
 <mapper namespace="com.gdu.drawauction.dao.AdminMapper">
 
-		<select id="getAdminUser" parameterType="Map" resultType="AdminDto">
-		SELECT USER_NO, EMAIL, PW, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION
-		  FROM USER_T
-		<where>
-	      <if test="email != null">EMAIL = #{email}</if>
-	      <if test="pw != null">AND PW = #{pw}</if>
-	      <if test="userNo != null">AND USER_NO = #{userNo}</if>
-	    </where>
-	</select>
 
 	
-	  <insert id="insertAccess" parameterType="String">
-	    INSERT INTO ACCESS_T (
-	    	EMAIL, LOGIN_AT
-	    ) VALUES (
-			#{email}, SYSDATE
-	    )
-  	</insert>
+	<select id="getUserList" parameterType="Map" resultType="UserDto">
+    SELECT USER_NO, EMAIL, NAME, MOBILE, AGREE, STATE, JOINED_AT, NICKNAME, NUM
+      FROM  (SELECT ROW_NUMBER() OVER(ORDER BY USER_NO DESC) AS RN, ROW_NUMBER() OVER(ORDER BY USER_NO ASC) AS NUM, USER_NO, EMAIL, NAME, MOBILE, AGREE, STATE, JOINED_AT, NICKNAME 
+               FROM USER_T)
+     WHERE RN BETWEEN #{begin} AND #{end}
+  </select>
 	
-	<!--admin01@naver.com을 제외한 계정 갯수.-->
-	<select id="getUserListCount" resultType="int">
+	
+	<!--전체 계정 가져오기 admin01@naver.com제외-->
+	<select id="getUserCount" resultType="int">
 		SELECT COUNT(*)
 		  FROM USER_T
-		 WHERE EMAIL != 'admin01@naver.com'
 	</select>
-
-	<!--admin01@naver.com 이메일을 제외한 정보를 전부 가져오기.-->
-    <select id="selectUserList" parameterType="Map" resultType="UserDto">
-        SELECT USER_NO, EMAIL, NAME, MOBILE, AGREE, STATE, JOINED_AT, NICKNAME
-          FROM USER_T
-         WHERE  EMAIL != 'admin01@naver.com'
-        ORDER BY JOINED_AT DESC
+	
+	
+	<select id="getUser" parameterType="int" resultType="UserDto">
+		SELECT USER_NO, EMAIL, NAME, MOBILE, AGREE, STATE, JOINED_AT, NICKNAME
+		  FROM USER_T
+		 WHERE USER_NO = #{userNo}
 	</select>
+	
 	
 	<!--유저 삭제-->
 	<delete id="deleteUser" parameterType="int">

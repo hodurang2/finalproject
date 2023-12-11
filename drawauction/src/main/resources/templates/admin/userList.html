@@ -1,20 +1,66 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{/layout/header::head('유저 리스트')}"></head>
+<head th:replace="~{/admin/menu::head('홈')}"></head>
 
 <body>
-    <div class="main_wrap">
-        <!-- Side Menu 추가 -->
-        <div th:replace="~{/admin/menu::menu}"></div>
 
-        <div class="wrap wrap_5">
-            <h1>유저 리스트</h1>
-            
-            <!-- 여기에 Thymeleaf 문법을 활용하여 유저 리스트를 동적으로 표시하는 코드 추가 -->
-            
-        </div>
-    </div>
+    <div th:replace="~{/admin/menu::menu}"></div>
+
+
+	<div class="wrap">
+ <table border="1" class="table">
+        <thead>
+            <tr>
+                <td>글번호</td>
+                <td>이름</td>
+                <td>성별</td>
+                <td>휴대폰번호</td>
+                <td>닉네임</td>
+                <td>가입일</td>
+            </tr>
+        </thead>
+        <tbody>
+            <th:block th:each="u,vx:${userList}">
+                <tr>
+                    <td th:text="${u.email}"></td>
+                    <td th:text="${u.name}"></td>
+                    <td th:text="${u.gender}"></td>
+                    <td th:text="${u.mobile}"></td>
+                    <td th:text="${u.nickname}"></td>
+                    <td th:text="${u.joinedAt}"></td>
+                    <td id="frm_btn" method="post"><button type="button" id="btn_remove"  class="btn btn-danger">삭제</button></td>
+                    
+                </tr>
+            </th:block>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" th:utext="${paging}"></td>
+            </tr>
+        </tfoot>
+    </table>
+		
+	</div>
+   
+   <script th:inline="javascript">
+	   
+	    var frmBtn = $('#frm_btn');
+	    
+           const fnRemoveAdmin = () => {
+  		$('#btn_remove').click(() => {
+  			if(confirm('유저를 삭제할까요?')){
+  				alert('삭제되었습니다.');
+    			frmBtn.attr('action', '/admin/removeUser.do');
+    			frmBtn.submit();
+  			}
+  		})	
+  	}
+      fnRemoveAdmin();
+      
+      </script>
+	
+
 </body>
 
 </html>
