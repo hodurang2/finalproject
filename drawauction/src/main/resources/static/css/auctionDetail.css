@@ -41,8 +41,6 @@
         align-items: center; /* 요소를 세로로 가운데 정렬 */
   }
   
-  
-  
   .auction_ongoing {
     -webkit-box-align: center;
     align-items: center;
@@ -50,7 +48,7 @@
     justify-content: center;
     width: 68px;
     height: 28px;
-    padding: 1px 0px;
+    padding: 0px 0px;
     font-size: 12px;
     font-family: "Spoqa Han Sans Neo";
     font-weight: 700;
@@ -59,8 +57,8 @@
     color: rgb(19, 189, 126);
     display: inline-flex;
     border-radius: 4px;
-    margin-left: 10px;
   }
+  
   .auction_end {
     -webkit-box-align: center;
     align-items: center;
@@ -80,7 +78,6 @@
     margin-left: 10px;
   }
 
-  
   
   /* 작가정보 */
   .artist{

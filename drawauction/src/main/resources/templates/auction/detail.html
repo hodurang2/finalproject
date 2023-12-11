@@ -40,37 +40,45 @@
 		</div>
 		</div>
 		
-      <div class="text-center mb-5">
+    <div class="text-center mb-5">
        
-      </div>
+    </div>
       
-        <!-- 첫 번째 그리드 -->
+    <!-- 첫 번째 그리드 -->
     <div class="grid-container">
-        <div class="grid-item1">
-		 	<div>
-		        <th:block th:if="${#lists.isEmpty(imageList)}">
-		          <div>첨부 없음</div>          
-		        </th:block>
-		        <th:block th:if="${not #lists.isEmpty(imageList)}">
-		          <th:block th:each="atc:${imageList}">
-		            <div class="image" th:data-image_no="${atc.auctionImageNo}"> 
-		              <img th:src="@{|${atc.path}/s_${atc.filesystemName}|}" alt="썸네일">
-		            </div>
-		          </th:block>
-		        </th:block>
-		      </div>
+      <div class="grid-item1">
+       	<div>
+          <th:block th:if="${#lists.isEmpty(imageList)}">
+            <div>첨부 없음</div>          
+          </th:block>
+          <th:block th:if="${not #lists.isEmpty(imageList)}">
+            <th:block th:each="atc:${imageList}">
+              <div class="image" th:data-image_no="${atc.auctionImageNo}"> 
+                <img th:src="@{|${atc.path}/s_${atc.filesystemName}|}" alt="썸네일">
+              </div>
+            </th:block>
+          </th:block>
+        </div>
 	
-		</div>
+		  </div>
 		<div class="grid_item"> <!--작품명, 시작가 등등..-->
-		<div style="text-align: right;">
-			 <i id="wish_list" class="fa-regular fa-heart fa-2xl" style="color: rgb(84, 186, 125); margin-bottom: 15%;"></i>      
-		</div>
+  		<div class="grid_2" style="text-align: right;">
+        <th:block th:if="${auction.status == 0}">
+          <div class="auction_ongoing">경매진행중</div>        
+        </th:block>
+        <th:block th:if="${auction.status == 1}">
+          <div class="auction_end">경매종료</div>        
+        </th:block>
+        <div>
+          <i id="wish_list" class="fa-regular fa-heart fa-2xl" style="color: rgb(84, 186, 125); margin-bottom: 15%;"></i>      
+        </div>
+  		</div>
 			
 			
-			
-			<div th:text="${auction.artDto.categoryDto.categoryName}|" class="category"></div>
 			
 			<div th:text="|${auction.artDto.title}|" class="art_title"></div> 
+			
+			<div th:text="${auction.artDto.categoryDto.categoryName}|" class="category"></div>
 			
 			
 			<div class="grid_2">
