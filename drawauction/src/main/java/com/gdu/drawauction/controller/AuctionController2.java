@@ -48,6 +48,13 @@ public class AuctionController2 {
     return "auction/edit";
   }
   
+  @GetMapping("/orderPayment.form")
+  public String orderPayment(HttpServletRequest request, Model model) {
+    auctionService2.loadAuction(request, model);
+    auctionService2.getEmoney(request, model);
+    return "auction/orderPayment";
+  }
+  
   @ResponseBody
   @PostMapping(value="/controlWishlist.do", produces="application/json")
   public Map<String, Object> controlAuctionWishlist (HttpServletRequest request){
@@ -95,6 +102,13 @@ public class AuctionController2 {
     int removeResult = auctionService2.removeAuction(auctionNo);
     redirectAttributes.addFlashAttribute("removeResult", removeResult);
     return "redirect:/auction/";
+  }
+  
+  @PostMapping("/orderPayment.do")
+  public String addDrawOrder(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+  int resultSum = auctionService2.addBid(request);
+  redirectAttributes.addFlashAttribute("resultSum", resultSum);
+  return "redirect:/auction2/detail.do?auctionNo=" + request.getParameter("auctionNo");
   }
   
   

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{/layout/header::head('주문/결제 페이지')}"></head>
+<style>
+ 
+
+</style>
+
+<body>
+  
+  <div th:replace="~{/layout/header::header}"></div>
+  
+  <div class="main_wrap">
+
+    <div class="wrap wrap_6">
+    
+      <h1 class="title">주문/결제 페이지</h1>
+      
+      <form id="frm_orderPayment" method="post" th:action="@{/auction2/orderPayment.do}">
+    		<h4>주문 고객</h4>
+    		<hr>
+        <div class="mt-3" th:if="${session.user != null}" style="display: flex; align-items: center;">
+          <label for="name" class="form-label" style="width: 150px; margin-top:9px;">이름</label>
+          <input type="text" id="name" class="form-control-plaintext" th:value="${session.user.name}" readonly>
+        </div>
+        <div class="mt-3" style="display: flex; align-items: center;">
+          <label for="mobile" class="form-label" style="width: 150px; margin-top:9px;">전화번호</label>
+          <input type="text" id="mobile" class="form-control-plaintext" th:value="${session.user.mobile}" readonly>
+        </div>
+        <div class="mt-3" style="display: flex; align-items: center;">
+          <label for="email" class="form-label" style="width: 150px; margin-top:9px;">이메일</label>
+          <input type="text" id="email" class="form-control-plaintext" th:value="${session.user.email}" readonly>
+        </div>
+        <pre>
+		    </pre>
+        <h4>배송 방식</h4>
+        <hr>
+        <div class="mt-3">
+          <th:block th:if="${auction.artDto.artType} == 1">
+  		      <input type="radio" checked>&nbsp;&nbsp;실물 이미지 : 택배 발송
+            <div class="mt-3" style="display: flex; align-items: center;">
+              <div  class="form-label" style=" margin-top:9px; color: crimson;">* 주문 완료 즉시 포장 하여 배송됩니다.</div>
+            </div>
+            <div class="mt-3" style="display: flex; align-items: center;">
+              <div  class="form-label" style="color: crimson;">* 배송 시작후 2~3 영업일 소요됩니다.</div>
+            </div>
+          </th:block>
+          <th:block th:if="${auction.artDto.artType} == 0">
+  		      <input type="radio" checked>&nbsp;&nbsp;디지털 이미지 : 이메일 발송
+            <div class="mt-3" style="display: flex; align-items: center;">
+              <label class="form-label" style="width: 150px; margin-top:9px;">판매자 이메일</label>
+              <input type="text" class="form-control-plaintext" th:value="${auction.artDto.sellerDto.email}" readonly>
+            </div>
+            <div class="mt-3" style="display: flex; align-items: center;">
+              <div  class="form-label" style=" margin-top:9px; color: crimson;">* 주문 완료후 판매자 이메일로 그리고싶은 사진을 직접 보내주시면 됩니다.</div>
+            </div>
+            <div class="mt-3" style="display: flex; align-items: center;">
+              <div  class="form-label" style="color: crimson;">* 글로 설명 하시는 경우는 하단의 요청 사항에 적어주세요</div>
+            </div>
+          </th:block>
+        </div>
+        <pre>
+		    </pre>
+		    <h4>배송 정보</h4>
+		    <hr>
+		    <th:block th:if="${auction.artDto.artType == 0}">
+          <div class="mt-3" style="display: flex; align-items: center;">
+            <label for="receiveEmail" class="form-label target2 target3" style="width: 130px; margin-top:9px;">이메일 입력</label>
+            <div class="col-sm-3"><input type="text" id="receiveEmail" name="receiveEmail" class="form-control"></div>
+          </div>
+        </th:block>
+        
+        <th:block th:if="${auction.artDto.artType == 1}">
+          <div class="row mb-2">
+          <div class="col-sm-4"><input type="text" name="postcode" id="postcode" class="form-control" onclick="execDaumPostcode()" placeholder="우편번호" readonly></div>
+          <div class="col-sm-5"><input type="button" class="btn btn-outline-success" onclick="execDaumPostcode()" value="우편번호 찾기"></div>
+        </div>
+        
+        <div class="row mb-2">
+          <div class="col-sm-6"><input type="text" name="roadAddress" id="roadAddress" class="form-control" placeholder="도로명주소" readonly></div>
+          <div class="col-sm-6"><input type="text" name="jibunAddress" id="jibunAddress" class="form-control" placeholder="지번주소" readonly></div>
+        </div>
+        <div class="col-sm-12"><span id="guide" style="color:#999;display:none"></span></div>
+        <div class="row mb-2">
+          <div class="col-sm-6"><input type="text" name="detailAddress" id="detailAddress" class="form-control" placeholder="상세주소"></div>
+          <div class="col-sm-6"><input type="text" id="extraAddress" class="form-control" placeholder="참고항목"></div>
+        </div>
+        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+        <script>
+          //본 예제에서는 도로명 주소 표기 방식에 대한 법령에 따라, 내려오는 데이터를 조합하여 올바른 주소를 구성하는 방법을 설명합니다.
+          function execDaumPostcode() {
+            new daum.Postcode({
+              oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+    
+                // 도로명 주소의 노출 규칙에 따라 주소를 표시한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var roadAddr = data.roadAddress; // 도로명 주소 변수
+                var extraRoadAddr = ''; // 참고 항목 변수
+    
+                // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                  extraRoadAddr += data.bname;
+                }
+                // 건물명이 있고, 공동주택일 경우 추가한다.
+                if(data.buildingName !== '' && data.apartment === 'Y'){
+                  extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+                // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                if(extraRoadAddr !== ''){
+                  extraRoadAddr = ' (' + extraRoadAddr + ')';
+                }
+    
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('postcode').value = data.zonecode;
+                document.getElementById("roadAddress").value = roadAddr;
+                document.getElementById("jibunAddress").value = data.jibunAddress;
+                
+                // 참고항목 문자열이 있을 경우 해당 필드에 넣는다.
+                if(roadAddr !== ''){
+                  document.getElementById("extraAddress").value = extraRoadAddr;
+                } else {
+                  document.getElementById("extraAddress").value = '';
+                }
+    
+                var guideTextBox = document.getElementById("guide");
+                // 사용자가 '선택 안함'을 클릭한 경우, 예상 주소라는 표시를 해준다.
+                if(data.autoRoadAddress) {
+                  var expRoadAddr = data.autoRoadAddress + extraRoadAddr;
+                  guideTextBox.innerHTML = '(예상 도로명 주소 : ' + expRoadAddr + ')';
+                  guideTextBox.style.display = 'block';
+                } else if(data.autoJibunAddress) {
+                  var expJibunAddr = data.autoJibunAddress;
+                  guideTextBox.innerHTML = '(예상 지번 주소 : ' + expJibunAddr + ')';
+                  guideTextBox.style.display = 'block';
+                } else {
+                  guideTextBox.innerHTML = '';
+                  guideTextBox.style.display = 'none';
+                }
+              }
+            }).open();
+          }
+        </script>
+          
+        </th:block>
+        
+        <div class="mt-3" style="display: flex; align-items: center;">
+          <label class="form-label" style="width: 150px; margin-top:9px;">요청사항</label>
+          <textarea rows="8" name="auctionRequest" id="auctionRequest" class="form-control"></textarea>
+        </div>
+        <pre>
+  		  </pre>
+  	    <h4>작품 정보</h4>
+  	    <hr>
+  	    <div class="mt-3" style="display: flex; align-items: flex-start;">
+    		  <img th:src="@{|${auctionImage.path}/s_${auctionImage.filesystemName}|}" alt="썸네일" width="300px" style="margin-right:30px">
+    		  <ul style="list-style-type: none; padding: 0; margin: 0; display: flex; flex-direction: column;">
+    		    <li style="display: flex; align-items: center;">
+    		      <label for="auctionTitle" class="form-label" style="width: 120px; margin-top:9px;">제목</label>
+    		      <input type="text" id="auctionTitle" class="form-control-plaintext" th:value="${auction.artDto.title}" readonly>
+    		    </li>
+    		    <li style="display: flex; align-items: center;">
+    		      <label for="nickname" class="form-label" style="width: 120px; margin-top:9px;">작가</label>
+    		      <input type="text" id="nickname" class="form-control-plaintext" th:value="${auction.artDto.sellerDto.nickname}" readonly>
+    		    </li>
+    		    <li style="display: flex; align-items: center;">
+    		      <label for="price" class="form-label" style="width: 120px; margin-top:9px; ">가격</label>
+    		      <input type="text" class="form-control-plaintext" th:value="|${#numbers.formatInteger(auction.price, 0, 'COMMA')} P|" readonly>
+    		      <input type="hidden" name="price" th:value="${auction.price}">
+    		    </li>
+    		  </ul>
+    		</div>
+  		  <pre>
+  		  </pre>
+		<h4>결제 수단</h4>
+		<hr>
+		<div class="mt-3">
+		  <input type="radio" checked>&nbsp;&nbsp;E-money 포인트 결제
+    </div>
+    <pre>
+		</pre>
+  	    <h4>결제 정보</h4>
+  	    <hr>
+  	    <div class="mt-3" th:if="${session.user != null}" style="display: flex; align-items: center;">
+      	  <label for="emoneyHistory" class="form-label" style="width: 150px; margin-top:9px;">보유 포인트</label>
+      	  <input type="text" name="emoneyHistory" id="emoneyHistory" class="form-control-plaintext" th:value="|${#numbers.formatInteger(emoney, 0, 'COMMA')} P|" readonly>
+        </div>
+  	    <div class="mt-3" th:if="${session.user != null}" style="display: flex; align-items: center;">
+    		  <label for="price" class="form-label" style="width: 150px; margin-top:9px;">결제 금액</label>
+    		  <input type="text" id="price" class="form-control-plaintext" th:value="|${#numbers.formatInteger(auction.price, 0, 'COMMA')} P|" readonly>
+        </div>
+  	    <div class="mt-3" th:if="${session.user != null}" style="display: flex; align-items: center;">
+    		  <label for="balance" class="form-label" style="width: 150px; margin-top:9px;">결제 후 잔액</label>
+    		  <input type="text" id="balance" class="form-control-plaintext" th:value="|${#numbers.formatInteger((emoney - auction.price),  0, 'COMMA')} P|" readonly>
+        </div>
+        <div class="text-center mt-5" th:if="${session.user != null}">
+          <a th:href="@{/auction/}">
+            <button class="btn btn-secondary" type="button">주문취소</button>
+          </a>
+          <input type="hidden" name="auctionNo" id="auctionNo" th:value="${auction.auctionNo}">
+          <input type="hidden" name="buyerNo" id="buyerNo" th:value="${session.user.userNo}">
+          <input type="hidden" name="userNo" id="userNo" th:value="${auction.artDto.sellerDto.userNo}">
+          <input type="hidden" th:value="${auction.artDto.artType}" name="artType" id="artType">
+          <button type="button" class="btn_orderPayment btn btn-primary">주문하기</button>
+        </div>
+      </form>
+    </div>
+      
+    <script>
+		
+	  var price = $('#price').val();
+	  var balance = $('#balance').val();
+	  var artType = $('#artType').val();
+	  const fnOrderConfirm = () => {
+  		$('.btn_orderPayment').click((ev) => {
+        if(artType == 0){
+    	 	  var receiveEmail = $('#receiveEmail').val();
+    		  var regEmail = /^[A-Za-z0-9-_]+@[A-Za-z0-9]{2,}([.][A-Za-z]{2,6}){1,2}$/;
+    		  if(!regEmail.test(receiveEmail)){
+    	        alert('잘못된 이메일 입니다. 이메일을 확인하세요.');
+    	        ev.preventDefault();
+    	        return;
+  	      }
+        }
+  		  if(confirm('결제 금액 : ' + price + '  결제 하시겠습니까? (결제 후 잔액  ' + balance + ')')){
+  			$('#frm_orderPayment').submit();
+  		  }
+  		})
+	  }
+	  
+	  const fnEmailCheck = () => {
+		  
+	  }
+	  
+	  
+	  fnOrderConfirm();
+	  
+    </script>
+      
+  </div>
+ 
+  <div th:replace="~{/layout/footer::footer}"></div>
+  
+</body>
+</html>

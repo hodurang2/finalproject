@@ -63,19 +63,54 @@ public class AuctionServiceImpl2 implements AuctionService2 {
     
     Optional<String> opt = Optional.ofNullable(request.getParameter("auctionNo"));
     int auctionNo = Integer.parseInt(opt.orElse("0"));
-    int bidCount = auctionMapper2.getBidCount(auctionNo);
+    AuctionDto auctionDto = auctionMapper2.getAuction(auctionNo);
+    System.out.println("auctionNo=" + auctionNo);
+    int userNo;
+    
+    HttpSession session = request.getSession();
+    
+    if(session.getAttribute("user") == null) {
+      auctionDto.setHeartClass("fa-regular");
+      userNo = 0;
+    } else {
+      UserDto user = (UserDto) session.getAttribute("user");
+      userNo = user.getUserNo();
+      Map<String, Object> wishMap = Map.of("auctionNo", auctionDto.getAuctionNo(), "userNo", userNo);
+      int wishCheck = auctionMapper2.hasAuctionWishlist(wishMap);
+      String heart;
+      if(wishCheck == 0) {
+        heart = "fa-regular";
+      } else {
+        heart = "fa-solid";
+      }
+      auctionDto.setHeartClass(heart);
+    }
+    
     
     model.addAttribute("auction", auctionMapper2.getAuction(auctionNo));
-    model.addAttribute("bidCount", bidCount);
+    model.addAttribute("bidCount", auctionMapper2.getBidCount(auctionNo));
     model.addAttribute("imageList", auctionMapper2.getImageList(auctionNo));
+    model.addAttribute("auctionImage", auctionMapper2.getAuctionImage(auctionNo));
   }
   
   @Override
   public Map<String, Object> controlAuctionWishlist(HttpServletRequest request) {
-    int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
+    
+    Optional<String> opt = Optional.ofNullable(request.getParameter("auctionNo"));
+    int auctionNo = Integer.parseInt(opt.orElse("0"));
+    AuctionDto auctionDto = auctionMapper2.getAuction(auctionNo);
+    
+    int userNo;
+    
     HttpSession session = request.getSession();
-    UserDto user = (UserDto) session.getAttribute("user");
-    int userNo = user.getUserNo();
+    
+    if(session.getAttribute("user") == null) {
+      auctionDto.setHeartClass("fa-regular");
+      userNo = 0;
+    } else {
+      UserDto user = (UserDto) session.getAttribute("user");
+      userNo = user.getUserNo();
+    }
     
     Map<String, Object> map = Map.of("auctionNo", auctionNo, "userNo", userNo);
     
@@ -91,8 +126,21 @@ public class AuctionServiceImpl2 implements AuctionService2 {
   @Override
   public ResponseEntity<Map<String, Object>> hasAuctionWishlist(HttpServletRequest request) {
     
-    int auctionNo = Integer.parseInt(request.getParameter("auctionNo")); 
-    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    Optional<String> opt = Optional.ofNullable(request.getParameter("auctionNo"));
+    int auctionNo = Integer.parseInt(opt.orElse("0"));
+    AuctionDto auctionDto = auctionMapper2.getAuction(auctionNo);
+    
+    int userNo;
+    
+    HttpSession session = request.getSession();
+    
+    if(session.getAttribute("user") == null) {
+      auctionDto.setHeartClass("fa-regular");
+      userNo = 0;
+    } else {
+      UserDto user = (UserDto) session.getAttribute("user");
+      userNo = user.getUserNo();
+    }
     
     Map<String, Object> map = Map.of("auctionNo", auctionNo, "userNo", userNo);
     
@@ -266,6 +314,77 @@ public class AuctionServiceImpl2 implements AuctionService2 {
       return auctionMapper2.deleteAuction(auctionNo);
   }
   
+  @Override
+  public void getEmoney(HttpServletRequest request, Model model) {
+    
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    int emoney = auctionMapper2.getEmoney(userNo);
+    
+    model.addAttribute("emoney", emoney);
+  }
+  
+  @Override
+  public int addBid(HttpServletRequest request) {
+
+    int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
+    int buyerNo = Integer.parseInt(request.getParameter("buyerNo"));    // 구매자 userNo
+    int price = Integer.parseInt(request.getParameter("price"));
+    int userNo = Integer.parseInt(request.getParameter("userNo"));      // 판매자 userNo    
+    int artType = Integer.parseInt(request.getParameter("artType"));    // 작품유형    
+    String auctionRequest = request.getParameter("auctionRequest");
+    
+    Map<String, Object> bidMap;
+    Map<String, Object> emoneyMap;
+    
+    int addBidResult;
+    
+    if(artType == 0) { // 작품유형이 디지털(== 0)일 때
+      
+      String receiveEmail = request.getParameter("receiveEmail");
+      
+      bidMap = Map.of("auctionNo", auctionNo
+                    , "buyerNo", buyerNo
+                    , "price", price
+                    , "receiveEmail", receiveEmail
+                    , "auctionRequest", auctionRequest);
+
+      emoneyMap = Map.of("userNo", userNo
+                       , "price", price
+                       , "buyerNo", buyerNo);
+      
+      addBidResult = auctionMapper2.insertDigitalBid(bidMap);
+      
+    } else { // 실물일 때
+      
+      String postcode = request.getParameter("postcode");
+      String roadAddress = request.getParameter("roadAddress");
+      String jibunAddress = request.getParameter("jibunAddress");
+      String detailAddress = request.getParameter("detailAddress");
+      
+      bidMap = Map.of("auctionNo", auctionNo
+                    , "buyerNo", buyerNo
+                    , "price", price
+                    , "postcode" ,postcode
+                    , "roadAddress", roadAddress
+                    , "jibunAddress" , jibunAddress
+                    , "detailAddress" , detailAddress
+                    , "auctionRequest", auctionRequest);
+
+      emoneyMap = Map.of("userNo", userNo
+                       , "price", price
+                       , "buyerNo", buyerNo);
+      
+      addBidResult = auctionMapper2.insertRealBid(bidMap);
+    }
+    
+    int buyerResult = auctionMapper2.insertBuyerEmoney(emoneyMap);
+    int sellerResult = auctionMapper2.insertSellerEmoney(emoneyMap);
+    
+    int resultSum = buyerResult + sellerResult + addBidResult;
+    
+    return resultSum;
+    
+  }
   
   
 }
