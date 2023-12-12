@@ -19,6 +19,7 @@ public class BidDto {
   private String roadAddress;
   private String jibunAddress;
   private String detailAddress;
+  private String receiveEmail;
   private AuctionDto auctionDto;
   private UserDto bidderDto;
 }

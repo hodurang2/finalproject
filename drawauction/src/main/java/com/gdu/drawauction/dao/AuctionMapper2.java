@@ -25,4 +25,6 @@ public interface AuctionMapper2 {
   public int insertImage(AuctionImageDto image);
   public AuctionImageDto getImage(int auctionImageNo);
   public int deleteImage(int auctionImageNo);
+  public int getEmoney(int userNo);
+  public AuctionImageDto getAuctionImage(int auctionNo);
 }

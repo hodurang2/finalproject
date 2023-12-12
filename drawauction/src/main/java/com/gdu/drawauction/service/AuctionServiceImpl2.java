@@ -64,7 +64,7 @@ public class AuctionServiceImpl2 implements AuctionService2 {
     Optional<String> opt = Optional.ofNullable(request.getParameter("auctionNo"));
     int auctionNo = Integer.parseInt(opt.orElse("0"));
     AuctionDto auctionDto = auctionMapper2.getAuction(auctionNo);
-    
+    System.out.println("auctionNo=" + auctionNo);
     int userNo;
     
     HttpSession session = request.getSession();
@@ -90,6 +90,7 @@ public class AuctionServiceImpl2 implements AuctionService2 {
     model.addAttribute("auction", auctionMapper2.getAuction(auctionNo));
     model.addAttribute("bidCount", auctionMapper2.getBidCount(auctionNo));
     model.addAttribute("imageList", auctionMapper2.getImageList(auctionNo));
+    model.addAttribute("auctionImage", auctionMapper2.getAuctionImage(auctionNo));
   }
   
   @Override
@@ -313,6 +314,29 @@ public class AuctionServiceImpl2 implements AuctionService2 {
       return auctionMapper2.deleteAuction(auctionNo);
   }
   
+  @Override
+  public void getEmoney(HttpServletRequest request, Model model) {
+    
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    int emoney = auctionMapper2.getEmoney(userNo);
+    
+    model.addAttribute("emoney", emoney);
+  }
+  
+  @Override
+  public int addBid(HttpServletRequest request) {
+
+    int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
+    int buyerNo = Integer.parseInt(request.getParameter("buyerNo"));    // 구매자 userNo
+    int price = Integer.parseInt(request.getParameter("price"));
+    int userNo = Integer.parseInt(request.getParameter("userNo"));      // 판매자 userNo    
+    String receiveEmail = request.getParameter("receiveEmail");
+    int artType = Integer.parseInt(request.getParameter("artType"));    // 작품유형    
+    
+    
+    
+    return 0;
+  }
   
   
 }

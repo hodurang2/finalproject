@@ -75,13 +75,13 @@
   <select id="getAuction" parameterType="int" resultMap="AuctionMap">
     SELECT D.AUCTION_NO, D.START_PRICE, D.BUY_PRICE, D.START_AT, D.END_AT, D.STATUS, 
            D.ART_NO, D.TITLE, D.CONTENTS, D.ART_TYPE, D.WIDTH, D.HEIGHT,
-           D.USER_NO, D.NICKNAME,
+           D.USER_NO, D.NICKNAME, D.EMAIL,
            D.CATEGORY_NO, D.CATEGORY_NAME,
            D.PRICE        
       FROM (SELECT ROW_NUMBER() OVER(ORDER BY AUC.AUCTION_NO DESC) AS RN,
                    AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS, 
                    A.ART_NO, A.SELLER_NO, A.TITLE, A.CONTENTS, A.ART_TYPE, A.WIDTH, A.HEIGHT,
-                   U.USER_NO, U.NICKNAME,
+                   U.USER_NO, U.NICKNAME, U.EMAIL,
                    C.CATEGORY_NO, C.CATEGORY_NAME,
                    B.BID_NO, B.PRICE
               FROM AUCTION_T AUC, ART_T A, USER_T U, CATEGORY_T C, BID_T B
@@ -138,6 +138,13 @@
      WHERE AUCTION_IMAGE_NO = #{auctionImageNo}
   </select>
   
+  <select id="getAuctionImage" parameterType="int" resultType="AuctionImageDto">
+    SELECT AUCTION_IMAGE_NO, AUCTION_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+      FROM AUCTION_IMAGE_T
+     WHERE AUCTION_NO = #{auctionNo}
+       AND AUCTION_IMAGE_NO = (SELECT MIN(AUCTION_IMAGE_NO) FROM AUCTION_IMAGE_T WHERE AUCTION_NO = #{auctionNo})
+  </select>
+  
   <delete id="deleteImage" parameterType="int">
     DELETE
       FROM AUCTION_IMAGE_T
@@ -187,7 +194,11 @@
     )  
   </insert>
   
-
+  <select id="getEmoney" parameterType="int" resultType="int">
+    SELECT SUM(EMONEY_HISTORY)
+      FROM EMONEY_T
+     WHERE USER_NO = #{userNo}
+  </select>
   
   
 </mapper>

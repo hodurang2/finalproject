@@ -20,5 +20,7 @@ public interface AuctionService2 {
   public Map<String, Object> addImage(MultipartHttpServletRequest multipartRequest) throws Exception;
   public Map<String, Object> removeImage(HttpServletRequest request);
   public int removeAuction(int auctionNo);
+  public void getEmoney(HttpServletRequest request, Model model);
+  public int addBid(HttpServletRequest request);
   
 }
