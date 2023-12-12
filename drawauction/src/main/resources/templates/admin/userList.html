@@ -11,6 +11,19 @@
 
 	<div class="wrap">
 
+<div class="text-center my-3">
+    <form method="get" th:action="@{/admin/search.do}">
+        <div class="input-group mb-3">
+            <select class="form-select" name="column">
+                <option value="EMAIL">이메일</option>
+                <option value="NAME">이름</option>
+            </select>
+            <input type="text" name="query" class="form-control" placeholder="검색어 입력">
+            <button type="submit" class="btn btn-outline-primary btn-sm">검색</button>
+        </div>
+    </form>
+</div>
+
       
  <table border="1" class="table">
         <thead>
@@ -25,7 +38,12 @@
         </thead>
         <tbody>
             <th:block th:each="u,vx:${userList}">					
-                <tr>
+               
+               <th:block th:if="${u.email == null}">
+				   <td>정보없다</td>
+			   </th:block>
+               <th:block th:if="${u.email != null}">
+				   <tr>
                     <td th:text="${u.email}"></td>
                     <td th:text="${u.name}"></td>
                     <td th:text="${u.gender}"></td>
@@ -39,9 +57,13 @@
 							<input type="hidden" id="name" name="name" th:value="${u.name}">
 				          	<button type="button" id="btn_remove"  class="btn btn-danger">삭제</button>
 				        </form>		
-					</td>
-                </tr>
+					</td>					   
+				   </tr>
+			   </th:block>   
+				   
+
             </th:block>
+            
         </tbody>
         <tfoot>
             <tr>
@@ -52,64 +74,24 @@
 
 		
 	</div>
- <!-- 스크립트 부분 -->
-<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
-<script th:inline="javascript">
-    const frmBtn = $('#frm_btn');
-    const userTableBody = $('#userTableBody');
-
-    const fnRemoveAdmin = () => {
-        $('#btn_remove').click(() => {
-            if (confirm('삭제할까요?')) {
-                alert('삭제되었습니다.');
-                frmBtn.attr('action', '/admin/removeUser.do');
-                frmBtn.submit();
-            }
-        });
-    }
-
-    fnRemoveAdmin();
-
-    $('#btn_search').click(() => {
-        const searchForm = $('#searchForm');
-        const formData = searchForm.serialize();
-
-        $.ajax({
-            type: 'GET',
-            url: searchForm.attr('action'),
-            data: formData,
-            dataType: 'json', // 반환되는 데이터 타입을 JSON으로 지정
-            success: function (data) {
-                // 검색 결과를 동적으로 추가
-                userTableBody.empty();
-                $.each(data, function (index, user) {
-                    userTableBody.append(`
-                        <tr>
-                            <td th:text="${user.email}"></td>
-                            <td>${user.name}</td>
-                            <td>${user.gender}</td>
-                            <td>${user.mobile}</td>
-                            <td>${user.nickname}</td>
-                            <td>${user.joinedAt}</td>
-                            <td>
-                                <form id="frm_btn" method="post">
-                                    <input type="hidden" id="userNo" name="userNo" value="${user.userNo}">
-                                    <input type="hidden" id="email" name="email" value="${user.email}">
-                                    <input type="hidden" id="name" name="name" value="${user.name}">
-                                    <button type="button" id="btn_remove" class="btn btn-danger">삭제</button>
-                                </form>
-                            </td>
-                        </tr>
-                    `);
-                });
-            },
-            error: function (error) {
-                console.error('검색 실패:', error);
-            }
-        });
-    });
-</script>
-
+   			<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+		   <script th:inline="javascript">
+	   
+				    var frmBtn = $('#frm_btn');
+			    
+			    const fnRemoveAdmin = () => {
+			  		$('#btn_remove').click(() => {
+			  			if(confirm('삭제할까요?')){
+			  				alert('삭제되었습니다.');
+			    			frmBtn.attr('action', '/admin/removeUser.do');
+			    			frmBtn.submit();
+			  			}
+			  		})	
+			  	}
+			  	
+			fnRemoveAdmin();
+      
+      </script>
 	
 
 </body>

@@ -116,6 +116,7 @@ public class AdminServiceImpl implements AdminService {
 		    String query = request.getParameter("query");
 		    
 		    Map<String, Object> map = new HashMap();
+		    map.put("column", column);
 		    map.put("query", query);
 		    
 		    int total = adminMapper.getSearchUserCount(map);
@@ -133,7 +134,7 @@ public class AdminServiceImpl implements AdminService {
 		    List<UserDto> serachUserList = adminMapper.getSearchUserList(map);
 		    
 		    model.addAttribute("serachUserList", serachUserList);
-		    model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/free/search.do", "query=" + query ));
+		    model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/free/search.do", "column=" + column + "&query=" + query));
 		    model.addAttribute("beginNo", total - (page - 1) * display);  
 		
 	}

@@ -110,7 +110,7 @@
     <select id="getSearchUserCount" parameterType="Map" resultType="int">
     SELECT COUNT(*)
       FROM USER_T
-	WHERE EMAIL LIKE '%' || #{query} || '%'
+    WHERE ${column} LIKE '%' || #{query} || '%'
   </select>
   
   <!-- 검색 결과 목록 -->
@@ -118,8 +118,8 @@
     SELECT USER_NO, EMAIL, NAME, MOBILE, AGREE, STATE, JOINED_AT, NICKNAME, NUM
       FROM  (SELECT ROW_NUMBER() OVER(ORDER BY USER_NO DESC) AS RN, ROW_NUMBER() OVER(ORDER BY USER_NO ASC) AS NUM, USER_NO, EMAIL, NAME, MOBILE, AGREE, STATE, JOINED_AT, NICKNAME 
                FROM USER_T
-	WHERE EMAIL LIKE '%' || #{query} || '%')
-	WHERE RN BETWEEN #{begin} AND #{end}
+	WHERE ${column} LIKE '%' || #{query} || '%')
+WHERE RN BETWEEN #{begin} AND #{end}
   </select>  
 
 
