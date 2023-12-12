@@ -21,4 +21,5 @@ public class AlarmDto {
 	private DrawDto drawDto;		// drawNo
 	private NoticeDto noticeDto;    // noticeNo
 	private InquiryDto inquiryDto;  // inquiryNo
+	private int status;
 }
