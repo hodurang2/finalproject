@@ -117,7 +117,7 @@
 		  var byte1 = 0;
 		  var byte2 = 0;
 		  for (var i=0; i<contents.length; ++i) {
-		  (contents.charCodeAt(i) > 127) ? byte1 += 3 : byte1++ ;
+		    (contents.charCodeAt(i) > 127) ? byte1 += 3 : byte1++ ;
 		  }
 		  if(byte1 > 4000){
 		    alert("내용은 최대 4000BYTE 입니다.")

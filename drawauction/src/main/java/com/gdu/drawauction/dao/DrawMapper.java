@@ -13,7 +13,9 @@ import com.gdu.drawauction.dto.DrawReviewDto;
 @Mapper
 public interface DrawMapper {
 	public List<DrawDto> getDrawList(Map<String, Object> map);
+	public List<DrawDto> getDrawSearchList(Map<String, Object> map);
 	public int getDrawCount();
+	public int getDrawSearchCount(int categoryNo);
 	public int insertDraw(DrawDto draw);
 	public int insertImage(DrawImageDto image);
 	public DrawDto getDraw(int drawNo);

@@ -2,10 +2,6 @@ package com.gdu.drawauction.service;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,12 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.gdu.drawauction.dao.AuctionMapper;
-import com.gdu.drawauction.dto.ArtDto;
 import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.dto.AuctionImageDto;
-import com.gdu.drawauction.dto.CategoryDto;
-import com.gdu.drawauction.dto.DrawDto;
-import com.gdu.drawauction.dto.DrawImageDto;
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.util.MyFileUtils;
 import com.gdu.drawauction.util.MyPageUtils;

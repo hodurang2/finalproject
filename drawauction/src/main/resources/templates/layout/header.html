@@ -26,7 +26,7 @@
 <link rel="stylesheet" th:href="@{/css/common.css(ver=1.0)}" />
 <link rel="stylesheet" th:href="@{/css/ckeditor.css(ver=1.0)}" />
 <link rel="stylesheet" th:href="@{/css/menu.css(ver=1.0)}" />
-<link rel="stylesheet" th:href="@{/css/modal.css(ver=1.3)}" />
+<link rel="stylesheet" th:href="@{/css/modal.css(ver=1.5)}" />
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/decoupled-document/ckeditor.js"></script>
 </head>
@@ -65,7 +65,7 @@
 		</th:block>
 			<li>
 			  <a th:href="@{/mypage/detail.do}">
-			    <span th:text="|${session.user.name}|"></span> 님 환영합니다
+			    <span th:text="|${session.user.nickname}|"></span> 님 환영합니다
 			  </a>
 			</li>
           <li>│</li>

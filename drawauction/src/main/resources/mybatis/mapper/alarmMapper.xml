@@ -145,6 +145,24 @@
       )
 	</insert>
 	
+    <insert id="insertInquiryAlarm" parameterType="Map">
+      INSERT INTO ALARM_T (
+        ALARM_NO
+      , ALARM_CONTENTS
+      , ALARM_TYPE
+      , CREATED_AT
+      , USER_NO
+      , INQUIRY_NO
+      ) VALUES (
+        ALARM_SEQ.NEXTVAL
+      , #{alarmContents}
+      , #{alarmType}
+      , SYSDATE
+      , #{userNo}
+      , #{inquiryNo}
+      )
+	</insert>
+	
 	<select id="getAlarmList" parameterType="String" resultMap="AlarmMap">
 	  SELECT DISTINCT AL.ALARM_NO, AL.USER_NO, AL.AUCTION_NO, AL.DRAW_NO, AL.NOTICE_NO, AL.INQUIRY_NO, AL.ALARM_CONTENTS, AL.ALARM_TYPE, AL.CREATED_AT, AL.STATUS ,A.EMAIL
 	    FROM (SELECT AC.LOGIN_AT, AC.EMAIL, U.USER_NO
