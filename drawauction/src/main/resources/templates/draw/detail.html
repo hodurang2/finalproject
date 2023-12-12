@@ -62,10 +62,14 @@
    </div>   
    <!--두번째 열-->
    <div class="grid-item">
-      <div>
-         <i id="wish_list" th:class="|${draw.heart} fa-heart fa-2xl|" style="color: rgb(84, 186, 125); margin-bottom: 15%;"></i>
-         <a id="btnKakao" class="link-icon kakao" href="javascript:shareKakao();"></a>
-      </div>
+<div style="display: flex; align-items: center; margin-bottom: 10%; justify-content: flex-start;">
+    <i id="wish_list" th:class="|${draw.heart} fa-heart fa-2xl|" style="color: rgb(84, 186, 125);"></i>
+    <a id="btnKakao" class="link-icon kakao" href="javascript:shareKakao();">
+        <img th:src="@{/image/kakao아이콘.png}" width="20%" style="margin-left: 5px; /* 조절 가능한 간격 */">
+    </a>
+</div>
+
+
       
 <div th:text="|${draw.categoryDto.categoryName}|" class="category"></div>
 <div th:text="|${draw.title}|" class="art_title"></div>
