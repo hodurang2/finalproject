@@ -3,11 +3,9 @@ package com.gdu.drawauction.service;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.ui.Model;
 
-import com.gdu.drawauction.dto.AdminDto;
 import com.gdu.drawauction.dto.UserDto;
 
 public interface AdminService {

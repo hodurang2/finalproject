@@ -5,7 +5,10 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+<<<<<<< HEAD
 import com.gdu.drawauction.dto.AuctionDto;
+=======
+>>>>>>> main
 import com.gdu.drawauction.dto.UserDto;
 
 @Mapper

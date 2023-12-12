@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 public interface DrawService {
 	public Map<String, Object> getDrawList(HttpServletRequest request);
+	public Map<String, Object> getDrawSearchList(HttpServletRequest request);
 	public boolean addDraw(MultipartHttpServletRequest multipartRequest) throws Exception;
 	public void loadDraw(HttpServletRequest request, Model model);
 	public ResponseEntity<Map<String, Object>> WishListControll(HttpServletRequest request);

@@ -124,16 +124,21 @@
       
     <script>
 		
-	  var price = parseInt($('#price').val(), 10);
-      var balance = parseInt($('#balance').val(), 10);
-	  var emoney = parseInt($('#emoneyHistory').val(), 10);
-	  var price2 =  $('.price').val();
-	  var balance2 = $('.balance').val();
-	  var emoney2 = $('.emoneyHistory').val();
 	  const fnOrderConfirm = () => {
 		$('.btn_orderPayment').click((ev) => {
+		  var price = parseInt($('#price').val(), 10);
+	      var balance = parseInt($('#balance').val(), 10);
+		  var emoney = parseInt($('#emoneyHistory').val(), 10);
+		  var price2 =  $('.price').val();
+		  var balance2 = $('.balance').val();
+		  var emoney2 = $('.emoneyHistory').val();
+		  var byte = 0;	
+		  var drawRequest = $('#drawRequest').val();
 	 	  var receiveEmail = $('#receiveEmail').val();
 		  var regEmail = /^[A-Za-z0-9-_]+@[A-Za-z0-9]{2,}([.][A-Za-z]{2,6}){1,2}$/;
+		  for (var i=0; i<drawRequest.length; ++i) {
+		    (drawRequest.charCodeAt(i) > 127) ? byte += 3 : byte++ ;
+		  }
 		  if(!regEmail.test(receiveEmail)){
 	        alert('잘못된 이메일 입니다. 이메일을 확인하세요.');
 	        ev.preventDefault();
@@ -141,7 +146,11 @@
 		  } else if(price > emoney){
 		    if(confirm('Emoney가 모자랍니다. 충전하러 가시겠습니까?')){
 			  location.href = '/mypage/charge.do';
-			};
+			}
+			ev.preventDefault();
+			return;
+	      } else if(byte > 300){
+			alert('요청사항은 최대 300BYTE 입니다.')
 			ev.preventDefault();
 			return;
 	      } else if(confirm('결제 금액 : ' + price2 + '  결제 하시겠습니까? (결제 후 잔액  ' + balance2 + ')  결제 후 판매자 이메일로 사진을 꼭 보내주세요.')){
