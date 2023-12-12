@@ -1,14 +1,10 @@
 package com.gdu.drawauction.service;
 
-import java.io.PrintWriter;
-import java.lang.StackWalker.Option;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,12 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import com.gdu.drawauction.dao.AdminMapper;
+<<<<<<< HEAD
 import com.gdu.drawauction.dto.AdminDto;
 import com.gdu.drawauction.dto.DrawDto;
+=======
+>>>>>>> main
 import com.gdu.drawauction.dto.UserDto;
-import com.gdu.drawauction.util.MyJavaMailUtils;
 import com.gdu.drawauction.util.MyPageUtils;
-import com.gdu.drawauction.util.MySecurityUtils;
 
 import lombok.RequiredArgsConstructor;
 

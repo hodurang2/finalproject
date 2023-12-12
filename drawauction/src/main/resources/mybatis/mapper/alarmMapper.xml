@@ -10,6 +10,7 @@
     <result  column="ALARM_CONTENTS"    property="alarmContents"/>
     <result  column="ALARM_TYPE"        property="alarmType"/>
     <result  column="CREATED_AT"        property="createdAt"/>
+    <result  column="STATUS"      	    property="status"/>
     <association javaType="UserDto"      property="userDto">
       <id        column="USER_NO"        property="userNo"/>
       <result    column="EMAIL"          property="email" />
@@ -144,8 +145,26 @@
       )
 	</insert>
 	
+    <insert id="insertInquiryAlarm" parameterType="Map">
+      INSERT INTO ALARM_T (
+        ALARM_NO
+      , ALARM_CONTENTS
+      , ALARM_TYPE
+      , CREATED_AT
+      , USER_NO
+      , INQUIRY_NO
+      ) VALUES (
+        ALARM_SEQ.NEXTVAL
+      , #{alarmContents}
+      , #{alarmType}
+      , SYSDATE
+      , #{userNo}
+      , #{inquiryNo}
+      )
+	</insert>
+	
 	<select id="getAlarmList" parameterType="String" resultMap="AlarmMap">
-	  SELECT DISTINCT AL.ALARM_NO, AL.USER_NO, AL.AUCTION_NO, AL.DRAW_NO, AL.NOTICE_NO, AL.INQUIRY_NO, AL.ALARM_CONTENTS, AL.ALARM_TYPE, AL.CREATED_AT, A.EMAIL
+	  SELECT DISTINCT AL.ALARM_NO, AL.USER_NO, AL.AUCTION_NO, AL.DRAW_NO, AL.NOTICE_NO, AL.INQUIRY_NO, AL.ALARM_CONTENTS, AL.ALARM_TYPE, AL.CREATED_AT, AL.STATUS ,A.EMAIL
 	    FROM (SELECT AC.LOGIN_AT, AC.EMAIL, U.USER_NO
 	            FROM ACCESS_T AC INNER JOIN USER_T U
 	              ON AC.EMAIL = U.EMAIL) A INNER JOIN ALARM_T AL
@@ -166,9 +185,16 @@
 	         GROUP BY RL.EMAIL, RL.USER_NO) A INNER JOIN ALARM_T AL 
 	            ON A.USER_NO = AL.USER_NO
 	 WHERE A.LATEST_LOGIN_AT < AL.CREATED_AT
+	   AND AL.STATUS = 0
 	 ORDER BY AL.CREATED_AT DESC
   ]]>
 	</select>
+	
+	<update id="updateAlarm" parameterType="int" >
+      UPDATE ALARM_T
+         SET STATUS = 1
+	   WHERE USER_NO = #{userNo}
+	</update>
     
 
 	

@@ -1,12 +1,14 @@
 package com.gdu.drawauction.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gdu.drawauction.dto.AlarmDto;
@@ -31,5 +33,13 @@ public class AlarmController {
 	public int alarmCheck(HttpServletRequest request, Model model)  {
 	  int checkResult = alarmService.alarmCheck(request);
 	  return checkResult;
+	}
+	
+	@ResponseBody
+	@PostMapping(value="/alarm/updateAlarm.do", produces = "application/json")
+	public Map<String, Object> updateAlarm(HttpServletRequest request) {
+		
+	  int updateResult = alarmService.updateAlarm(request);
+	  return Map.of("updateResult", updateResult);
 	}
 }

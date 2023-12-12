@@ -10,4 +10,5 @@ public interface AlarmService {
 	
 	public List<AlarmDto> getAlarmList(HttpServletRequest request);
 	public int alarmCheck(HttpServletRequest request);
+	public int updateAlarm(HttpServletRequest request);
 }

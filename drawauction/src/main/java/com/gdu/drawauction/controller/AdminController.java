@@ -1,7 +1,6 @@
 package com.gdu.drawauction.controller;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gdu.drawauction.service.AdminService;
-import com.gdu.drawauction.service.DrawService;
 
 import lombok.RequiredArgsConstructor;
 

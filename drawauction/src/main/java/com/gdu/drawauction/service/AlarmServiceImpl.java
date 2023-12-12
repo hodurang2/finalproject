@@ -32,4 +32,13 @@ public class AlarmServiceImpl implements AlarmService  {
 		String email = request.getParameter("email");
 		return alarmMapper.alarmCheck(email);
 	}
+	
+	@Transactional
+	@Override
+	public int updateAlarm(HttpServletRequest request) {
+		
+		int userNo = Integer.parseInt(request.getParameter("userNo"));
+		
+		return alarmMapper.updateAlarm(userNo);
+	}
 }

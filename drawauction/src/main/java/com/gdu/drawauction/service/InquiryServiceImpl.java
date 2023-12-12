@@ -25,6 +25,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.gdu.drawauction.dao.AlarmMapper;
 import com.gdu.drawauction.dao.InquiryMapper;
 import com.gdu.drawauction.dto.AnswerDto;
 import com.gdu.drawauction.dto.InquiryAttachDto;
@@ -43,6 +44,7 @@ public class InquiryServiceImpl implements InquiryService{
   private final InquiryMapper inquiryMapper;
   private final MyPageUtils myPageUtils;
   private final MyFileUtils myFileUtils;
+  private final AlarmMapper alarmMapper;
 
   @Override
   public void loadInquiryList(HttpServletRequest request, Model model) {
@@ -156,6 +158,18 @@ public class InquiryServiceImpl implements InquiryService{
     int inquiryNo = Integer.parseInt(request.getParameter("inquiryNo"));
     int userNo = Integer.parseInt(request.getParameter("userNo"));
     String contents = request.getParameter("contents");
+    
+    InquiryDto inquiryDto = inquiryMapper.getInquiry(inquiryNo);
+    int userNo2 = inquiryDto.getUserDto().getUserNo();
+    String alarmContents = "1:1문의 댓글이 달렸습니다. 1:1문의내역에서 확인해주세요.";
+	String alarmType = "1:1문의";
+	
+	Map<String, Object> alarmMap = Map.of("inquiryNo", inquiryNo
+										, "userNo", userNo2
+										, "alarmContents", alarmContents
+										, "alarmType", alarmType);
+    
+    alarmMapper.insertInquiryAlarm(alarmMap);
     
     
     AnswerDto answer = AnswerDto.builder()

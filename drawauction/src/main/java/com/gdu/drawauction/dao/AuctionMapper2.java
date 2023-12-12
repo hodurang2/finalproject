@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.dto.AuctionImageDto;
-import com.gdu.drawauction.dto.DrawImageDto;
 
 @Mapper
 public interface AuctionMapper2 {
@@ -25,4 +24,10 @@ public interface AuctionMapper2 {
   public int insertImage(AuctionImageDto image);
   public AuctionImageDto getImage(int auctionImageNo);
   public int deleteImage(int auctionImageNo);
+  public int getEmoney(int userNo);
+  public AuctionImageDto getAuctionImage(int auctionNo);
+  public int insertBuyerEmoney(Map<String, Object> emoneyMap);
+  public int insertSellerEmoney(Map<String, Object> emoneyMap);
+  public int insertRealBid(Map<String, Object> bidMap);
+  public int insertDigitalBid(Map<String, Object> bidMap);
 }

@@ -26,7 +26,7 @@
 <link rel="stylesheet" th:href="@{/css/common.css(ver=1.0)}" />
 <link rel="stylesheet" th:href="@{/css/ckeditor.css(ver=1.0)}" />
 <link rel="stylesheet" th:href="@{/css/menu.css(ver=1.0)}" />
-<link rel="stylesheet" th:href="@{/css/modal.css(ver=1.2)}" />
+<link rel="stylesheet" th:href="@{/css/modal.css(ver=1.3)}" />
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/decoupled-document/ckeditor.js"></script>
 </head>
@@ -168,6 +168,16 @@
 	    modalOn()
 	    modal2Off()
 	    $('.fa-bell').css('color', '');
+	    
+	    $.ajax({
+		  type: 'post',
+		  url: '/alarm/updateAlarm.do',
+		  data: 'userNo=' + userNo,
+		  dataType: 'json',
+		  success: (resData) => {
+			fnGetAlarmList();
+		  }
+		})
 	})
 	const closeBtn = modal.querySelector(".close-area")
 	closeBtn.addEventListener("click", e => {
@@ -197,6 +207,9 @@
             var formattedCreatedAt = createdAt.toISOString().slice(0, 16).replace('T', ' ');
 	        let str = '<div class="alarm">';
 	        str += '<div>';
+			if(alarm.status == 0){
+			  str += '<i id="alarm" class="fas fa-bell" style="color: #ff0000;"></i>&nbsp';
+			}
 			str += alarm.alarmContents + '<br>';
 			str += formattedCreatedAt;
 			str += '</div>';
@@ -215,7 +228,6 @@
 		data: 'email=' + email,
 		dataType: 'json',
 		success: (resData) => {
-          console.log(resData);
 		  if(resData > 0){
 			$('.fa-bell').css('color', '#ff0000');
 			modal2On();
@@ -224,7 +236,6 @@
 	  })
 	}
 	
-    
 	modalOn();
 	isModalOn();
 	modalOff();
