@@ -25,60 +25,19 @@
 <link rel="stylesheet" th:href="@{/css/paging.css(ver=1.0)}" />
 <link rel="stylesheet" th:href="@{/css/common.css(ver=1.0)}" />
 <link rel="stylesheet" th:href="@{/css/ckeditor.css(ver=1.0)}" />
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/decoupled-document/ckeditor.js"></script>
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </head>
 
 
 
-<style>
-body {
-    margin: 0;
-    padding: 0;
-}
-
-.navbar {
-    position: fixed;
-    width: 200px; /* Adjust the width as needed */
-    height: 100%;
-    background-color: #333;
-    padding-top: 20px;
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-li {
-    margin-bottom: 10px;
-}
-
-a {
-    text-decoration: none;
-    color: white;
-    font-weight: bold;
-    font-size: 16px;
-}
-
-.content {
-    margin-left: 220px; /* Adjust the margin to leave space for the fixed navbar */
-    padding: 20px;
-}
-	
-	
-	
-	
-</style>
-
 <body>
 	<div th:fragment="menu">
-		<div class="row side_nav">
-		<ul class="nav nav-pills nav-stacked">
-			<a th:href="@{/admin/userList.do}">관리자 메뉴</a>
-		</ul>
+			<a th:href="@{/admin/userList.do}">회원관리</a>
+			<hr>
+			<a th:href="@{/admin/auctionList.do}">경매관리</a>
+			<a th:href="@{/admin/drawList.do}">그려드림관리</a>
+			<hr>
 	</div>
 
 </div>

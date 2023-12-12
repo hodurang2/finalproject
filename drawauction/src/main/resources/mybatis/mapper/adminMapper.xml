@@ -6,7 +6,6 @@
 
 <mapper namespace="com.gdu.drawauction.dao.AdminMapper">
 
-
 	
 	<select id="getUserList" parameterType="Map" resultType="UserDto">
     SELECT USER_NO, EMAIL, NAME, MOBILE, AGREE, STATE, JOINED_AT, NICKNAME, NUM
