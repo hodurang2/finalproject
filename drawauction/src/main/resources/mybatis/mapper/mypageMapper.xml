@@ -156,6 +156,8 @@
       <result  column="WORK_TERM"    property="workTerm"/>
       <result  column="SELLER_NO"    property="sellerNo" />
       <result column="SELLER_NICKNAME" property="sellerNickname" />
+      <result column="SELLER_EMAIL"   property="sellerEmail" />
+      <result column="SELLER_MOBILE"  property="sellerMobile" />
       <association javaType="CategoryDto" property="categoryDto">
         <id        column="CATEGORY_NO"   property="categoryNo"/>
         <result    column="CATEGORY_NAME"          property="categoryName" />
@@ -344,17 +346,23 @@
   </select>
 
   <select id="getDrawOrderList" parameterType="Map" resultMap="DrawOrderMap2">
-    SELECT A.DRAW_NO, A.CATEGORY_NO, C.CATEGORY_NAME, A.TITLE, A.CONTENTS, A.PRICE,
-           A.ORDER_NO, A.BUYER_NO, A.ORDER_DATE, A.RECEIVE_EMAIL
-      FROM (SELECT ROW_NUMBER() OVER(ORDER BY ORDER_DATE DESC) AS RN,
-                   D.DRAW_NO, D.CATEGORY_NO, D.TITLE, D.CONTENTS, D.PRICE,
-                   DO.ORDER_NO, DO.BUYER_NO, DO.ORDER_DATE, DO.RECEIVE_EMAIL
-              FROM DRAW_T D RIGHT OUTER JOIN DRAW_ORDER_T DO
-                ON D.DRAW_NO = DO.DRAW_NO
-             WHERE BUYER_NO = #{buyerNo}) A INNER JOIN CATEGORY_T C
-                ON A.CATEGORY_NO = C.CATEGORY_NO
+     SELECT A.DRAW_NO, A.TITLE, A.PRICE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.WORK_TERM,
+           A.ORDER_NO, A.ORDER_DATE, A.RECEIVE_EMAIL, A.DRAW_REQUEST,
+           A.BUYER_NO, A.SELLER_NO, A.SELLER_NICKNAME, A.SELLER_MOBILE, A.SELLER_EMAIL,
+           A.CATEGORY_NO, A.CATEGORY_NAME
+      FROM (SELECT D.DRAW_NO, D.TITLE, D.PRICE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.WORK_TERM,
+                   DOR.ORDER_NO, DOR.ORDER_DATE, DOR.RECEIVE_EMAIL, DOR.DRAW_REQUEST,
+                   U1.USER_NO AS SELLER_NO, U2.USER_NO AS BUYER_NO,
+                   U1.NICKNAME AS SELLER_NICKNAME, U1.MOBILE AS SELLER_MOBILE, U1.EMAIL AS SELLER_EMAIL,
+                   C.CATEGORY_NO, C.CATEGORY_NAME,
+                   ROW_NUMBER() OVER(ORDER BY DOR.ORDER_DATE DESC) AS RN
+              FROM DRAW_T D RIGHT OUTER JOIN DRAW_ORDER_T DOR
+                ON D.DRAW_NO = DOR.DRAW_NO INNER JOIN USER_T U1
+                ON D.SELLER_NO = U1.USER_NO LEFT OUTER JOIN USER_T U2
+                ON DOR.BUYER_NO = U2.USER_NO INNER JOIN CATEGORY_T C
+                ON D.CATEGORY_NO = C.CATEGORY_NO
+             WHERE DOR.BUYER_NO = #{buyerNo}) A
      WHERE A.RN BETWEEN #{begin} AND #{end}
-     ORDER BY ORDER_DATE DESC
   </select>
   
   <select id="getDrawReceivedOrderCount" parameterType="int" resultType="int">

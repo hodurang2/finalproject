@@ -18,6 +18,8 @@ public class DrawDto2 {
 	private int height;
 	private int sellerNo;
 	private String sellerNickname;
+	private String sellerEmail;
+	private String sellerMobile;
 	private int workTerm;
 	private String heart;
 	private CategoryDto categoryDto; // private String name;
