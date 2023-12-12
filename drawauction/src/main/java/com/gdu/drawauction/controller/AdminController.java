@@ -72,5 +72,21 @@ public class AdminController {
     	return "redirect:/admin/userList.do";
     }
     
+ 
+    // 그려드림
+    @GetMapping("/drawList.do")
+    public String drawList(HttpServletRequest request, Model model) {
+    	adminService.loadDrawList(request, model);
+    	return "admin/drawList";
+    }
+    
+    @PostMapping("/removeDraw.do")
+    public String removeDraw(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    	int removeResult = adminService.removeDraw(request);
+    	redirectAttributes.addFlashAttribute("removeResult", removeResult);
+    	return "redirect:/admin/drawList.do";
+    }
+    
+    
     
 }

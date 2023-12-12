@@ -3,8 +3,9 @@
 
 <head th:replace="~{/admin/menu::head('홈')}"></head>
 
-<body>
 
+<body>
+	
     <div th:replace="~{/admin/menu::menu}"></div>
 
 
@@ -30,17 +31,14 @@
                     <td th:text="${u.nickname}"></td>
                     <td th:text="${u.joinedAt}"></td>
                     <td>
-						<form id="frm_btn" method="post">
+				        <form id="frm_btn" method="post">
 							<input type="hidden" id="userNo" name="userNo" th:value="${u.userNo}">
 							<input type="hidden" id="email" name="email" th:value="${u.email}">
 							<input type="hidden" id="name" name="name" th:value="${u.name}">
-							<button type="button" id="btn_remove"  class="btn btn-danger">삭제</button>
-						</form>						
-						
+				          	<button type="button" id="btn_remove"  class="btn btn-danger">삭제</button>
+				        </form>		
 					</td>
-                    
-						
-					</td>	
+                   
                     
                 </tr>
             </th:block>
@@ -51,30 +49,27 @@
             </tr>
         </tfoot>
     </table>
-		
-		
-		   <script th:inline="javascript">
-	   
-	    var frmBtn = $('#frm_btn');
-    
-    const fnRemoveAdmin = () => {
-  		$('#btn_remove').click(() => {
-  			if(confirm('삭제할까요?')){
-  				alert('삭제되었습니다.');
-    			frmBtn.attr('action', '/admin/removeUser.do');
-    			frmBtn.submit();
-  			}
-  		})	
-  	}
-      fnRemoveAdmin();
-      
-      </script>
-		
-		
+
 		
 	</div>
-   
-
+   			<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+		   <script th:inline="javascript">
+	   
+				    var frmBtn = $('#frm_btn');
+			    
+			    const fnRemoveAdmin = () => {
+			  		$('#btn_remove').click(() => {
+			  			if(confirm('삭제할까요?')){
+			  				alert('삭제되었습니다.');
+			    			frmBtn.attr('action', '/admin/removeUser.do');
+			    			frmBtn.submit();
+			  			}
+			  		})	
+			  	}
+			  	
+			fnRemoveAdmin();
+      
+      </script>
 	
 
 </body>
