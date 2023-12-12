@@ -4,9 +4,6 @@
 <head th:replace="~{/layout/header::head('로그인')}"></head>
 
 <style>
-	.logo{
-		text-align: center;
-	}
 	
 		.atag {
 			font-size: 85%;
@@ -25,6 +22,8 @@
 		font-size: 100%;
 		text-align: center;
 	}
+	
+
 
 </style>
 
@@ -35,7 +34,9 @@
   <div class="main_wrap">
 
   <div class="wrap wrap_5">
-	<div class="logo"><img th:src="@{/image/minilogo.png}"></div>
+	<div class="logo" style="text-align: center; width: 20%; margin: 0 auto;   display: block; margin-top:5%;">
+		<img th:src="@{/image/minilogo.png}">
+	</div>
     <h3 class="title" style="margin: 10%;">들어옥션 로그인</h3>
    	
    	
@@ -80,17 +81,17 @@
 
     <hr>
 
-			<div class="socialTitle" style="margin: 7%;">소셜 로그인</div>
+			<div class="socialTitle" style="margin: 7%; margin-bottom: 10%;">소셜 로그인</div>
 
-			<div class="text-center" style="margin: 10%;">
+			<div class="text-center" style="margin-bottom: 20%;">
 				<!--/* 네이버 로그인 */-->
-			    <a th:href="${naverLoginURL}"><img th:src="@{/image/btnG_아이콘원형.png}" width="20%"></a>
+			    <a th:href="${naverLoginURL}"><img th:src="@{/image/naver아이콘.png}" width="16%"></a>
 			
 			    <!--/* 간격 조절 */-->
 			    <span style="margin-right: 20px;"></span>
 			
 			    <!--/* 카카오 로그인 */-->
-			    <a th:href="${kakaoLoginURL}"><img th:src="@{/image/icon-kakao.png}" width="21%"></a>
+			    <a th:href="${kakaoLoginURL}"><img th:src="@{/image/kakao아이콘.png}" width="16%"></a>
 			
 		</div>
 

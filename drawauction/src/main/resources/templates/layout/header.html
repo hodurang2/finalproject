@@ -26,6 +26,7 @@
 <link rel="stylesheet" th:href="@{/css/common.css(ver=1.0)}" />
 <link rel="stylesheet" th:href="@{/css/ckeditor.css(ver=1.0)}" />
 <link rel="stylesheet" th:href="@{/css/menu.css(ver=1.0)}" />
+<link rel="stylesheet" th:href="@{/css/modal.css(ver=1.2)}" />
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/decoupled-document/ckeditor.js"></script>
 </head>
@@ -59,6 +60,9 @@
       </th:block>
       <th:block th:if="${session.user != null}">
         <ul class="ico_user_group">
+		<th:block th:if="${session.user != null and session.user.email == 'admin01@naver.com'}">
+			<a th:href="@{/admin/home.form}">관리자페이지</a>
+		</th:block>
 			<li>
 			  <a th:href="@{/mypage/detail.do}">
 			    <span th:text="|${session.user.name}|"></span> 님 환영합니다
@@ -80,30 +84,30 @@
 <div class="header_menu">
     <div class="logo"><a th:href="@{/main.do}"><img th:src="@{../../image/한글로고.png}" width="250px"></a></div>
     <div>
-		<li><i class="fas fa-regular fa-user mypage_event" id="mypage" style="cursor: pointer;"></i></li>
-		<li><i id="btn-modal" class="fas fa-regular fa-bell mypage_event" style="cursor: pointer;"></i></li>
-		<li><i class="fas fa-regular fa-comments mypage_event" style="cursor: pointer;"></i></li>
+		<li><i class="fas fa-xl fa-user mypage_event" id="mypage" style="cursor: pointer;"></i></li>
+		<li><i id="btn-modal" class="fas fa-xl fa-bell mypage_event" style="cursor: pointer;"></i></li>
+		<li><i class="fas fa-xl fa-comments mypage_event" style="cursor: pointer;"></i></li>
 
     
     </div>
 </div>
 </div>
 
-<div id="container"></div>
-<div id="modal" class="modal-overlay">
-    <div class="modal-window">
-        <div class="title">
-            <h2>모달</h2>
-        </div>
-        <div class="close-area">X</div>
-        <div class="content">
-            <p>가나다라마바사 아자차카타파하</p>
-            <p>가나다라마바사 아자차카타파하</p>
-            <p>가나다라마바사 아자차카타파하</p>
-            <p>가나다라마바사 아자차카타파하</p>
+    <div id="container"></div>
+      <div id="modal" class="modal-overlay">
+        <div class="modal-window">
+            <div class="modal-title">
+                <h2>알림</h2>
+            </div>
+            <div class="close-area">X</div>
+            <div class="content">
+                
+            </div>
         </div>
     </div>
-</div>
+    
+    <div id="modal2">새로운 알림이 있습니다.
+	</div>
 
 	<!--아이콘-->
 	<script th:inline="javascript">
@@ -133,41 +137,101 @@
         });
     };
     
+    var email = /*[[${session.user != null ? session.user.email : ""}]]*/ "";
+    var userNo = /*[[${session.user != null ? session.user.userNo : 0}]]*/ 0;
     const modal = document.getElementById("modal")
+    const modal2 = document.getElementById("modal2")
 	function modalOn() {
 	    modal.style.display = "flex"
+	}
+	function modal2On() {
+	    modal2.style.display = "flex"
 	}
 	function isModalOn() {
 	    return modal.style.display === "flex"
 	}
+	function isModal2On() {
+	    return modal2.style.display === "flex"
+	}
 	function modalOff() {
 	    modal.style.display = "none"
 	}
+	function modal2Off() {
+	    modal2.style.display = "none"
+	}
 	const btnModal = document.getElementById("btn-modal")
 	btnModal.addEventListener("click", e => {
+		if(userNo === 0){
+		  e.preventDefault();
+		  return;
+		}
 	    modalOn()
+	    modal2Off()
+	    $('.fa-bell').css('color', '');
 	})
 	const closeBtn = modal.querySelector(".close-area")
 	closeBtn.addEventListener("click", e => {
 	    modalOff()
 	})
-	modal.addEventListener("click", e => {
-	    const evTarget = e.target
-	    if(evTarget.classList.contains("modal-overlay")) {
-	        modalOff()
+	window.addEventListener("mousedown", e => {
+	    const isOutsideModal = !modal.contains(e.target);
+	    if (isOutsideModal && isModalOn()) {
+	        modalOff();
 	    }
-	})
+	});
 	window.addEventListener("keyup", e => {
-	    if(isModalOn() && e.key === "Escape") {
-	        modalOff()
+	    if (isModalOn() && e.key === "Escape") {
+	        modalOff();
 	    }
-	})
-
+	});
+	
+	const fnGetAlarmList = () => {
+      $.ajax({
+		type: 'get',
+		url: '/alarm/getAlarmList.do',
+		data: 'email=' + email,
+		dataType: 'json',
+		success: (resData) => {
+	      $.each(resData, (i, alarm) => {
+		    var createdAt = new Date(alarm.createdAt);
+            var formattedCreatedAt = createdAt.toISOString().slice(0, 16).replace('T', ' ');
+	        let str = '<div class="alarm">';
+	        str += '<div>';
+			str += alarm.alarmContents + '<br>';
+			str += formattedCreatedAt;
+			str += '</div>';
+			str += '<hr>';
+	        str += '</div>';
+	        $('.content').append(str);
+	      })
+		}	
+	  })
+	}
+	
+	const fnAlarmCheck = () => {
+	  $.ajax({
+		type: 'get',
+		url: '/alarm/alarmCheck.do',
+		data: 'email=' + email,
+		dataType: 'json',
+		success: (resData) => {
+          console.log(resData);
+		  if(resData > 0){
+			$('.fa-bell').css('color', '#ff0000');
+			modal2On();
+		  }
+		}
+	  })
+	}
+	
+    
 	modalOn();
 	isModalOn();
 	modalOff();
     fnIconsClickEvent(); // 함수 호출
     fnMyPage();
+    fnGetAlarmList();
+    fnAlarmCheck();
 </script>
 
     
