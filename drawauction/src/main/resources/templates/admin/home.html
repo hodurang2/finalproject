@@ -1,20 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-
-<head th:replace="~{/layout/header::head('관리자 홈')}"></head>
+<head>
+    <div th:replace="~{/admin/menu::head('관리자 홈')}"></div>
+</head>
 
 <body>
-    <div class="main_wrap">
-        <!-- Side Menu 추가 -->
-        <div th:replace="~{/admin/menu::menu}"></div>
 
-        <div class="wrap wrap_5">
-            <h1>관리자홈! 반갑슨디ㅏ.</h1>
-            
-            <!-- 여기에 Thymeleaf 문법을 활용하여 유저 리스트를 동적으로 표시하는 코드 추가 -->
-            
-        </div>
-    </div>
+	<div th:replace="~{/admin/menu::menu}"></div>
+	<div >
+		
+	</div>
+
+
 </body>
 
 </html>
