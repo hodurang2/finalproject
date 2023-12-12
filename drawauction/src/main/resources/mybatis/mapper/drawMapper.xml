@@ -13,6 +13,7 @@
     <result  column="WIDTH"  property="width"/>
     <result  column="HEIGHT" property="height"/>
     <result  column="WORK_TERM" property="workTerm"/>
+    <result  column="DRAW_CREATED_AT" property="drawCreatedAt"/>
     <association javaType="CategoryDto" property="categoryDto">
 	  <id        column="CATEGORY_NO"   property="categoryNo"/>
 	  <result    column="CATEGORY_NAME"          property="categoryName" />
@@ -217,6 +218,7 @@
       , HEIGHT
       , PRICE
       , WORK_TERM
+      , DRAW_CREATED_AT
     ) VALUES (
         #{drawNo}
       , #{userDto.userNo}
@@ -227,6 +229,7 @@
       , #{height}
       , #{price}
       , #{workTerm}
+      , SYSDATE
     )
   </insert>
   
@@ -254,9 +257,9 @@
   </select>
   
   <select id="getDrawList" parameterType="Map" resultMap="DrawMap">
-    SELECT A.DRAW_NO, A.CATEGORY_NO, A.TITLE, A.PRICE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.WORK_TERM, A.USER_NO, A.NICKNAME, A.NAME, A.EMAIL, C.CATEGORY_NAME
+    SELECT A.DRAW_NO, A.CATEGORY_NO, A.TITLE, A.PRICE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.WORK_TERM, A.DRAW_CREATED_AT, A.USER_NO, A.NICKNAME, A.NAME, A.EMAIL, C.CATEGORY_NAME
       FROM (SELECT ROW_NUMBER() OVER(ORDER BY DRAW_NO DESC) AS RN,
-                   D.DRAW_NO, D.CATEGORY_NO, D.TITLE, D.PRICE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.WORK_TERM,USR.USER_NO, USR.NICKNAME, USR.NAME, USR.EMAIL
+                   D.DRAW_NO, D.CATEGORY_NO, D.TITLE, D.PRICE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.WORK_TERM, D.DRAW_CREATED_AT, USR.USER_NO, USR.NICKNAME, USR.NAME, USR.EMAIL
               FROM DRAW_T D LEFT OUTER JOIN USER_T USR
                 ON D.SELLER_NO = USR.USER_NO) A INNER JOIN CATEGORY_T C
         ON A.CATEGORY_NO = C.CATEGORY_NO
@@ -265,8 +268,8 @@
   </select>
   
   <select id="getDraw" parameterType="int" resultMap="DrawMap">
-    SELECT A.DRAW_NO, A.USER_NO, A.CATEGORY_NO, A.TITLE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.PRICE, A.WORK_TERM, C.CATEGORY_NAME, A.NICKNAME, A.EMAIL, A.NAME
-  	  FROM (SELECT D.DRAW_NO, D.SELLER_NO, D.CATEGORY_NO ,D.TITLE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.PRICE, D.WORK_TERM
+    SELECT A.DRAW_NO, A.USER_NO, A.CATEGORY_NO, A.TITLE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.PRICE, A.WORK_TERM, A.DRAW_CREATED_AT, C.CATEGORY_NAME, A.NICKNAME, A.EMAIL, A.NAME
+  	  FROM (SELECT D.DRAW_NO, D.SELLER_NO, D.CATEGORY_NO ,D.TITLE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.PRICE, D.WORK_TERM, D.DRAW_CREATED_AT
               	   , USR.USER_NO, USR.EMAIL, USR.NAME, USR.NICKNAME
          	  FROM USER_T USR RIGHT OUTER JOIN DRAW_T D
                 ON USR.USER_NO = D.SELLER_NO) A INNER JOIN CATEGORY_T C
@@ -408,10 +411,10 @@
   
   <select id="reviewCheck" parameterType="int" resultType="int">
 	SELECT COUNT(*)
-  FROM DRAW_REVIEW_T DR INNER JOIN DRAW_ORDER_T DO
-    ON DR.BUYER_NO = DO.BUYER_NO
- WHERE DR.BUYER_NO = #{userNo}
-   AND DR.DRAW_NO = #{drawNo}
+      FROM DRAW_REVIEW_T DR INNER JOIN DRAW_ORDER_T DO
+        ON DR.BUYER_NO = DO.BUYER_NO
+ 	 WHERE DR.BUYER_NO = #{userNo}
+   	   AND DR.DRAW_NO = #{drawNo}
   </select>
   
   <select id="getEmoney" parameterType="int" resultType="int">

@@ -156,7 +156,8 @@ CREATE TABLE DRAW_T (
 	CONTENTS	VARCHAR2(4000 BYTE) NULL,
 	WIDTH	    NUMBER		       NULL,
 	HEIGHT	    NUMBER		       NULL,
-    WORK_TERM   NUMBER             NULL
+    WORK_TERM   NUMBER             NULL,
+    DRAW_CREATED_AT DATE           NULL
 );
 
 -- 그려드림 이미지 테이블
