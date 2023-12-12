@@ -1,7 +1,6 @@
 package com.gdu.drawauction.service;
 
 import java.io.PrintWriter;
-import java.lang.StackWalker.Option;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,6 +15,7 @@ import org.springframework.ui.Model;
 
 import com.gdu.drawauction.dao.AdminMapper;
 import com.gdu.drawauction.dto.AdminDto;
+import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.util.MyJavaMailUtils;
 import com.gdu.drawauction.util.MyPageUtils;
@@ -126,4 +126,22 @@ public class AdminServiceImpl implements AdminService {
     
 	}
 	
+	@Override
+	public Map<String, Object> getAdminAucList(HttpServletRequest request) {
+	  Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(opt.orElse("1"));
+    int total = adminMapper.getAdminAucCount();
+    int display = 9;
+
+    myPageUtils.setPaging(page, total, display);
+    
+    Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
+                                   , "end", myPageUtils.getEnd());
+    
+    List<AuctionDto> adminAucList = adminMapper.getAdminAucList(map);
+
+    return Map.of("adminAucList", adminAucList
+                , "totalPage", myPageUtils.getTotalPage());
+  }
+
 }

@@ -1,5 +1,7 @@
 package com.gdu.drawauction.service;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,5 +20,6 @@ public interface AdminService {
 	public void loadUserList(HttpServletRequest request, Model model);
 	public UserDto getUserCount(int userNo, Model model);
   
-	
+	// 경매정보가져오기
+	public Map<String, Object> getAdminAucList(HttpServletRequest request);
 }

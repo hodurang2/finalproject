@@ -9,10 +9,59 @@
         <div th:replace="~{/admin/menu::menu}"></div>
 
         <div class="wrap wrap_5">
-            <h1>관리자홈! 반갑슨디ㅏ.</h1>
+            <h1>관리자홈! 반갑습니다.</h1>
             
-            <!-- 여기에 Thymeleaf 문법을 활용하여 유저 리스트를 동적으로 표시하는 코드 추가 -->
-            
+        <script th:inline="javascript">
+
+          /*<![CDATA[*/
+          // 전역 변수
+          var page = 1;
+          var totalPage = 0;
+  
+          const fnGetAuctionList = () => {
+            $.ajax({
+              // 요청
+              type: 'get',
+              url: '/admin/adminAucList.do',
+              data: {
+                page: page
+              },
+              // 응답
+              dataType: 'json',
+              success: (resData) => {
+                totalPage = resData.totalPage;
+                $.each(resData.adminAucList, (i, auction) => {
+                  let str = '<div class="auction" data-auction_no="' + auction.auctionNo + '">';
+                  if (auction.status === 0) {
+                    str += '<div class="auction_ongoing">경매진행중</div>';
+                  } else {
+                    str += '<div class="auction_end">경매종료</div>';
+                  }
+                  str += '<div><span class="auction_category">' + auction.artDto.categoryDto.categoryName + '</span></div>';
+                  str += '<div><span class="auction_title">' + auction.artDto.title + '</span></div>';
+                  str += '<div><span class="auction_nickname">' + auction.artDto.sellerDto.nickname + '</span></div>';
+                  str += '<div class="auction_end_wrap">';
+                  str += '<div><span class="first_auction">시작가</span><span class="last_auction">' + auction.startPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+                  str += '<div><span class="first_auction">현재입찰가</span><span class="last_auction">' + auction.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+                  str += '<div><span class="first_auction">즉시 구매가</span><span class="last_auction">' + auction.buyPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+                  str += '<div><span class="first_auction">마감일</span><span class="last_auction"> ' + auction.endAt + '</span></div>'; // 상품가격 1000단위 콤마찍기
+                  str += '</div>';
+                  str += '</div>';
+                  $('#auction_list').append(str);
+                })
+              }
+            })
+          }
+          
+          // 경매글관리 버튼 클릭 시 목록 갱신
+          $(document).on('click', '#adminAucListButton', function () {
+              fnGetAuctionList();
+          });
+  
+          fnGetAuctionList();
+          /*]]>*/
+  
+        </script>
         </div>
     </div>
 </body>

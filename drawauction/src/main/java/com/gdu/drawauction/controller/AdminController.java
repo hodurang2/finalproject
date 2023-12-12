@@ -1,5 +1,7 @@
 package com.gdu.drawauction.controller;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -8,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gdu.drawauction.service.AdminService;
 
@@ -18,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Controller
 public class AdminController {
 
-    private AdminService adminService;
+    private final AdminService adminService;
 
     @GetMapping("/login.form")
     public String loginForm(HttpServletRequest request, Model model) throws Exception {
@@ -54,6 +57,13 @@ public class AdminController {
     @GetMapping("/home.form")
     public String AdminHome() {
     	return "admin/home";
+    }
+     
+    @ResponseBody
+    @GetMapping(value="/adminAucList.do", produces="application/json")
+    public Map<String, Object> getAucList(HttpServletRequest request){
+      return adminService.getAdminAucList(request);
+       
     }
 	
 }

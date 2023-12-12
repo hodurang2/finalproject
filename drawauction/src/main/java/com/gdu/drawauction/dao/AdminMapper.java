@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.gdu.drawauction.dto.AdminDto;
+import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.dto.UserDto;
 
 @Mapper
@@ -19,4 +20,7 @@ public interface AdminMapper {
 	public int getUserListCount();
 	public UserDto getUserCount(int userNo);
 	
+	// 경매정보
+	public int getAdminAucCount();
+	public List<AuctionDto> getAdminAucList(Map<String, Object> map);
 }
