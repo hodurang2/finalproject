@@ -143,6 +143,32 @@
       , #{drawNo}
       )
 	</insert>
+	
+	<select id="getAlarmList" parameterType="String" resultMap="AlarmMap">
+	  SELECT DISTINCT AL.ALARM_NO, AL.USER_NO, AL.AUCTION_NO, AL.DRAW_NO, AL.NOTICE_NO, AL.INQUIRY_NO, AL.ALARM_CONTENTS, AL.ALARM_TYPE, AL.CREATED_AT, A.EMAIL
+	    FROM (SELECT AC.LOGIN_AT, AC.EMAIL, U.USER_NO
+	            FROM ACCESS_T AC INNER JOIN USER_T U
+	              ON AC.EMAIL = U.EMAIL) A INNER JOIN ALARM_T AL
+	              ON A.USER_NO = AL.USER_NO
+	   WHERE A.EMAIL = #{email}
+	   ORDER BY AL.CREATED_AT DESC
+	</select>
+	
+	<select id="alarmCheck" parameterType="String" resultType="int">
+	  <![CDATA[
+    SELECT COUNT(*)
+	  FROM (SELECT MAX(RL.LOGIN_AT) AS LATEST_LOGIN_AT, RL.EMAIL, RL.USER_NO
+	          FROM (SELECT AC.EMAIL, U.USER_NO, AC.LOGIN_AT, ROW_NUMBER() OVER (PARTITION BY U.USER_NO ORDER BY AC.LOGIN_AT DESC) AS RN
+	                  FROM ACCESS_T AC INNER JOIN USER_T U 
+	                    ON AC.EMAIL = U.EMAIL
+	                 WHERE AC.EMAIL = #{email}) RL
+	         WHERE RL.RN = 2
+	         GROUP BY RL.EMAIL, RL.USER_NO) A INNER JOIN ALARM_T AL 
+	            ON A.USER_NO = AL.USER_NO
+	 WHERE A.LATEST_LOGIN_AT < AL.CREATED_AT
+	 ORDER BY AL.CREATED_AT DESC
+  ]]>
+	</select>
     
 
 	
