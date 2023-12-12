@@ -86,13 +86,13 @@
   <select id="getAdminAucList" parameterType="Map" resultMap="AuctionMap">
     SELECT D.AUCTION_NO, D.START_PRICE, D.BUY_PRICE, D.START_AT, D.END_AT, D.STATUS, 
            D.ART_NO, D.TITLE, D.CONTENTS, D.ART_TYPE, D.WIDTH, D.HEIGHT,
-           D.USER_NO, D.NICKNAME,
+           D.USER_NO, D.NICKNAME, D.NAME, D.EMAIL,
            D.CATEGORY_NO, D.CATEGORY_NAME,
            D.PRICE, D.BID_NO       
       FROM (SELECT ROW_NUMBER() OVER(ORDER BY AUC.AUCTION_NO DESC) AS RN,
                    AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS, 
                    A.ART_NO, A.TITLE, A.CONTENTS, A.ART_TYPE, A.WIDTH, A.HEIGHT,
-                   U.USER_NO, U.NICKNAME,
+                   U.USER_NO, U.NICKNAME, U.NAME, U.EMAIL,
                    C.CATEGORY_NO, C.CATEGORY_NAME,
                    B.BID_NO, B.PRICE
               FROM AUCTION_T AUC, ART_T A, USER_T U, CATEGORY_T C, BID_T B
@@ -103,5 +103,7 @@
                AND (B.PRICE IS NULL OR B.PRICE = (SELECT MAX(PRICE) FROM BID_T WHERE AUCTION_NO = AUC.AUCTION_NO))) D 
       WHERE RN BETWEEN #{begin} AND #{end}
   </select>
+  
+  
 
 </mapper>

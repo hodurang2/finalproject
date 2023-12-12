@@ -3,21 +3,17 @@ package com.gdu.drawauction.controller;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-<<<<<<< HEAD
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-=======
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
->>>>>>> main
 
 import com.gdu.drawauction.service.AdminService;
-import com.gdu.drawauction.service.DrawService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -63,31 +59,30 @@ public class AdminController {
     public String home() {
     	return "admin/home";
     }
-<<<<<<< HEAD
+
      
-    @ResponseBody
-    @GetMapping(value="/adminAucList.do", produces="application/json")
-    public Map<String, Object> getAucList(HttpServletRequest request){
-      return adminService.getAdminAucList(request);
+    @GetMapping("/adminAucList.do")
+    public String getAucList(HttpServletRequest request, Model model){
+      adminService.getAdminAucList(request, model);
+      return "admin/adminAucList";
        
     }
+   
 	
-=======
+//    @GetMapping("/userList.do")
+//    public String userList(HttpServletRequest request, Model model) {
+//    	adminService.loadUserList(request, model);
+//    	return "admin/userList";
+//    
+//    }
+//
+//    @PostMapping("/removeUser.do")
+//    public String removeUser(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+//    	int removeResult = adminService.removeUser(request);
+//    	redirectAttributes.addFlashAttribute("removeResult", removeResult);
+//    	return "redirect:/admin/userList.do";
+//    }
+//    
     
-    @GetMapping("/userList.do")
-    public String userList(HttpServletRequest request, Model model) {
-    	adminService.loadUserList(request, model);
-    	return "admin/userList";
-    
-    }
 
-    @PostMapping("/removeUser.do")
-    public String removeUser(HttpServletRequest request, RedirectAttributes redirectAttributes) {
-    	int removeResult = adminService.removeUser(request);
-    	redirectAttributes.addFlashAttribute("removeResult", removeResult);
-    	return "redirect:/admin/userList.do";
-    }
-    
-    
->>>>>>> main
 }

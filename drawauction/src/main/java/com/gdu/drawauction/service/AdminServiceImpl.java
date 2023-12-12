@@ -1,5 +1,6 @@
 package com.gdu.drawauction.service;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import com.gdu.drawauction.dao.AdminMapper;
 import com.gdu.drawauction.dto.AdminDto;
 import com.gdu.drawauction.dto.AuctionDto;
+import com.gdu.drawauction.dto.AuctionImageDto;
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.util.MyJavaMailUtils;
 import com.gdu.drawauction.util.MyPageUtils;
@@ -29,9 +30,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
 
-	@Autowired
 	private final AdminMapper adminMapper;
 	
+	
+	private final MySecurityUtils mySecurityUtils;
+	private final MyJavaMailUtils myJavaMailUtils;
 	private final MyPageUtils myPageUtils;
 	  	
 	
@@ -78,50 +81,55 @@ public class AdminServiceImpl implements AdminService {
 //		}
 //		
 //	}
-	
+//	
 //	@Override
 //	public AdminDto getAdminUser(String email) {
 //		return adminMapper.getAdminUser(Map.of("email", email));
 //	}
 //	
-	@Override
-	public void loadUserList(HttpServletRequest request, Model model) {
-		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
-		
-		int page = Integer.parseInt(opt.orElse("1"));
-		int total = adminMapper.getUserCount();
-		int display = 10;
-		
-		myPageUtils.setPaging(page, total, display);
-		
-		
-		Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
-										, "end", myPageUtils.getEnd());
-		
-		List<UserDto> userList = adminMapper.getUserList(map);
-		
-		model.addAttribute("userList", userList);
-		model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/admin/userList.do"));
-	    model.addAttribute("beginNo", total - (page - 1) * display);
-	}
+//	
+//	@Override
+//	public void loadUserList(HttpServletRequest request, Model model) {
+//
+//    try {
+//      Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+//      int page = Integer.parseInt(opt.orElse("1"));
+//
+//      int total = adminMapper.getUserListCount();
+//      int display = 10;
+//
+//      myPageUtils.setPaging(page, total, display);
+//
+//      int begin = myPageUtils.getBegin();
+//      int end = myPageUtils.getEnd();
+//
+//      Map<String, Object> map = Map.of("begin", begin, "end", end);
+//
+//      List<UserDto> userList = adminMapper.selectUserList(map);
+//
+//      model.addAttribute("userList", userList);
+//      model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/admin/userList.do"));
+//      model.addAttribute("beginNo", total - (page - 1) * display);
+//  } catch (NumberFormatException e) {
+//      // 숫자 변환 예외 처리
+//      e.printStackTrace();
+//      // 적절한 에러 처리 로직 추가
+//  }
+//	  
+//	}
+//	
+//	@Override
+//	public UserDto getUserCount(int userNo, Model model) {
+//	  UserDto user = adminMapper.getUserCount(userNo);
+//    if (user != null) {
+//        model.addAttribute("user", user);
+//    }
+//    return user;
+//    
+//	}
 	
-	
 	@Override
-	public UserDto getUser(int userNo, Model model) {
-		UserDto user = adminMapper.getUser(userNo);
-		model.addAttribute("user", user);
-		return user;
-	}
-
-	@Override
-	public int removeUser(HttpServletRequest request) {
-		int userNo = Integer.parseInt(request.getParameter("userNo"));
-		return adminMapper.deleteUser(userNo);
-	}
-	
-<<<<<<< HEAD
-	@Override
-	public Map<String, Object> getAdminAucList(HttpServletRequest request) {
+	public void getAdminAucList(HttpServletRequest request, Model model) {
 	  Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
     int page = Integer.parseInt(opt.orElse("1"));
     int total = adminMapper.getAdminAucCount();
@@ -129,18 +137,19 @@ public class AdminServiceImpl implements AdminService {
 
     myPageUtils.setPaging(page, total, display);
     
+    int begin = myPageUtils.getBegin();
+    int end = myPageUtils.getEnd();
+    
     Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
                                    , "end", myPageUtils.getEnd());
     
     List<AuctionDto> adminAucList = adminMapper.getAdminAucList(map);
 
-    return Map.of("adminAucList", adminAucList
-                , "totalPage", myPageUtils.getTotalPage());
+    model.addAttribute("adminAucList", adminAucList);
+    model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/admin/adminAucList.do"));
+    model.addAttribute("beginNo", total - (page - 1) * display);
+
   }
+	
 
 }
-=======
-	
-	
-}
->>>>>>> main

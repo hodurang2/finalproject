@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.gdu.drawauction.dto.AdminDto;
 import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.dto.UserDto;
 
