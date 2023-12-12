@@ -161,13 +161,6 @@
 
 /* 카카오 공유 */
   #btnKakao {
-     width: 43px;
-     height: 43px; 
-     background-image: url(../../image/icon-kakao.png);
-     background-repeat: no-repeat;
-     position: absolute;
-     top: 11.6%;
-     right: 11%;
-     transform: translateY(-50%); 
+
    }
   
