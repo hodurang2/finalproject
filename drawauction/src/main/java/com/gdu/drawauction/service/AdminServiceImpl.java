@@ -1,5 +1,6 @@
 package com.gdu.drawauction.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,11 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import com.gdu.drawauction.dao.AdminMapper;
-<<<<<<< HEAD
 import com.gdu.drawauction.dto.AdminDto;
 import com.gdu.drawauction.dto.DrawDto;
-=======
->>>>>>> main
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.util.MyPageUtils;
 
@@ -109,6 +107,35 @@ public class AdminServiceImpl implements AdminService {
 	public int removeDraw(HttpServletRequest request) {
 		int drawNo = Integer.parseInt(request.getParameter("drawNo"));
 		return adminMapper.deleteDraw(drawNo);
+	}
+	
+	@Override
+	public void loadUserSearchList(HttpServletRequest request, Model model) {
+		
+		  	String column = request.getParameter("column");
+		    String query = request.getParameter("query");
+		    
+		    Map<String, Object> map = new HashMap();
+		    map.put("query", query);
+		    
+		    int total = adminMapper.getSearchUserCount(map);
+		    
+		    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+		    String strPage = opt.orElse("1");
+		    int page = Integer.parseInt(strPage);
+		    int display = 10;
+		    
+		    myPageUtils.setPaging(page, total, display);
+		    
+		    map.put("begin", myPageUtils.getBegin());
+		    map.put("end", myPageUtils.getEnd());
+		    
+		    List<UserDto> serachUserList = adminMapper.getSearchUserList(map);
+		    
+		    model.addAttribute("serachUserList", serachUserList);
+		    model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/free/search.do", "query=" + query ));
+		    model.addAttribute("beginNo", total - (page - 1) * display);  
+		
 	}
 	
 }

@@ -86,5 +86,12 @@ public class AdminController {
     }
     
     
+    // 회원 검색
+    @GetMapping("/search.do")
+    public String Usersearch(HttpServletRequest request, Model model) {
+      adminService.loadUserSearchList(request, model);
+      return "admin/userList";
+    }
+    
     
 }

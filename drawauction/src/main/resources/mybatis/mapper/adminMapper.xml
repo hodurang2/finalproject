@@ -102,6 +102,25 @@
     SELECT COUNT(*)
       FROM DRAW_T
   </select>
+  
+  
+  
+  <!--검색-->
+  
+    <select id="getSearchUserCount" parameterType="Map" resultType="int">
+    SELECT COUNT(*)
+      FROM USER_T
+	WHERE EMAIL LIKE '%' || #{query} || '%'
+  </select>
+  
+  <!-- 검색 결과 목록 -->
+  <select id="getSearchUserList" parameterType="Map" resultType="UserDto">
+    SELECT USER_NO, EMAIL, NAME, MOBILE, AGREE, STATE, JOINED_AT, NICKNAME, NUM
+      FROM  (SELECT ROW_NUMBER() OVER(ORDER BY USER_NO DESC) AS RN, ROW_NUMBER() OVER(ORDER BY USER_NO ASC) AS NUM, USER_NO, EMAIL, NAME, MOBILE, AGREE, STATE, JOINED_AT, NICKNAME 
+               FROM USER_T
+	WHERE EMAIL LIKE '%' || #{query} || '%')
+	WHERE RN BETWEEN #{begin} AND #{end}
+  </select>  
 
 
 </mapper>

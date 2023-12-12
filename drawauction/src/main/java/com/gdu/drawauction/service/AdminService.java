@@ -5,12 +5,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.ui.Model;
-
-<<<<<<< HEAD
 import com.gdu.drawauction.dto.AdminDto;
 import com.gdu.drawauction.dto.DrawDto;
-=======
->>>>>>> main
 import com.gdu.drawauction.dto.UserDto;
 
 public interface AdminService {
@@ -24,5 +20,8 @@ public interface AdminService {
 	public void loadDrawList(HttpServletRequest request, Model model);
 	public DrawDto getDraw(int drawNo, Model model);
 	public int removeDraw(HttpServletRequest request);
+	
+	// 회원검색
+	public void loadUserSearchList(HttpServletRequest request, Model model);
 	
 }

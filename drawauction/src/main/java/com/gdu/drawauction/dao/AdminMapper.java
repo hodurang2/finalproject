@@ -4,12 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
-
-<<<<<<< HEAD
 import com.gdu.drawauction.dto.AdminDto;
 import com.gdu.drawauction.dto.DrawDto;
-=======
->>>>>>> main
 import com.gdu.drawauction.dto.UserDto;
 
 @Mapper
@@ -25,6 +21,12 @@ public interface AdminMapper {
 	public int getDrawCount();
 	public DrawDto getDraw(int drawNo);
 	public int deleteDraw(int drawNo);
+	
+	// 회원 검색
+	  public int getSearchUserCount(Map<String, Object> map);
+	  public List<UserDto> getSearchUserList(Map<String, Object> map);
+
+	
 	
 	
 }
