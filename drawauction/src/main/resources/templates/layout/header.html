@@ -208,31 +208,21 @@
 	  })
 	}
 	
-	let alarmCheckExecuted = false;
-
 	const fnAlarmCheck = () => {
-	  if (!alarmCheckExecuted) {
-	    $.ajax({
-	      type: 'get',
-	      url: '/alarm/alarmCheck.do',
-	      data: 'email=' + email,
-	      dataType: 'json',
-	      success: (resData) => {
-	        console.log(resData);
-	        if (resData > 0) {
-	          $('.fa-bell').css('color', '#ff0000');
-	          modal2On();
-	        }
-	        alarmCheckExecuted = true;
-	      }
-	    });
-	  }
-	};
-	
-	$(document).ready(() => {
-	  fnAlarmCheck();
-	});
-
+	  $.ajax({
+		type: 'get',
+		url: '/alarm/alarmCheck.do',
+		data: 'email=' + email,
+		dataType: 'json',
+		success: (resData) => {
+          console.log(resData);
+		  if(resData > 0){
+			$('.fa-bell').css('color', '#ff0000');
+			modal2On();
+		  }
+		}
+	  })
+	}
 	
     
 	modalOn();
@@ -241,6 +231,7 @@
     fnIconsClickEvent(); // 함수 호출
     fnMyPage();
     fnGetAlarmList();
+    fnAlarmCheck();
 </script>
 
     
