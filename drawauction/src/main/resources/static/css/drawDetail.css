@@ -125,6 +125,7 @@
 
 .image img{
    width: 100%;
+   margin-top: 20px;
 }
 
 /* 편집, 삭제버튼 css */
