@@ -124,14 +124,14 @@
       
     <script>
 		
-	  var price = parseInt($('#price').val(), 10);
-      var balance = parseInt($('#balance').val(), 10);
-	  var emoney = parseInt($('#emoneyHistory').val(), 10);
-	  var price2 =  $('.price').val();
-	  var balance2 = $('.balance').val();
-	  var emoney2 = $('.emoneyHistory').val();
 	  const fnOrderConfirm = () => {
 		$('.btn_orderPayment').click((ev) => {
+		  var price = parseInt($('#price').val(), 10);
+	      var balance = parseInt($('#balance').val(), 10);
+		  var emoney = parseInt($('#emoneyHistory').val(), 10);
+		  var price2 =  $('.price').val();
+		  var balance2 = $('.balance').val();
+		  var emoney2 = $('.emoneyHistory').val();
 		  var byte = 0;	
 		  var drawRequest = $('#drawRequest').val();
 	 	  var receiveEmail = $('#receiveEmail').val();
