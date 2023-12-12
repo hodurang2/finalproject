@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.dto.AuctionImageDto;
-import com.gdu.drawauction.dto.DrawImageDto;
 
 @Mapper
 public interface AuctionMapper2 {
