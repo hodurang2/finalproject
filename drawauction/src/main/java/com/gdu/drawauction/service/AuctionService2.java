@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.gdu.drawauction.dto.BidDto;
+
 public interface AuctionService2 {
   
   public Map<String, Object> getAuctionList(HttpServletRequest request);
@@ -21,6 +23,7 @@ public interface AuctionService2 {
   public Map<String, Object> removeImage(HttpServletRequest request);
   public int removeAuction(int auctionNo);
   public void getEmoney(HttpServletRequest request, Model model);
+  public int addMaxBid(HttpServletRequest request);
   public int addBid(HttpServletRequest request);
   
 }
