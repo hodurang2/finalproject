@@ -42,6 +42,12 @@ public class DrawController {
     return drawService.getDrawList(request);
   }
   
+  @ResponseBody
+  @GetMapping(value="/search.do", produces="application/json")
+  public Map<String, Object> getDrawSearchList(HttpServletRequest request){
+	  return drawService.getDrawSearchList(request);
+  }
+  
   @PostMapping("/add.do")
   public String add(MultipartHttpServletRequest multipartRequest
                   , RedirectAttributes redirectAttributes) throws Exception {
