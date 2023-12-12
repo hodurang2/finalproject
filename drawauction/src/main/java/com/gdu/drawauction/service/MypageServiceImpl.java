@@ -1,8 +1,6 @@
 package com.gdu.drawauction.service;
 
-import java.io.File;
 import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,8 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.gdu.drawauction.dao.MypageMapper;
 import com.gdu.drawauction.dto.BidDto;
@@ -29,13 +25,11 @@ import com.gdu.drawauction.dto.DrawOrderDto;
 import com.gdu.drawauction.dto.DrawOrderDto2;
 import com.gdu.drawauction.dto.EmoneyDto;
 import com.gdu.drawauction.dto.UserDto;
-import com.gdu.drawauction.dto.UserImageDto;
 import com.gdu.drawauction.util.MyFileUtils;
 import com.gdu.drawauction.util.MyPageUtils;
 import com.gdu.drawauction.util.MySecurityUtils;
 
 import lombok.RequiredArgsConstructor;
-import net.coobird.thumbnailator.Thumbnails;
 
 @Transactional
 @RequiredArgsConstructor

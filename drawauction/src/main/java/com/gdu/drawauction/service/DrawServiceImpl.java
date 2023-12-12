@@ -88,6 +88,55 @@ public class DrawServiceImpl implements DrawService{
 	                , "totalPage", myPageUtils.getTotalPage());
 	}
 	
+	// 그려드림 목록 카테고리 검색 조회
+	@Transactional(readOnly=true)
+	@Override
+	public Map<String, Object> getDrawSearchList(HttpServletRequest request) {
+		
+		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+		int categoryNo = Integer.parseInt(request.getParameter("categoryNo"));
+		int page = Integer.parseInt(opt.orElse("1"));
+		int total = drawMapper.getDrawSearchCount(categoryNo);
+		int display = 10;
+		
+		myPageUtils.setPaging(page, total, display);
+		
+		Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
+				, "end", myPageUtils.getEnd()
+				, "categoryNo", categoryNo);
+		
+		List<DrawDto> drawSearchList = drawMapper.getDrawSearchList(map);
+		
+		int userNo;
+		HttpSession session = request.getSession();
+		if(session.getAttribute("user") == null) {
+			for(DrawDto drawDto : drawSearchList) {
+				drawDto.setHeart("fa-regular");
+			}
+		} else {
+			UserDto user = (UserDto) session.getAttribute("user");
+			userNo = user.getUserNo();
+			for(DrawDto drawDto : drawSearchList) {
+				Map<String, Object> wishMap = Map.of("drawNo", drawDto.getDrawNo(), "userNo", userNo);
+				int wishCheck = drawMapper.wishCheck(wishMap);
+				String heart;
+				if(wishCheck == 0) {
+					heart = "fa-regular";
+				} else {
+					heart = "fa-solid";
+				}
+				drawDto.setHeart(heart);
+			}
+		}
+		
+		for(DrawDto drawDto : drawSearchList) {
+			drawDto.setImage(drawMapper.getDrawImage(drawDto.getDrawNo()));
+		}
+		
+		return Map.of("drawSearchList", drawSearchList
+				, "totalPage", myPageUtils.getTotalPage());
+	}
+	
 	// 그려드림 게시글 작성
 	@Override
 	public boolean addDraw(MultipartHttpServletRequest multipartRequest) throws Exception {

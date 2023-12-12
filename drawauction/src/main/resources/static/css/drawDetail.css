@@ -78,7 +78,7 @@
     }
 
 
-#btn_chat, 
+#btn_report, 
 #btn_orderPayment{
       border: none;
         outline: none; /* 선택 시 포커스 테두리 제거 */
@@ -125,6 +125,7 @@
 
 .image img{
    width: 100%;
+   margin-top: 20px;
 }
 
 /* 편집, 삭제버튼 css */
@@ -161,13 +162,6 @@
 
 /* 카카오 공유 */
   #btnKakao {
-     width: 43px;
-     height: 43px; 
-     background-image: url(../../image/icon-kakao.png);
-     background-repeat: no-repeat;
-     position: absolute;
-     top: 11.6%;
-     right: 11%;
-     transform: translateY(-50%); 
+
    }
   

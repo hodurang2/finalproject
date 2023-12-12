@@ -11,12 +11,10 @@
   
   <div class="main_wrap">
 
-	
-	<div class="wrap">
+  <div class="wrap">
 		
-		   <div class="wrap wrap_2">
+    <div class="wrap wrap_2">
 
-		
     <div class="grid-container">
 		<div class="grid-item1">
 			<div class="artist">
@@ -26,7 +24,7 @@
 			</div>
 		</div>
 		<div class="grid_item">
-		<div class="mody_delete">
+		  <div class="mody_delete">
         <th:block th:if="${session.user != null}">
             <th:block th:if="${session.user.userNo == auction.artDto.sellerDto.userNo}">
                 <th:block th:if="${bidCount == 0}">
@@ -34,45 +32,51 @@
                         <input type="hidden" id="auctionNo" name="auctionNo" th:value="${auction.auctionNo}">
                         <button type="button" id="btn_edit" class="modify_btn">편집</button>
                         <button type="button" id="btn_remove" class="delete_btn">삭제</button>
-		                    </form>
-		                </th:block>
-		            </th:block>
-		        </th:block>
+                      </form>
+                  </th:block>
+              </th:block>
+          </th:block>
 		    </div>
 		</div>
 		</div>
 		
-      <div class="text-center mb-5">
+    <div class="text-center mb-5">
        
-      </div>
+    </div>
       
-        <!-- 첫 번째 그리드 -->
+    <!-- 첫 번째 그리드 -->
     <div class="grid-container">
-        <div class="grid-item1">
-		 	<div>
-		        <th:block th:if="${#lists.isEmpty(imageList)}">
-		          <div>첨부 없음</div>          
-		        </th:block>
-		        <th:block th:if="${not #lists.isEmpty(imageList)}">
-		          <th:block th:each="atc:${imageList}">
-		            <div class="image" th:data-image_no="${atc.auctionImageNo}"> 
-		              <img th:src="@{|${atc.path}/s_${atc.filesystemName}|}" alt="썸네일">
-		            </div>
-		          </th:block>
-		        </th:block>
-		      </div>
+      <div class="grid-item1">
+       	<div>
+          <th:block th:if="${#lists.isEmpty(imageList)}">
+            <div>첨부 없음</div>          
+          </th:block>
+          <th:block th:if="${not #lists.isEmpty(imageList)}">
+            <th:block th:each="atc:${imageList}">
+              <div class="image" th:data-image_no="${atc.auctionImageNo}"> 
+                <img th:src="@{|${atc.path}/s_${atc.filesystemName}|}" alt="썸네일">
+              </div>
+            </th:block>
+          </th:block>
+        </div>
 	
-		</div>
+		  </div>
 		<div class="grid_item"> <!--작품명, 시작가 등등..-->
-		<div style="text-align: right;">
-			 <i id="wish_list" class="fa-regular fa-heart fa-2xl" style="color: rgb(84, 186, 125); margin-bottom: 15%;"></i>      
-		</div>
-			
-			
-			
-			<div th:text="${auction.artDto.categoryDto.categoryName}|" class="category"></div>
+  		<div class="grid_2" style="text-align: right;">
+        <th:block th:if="${auction.status == 0}">
+          <div class="auction_ongoing">경매진행중</div>        
+        </th:block>
+        <th:block th:if="${auction.status == 1}">
+          <div class="auction_end">경매종료</div>        
+        </th:block>
+        <div>
+          <i id="wish_list" class="fa-regular fa-heart fa-2xl" style="color: rgb(84, 186, 125); margin-bottom: 15%;"></i>      
+        </div>
+  		</div>
 			
 			<div th:text="|${auction.artDto.title}|" class="art_title"></div> 
+			
+			<div th:text="${auction.artDto.categoryDto.categoryName}|" class="category"></div>
 			
 			
 			<div class="grid_2">
@@ -97,19 +101,26 @@
 			
 			<div class="grid_2">
 				<div class="sub_title">작품유형</div>
-				<div th:text="|${auction.artDto.artType}|"></div> 
+				<th:block th:if="${auction.artDto.artType} == 0">
+          <div th:text="디지털"></div>
+        </th:block>
+				<th:block th:if="${auction.artDto.artType} == 1">
+          <div th:text="실물"></div>
+        </th:block>
 			</div>
 			
-			<div style="margin-top: 10%;">
-				<button class="btn_buy" type="submit" style="background-color: rgb(84, 186, 125);">즉시구매</button>
-				<button class="btn_buy" type="submit" style="background-color: black; color: white;">응찰하기</button>
-			</div>
-
-
-			
+			<form id="frm_buy_chat">
+    		<div style="margin-top: 10%;">
+          <input type="hidden" id="auctionNo" name="auctionNo" th:value="${auction.auctionNo}">
+          <th:block th:if="${session.user != null}">
+            <input type="hidden" name="userNo" id="userNo" th:value="${session.user.userNo}">
+          </th:block>
+    			<button class="btn_buy" id="btn_orderPayment" type="submit" style="background-color: rgb(84, 186, 125);">즉시구매</button>
+    			<button class="btn_buy" type="submit" style="background-color: black; color: white;">응찰하기</button>
+    		</div>
+      </form>
 
 		</div>
-		
 		
 	  <div style="margin-top: 10%; margin-bottom: 40%;">
 	  <div class="art_detail">작품정보</div>
@@ -133,7 +144,7 @@
     </div>
       
     <script th:inline="javascript">
-    
+      
       var frmBtn = $('#frm_btn');
     
       const fnEdit = () => {
@@ -164,6 +175,17 @@
           }
         }
       }
+      
+      const fnAddBidResult = () => {
+        let resultSum = /*[[${resultSum}]]*/ null;
+        if(resultSum !== null){
+          if(resultSum === 3){
+            alert('결제가 완료되었습니다.');
+          } else {
+            alert('결제가 실패했습니다.');
+          }
+        }
+      }
         
       var auctionNo = $('#auctionNo2').val();
       
@@ -177,13 +199,11 @@
                 return;
               }
             }
-          let userNo = /*[[${session.user.userNo}]]*/ null;
           $.ajax({
           type: 'post',
             url: '/auction2/controlWishlist.do',
             data: { 
-              auctionNo: auctionNo,
-              userNo: userNo
+              auctionNo: auctionNo
                 },
             dataType: 'json',
             success: (resData) => {
@@ -200,13 +220,11 @@
       }
     
       const fnWishCheck = () => {
-        let userNo = /*[[${session.user.userNo}]]*/ null;
         $.ajax({
           type: 'get',
           url: '/auction2/wishCheck.do',
           data: { 
-              auctionNo: auctionNo,
-              userNo: userNo
+              auctionNo: auctionNo
               },
           dataType: 'json',
           success: (resData) => {
@@ -218,22 +236,36 @@
         })
       }
   	  
+      const fnOrderPayment = () => {
+        var userNo = /*[[${session.user != null ? session.user.userNo : null}]]*/ null;
+        var auctionUserNo = /*[[${auction.artDto.sellerDto.userNo}]]*/ null;
+        $('#btn_orderPayment').click((ev) => {
+          if(userNo != auctionUserNo) {
+            $('#frm_buy_chat').attr('action', '/auction2/orderPayment.form');
+            $('#frm_buy_chat').attr('method', 'get');
+            console.log(userNo + "<>" + auctionUserNo);
+            $('#frm_buy_chat').submit();
+          } else {
+            alert("자신의 게시글은 주문/결제 할 수 없습니다.")
+              ev.preventDefault();
+              return;
+            }
+          })
+        }
+          
       fnEdit();
       fnRemove();
       fnModifyResult();
       fnWishListControll();
       fnModifyResult();
-      
+      fnWishCheck();
+      fnOrderPayment();
+      fnAddBidResult();
     </script>
-      
+    
   </div>
   
-		
-		
-		
-		
-	</div>
-
+  </div>
  
   <div th:replace="~{/layout/footer::footer}"></div>
   

@@ -1,6 +1,6 @@
 package com.gdu.drawauction.service;
 
-import java.io.IOException;
+import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.math.BigInteger;
@@ -34,15 +34,6 @@ import com.gdu.drawauction.util.MyPageUtils;
 import com.gdu.drawauction.util.MySecurityUtils;
 
 import lombok.RequiredArgsConstructor;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.Console;
-import java.io.OutputStreamWriter;
-
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 
 

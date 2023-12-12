@@ -4,7 +4,7 @@
 <head th:replace="~{/layout/header::head(|${draw.userDto.nickname}의 게시글|)}"></head>
 <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
 
-<link rel="stylesheet" th:href="@{/css/drawDetail.css(ver=1.1)}" />
+<link rel="stylesheet" th:href="@{/css/drawDetail.css(ver=1.3)}" />
 
 
 <body>
@@ -62,10 +62,14 @@
    </div>   
    <!--두번째 열-->
    <div class="grid-item">
-      <div>
-         <i id="wish_list" th:class="|${draw.heart} fa-heart fa-2xl|" style="color: rgb(84, 186, 125); margin-bottom: 15%;"></i>
-         <a id="btnKakao" class="link-icon kakao" href="javascript:shareKakao();"></a>
-      </div>
+<div style="display: flex; align-items: center; margin-bottom: 10%; justify-content: flex-start;">
+    <i id="wish_list" th:class="|${draw.heart} fa-heart fa-2xl|" style="color: rgb(84, 186, 125);"></i>
+    <a id="btnKakao" class="link-icon kakao" href="javascript:shareKakao();">
+        <img th:src="@{/image/kakao아이콘.png}" width="20%" style="margin-left: 5px; /* 조절 가능한 간격 */">
+    </a>
+</div>
+
+
       
 <div th:text="|${draw.categoryDto.categoryName}|" class="category"></div>
 <div th:text="|${draw.title}|" class="art_title"></div>
@@ -80,7 +84,7 @@
    <div th:text="|결제일로부터 ${draw.workTerm} 일|" class="sub_contents"></div>
 </div>   
    
-     <form id="frm_buy_chat" style="margin-top: 15%;">
+     <form id="frm_buy_report" style="margin-top: 15%;">
           <input type="hidden" id="drawNo" name="drawNo" th:value="${draw.drawNo}">
           <th:block th:if="${session.user != null}">
             <input type="hidden" name="userNo" id="userNo" th:value="${session.user.userNo}">
@@ -89,7 +93,7 @@
             <button id="btn_orderPayment" style="background-color: rgb(84, 186, 125);"type="button">주문 / 결제하기</button>
          </div>
           <div>
-           <button id="btn_chat" style="background-color: rgb(84, 186, 125);" type="button">작가에게 1:1 문의하기</button>
+           <button id="btn_report" style="background-color: #ff0000;" type="button">신고하기</button>
          </div>
         </form>
    </div>
@@ -173,6 +177,8 @@
       var page = 1;
       var totalPage = 0;
       var drawNo = $('#drawNo').val();
+      var userNo = /*[[${session.user != null ? session.user.userNo : null}]]*/ null;
+      var drawUserNo = /*[[${draw.userDto.userNo}]]*/ null;
       const fnEdit = () => {
         $('#btn_edit').click(() => {
             frmBtn.attr('action', '/draw/edit.form');
@@ -192,15 +198,29 @@
       }
       
       const fnOrderPayment = () => {
-      var userNo = /*[[${session.user != null ? session.user.userNo : null}]]*/ null;
-      var drawUserNo = /*[[${draw.userDto.userNo}]]*/ null;
+      
         $('#btn_orderPayment').click((ev) => {
         if(userNo != drawUserNo) {
-            $('#frm_buy_chat').attr('action', '/draw/orderPayment.form');
-            $('#frm_buy_chat').attr('method', 'get');
-            $('#frm_buy_chat').submit();
+            $('#frm_buy_report').attr('action', '/draw/orderPayment.form');
+            $('#frm_buy_report').attr('method', 'get');
+            $('#frm_buy_report').submit();
         } else {
          alert("자신의 게시글은 주문/결제 할 수 없습니다.")
+         ev.preventDefault();
+         return;
+        }
+        })
+      }
+      
+      const fnReport = () => {
+      
+        $('#btn_report').click((ev) => {
+        if(userNo != drawUserNo) {
+            $('#frm_buy_report').attr('action', '/inquiry/write.form');
+            $('#frm_buy_report').attr('method', 'get');
+            $('#frm_buy_report').submit();
+        } else {
+         alert("자신의 게시글은 신고할 수 없습니다.")
          ev.preventDefault();
          return;
         }
@@ -296,8 +316,8 @@
             return;
           }
           $.each(resData.reviewList, (i, r) => {
-         var createdAt = new Date(r.createdAt);
-         var formattedCreatedAt = createdAt.toISOString().slice(0, 16).replace('T', ' ');
+            var createdAt = new Date(r.createdAt);
+            var formattedCreatedAt = createdAt.toISOString().slice(0, 16).replace('T', ' ');
             let str = '<tr>';
             str += '<td style="color: #1E90FF">' + r.userDto.nickname + '</td>';
             str += '<td>' + r.rating + '</td>';
@@ -375,13 +395,14 @@
       fnReviewtList();
       fnOrderPayment();
       fnReviewConfirm();
+      fnReport();
       
     </script>
       
         
      </div>
 
-
+ </div>
 
   
   <div th:replace="~{/layout/footer::footer}"></div>
