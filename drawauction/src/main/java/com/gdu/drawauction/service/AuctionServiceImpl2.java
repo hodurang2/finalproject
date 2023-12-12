@@ -330,12 +330,60 @@ public class AuctionServiceImpl2 implements AuctionService2 {
     int buyerNo = Integer.parseInt(request.getParameter("buyerNo"));    // 구매자 userNo
     int price = Integer.parseInt(request.getParameter("price"));
     int userNo = Integer.parseInt(request.getParameter("userNo"));      // 판매자 userNo    
-    String receiveEmail = request.getParameter("receiveEmail");
     int artType = Integer.parseInt(request.getParameter("artType"));    // 작품유형    
+    String auctionRequest = request.getParameter("auctionRequest");
     
+    Map<String, Object> bidMap;
+    Map<String, Object> emoneyMap;
     
+    int addBidResult;
     
-    return 0;
+    if(artType == 0) { // 작품유형이 디지털(== 0)일 때
+      
+      String receiveEmail = request.getParameter("receiveEmail");
+      
+      bidMap = Map.of("auctionNo", auctionNo
+                    , "buyerNo", buyerNo
+                    , "price", price
+                    , "receiveEmail", receiveEmail
+                    , "auctionRequest", auctionRequest);
+
+      emoneyMap = Map.of("userNo", userNo
+                       , "price", price
+                       , "buyerNo", buyerNo);
+      
+      addBidResult = auctionMapper2.insertDigitalBid(bidMap);
+      
+    } else { // 실물일 때
+      
+      String postcode = request.getParameter("postcode");
+      String roadAddress = request.getParameter("roadAddress");
+      String jibunAddress = request.getParameter("jibunAddress");
+      String detailAddress = request.getParameter("detailAddress");
+      
+      bidMap = Map.of("auctionNo", auctionNo
+                    , "buyerNo", buyerNo
+                    , "price", price
+                    , "postcode" ,postcode
+                    , "roadAddress", roadAddress
+                    , "jibunAddress" , jibunAddress
+                    , "detailAddress" , detailAddress
+                    , "auctionRequest", auctionRequest);
+
+      emoneyMap = Map.of("userNo", userNo
+                       , "price", price
+                       , "buyerNo", buyerNo);
+      
+      addBidResult = auctionMapper2.insertRealBid(bidMap);
+    }
+    
+    int buyerResult = auctionMapper2.insertBuyerEmoney(emoneyMap);
+    int sellerResult = auctionMapper2.insertSellerEmoney(emoneyMap);
+    
+    int resultSum = buyerResult + sellerResult + addBidResult;
+    
+    return resultSum;
+    
   }
   
   

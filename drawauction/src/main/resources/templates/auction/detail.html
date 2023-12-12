@@ -175,6 +175,17 @@
           }
         }
       }
+      
+      const fnAddBidResult = () => {
+        let resultSum = /*[[${resultSum}]]*/ null;
+        if(resultSum !== null){
+          if(resultSum === 3){
+            alert('결제가 완료되었습니다.');
+          } else {
+            alert('결제가 실패했습니다.');
+          }
+        }
+      }
         
       var auctionNo = $('#auctionNo2').val();
       
@@ -249,6 +260,7 @@
       fnModifyResult();
       fnWishCheck();
       fnOrderPayment();
+      fnAddBidResult();
     </script>
     
   </div>

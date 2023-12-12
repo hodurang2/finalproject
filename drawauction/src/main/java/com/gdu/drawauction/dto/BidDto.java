@@ -20,6 +20,7 @@ public class BidDto {
   private String jibunAddress;
   private String detailAddress;
   private String receiveEmail;
+  private String auctionRequest;
   private AuctionDto auctionDto;
   private UserDto bidderDto;
 }
