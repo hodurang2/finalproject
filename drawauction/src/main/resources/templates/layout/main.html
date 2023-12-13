@@ -117,6 +117,14 @@
       }
       
       
+       const fnAuctionDetail = () => {
+        $(document).on('click', '.auction', function(ev) {
+          location.href = '/auction2/detail.do?auctionNo=' + $(this).data('auction_no');
+        })
+        
+      }
+      
+      fnAuctionDetail();
       fnGetAuctionList();
       fnHeart();
       </script>
