@@ -24,10 +24,7 @@ public interface AdminMapper {
 	public int getDrawCount();
 	public DrawDto getDraw(int drawNo);
 	public int deleteDraw(int drawNo);
-	
-	// 회원 검색
-	public int getSearchUserCount(Map<String, Object> map);
-	public List<UserDto> getSearchUserList(Map<String, Object> map);
+
 
 	// 경매정보
 	public int getAdminAucCount();

@@ -112,36 +112,6 @@ public class AdminServiceImpl implements AdminService {
 	    return adminMapper.deleteDraw(drawNo);
 	  }
 	  
-	  @Override
-	  public void loadUserSearchList(HttpServletRequest request, Model model) {
-	    
-	        String column = request.getParameter("column");
-	        String query = request.getParameter("query");
-	        
-	        Map<String, Object> map = new HashMap();
-	        map.put("column", column);
-	        map.put("query", query);
-	        
-	        int total = adminMapper.getSearchUserCount(map);
-	        
-	        Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
-	        String strPage = opt.orElse("1");
-	        int page = Integer.parseInt(strPage);
-	        int display = 10;
-	        
-	        myPageUtils.setPaging(page, total, display);
-	        
-	        map.put("begin", myPageUtils.getBegin());
-	        map.put("end", myPageUtils.getEnd());
-	        
-	        List<UserDto> serachUserList = adminMapper.getSearchUserList(map);
-	        
-	        model.addAttribute("serachUserList", serachUserList);
-	        model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/free/search.do", "column=" + column + "&query=" + query));
-	        model.addAttribute("beginNo", total - (page - 1) * display);  
-	    
-	  }
-		
 	  public void getAdminAucList(HttpServletRequest request, Model model) {
 	  Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
     int page = Integer.parseInt(opt.orElse("1"));

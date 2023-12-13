@@ -22,10 +22,6 @@ public interface AdminService {
 	public void loadDrawList(HttpServletRequest request, Model model);
 	public DrawDto getDraw(int drawNo, Model model);
 	public int removeDraw(HttpServletRequest request);
-	
-	// 회원검색
-	public void loadUserSearchList(HttpServletRequest request, Model model);
-
   
 	// 경매정보가져오기
 	public void getAdminAucList(HttpServletRequest request, Model model);
