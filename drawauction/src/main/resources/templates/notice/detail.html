@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{layout/header::head(|${notice.noticeNo}번 게시글|)}"></head>
-
+<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
 
 <style>
 
@@ -22,6 +22,10 @@
 
  <div>
     <h1 th:text="${notice.title}"></h1>
+   <!-- <a>
+    <input type="button" onClick="sendLinkCustom()" value="Custom"/>
+    <input type="button" onClick="sendLinkDefault()" value="Default"/>
+    </a> -->
     <div th:text="|작성자  : 관리자|"></div>
     <div th:text="|작성일  : ${#dates.format(notice.createdAt, 'yyyy-MM-dd HH:mm:ss')}|"></div>
     <div>
@@ -66,6 +70,55 @@
         window.location.href = '/notice/list.do';
       });
     }
+
+     function sendLinkCustom() {
+        Kakao.init("53f0834692966b3b55a0b3d2f38afdda");
+        Kakao.Link.sendCustom({
+            templateId: [1009468]
+        });
+    }
+    
+    try {
+      function sendLinkDefault() {
+        Kakao.init('53f0834692966b3b55a0b3d2f38afdda')
+        Kakao.Link.sendDefault({
+          objectType: "feed",
+          content: {
+            title: "들어옥션",
+            description: "들어옥션 " + '[[${notice.title}]]' + "의 공지사항 링크", // 보여질 설명
+            imageUrl:
+              'http://k.kakaocdn.net/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png',
+            link: {
+              mobileWebUrl: "http://localhost:8080/notice/detail.do?noticeNo=" +  noticeNo,
+              webUrl: "http://localhost:8080/notice/detail.do?noticeNo=" +  noticeNo,
+            },
+          },
+          social: {
+            likeCount: 286,
+            commentCount: 45,
+            sharedCount: 845,
+          },
+          buttons: [
+            {
+              title: '웹으로 보기',
+              link: {
+                mobileWebUrl: "http://localhost:8080/notice/detail.do?noticeNo=" +  noticeNo,
+                webUrl: "http://localhost:8080/notice/detail.do?noticeNo=" +  noticeNo,
+              },
+            },
+            {
+              title: '앱으로 보기',
+              link: {
+                mobileWebUrl: "http://localhost:8080/notice/detail.do?noticeNo=" +  noticeNo,
+                webUrl: "http://localhost:8080/notice/detail.do?noticeNo=" +  noticeNo,
+              },
+            },
+          ],
+        })
+      }
+      ; window.kakaoDemoCallback && window.kakaoDemoCallback() }
+      catch(e) { window.kakaoDemoException && window.kakaoDemoException(e) }
+
   	
     fnEditNotice();
     fnRemoveNotice();
@@ -75,7 +128,7 @@
   
  </div>
   
-<div th:replace="~{/layout/footer::footer}"></div>
+<div th:replace="~{layout/footer::footer}"></div>
   
 </body>
 </html>

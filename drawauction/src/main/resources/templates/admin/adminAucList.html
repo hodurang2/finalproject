@@ -9,27 +9,6 @@
 
         <div class="wrap wrap_3">
           
-        <div class="text-center">
-        <div class="search">
-          <form id="search_frm">
-            <select class="form-select" name="categoryNo" id="categoryNo">
-              <option value="404">카테고리</option>  
-              <option value="1">포토그래픽</option>  
-              <option value="2">원화</option>  
-              <option value="3">드로잉</option>  
-              <option value="4">판화</option>  
-              <option value="5">서예</option>  
-              <option value="6">회화</option>  
-              <option value="7">동양화</option>  
-              <option value="8">공예</option>  
-              <option value="9">디지털아트</option>  
-              <option value="10">조각품</option>  
-              <option value="11">기타</option>  
-            </select>
-            <button type="button" id="btn_search" class="btn_search"><i class="fa-solid fa-magnifying-glass search_icon" style="color: #1937cc;">조회</i></button>
-          </form>
-        </div>
-
             <h2>경매 관리</h2>
             <table border="1" class="table">
                 <thead>
@@ -55,8 +34,8 @@
                         <td th:text="${a.endAt}"></td>
    
                          <td>
-                            <form id="frm_btn" method="post">
-                              <input type="text" id="auctionNo" name="auctionNo" th:value="${a.auctionNo}">
+                            <form class="frm_btn">
+                              <input type="hidden" id="auctionNo" name="auctionNo" th:value="${a.auctionNo}">
                               <button type="button" id="btn_remove" class="delete_btn">삭제</button>
                             </form>
                         </td> 
@@ -76,12 +55,12 @@
        <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
        <script th:inline="javascript">
               
-        var frmBtn = $('#frm_btn');
+        var frmBtn = $('.frm_btn');
         
         const fnRemove = () => {
           $('.delete_btn').click(() => {
             if(confirm('해당 게시글을 삭제할까요?')){
-              frmBtn.attr('action', '/auction2/removeAuction.do');
+              frmBtn.attr('action', '/admin/removeAdminAuc.do');
               frmBtn.attr('method', 'post');
               frmBtn.submit();
             }
