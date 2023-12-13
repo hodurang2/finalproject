@@ -2,15 +2,127 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{/layout/header::head('Home')}"></head>
+<link rel="stylesheet" th:href="@{/css/main.css(ver=1.2)}" />
+
+<style>
+ 
+</style>
+
 
 <body>
   
   <div th:replace="~{/layout/header::header}"></div>
-  <img th:src="@{/image/Web 1920 – 4.png}" width="100%" height="50%">
+  <img th:src="@{/image/main_banner.png}" width="100%" height="50%">
   <div class="main_wrap">
       	
-    <h1 class="title">홈페이지에 오신걸 환영합니다</h1>
+    <div class="wrap">
+		
+<div class="textline" style="margin-top:10%; display: flex; align-items: center;">
+    <div style="margin-left: 10px;">
+		 <div style="color:  rgb(84, 186, 125);">●</div>
+        <div class="title" style="font-size: 140%; font-weight: 700; text-align: left; margin-bottom: 1%;">진행중인 경매</div>
+        <div class="title" style="font-size: 60%; color: darkgray; text-align: left;">선착순! 먼저 사가는 사람이 승자! 경매를 즐겨보세요</div>	
+    </div>
+    	<div style="margin-left: auto;"><a th:href="@{/auction/}" style="color: gray;">전체경매보기    ></a></div>
+	</div>
+	
+		<div class="wrap_9">
+			
+			<div id="auction_list" class="auction_list"></div>
+		</div>
+			
+		</div>
 
+		
+	</div>
+
+  <script th:inline="javascript">
+    
+      // 전역 변수
+      var page = 1;
+      var totalPage = 0;
+      
+      
+     
+      const fnGetAuctionList = () => {
+    $.ajax({
+        type: 'get',
+        url: '/auction/getList.do',
+        data: {
+            page: page
+        },
+        dataType: 'json',
+        success: (resData) => {
+            totalPage = resData.totalPage;
+            
+            // 최대 4개의 경매만 보여주기
+            $.each(resData.auctionList.slice(0, 8), (i, auction) => {
+                let str = '<div class="auction" data-auction_no="' + auction.auctionNo + '">';
+                str += '<div class="auction_image"><img src="' + auction.image.path + '/s_' + auction.image.filesystemName + '"></div>';
+                if(auction.status === 0){
+                    str += '<div class="auction_ongoing">경매진행중</div>';
+                } else {
+                    str += '<div class="auction_end">경매종료</div>';
+                }
+                str += '<div class="auction_heart_div"><i class="' + auction.heartClass + ' fa-heart fa-xl auction_heart"></i></div>';
+                str += '<div><span class="auction_category">' + auction.artDto.categoryDto.categoryName + '</span></div>';
+                str += '<div><span class="auction_title">'    + auction.artDto.title                    + '</span></div>';
+                str += '<div><span class="auction_nickname">' + auction.artDto.sellerDto.nickname       + '</span></div>';
+                str += '<div class="auction_end_wrap">';
+                str += '</div>';
+                str += '</div>';
+                $('#auction_list').append(str);
+            });
+        },
+        error: (jqXHR, textStatus, errorThrown) => {
+            console.error('경매 정보 없음:', textStatus, errorThrown);
+        }
+    });
+}
+      
+       const fnHeart = () => {
+        $(document).on('click', '.auction_heart', function(event) {
+          event.stopPropagation();
+          let user = /*[[${session.user}]]*/ null;
+            if(user === null) {
+              if(confirm('로그인이 필요한 기능입니다. 로그인하시겠습니까?')){
+                location.href = '/user/login.form';
+              }
+              event.preventDefault();
+              return;
+            }
+              $.ajax({
+                  // 요청
+                  type: 'get',
+                  url: '/auction/controlAuctionWishlist.do',
+                  data: {
+                    auctionNo: $(this).closest('div .auction').data('auction_no')
+                    },
+                  // 응답
+                  dataType: 'json',
+                  success: (resData) => {
+                    console.log(resData);
+                     if(resData.hasAuctionWishlist === 0){
+                        $(this).removeClass('fa-regular');  
+                        $(this).addClass('fa-solid');
+                        console.log('하트 채우기');
+                        return;
+                      }
+                      $(this).removeClass('fa-solid');
+                      $(this).addClass('fa-regular');
+                      console.log('하트 비우기');
+                    }
+                  })
+        })
+      }
+      
+      
+      fnGetAuctionList();
+      fnHeart();
+      </script>
+  
+  
+  
   
     
   </div>

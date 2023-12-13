@@ -9,7 +9,7 @@ import com.gdu.drawauction.dto.AuctionImageDto;
 import com.gdu.drawauction.dto.BidDto;
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.DrawImageDto;
-import com.gdu.drawauction.dto.DrawOrderDto;
+import com.gdu.drawauction.dto.DrawOrderDto2;
 import com.gdu.drawauction.dto.EmoneyDto;
 import com.gdu.drawauction.dto.UserDto;
 
@@ -21,6 +21,9 @@ public interface MypageMapper {
   public int updateUserIntroduction(UserDto user);    // 소개글 수정(ajax)
   public int updateUserPw(UserDto user);              // 비밀번호 변경
   //public int insertUserImage(UserImageDto image);
+  //public UserDto getUser(Map<String, Object> map);
+  //public int insertLeaveUser(UserDto user);   
+  //public int deleteUser(UserDto user);
   
   // E-Money
   public int getEmoneyCount(int userNo);                          // E-Money 입출금수
@@ -44,6 +47,8 @@ public interface MypageMapper {
   public List<DrawDto> getMyDrawList(Map<String, Object> map);  // 나의 그려드림 목록
   public DrawImageDto getDrawImage(int drawNo);  // 그려드림 이미지
   public int getDrawOrderCount(int buyerNo);      // 내가 주문한 그려드림 갯수
-  public List<DrawOrderDto> getDrawOrderList(Map<String, Object> map); // 내가 주문한 그려드림 목록
+  public List<DrawOrderDto2> getDrawOrderList(Map<String, Object> map); // 내가 주문한 그려드림 목록
+  public int getDrawReceivedOrderCount(int sellerNo);   // 주문받은 그려드림 갯수
+  public List<DrawOrderDto2> getDrawReceivedOrderList(Map<String, Object> map);    // 주문받은 그려드림 목록
   
   }

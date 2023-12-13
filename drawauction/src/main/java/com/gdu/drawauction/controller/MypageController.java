@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gdu.drawauction.service.MypageService;
@@ -58,6 +59,13 @@ public class MypageController {
     return mypageService.modifyIntroduction(request);
   }
   /*
+  @PostMapping("/leave.do")
+  public void leave(HttpServletRequest request, HttpServletResponse response) {
+    mypageService.leave(request, response);
+  }
+  */
+  
+  /*
   @PostMapping(value="/addUserImage.do", produces="application/json")
   public Map<String, Object> addUserImage(MultipartHttpServletRequest multipartRequest) throws Exception {
     return mypageService.addUserImage(multipartRequest);
@@ -92,6 +100,12 @@ public class MypageController {
   public Map<String, Object> getDrawOrderList(HttpServletRequest request){
     return mypageService.getDrawOrderList(request);
   }
+  
+  @ResponseBody
+  @GetMapping(value="/getDrawReceivedOrderList.do", produces="application/json")
+  public Map<String, Object> getDrawReceivedOrderList(HttpServletRequest request) {
+    return mypageService.getDrawReceivedOrderList(request);
+  }
 
   @GetMapping("/charge.do")
   public String emoneyCharge() {
@@ -102,6 +116,11 @@ public class MypageController {
   public String emoneyList(HttpServletRequest request, Model model) {
     mypageService.getEmoneyList(request, model);
     return "mypage/emoneyList";
+  }
+  
+  @GetMapping("/getWishList.do")
+  public String getWishList() {
+    return "mypage/wishList";
   }
   
 }

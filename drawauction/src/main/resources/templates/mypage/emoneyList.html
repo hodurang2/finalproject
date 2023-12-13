@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{/layout/header::head('출품작품목록')}"></head>
+<head th:replace="~{layout/header::head('출품작품목록')}"></head>
 
 
 <body>
   
-  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
   <div class="wrap">
     <div th:replace="~{/mypage/menu::side-menu}"></div>
     
     <div class="right_wrap">
-      <h3>E-Money 입출금 내역</h3>
+      <h3>E-MONEY 입출금 내역</h3>
       
       <div class="emoney_wrap">
         
@@ -56,7 +56,7 @@
                   </th:block>
                   
 
-                    <td th:text="|${#numbers.formatInteger(balanceList[vs.index], 1, 'COMMA')} P ${vs.index}|"></td>                    
+                    <td th:text="|${#numbers.formatInteger(balanceList[vs.index + 5 * (page-1)], 1, 'COMMA')} P|"></td>                    
 
                 </tr>
               </th:block>
@@ -75,7 +75,7 @@
   </div>
   
   
-  <div th:replace="~{/layout/footer::footer}"></div>
+  <div th:replace="~{layout/footer::footer}"></div>
   
   <script>
     

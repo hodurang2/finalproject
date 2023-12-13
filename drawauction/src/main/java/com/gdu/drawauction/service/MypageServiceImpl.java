@@ -2,6 +2,7 @@ package com.gdu.drawauction.service;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import com.gdu.drawauction.dao.MypageMapper;
 import com.gdu.drawauction.dto.BidDto;
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.DrawOrderDto;
+import com.gdu.drawauction.dto.DrawOrderDto2;
 import com.gdu.drawauction.dto.EmoneyDto;
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.util.MyFileUtils;
@@ -144,6 +146,58 @@ public class MypageServiceImpl implements MypageService {
     }
     
   }
+  /*
+  // 회원탈퇴
+  @Override
+  public void leave(HttpServletRequest request, HttpServletResponse response) {
+  
+    Optional<String> opt = Optional.ofNullable(request.getParameter("userNo"));
+    int userNo = Integer.parseInt(opt.orElse("0"));
+    
+    UserDto user = mypageMapper.getUser(Map.of("userNo", userNo));
+    
+    if(user == null) {
+      try {
+        response.setContentType("text/html; charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        out.println("<script>");
+        out.println("alert('회원 탈퇴를 수행할 수 없습니다.')");
+        out.println("location.href='" + request.getContextPath() + "/main.do'");
+        out.println("</script>");
+        out.flush();
+        out.close();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    
+    int insertLeaveUserResult = mypageMapper.insertLeaveUser(user);
+    int deleteUserResult = mypageMapper.deleteUser(user);
+    
+   try {
+      
+      response.setContentType("text/html; charset=UTF-8");
+      PrintWriter out = response.getWriter();
+      out.println("<script>");
+      if(insertLeaveUserResult == 1 && deleteUserResult == 1) {
+        HttpSession session = request.getSession();
+        session.invalidate();
+        out.println("alert('회원 탈퇴되었습니다. 그 동안 드로옥션을 이용해 주셔서 감사합니다.')");
+        out.println("location.href='" + request.getContextPath() + "/main.do'");
+      } else {
+        out.println("alert('회원 탈퇴되지 않았습니다.')");
+        out.println("history.back()");
+      }
+      out.println("</script>");
+      out.flush();
+      out.close();
+      
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    
+  }
+  */
   /*
   @Override
   public boolean addUserImage(MultipartHttpServletRequest multipartRequest) throws Exception {
@@ -422,14 +476,14 @@ public class MypageServiceImpl implements MypageService {
 
       myPageUtils.setPaging(page, total, display);
       
-      List<DrawOrderDto> drawOrderList = mypageMapper.getDrawOrderList(Map.of("begin", myPageUtils.getBegin()
+      List<DrawOrderDto2> drawOrderList = mypageMapper.getDrawOrderList(Map.of("begin", myPageUtils.getBegin()
                                                                  , "end", myPageUtils.getEnd()
                                                                  , "buyerNo", buyerNo));
       
       
       
-      for(DrawOrderDto drawOrderDto : drawOrderList) {
-        drawOrderDto.getDrawDto().setImage(mypageMapper.getDrawImage(drawOrderDto.getDrawDto().getDrawNo()));
+      for(DrawOrderDto2 drawOrderDto2 : drawOrderList) {
+        drawOrderDto2.getDrawDto2().setImage(mypageMapper.getDrawImage(drawOrderDto2.getDrawDto2().getDrawNo()));
       }
       
       map.put("drawOrderList", drawOrderList);
@@ -438,6 +492,46 @@ public class MypageServiceImpl implements MypageService {
     } else {
       
       map.put("drawOrderList", null);
+      
+    }
+    return map;
+    
+  }
+  
+  @Transactional(readOnly=true)
+  @Override
+  public Map<String, Object> getDrawReceivedOrderList(HttpServletRequest request) {
+    
+    Map<String, Object> map = new HashMap<>();
+    
+    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(opt.orElse("1"));
+    
+    HttpSession session = request.getSession();
+    UserDto user = (UserDto)session.getAttribute("user");
+
+    if(user != null) {
+    
+      int sellerNo = user.getUserNo();
+      int total = mypageMapper.getDrawReceivedOrderCount(sellerNo);
+      int display = 9;
+
+      myPageUtils.setPaging(page, total, display);
+      
+      List<DrawOrderDto2> drawReceivedOrderList = mypageMapper.getDrawReceivedOrderList(Map.of("begin", myPageUtils.getBegin()
+                                                                                           , "end", myPageUtils.getEnd()
+                                                                                           , "sellerNo", sellerNo));
+      
+      for(DrawOrderDto2 drawOrderDto2 : drawReceivedOrderList) {
+        drawOrderDto2.getDrawDto2().setImage(mypageMapper.getDrawImage(drawOrderDto2.getDrawDto2().getDrawNo()));
+      }
+      
+      map.put("drawReceivedOrderList", drawReceivedOrderList);
+      map.put("totalPage", myPageUtils.getTotalPage());
+
+    } else {
+      
+      map.put("drawReceivedOrderList", null);
       
     }
     return map;
@@ -465,6 +559,8 @@ public class MypageServiceImpl implements MypageService {
       
       int balance = balanceList.get(total-1);
       
+      Collections.reverse(balanceList);     // balanceList 역순으로 저장
+      
       myPageUtils.setPaging(page, total, display);
       
       Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
@@ -473,6 +569,7 @@ public class MypageServiceImpl implements MypageService {
       
       List<EmoneyDto> emoneyList = mypageMapper.getEmoneyList(map);
       
+      model.addAttribute("page", page);
       model.addAttribute("total", total);
       model.addAttribute("balanceList", balanceList);
       model.addAttribute("balance", balance);

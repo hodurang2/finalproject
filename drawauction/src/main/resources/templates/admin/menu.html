@@ -33,15 +33,30 @@
 
 <body>
 	<div th:fragment="menu">
-			<a th:href="@{/admin/userList.do}">회원관리</a>
-			<hr>
-			<a th:href="@{/admin/auctionList.do}">경매관리</a>
-			<a th:href="@{/admin/drawList.do}">그려드림관리</a>
-			<hr>
-	</div>
 
+
+<div class="offcanvas offcanvas-start show" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+  <div class="offcanvas-header">
+	<img th:src="@{/image/minilogo.png}" width="60px">
+    <h5 class="offcanvas-title" id="offcanvasLabel">관리자</h5>
+  </div>
+  <div class="offcanvas-body">
+    <ul style="font-size: 130%;">
+		
+		<hr>
+		<li style="margin-top: 6%; font-weight: 700; font-size: 120%;">회원관리</li>
+		<li><a th:href="|@{/admin/userList.do}|">사용자</a></li>
+		<hr>
+		<li style="margin-top: 6%; font-weight: 700; font-size: 120%;">게시글관리</li>
+		<li><a th:href="@{/admin/adminAucList.do}" id="adminAucListButton">경매글관리</a></li>
+		<li><a th:href="@{/admin/drawList.do}">그려드림관리</a></li>
+				<hr>
+		<li style="margin-top: 6%; font-weight: 700; font-size: 120%;">고객센터관리</li>
+		<li><a th:href="@{/admin/auctionListAdmin.do}">공지사항관리</a></li>
+	</ul>
+  </div>
 </div>
-	
+</div>
 	
 </body>
 </html>
