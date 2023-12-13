@@ -23,8 +23,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(requiredLoginInterceptor)
       .addPathPatterns("/user/mypage.form", "/user/modifyPw.form")
-      .addPathPatterns("/free/write.form")
-      .addPathPatterns("/blog/write.form", "/blog/edit.form", "/blog/remove.do")
       .addPathPatterns("/draw/write.form", "/draw/edit.form", "/draw/remove.do", "/draw/WishListControll.do", "/draw/orderPayment.form")
       .addPathPatterns("/auction/write.form")
       .addPathPatterns("/mypage/detail.do", "/mypage/modify.form", "/mypage/modifyPw.form", "/mypage/getAuctionBidList.do", "/mypage/getAuctionSalesList.do"
@@ -41,8 +39,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
       .addResourceLocations("classpath:/static/", "classpath:/templates/");
     registry.addResourceHandler("/draw/**")
       .addResourceLocations("file:/draw/");
-    registry.addResourceHandler("/upload/**")
-    .addResourceLocations("file:/upload/");
     registry.addResourceHandler("/auction/**")
     .addResourceLocations("file:/auction/");
     registry.addResourceHandler("/inquiry/**")
