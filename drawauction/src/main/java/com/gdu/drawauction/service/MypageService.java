@@ -16,6 +16,8 @@ public interface MypageService {
   
   public ResponseEntity<Map<String, Object>> modifyIntroduction(HttpServletRequest request);  // 소개글 수정
 
+  //public void leave(HttpServletRequest request, HttpServletResponse response);    // 회원 탈퇴
+  
   //public Map<String, Object> addUserImage(MultipartHttpServletRequest multipartRequest) throws Exception;
   
   public void getCount(HttpServletRequest request, Model model);   // 갯수
@@ -27,6 +29,8 @@ public interface MypageService {
   public Map<String, Object> getMyDrawList(HttpServletRequest request);    // 나의 그려드림 목록
 
   public Map<String, Object> getDrawOrderList(HttpServletRequest request);    // 주문한 그려드림 목록
+  
+  public Map<String, Object> getDrawReceivedOrderList(HttpServletRequest request);    // 주문받은 그려드림 목록
  
   public void getEmoneyList(HttpServletRequest request, Model model);   // E-MONEY 내역
   
