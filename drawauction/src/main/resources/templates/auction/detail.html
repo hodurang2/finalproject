@@ -2,8 +2,9 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{/layout/header::head(|경매|)}"></head>
-
 <link rel="stylesheet" th:href="@{/css/auctionDetail.css(ver=1.0)}" />
+<link rel="stylesheet" th:href="@{/css/bidModal.css(ver=1.3)}" />
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
 <body>
   
@@ -116,37 +117,68 @@
             <input type="hidden" name="userNo" id="userNo" th:value="${session.user.userNo}">
           </th:block>
     			<button class="btn_buy" id="btn_orderPayment" type="submit" style="background-color: rgb(84, 186, 125);">즉시구매</button>
-    			<button class="btn_buy" type="submit" style="background-color: black; color: white;">응찰하기</button>
+    			<button class="btn_buy" id="btn_orderBid" type="button" style="background-color: black; color: white;">입찰하기</button>
     		</div>
       </form>
 
 		</div>
 		
 	  <div style="margin-top: 10%; margin-bottom: 40%;">
-	  <div class="art_detail">작품정보</div>
-      <div th:text="|작품 가로길이(cm) : ${auction.artDto.width}|"></div>
-      <div th:text="|작품 세로길이(cm) : ${auction.artDto.height}|"></div>
-      <input type="hidden" id="auctionNo2" name="auctionNo2" th:value="${auction.auctionNo}">
-      
-      <div class="art_contents">작품설명</div>
-      <th:block th:if="${#strings.isEmpty(auction.artDto.contents)}">
-        <div>내용없음</div>
-      </th:block>
-      <th:block th:if="${not #strings.isEmpty(auction.artDto.contents)}">
-        <div th:text="${auction.artDto.contents}"></div>
-      </th:block>
-		      
+      <div class="art_detail">작품정보</div>
+        <div th:text="|작품 가로길이(cm) : ${auction.artDto.width}|"></div>
+        <div th:text="|작품 세로길이(cm) : ${auction.artDto.height}|"></div>
+        <input type="hidden" id="auctionNo2" name="auctionNo2" th:value="${auction.auctionNo}">
+        
+        <div class="art_contents">작품설명</div>
+        <th:block th:if="${#strings.isEmpty(auction.artDto.contents)}">
+          <div>내용없음</div>
+        </th:block>
+        <th:block th:if="${not #strings.isEmpty(auction.artDto.contents)}">
+          <div th:text="${auction.artDto.contents}"></div>
+        </th:block>
 			
 		</div>
     </div>
 
  
     </div>
+    
+    <div id="container"></div>
+    <div id="modalBid" class="modal-overlay">
+      <div class="modal-window">
+        <div class="modal-title">
+          <h2>입찰</h2>
+        </div>
+        <div class="close-area">X</div>
+        <div class="content">
+          <div class="sub_title">시작가</div>
+          <div th:text="|${#numbers.formatInteger(auction.startPrice, 1, 'COMMA')}P|" class="sub_contents"></div>
+          <div class="sub_title">현재입찰가</div>
+          <div th:text="|${#numbers.formatInteger(auction.price, 1, 'COMMA')}P|" class="sub_contents"></div>
+          <div class="sub_title">마감일</div>
+          <div th:text="| ${auction.endAt}"></div>
+          <div class="sub_title">입찰 상황</div>
+          <div th:text="| ${bidCount}"></div>
+          <form id="frm_bid">
+            <label for="bidMoney" class="sub_title">입찰 가격 입력하기</label>
+            <input type="number" name="bidMoney" id="bidMoney" th:value="${auction.price}" step="100">
+            <button id="btn_addBid" type="button" style="background-color: black; color: white;">입찰하기</button>
+            <input type="hidden" name="auctionNo" id="auctionNo" th:value="${auction.auctionNo}">
+            <th:block th:if="${session.user != null}">
+              <input type="hidden" name="bidderNo" id="bidderNo" th:value="${session.user.userNo}">
+            </th:block>
+          </form>
+        </div>
+      </div>
+    </div>
       
     <script th:inline="javascript">
       
       var frmBtn = $('#frm_btn');
-    
+      var user = /*[[${session.user}]]*/ null;
+      var userNo = /*[[${session.user != null ? session.user.userNo : null}]]*/ null;
+      var auctionUserNo = /*[[${auction.artDto.sellerDto.userNo}]]*/ null;
+      
       const fnEdit = () => {
         $('#btn_edit').click(() => {
           frmBtn.attr('action', '/auction2/edit.form');
@@ -179,7 +211,7 @@
       const fnAddBidResult = () => {
         let resultSum = /*[[${resultSum}]]*/ null;
         if(resultSum !== null){
-          if(resultSum === 3){
+          if(resultSum === 4){
             alert('결제가 완료되었습니다.');
           } else {
             alert('결제가 실패했습니다.');
@@ -191,14 +223,16 @@
       
       const fnWishListControll = () => {
         $(document).on('click', '#wish_list', function(event){
-          let user = /*[[${session.user}]]*/ null;
-            if(user === null){
-              if(confirm('로그인이 필요한 기능입니다. 로그인하시겠습니까?')){
-                event.preventDefault();
-                location.href = '/user/login.form';
-                return;
-              }
+          if(user === null){
+            if(confirm('로그인이 필요한 기능입니다. 로그인하시겠습니까?')){
+              event.preventDefault();
+              location.href = '/user/login.form';
+              return;
+            } else {
+              event.preventDefault();
+              return;
             }
+          }
           $.ajax({
           type: 'post',
             url: '/auction2/controlWishlist.do',
@@ -237,9 +271,17 @@
       }
   	  
       const fnOrderPayment = () => {
-        var userNo = /*[[${session.user != null ? session.user.userNo : null}]]*/ null;
-        var auctionUserNo = /*[[${auction.artDto.sellerDto.userNo}]]*/ null;
         $('#btn_orderPayment').click((ev) => {
+          if(user === null){
+            if(confirm('로그인이 필요한 기능입니다. 로그인하시겠습니까?')){
+              event.preventDefault();
+              location.href = '/user/login.form';
+              return;
+            } else {
+              event.preventDefault();
+              return;
+            }
+          }
           if(userNo != auctionUserNo) {
             $('#frm_buy_chat').attr('action', '/auction2/orderPayment.form');
             $('#frm_buy_chat').attr('method', 'get');
@@ -252,6 +294,68 @@
             }
           })
         }
+        
+      const fnOrderBid = () => {
+        
+      }
+        
+      const modalBid = document.getElementById("modalBid");
+      const btnModalBid = document.getElementById("btn_orderBid")
+      
+      function modalBidOn() {
+        modalBid.style.display = "flex"
+      }
+      
+      function isModalBidOn() {
+        return modalBid.style.display === "flex"
+      }
+      
+      function modalBidOff() {
+        modalBid.style.display = "none"
+      }
+      
+      btnModalBid.addEventListener("click", e => {
+        if(userNo === 0){
+          e.preventDefault();
+          return;
+        }
+        modalBidOn();
+      })
+      
+      const closeModalBid = modalBid.querySelector(".close-area")
+      closeModalBid.addEventListener("click", e => {
+        modalBidOff();
+      })
+      window.addEventListener("mousedown", e => {
+        const isOutsideModal = !modalBid.contains(e.target);
+        if (isOutsideModal && isModalBidOn()) {
+          modalBidOff();
+        }
+      });
+      window.addEventListener("keyup", e => {
+        if (isModalOn() && e.key === "Escape") {
+          modalBidOff();
+        }
+      });
+      
+      const fnAddBid = () => {
+        $('#btn_addBid').click((ev) => {
+          if(user === null){
+            if(confirm('로그인이 필요한 기능입니다. 로그인하시겠습니까?')){
+              event.preventDefault();
+              location.href = '/user/login.form';
+              return;
+            } else {
+              event.preventDefault();
+              return;
+            }
+          }
+          let frmBid = $('#frm_bid');
+          frmBid.attr('action', '/auction2/addBid.do');
+          frmBid.attr('method', 'post');
+          frmBid.submit();
+        })
+      }
           
       fnEdit();
       fnRemove();
@@ -261,12 +365,102 @@
       fnWishCheck();
       fnOrderPayment();
       fnAddBidResult();
+      
+      modalBidOn();
+      isModalBidOn();
+      modalBidOff();
+      fnAddBid();
+      
     </script>
+    
+    </div>
+    <!--/*
+    <script th:inline="javascript">
+    
+      function getId(id){
+        return document.getElementById(id);
+      }
+      
+      var data = {};//전송 데이터(JSON)
+      
+      var socket = null;
+      var nickname = getId('nickname');
+      var btnSend = getId('btnSend');
+      var bid = getId('bid');
+      var price = getId('price');
+      var auctionNo = getId('auctionNo2');
+      var bidderNo = /*[[${session.user.userNo}]]*/ null;
+      
+      function fnConnect() {
+        var ws = new WebSocket("ws://" + location.host + "/auction/[[${auction.auctionNo}]]");
+        console.log(auctionNo.value);
+        socket = ws;
+        ws.onopen = function() {
+          var datas = {
+            auctionNo: auctionNo.value
+        };
+        socket.send(JSON.stringify(datas));
+        console.log('웹소켓 연결됨');
+        } 
+        ws.onmessage = function(msg){
+          var data = JSON.parse(msg.data);
+          var css;
+        
+          console.log('data:' + data);
+          console.log('data.nickname:' + data.nickname);
+          if(data.nickname == nickname.value){
+            css = 'class=me';
+          } else {
+            css = 'class=other';
+          }
+          
+          var item = `<div ${css} >
+                          <span><b>${data.nickname}</b></span> [ ${data.bidAt} ]<br/>
+                            <span>현재 가격${data.bidPrice} P</span><br/><span>입력한 가격 ${data.price} P</span> 
+                  </div>`;
+          console.log('bid.innerHTML:' + bid.innerHTML);      
+          bid.innerHTML = item;
+          bid.scrollTop=bid.scrollHeight;//스크롤바 하단으로 이동
+        }
+      ws.onclose = function(ev){
+        console.log('웹소켓 닫힘');
+        setTimeout( function(){ fnConnect(); }, 1000);
+      };
+      ws.onerror = function(ev){console.log('에러: ', err); }; 
+      }
+    
+      price.onkeyup = function(ev){
+        console.log('ev.keyCode:' + ev.keyCode);      
+        if(ev.keyCode == 13){
+          send();
+        }
+      }
+    
+      btnSend.onclick = function(){
+        send();
+      }
+    
+      function send(){
+        if(price.value.trim() != ''){
+          data.nickname = nickname.value;
+          data.auctionNo = auctionNo.value;
+          data.bidderNo = bidderNo;
+          data.price = price.value;
+          data.bidAt = new Date().toLocaleString();
+          var temp = JSON.stringify(data);
+          socket.send(temp);
+        }
+        console.log('temp:' + temp);
+        price.value ='';
+      }
+      
+    fnConnect();
+            
+  </script>
+  */-->
     
   </div>
   
-  </div>
- 
   <div th:replace="~{/layout/footer::footer}"></div>
   
 </body>
