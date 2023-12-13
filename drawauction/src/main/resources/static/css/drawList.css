@@ -174,3 +174,7 @@
 .draw_basic_info, .received_contents {
   margin-left: 30px;
 }
+
+.strong {
+  border: 2px solid darkgreen;
+}

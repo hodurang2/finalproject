@@ -9,9 +9,7 @@ import com.gdu.drawauction.dto.AuctionImageDto;
 import com.gdu.drawauction.dto.BidDto;
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.DrawImageDto;
-import com.gdu.drawauction.dto.DrawOrderDto;
 import com.gdu.drawauction.dto.DrawOrderDto2;
-import com.gdu.drawauction.dto.DrawWishListDto;
 import com.gdu.drawauction.dto.EmoneyDto;
 import com.gdu.drawauction.dto.UserDto;
 
@@ -23,6 +21,9 @@ public interface MypageMapper {
   public int updateUserIntroduction(UserDto user);    // 소개글 수정(ajax)
   public int updateUserPw(UserDto user);              // 비밀번호 변경
   //public int insertUserImage(UserImageDto image);
+  //public UserDto getUser(Map<String, Object> map);
+  //public int insertLeaveUser(UserDto user);   
+  //public int deleteUser(UserDto user);
   
   // E-Money
   public int getEmoneyCount(int userNo);                          // E-Money 입출금수

@@ -195,6 +195,37 @@
   
   
   <!--/*
+  <select id="getUser" parameterType="Map" resultType="UserDto">
+  SELECT USER_NO, EMAIL, PW, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION
+    FROM USER_T
+  <where>
+      <if test="email != null">EMAIL = #{email}</if>
+      <if test="pw != null">AND PW = #{pw}</if>
+      <if test="userNo != null">AND USER_NO = #{userNo}</if>
+    </where>
+  </select>
+
+  <insert id="insertLeaveUser" parameterType="UserDto">
+    INSERT INTO LEAVE_USER_T (
+        EMAIL
+      , JOINED_AT
+      , LEAVED_AT
+    ) VALUES (
+        #{email}
+      , #{joinedAt}
+      , SYSDATE
+    )
+  </insert>
+
+
+  <delete id="deleteUser" parameterType="UserDto">
+    DELETE
+      FROM USER_T
+     WHERE USER_NO = #{userNo}
+  </delete>
+  */-->
+  
+  <!--/*
   <insert id="insertUserImage" parameterType="UserImageDto">
     INSERT INTO USER_IMAGE_T (
       USER_IMAGE_NO

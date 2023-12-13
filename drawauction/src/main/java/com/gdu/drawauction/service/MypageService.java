@@ -16,6 +16,8 @@ public interface MypageService {
   
   public ResponseEntity<Map<String, Object>> modifyIntroduction(HttpServletRequest request);  // 소개글 수정
 
+  //public void leave(HttpServletRequest request, HttpServletResponse response);    // 회원 탈퇴
+  
   //public Map<String, Object> addUserImage(MultipartHttpServletRequest multipartRequest) throws Exception;
   
   public void getCount(HttpServletRequest request, Model model);   // 갯수

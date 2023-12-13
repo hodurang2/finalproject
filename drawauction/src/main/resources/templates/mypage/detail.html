@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
  
-<head th:replace="~{/layout/header::head('마이페이지')}"></head>
+<head th:replace="~{layout/header::head('마이페이지')}"></head>
 
 <style>
   
@@ -51,7 +51,7 @@
   .one_wrap, .one_wrap_draw, .one_wrap_received_draw {
     border: 1px solid grey;
     width: 300px;
-    height:350px;
+    height:370px;
     margin: 20px;
     cursor: pointer;
   }
@@ -138,7 +138,7 @@
   
 <body>
   
-  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
   <div class="wrap">
     <div th:replace="~{/mypage/menu::side-menu}"></div>
   
@@ -155,15 +155,15 @@
         </thead>
         <tbody class="ing">
           <tr class="title">
-            <td class="delete_right">판매 중 경매</td>
             <td class="delete_right">입찰 중 경매</td>
+            <td class="delete_right">판매 중 경매</td>
             <td class="delete_right">찜한 경매</td>
             <td class="delete_right">찜한 그려드림</td>
             <td>E-MONEY</td>
           </tr>
             <tr class="val">
-              <td th:text="${artForSaleCount}"></td>
               <td th:text="${biddingCount}"></td>
+              <td th:text="${artForSaleCount}"></td>
               <td>3</td>
               <td>4</td>
               <td>5</td>
@@ -289,7 +289,7 @@
       
   </div>
   
-  <div th:replace="~{/layout/footer::footer}"></div>
+  <div th:replace="~{layout/footer::footer}"></div>
   
 
   <script th:inline="javascript">
@@ -317,7 +317,7 @@
     }
     
     const fnAuctionDetail = () => {
-      $(document).on('click', '.auction', function(ev) {
+      $(document).on('click', '.auction', function() {
         location.href = '/auction2/detail.do?auctionNo=' + $(this).data('auction_no');
       })
     }
@@ -339,7 +339,7 @@
           totalPage = resData.totalPage;
           $.each(resData.myDrawList,(i, draw) => {
             if(i < 3) {
-              let str = '<div class="one_wrap draw" data-draw_no="' + draw.drawNo + '">';
+              let str = '<div class="one_wrap_my draw" data-draw_no="' + draw.drawNo + '">';
               str +=   '<div class="draw_image_wrap"><img class="image" src="' + draw.image.path + '/s_' + draw.image.filesystemName + '"></div>';
               str +=   '<div class="draw_info_wrap">';
               str +=     '<div class="draw_title"><span class="info">제목</span><span class="value title_ellipsis">' + draw.title + '</span></div>';
@@ -369,7 +369,7 @@
           $.each(resData.drawOrderList,(i, order) => {
             if(i < 3) {
               let draw = order.drawDto2;
-              let str = '<div class="one_wrap_draw draw" data-draw_no="' + draw.drawNo + '">';
+              let str = '<div class="one_wrap_draw draw" data-draw_no="' + draw.drawNo + '" data-order_no="' + order.orderNo + '" id="order' + order.orderNo + '">';
               str +=   '<div class="draw_image_wrap"><img class="image" src="' + draw.image.path + '/s_' + draw.image.filesystemName + '"></div>';
               str +=   '<div class="draw_info_wrap">';
               str +=     '<div class="draw_title"><span class="info">제목</span><span class="value title_ellipsis">' + draw.title + '</span></div>';
@@ -382,6 +382,7 @@
               str +=   '</div>';
               str += '</div>';
               $('#order_draw_list').append(str);
+              fnURLFragment1();
             }
           })
         }
@@ -402,7 +403,7 @@
           $.each(resData.drawReceivedOrderList,(i, r) => {
             if(i < 3) {
               let draw = r.drawDto2;
-              let str = '<div class="one_wrap_received_draw draw" data-draw_no="' + draw.drawNo + '">';
+              let str = '<div class="one_wrap_received_draw draw" data-draw_no="' + draw.drawNo + '" data-order_no="' + r.orderNo + '" id="order' + r.orderNo + '">';
               str +=   '<div class="draw_image_wrap"><img class="image" src="' + draw.image.path + '/s_' + draw.image.filesystemName + '"></div>';
               str +=   '<div class="draw_info_wrap">';
               str +=     '<div class="draw_title"><span class="info">제목</span><span class="value title_ellipsis">' + draw.title + '</span></div>';
@@ -415,6 +416,7 @@
               str +=   '</div>';
               str += '</div>';
               $('#received_order_draw_list').append(str);
+              fnURLFragment2();
             }
           })
         }
@@ -423,10 +425,22 @@
     
     
    const fnDrawDetail = () => {
-      $(document).on('click', '.draw', function(){
+      $(document).on('click', '.one_wrap_my', function() {
         location.href = '/draw/detail.do?drawNo=' + $(this).data('draw_no');
       })
     }
+    
+  const fnURLFragment1 = () => {
+    $(document).on('click', '.one_wrap_draw', function() {
+      location.href = '/mypage/drawList.do?param=2&orderNo=' + $(this).data('order_no');
+    })
+  }
+    
+  const fnURLFragment2 = () => {
+    $(document).on('click', '.one_wrap_received_draw', function() {
+      location.href = '/mypage/drawList.do?param=3&orderNo=' + $(this).data('order_no');
+    })
+  }
     
     
     

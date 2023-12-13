@@ -67,7 +67,7 @@
       $.ajax({
         // 요청
         type: 'get',
-        url: '/mypage/getDrawOrderList.do',
+        url: '/mypage/getDrawOrderList.do?param=2#',
         data: 'page=' + page,
         // 응답
         dataType: 'json',
@@ -75,7 +75,7 @@
           totalPage = resData.totalPage;
           $.each(resData.drawOrderList,(i, order) => {
             let draw = order.drawDto2;
-            let str = '<div class="draw_order" data-draw_no="' + draw.drawNo + '">';
+            let str = '<div class="draw_order" data-draw_no="' + draw.drawNo + '" data-order_no="' + order.orderNo + '" id="order' + order.orderNo + '">';
             
             str +=   '<div class="received_image_wrap" data-draw_no="' + draw.drawNo + '">';
             str +=     '<img class="received_image" src="' + draw.image.path + '/s_' + draw.image.filesystemName + '">';
@@ -119,6 +119,11 @@
       })
     }
     
+    var jqxhr1 = $.ajax("/mypage/getDrawOrderList.do?param=2#").done(() => {
+                  fnHashPlus();
+                 }); 
+                
+    
     const fnGetDrawReceivedOrderList = () => {
       $.ajax({
         // 요청
@@ -131,7 +136,7 @@
           totalPage = resData.totalPage;
           $.each(resData.drawReceivedOrderList,(i, r) => {
             let draw = r.drawDto2;
-            let str = '<div class="received" data-draw_no="' + draw.drawNo + '">';
+            let str = '<div class="received" data-draw_no="' + draw.drawNo + '" data-order_no="' + r.orderNo + '" id="order' + r.orderNo + '">';
               
             str +=   '<div class="received_image_wrap" data-draw_no="' + draw.drawNo + '">';
             str +=     '<img class="received_image" src="' + draw.image.path + '/s_' + draw.image.filesystemName + '">';
@@ -220,17 +225,19 @@
         }, 200);  // 200밀리초(0.2초) 후 동작(시간은 임의로 조정 가능함)
       })
     }
-     
-    $(document).ready(function() {
-      // 초기에는 #my_draw_list가 보이도록 설정
-      $('#my_draw_list').show();
-      $('#order_draw_list').hide();
-      $('#received_order_draw_list').hide();
-      
-      $('#order').removeClass('clicked');
-      $('#received').removeClass('clicked');
-      $('#my').addClass('clicked');
-    });
+    
+    const fnFirstWindow = () => {
+        // 초기에는 #my_draw_list가 보이도록 설정
+        $('#my_draw_list').show();
+        $('#order_draw_list').hide();
+        $('#received_order_draw_list').hide();
+        
+        $('#order').removeClass('clicked');
+        $('#received').removeClass('clicked');
+        $('#my').addClass('clicked');
+
+    }
+
     
     const fnShowMy = () => {
 
@@ -268,14 +275,14 @@
       $('#received').addClass('clicked');
     }
     
-/*
+
     const fnParam = () => {
       
       var queryString = window.location.search;
     
       // URL의 쿼리 문자열이 있을 경우
       if (queryString) {
-        
+
         // URL 파라미터들을 객체로 파싱하여 가져오기
         var params = new URLSearchParams(queryString);
         
@@ -288,19 +295,57 @@
           fnShowOrder();
         } else if(paramValue == 3) {
           fnShowReceivedOrder();
+        } else {
+          fnFirstWindow();
         }
       }
     }
+    
 
-*/    
+
+  const fnHashPlus = () => {
     
+    var queryString = window.location.search;
+  
+    // URL의 쿼리 문자열이 있을 경우
+    if (queryString) {
+
+      // URL 파라미터들을 객체로 파싱하여 가져오기
+      var params = new URLSearchParams(queryString);
+      
+      // 'param' 파라미터 값 가져오기
+      var paramValue = params.get('orderNo');
+      
+      if(!location.href.includes("#")) {
+        location.href += '#order' + paramValue;
+      } else {
+          const currentHashIndex = location.href.indexOf("#"); // 현재 해시 위치
+          const newUrl = location.href.slice(0, currentHashIndex); // 현재 해시를 제외한 URL
+          newUrl += '#order' + paramValue;
+      }
+      
+      $('#order' + paramValue).addClass('strong');
+      
+      setTimeout(() => {
+        $('#order' + paramValue).removeClass('strong');
+      }, 2500); // 2.5초 뒤
+
+    }
+  };
+  
+
+
+
     
-     fnGetMyDrawList();
-     fnGetDrawOrderList();
-     fnGetDrawReceivedOrderList();
-     fnDrawDetail();
-     fnScroll();
-     //fnParam();
+   fnFirstWindow();
+   fnGetMyDrawList();
+   fnGetDrawOrderList();
+   fnGetDrawReceivedOrderList();
+   fnDrawDetail();
+   fnScroll();
+   fnParam();
+
+
     
   </script>
   

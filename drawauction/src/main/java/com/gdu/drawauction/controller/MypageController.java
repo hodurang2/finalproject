@@ -59,6 +59,13 @@ public class MypageController {
     return mypageService.modifyIntroduction(request);
   }
   /*
+  @PostMapping("/leave.do")
+  public void leave(HttpServletRequest request, HttpServletResponse response) {
+    mypageService.leave(request, response);
+  }
+  */
+  
+  /*
   @PostMapping(value="/addUserImage.do", produces="application/json")
   public Map<String, Object> addUserImage(MultipartHttpServletRequest multipartRequest) throws Exception {
     return mypageService.addUserImage(multipartRequest);
@@ -109,6 +116,11 @@ public class MypageController {
   public String emoneyList(HttpServletRequest request, Model model) {
     mypageService.getEmoneyList(request, model);
     return "mypage/emoneyList";
+  }
+  
+  @GetMapping("/getWishList.do")
+  public String getWishList() {
+    return "mypage/wishList";
   }
   
 }

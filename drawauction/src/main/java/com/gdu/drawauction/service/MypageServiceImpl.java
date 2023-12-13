@@ -147,6 +147,58 @@ public class MypageServiceImpl implements MypageService {
     
   }
   /*
+  // 회원탈퇴
+  @Override
+  public void leave(HttpServletRequest request, HttpServletResponse response) {
+  
+    Optional<String> opt = Optional.ofNullable(request.getParameter("userNo"));
+    int userNo = Integer.parseInt(opt.orElse("0"));
+    
+    UserDto user = mypageMapper.getUser(Map.of("userNo", userNo));
+    
+    if(user == null) {
+      try {
+        response.setContentType("text/html; charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        out.println("<script>");
+        out.println("alert('회원 탈퇴를 수행할 수 없습니다.')");
+        out.println("location.href='" + request.getContextPath() + "/main.do'");
+        out.println("</script>");
+        out.flush();
+        out.close();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    
+    int insertLeaveUserResult = mypageMapper.insertLeaveUser(user);
+    int deleteUserResult = mypageMapper.deleteUser(user);
+    
+   try {
+      
+      response.setContentType("text/html; charset=UTF-8");
+      PrintWriter out = response.getWriter();
+      out.println("<script>");
+      if(insertLeaveUserResult == 1 && deleteUserResult == 1) {
+        HttpSession session = request.getSession();
+        session.invalidate();
+        out.println("alert('회원 탈퇴되었습니다. 그 동안 드로옥션을 이용해 주셔서 감사합니다.')");
+        out.println("location.href='" + request.getContextPath() + "/main.do'");
+      } else {
+        out.println("alert('회원 탈퇴되지 않았습니다.')");
+        out.println("history.back()");
+      }
+      out.println("</script>");
+      out.flush();
+      out.close();
+      
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    
+  }
+  */
+  /*
   @Override
   public boolean addUserImage(MultipartHttpServletRequest multipartRequest) throws Exception {
       
