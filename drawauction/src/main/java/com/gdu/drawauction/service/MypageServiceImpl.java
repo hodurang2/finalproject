@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import com.gdu.drawauction.dao.MypageMapper;
+import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.dto.BidDto;
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.DrawOrderDto;
@@ -578,5 +579,76 @@ public class MypageServiceImpl implements MypageService {
       model.addAttribute("beginNo", total - (page - 1) * display);
     }
   }
+  /*
+  @Override
+  public Map<String, Object> getAuctionWishList(HttpServletRequest request) {
+    
+    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(opt.orElse("1"));
+    
+    HttpSession session = request.getSession();
+    UserDto user = (UserDto)session.getAttribute("user");
+
+    if(user != null) {
+    
+
+    if(session.getAttribute("user") == null) {
+      
+      int userNo = user.getUserNo();
+      int total = mypageMapper.getAuctionWishCount();
+      int display = 9;
+      
+      myPageUtils.setPaging(page, total, display);
+      
+      
+      Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
+          , "end", myPageUtils.getEnd() 
+          , "userNo", userNo);
+      
+      List<AuctionDto> auctionWishList = mypageMapper.getAuctionWishList(map);
+
+      for(AuctionDto auctionDto : auctionList) {
+        auctionDto.setHeartClass("fa-regular");
+      }
+    } else {
+      UserDto user = (UserDto) session.getAttribute("user");
+      userNo = user.getUserNo();
+      for(AuctionDto auctionDto : auctionList) {
+        Map<String, Object> wishMap = Map.of("auctionNo", auctionDto.getAuctionNo(), "userNo", userNo);
+        int hasAuctionWishlist = auctionMapper.hasAuctionWishlist(wishMap);
+        String heartClass;
+        if(hasAuctionWishlist == 0) {
+          heartClass = "fa-regular";
+        } else {
+          heartClass = "fa-solid";
+        }
+        auctionDto.setHeartClass(heartClass);
+      }
+    }
+    
+    for(AuctionDto auctionDto : auctionList) {
+      auctionDto.setImage(auctionMapper.getAuctionimage(auctionDto.getAuctionNo()));
+    }
+    
+    
+    return Map.of("auctionList", auctionList
+                , "totalPage", myPageUtils.getTotalPage());
+  } else {
+    
+    map.put("auctionWishList", null);
+    
+  }
+    
+  return map;
+  
+}
+  
+  
+  
+  
+  */
+  
+  
+  
 
 }
