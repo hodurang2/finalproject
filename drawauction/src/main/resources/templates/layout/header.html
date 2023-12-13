@@ -26,7 +26,7 @@
 <link rel="stylesheet" th:href="@{/css/common.css(ver=1.0)}" />
 <link rel="stylesheet" th:href="@{/css/ckeditor.css(ver=1.0)}" />
 <link rel="stylesheet" th:href="@{/css/menu.css(ver=1.0)}" />
-<link rel="stylesheet" th:href="@{/css/modal.css(ver=1.6)}" />
+<link rel="stylesheet" th:href="@{/css/modal.css(ver=1.7)}" />
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/decoupled-document/ckeditor.js"></script>
 </head>
@@ -84,8 +84,8 @@
 <div class="header_menu">
     <div class="logo"><a th:href="@{/main.do}"><img th:src="@{../../image/한글로고.png}" width="250px"></a></div>
     <div>
-		<li><i class="fas fa-xl fa-user mypage_event" id="mypage" style="cursor: pointer;"></i></li>
-		<li><i id="btn-modal" class="fas fa-xl fa-bell mypage_event" style="cursor: pointer;"></i></li>
+		<li><img th:src="@{../../image/mypage_mini.png}" class="mypage_event" id="mypage" style="cursor: pointer; width:70px; height: 70px;"></img></li>
+		<li><img th:src="@{../../image/alarm_mini.png}" class="mypage_event" id="btn-modal" style="cursor: pointer; width:70px; height: 70px;"></img></li>
     </div>
 </div>
 </div>
@@ -164,7 +164,7 @@
 		}
 	    modalOn()
 	    modal2Off()
-	    $('.fa-bell').css('color', '');
+	    $('#btn-modal').attr('src', '../../image/alarm_mini.png');
 	    
 	    $.ajax({
 		  type: 'post',
@@ -226,7 +226,7 @@
 		dataType: 'json',
 		success: (resData) => {
 		  if(resData > 0){
-			$('.fa-bell').css('color', '#ff0000');
+			$('#btn-modal').attr('src', '../../image/alarm_mini_red.png');
 			modal2On();
 		  }
 		}
