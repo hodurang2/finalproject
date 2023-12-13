@@ -29,10 +29,41 @@
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </head>
 
+  <style>
+ 
+  /* 건들지마시오 */
+  /* 그리드 컨테이너 스타일 */
+    .grid-container {
+        display: grid;
+        grid-template-columns: 2fr 1fr; /* 2개의 열을 갖는 그리드 */
+        gap: 1px; /* 열 간의 간격 설정 */
+    }
+    
+     .grid-item1 {
+		 width: 70%;
+		text-align: left;
+    }
 
+    /* 그리드 아이템 스타일 */
+    .grid-item {
+        padding: 20px;
+        border: 1px solid #ccc;
+        text-align: center;
+    }
+  
+  
+  .grid_2{
+	  margin-top: 4%;
+	   display: flex;
+        justify-content: space-between; /* 두 요소 사이의 간격을 최대로 벌림 */
+        align-items: center; /* 요소를 세로로 가운데 정렬 */
+  }
+  </style>
 
 <body>
 	<div th:fragment="menu">
+
+
 
 
 <div class="offcanvas offcanvas-start show" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
@@ -42,7 +73,7 @@
   </div>
   <div class="offcanvas-body">
     <ul style="font-size: 130%;">
-		
+
 		<hr>
 		<li style="margin-top: 6%; font-weight: 700; font-size: 120%;">회원관리</li>
 		<li><a th:href="|@{/admin/userList.do}|">사용자</a></li>
