@@ -5,21 +5,27 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
-<<<<<<< HEAD
 import com.gdu.drawauction.dto.AuctionDto;
-=======
->>>>>>> main
+import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.UserDto;
 
 @Mapper
 public interface AdminMapper {
-	// 고객정보
-	public List<UserDto> getUserList(Map<String, Object> map);
-	public int getUserCount();
-	public UserDto getUser(int userNo);
-	
-	public int deleteUser(int userNo);
-	
+  // 고객정보
+  public List<UserDto> getUserList(Map<String, Object> map);
+  public int getUserCount();
+  public UserDto getUser(int userNo);
+  public int deleteUser(int userNo);
+  
+  // 그려드림 관리
+  public List<DrawDto> getDrawList(Map<String, Object> map);
+  public int getDrawCount();
+  public DrawDto getDraw(int drawNo);
+  public int deleteDraw(int drawNo);
+  
+  // 회원 검색
+  public int getSearchUserCount(Map<String, Object> map);
+  public List<UserDto> getSearchUserList(Map<String, Object> map);
 	
 	// 경매정보
 	public int getAdminAucCount();

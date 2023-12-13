@@ -1,7 +1,5 @@
 package com.gdu.drawauction.controller;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
@@ -9,8 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gdu.drawauction.service.AdminService;
@@ -57,7 +53,44 @@ public class AdminController {
 //    
     @GetMapping("/home.form")
     public String home() {
-    	return "admin/home";
+      return "admin/home";
+    }
+    
+    @GetMapping("/userList.do")
+    public String userList(HttpServletRequest request, Model model) {
+      adminService.loadUserList(request, model);
+      return "admin/userList";
+    
+    }
+
+    @PostMapping("/removeUser.do")
+    public String removeUser(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+      int removeResult = adminService.removeUser(request);
+      redirectAttributes.addFlashAttribute("removeResult", removeResult);
+      return "redirect:/admin/userList.do";
+    }
+    
+ 
+    // 그려드림
+    @GetMapping("/drawList.do")
+    public String drawList(HttpServletRequest request, Model model) {
+      adminService.loadDrawList(request, model);
+      return "admin/drawList";
+    }
+    
+    @PostMapping("/removeDraw.do")
+    public String removeDraw(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+      int removeResult = adminService.removeDraw(request);
+      redirectAttributes.addFlashAttribute("removeResult", removeResult);
+      return "redirect:/admin/drawList.do";
+    }
+    
+    
+    // 회원 검색
+    @GetMapping("/search.do")
+    public String Usersearch(HttpServletRequest request, Model model) {
+      adminService.loadUserSearchList(request, model);
+      return "admin/userList";
     }
 
      
@@ -67,22 +100,5 @@ public class AdminController {
       return "admin/adminAucList";
        
     }
-   
-	
-//    @GetMapping("/userList.do")
-//    public String userList(HttpServletRequest request, Model model) {
-//    	adminService.loadUserList(request, model);
-//    	return "admin/userList";
-//    
-//    }
-//
-//    @PostMapping("/removeUser.do")
-//    public String removeUser(HttpServletRequest request, RedirectAttributes redirectAttributes) {
-//    	int removeResult = adminService.removeUser(request);
-//    	redirectAttributes.addFlashAttribute("removeResult", removeResult);
-//    	return "redirect:/admin/userList.do";
-//    }
-//    
-    
 
 }
