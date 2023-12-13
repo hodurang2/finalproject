@@ -2,6 +2,167 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/header::head('출품작품목록')}"></head>
 
+<style>
+    body {
+     width: 100%;
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f8f9fa;
+      margin: 0;
+      align-items: center;
+      justify-content: center;
+  }
+  .wrap_9{
+    width: 90%;
+    margin: 0 auto;
+    text-align: left;
+  }
+  .text-center{
+    margin-left:90px;
+  }
+  .auction_write {
+   margin-top: 40px;
+   margin-left: 280px; 
+  }
+  .auction_list {
+    width: 90%;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .auction_heart_div {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    justify-content: space-between;
+    text-align: center;
+    padding-right: 10px;
+    padding-top: 10px;
+    float: right;
+  }
+  .auction_heart_div i {
+    color: #e11414;
+  }
+  .auction_category {
+    margin-left: 10px;
+    color: grey;
+    font-size: 11px;
+  }
+  .auction_title {
+    margin-left: 10px;
+    font-weight: 600;
+    font-size: 18px;
+  }
+  .auction_nickname {
+    margin-left: 10px;
+    color: grey;
+    font-size: 13px;
+  }
+  .first_auction {
+    margin-left: 10px;
+    font-weight: 550;
+  }
+  .last_auction {
+    float: right;
+  }
+  .auction_list {
+    margin: 10px auto;
+    display: flex;
+    flex-wrap: wrap;
+   }
+   .auction_image img {
+     width: 260px;
+     height: 200px;
+     object-fit: contain;
+   }
+  .auction {
+    width: 262px;
+    height: 440px;
+    border-radius: 5px;
+    text-align: left;
+    margin: 20px 15px;
+  }
+  .auction div {
+    margin-bottom: 5px;
+  }
+  .auction_end_wrap div {
+    font-size: 13px;
+    margin-right: 10px;
+  }
+  .auction:hover {
+    background-color: silver;
+    cursor: pointer;
+  }
+  .auction_ongoing {
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    width: 68px;
+    height: 28px;
+    padding: 1px 0px;
+    font-size: 12px;
+    font-family: "Spoqa Han Sans Neo";
+    font-weight: 700;
+    white-space: nowrap;
+    background: rgb(220, 245, 236);
+    color: rgb(19, 189, 126);
+    display: inline-flex;
+    border-radius: 4px;
+    margin-left: 10px;
+  }
+  .auction_end {
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    width: 68px;
+    height: 28px;
+    padding: 1px 0px;
+    font-size: 12px;
+    font-family: "Spoqa Han Sans Neo";
+    font-weight: 700;
+    white-space: nowrap;
+    background: rgb(254, 238, 223);
+    color: rgb(253, 53, 53);
+    display: inline-flex;
+    border-radius: 4px;
+    margin-left: 10px;
+  }
+  .searchWord {
+  width: 250px;
+  display :inline-block;
+  text-align: left;
+}
+.search {
+  width: 350px;
+  margin-right: 400px;
+  margin-top: 40px;
+  display: inline-flex;
+}
+
+.btn_search {
+  width: 37px;
+  height: 37px;
+  background-color: #f8f9fa;
+  border: none;
+}
+.search_icon {
+  width: 40px;
+  height: 40px;
+  padding-right: 20px;
+  padding-top: 10px;
+}
+.form-select {
+  width: 120px;
+}
+#search_frm {
+  display: inline-flex;
+}
+.text-center {
+  display: inline-flex;
+}
+</style>
 
 <body>
   
@@ -42,7 +203,7 @@
       $.ajax({
         // 요청
         type: 'get',
-        url: '/auction/getList.do',
+        url: '/mypage/getWishList.do',
         data: {
                 page: page
                 },
@@ -50,7 +211,7 @@
         dataType: 'json',
         success: (resData) => {  
           totalPage = resData.totalPage;
-          $.each(resData.auctionList,(i, auction) => {
+          $.each(resData.auctionWishList,(i, auction) => {
             let str = '<div class="auction" data-auction_no="' + auction.auctionNo + '">';
             str += '<div class="auction_image"><img src="' + auction.image.path + '/s_' + auction.image.filesystemName + '"></div>';
             if(auction.status === 0){
@@ -69,7 +230,7 @@
             str += '<div><span class="first_auction">마감일</span><span class="last_auction"> '        + auction.endAt + '</span></div>'; // 상품가격 1000단위 콤마찍기
             str += '</div>';
             str += '</div>';
-            $('#auction_list').append(str);
+            $('#auction_wish_list').append(str);
           })
         }
       })

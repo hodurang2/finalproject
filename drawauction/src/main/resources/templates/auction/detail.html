@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{/layout/header::head(|경매|)}"></head>
+<head th:replace="~{layout/header::head(|경매|)}"></head>
 <link rel="stylesheet" th:href="@{/css/auctionDetail.css(ver=1.0)}" />
 <link rel="stylesheet" th:href="@{/css/bidModal.css(ver=1.3)}" />
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
 <body>
   
-  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
   
   <div class="main_wrap">
 
@@ -461,7 +461,7 @@
     
   </div>
   
-  <div th:replace="~{/layout/footer::footer}"></div>
+  <div th:replace="~{layout/footer::footer}"></div>
   
 </body>
 </html>
