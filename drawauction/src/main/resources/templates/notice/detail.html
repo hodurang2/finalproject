@@ -22,10 +22,10 @@
 
  <div>
     <h1 th:text="${notice.title}"></h1>
-    <a>
+   <!-- <a>
     <input type="button" onClick="sendLinkCustom()" value="Custom"/>
     <input type="button" onClick="sendLinkDefault()" value="Default"/>
-    </a>
+    </a> -->
     <div th:text="|작성자  : 관리자|"></div>
     <div th:text="|작성일  : ${#dates.format(notice.createdAt, 'yyyy-MM-dd HH:mm:ss')}|"></div>
     <div>
@@ -70,7 +70,7 @@
         window.location.href = '/notice/list.do';
       });
     }
-    
+
      function sendLinkCustom() {
         Kakao.init("53f0834692966b3b55a0b3d2f38afdda");
         Kakao.Link.sendCustom({
@@ -118,7 +118,7 @@
       }
       ; window.kakaoDemoCallback && window.kakaoDemoCallback() }
       catch(e) { window.kakaoDemoException && window.kakaoDemoException(e) }
-  </script>
+
   	
     fnEditNotice();
     fnRemoveNotice();
