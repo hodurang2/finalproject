@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{/layout/header::head('입찰작품목록')}"></head>
+<head th:replace="~{layout/header::head('입찰작품목록')}"></head>
 <link rel="stylesheet" th:href="@{/css/auctionList.css(ver=1.0)}" />
 
 <style>
@@ -13,7 +13,7 @@
  
 <body>
   
-  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
   <div class="wrap">
     <div th:replace="~{/mypage/menu::side-menu}"></div>
     
@@ -82,7 +82,7 @@
     </div>
   </div>
   
-  <div th:replace="~{/layout/footer::footer}"></div>
+  <div th:replace="~{layout/footer::footer}"></div>
   
 </body>
 </html>
