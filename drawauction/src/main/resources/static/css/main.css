@@ -6,4 +6,161 @@
 .main_wrap {
   width: 100%;
   min-height: 500px;
+  
+}
+ .wrap_9{
+    width: 100%;
+    text-align: left;
+  }
+  .text-center{
+    margin-left:1%;
+  }
+  
+  .auction_list {
+    margin: 10px auto; /* 위아래 여백은 유지하면서 좌우 여백을 auto로 설정하여 가운데 정렬 */
+    text-align: center;
+    width: 100%; /* 추가: 전체 폭을 100%로 설정 */
+    
+  }
+  .auction_heart_div {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    justify-content: space-between;
+    text-align: center;
+    padding-right: 10px;
+    padding-top: 10px;
+    float: right;
+  }
+  .auction_heart_div i {
+    color: #e11414;
+  }
+  .auction_category {
+    margin-left: 10px;
+    color: grey;
+    font-size: 11px;
+  }
+  .auction_title {
+    margin-left: 10px;
+    font-weight: 600;
+    font-size: 18px;
+  }
+  .auction_nickname {
+    margin-left: 10px;
+    color: grey;
+    font-size: 13px;
+  }
+  .first_auction {
+    margin-left: 10px;
+    font-weight: 550;
+  }
+  .last_auction {
+    float: right;
+  }
+  .auction_list {
+    margin: 10px auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* 가로 방향으로 가운데 정렬 */
+    gap: 10px; /* 애들 사이 간격 설정 */
+   }
+   
+.auction_image img {
+    width: 260px;
+    height: 170px; 
+    text-align: center;
+    margin-bottom: 5%;
+    object-fit: cover; /* 이미지를 꽉 채우도록 설정 */
+    border: 1px lightgray solid;
+    border-radius: 7px; /* 이미지를 감싸는 컨테이너의 모서리를 둥글게 만듭니다. (선택사항) */
+}
+
+  .auction {
+    width: 268px;
+    height: 40%;
+    border-radius: 5px;
+    text-align: left;
+    margin: 1.5%;
+  }
+  
+  .auction div {
+    margin-bottom: 2%;
+  }
+  s
+  .auction_end_wrap div {
+    font-size: 13px;
+    margin-right: 10px;
+  }
+  .auction:hover {
+    background-color: silver;
+    cursor: pointer;
+  }
+  .auction_ongoing {
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    width: 68px;
+    height: 28px;
+    padding: 1px 0px;
+    font-size: 12px;
+    font-family: "Spoqa Han Sans Neo";
+    font-weight: 700;
+    white-space: nowrap;
+    background: rgb(220, 245, 236);
+    color: rgb(19, 189, 126);
+    display: inline-flex;
+    border-radius: 4px;
+    margin-left: 10px;
+  }
+  .auction_end {
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    width: 68px;
+    height: 28px;
+    padding: 1px 0px;
+    font-size: 12px;
+    font-family: "Spoqa Han Sans Neo";
+    font-weight: 700;
+    white-space: nowrap;
+    background: rgb(254, 238, 223);
+    color: rgb(253, 53, 53);
+    display: inline-flex;
+    border-radius: 4px;
+    margin-left: 10px;
+  }
+  .searchWord {
+  width: 250px;
+  display :inline-block;
+  text-align: left;
+}
+.search {
+  width: 350px;
+  margin-right: 400px;
+  margin-top: 40px;
+  display: inline-flex;
+}
+
+.btn_search {
+  width: 37px;
+  height: 37px;
+  background-color: #f8f9fa;
+  border: none;
+}
+.search_icon {
+  width: 40px;
+  height: 40px;
+  padding-right: 20px;
+  padding-top: 10px;
+}
+.form-select {
+  width: 120px;
+}
+#search_frm {
+  display: inline-flex;
+}
+.text-center {
+  display: inline-flex;
 }

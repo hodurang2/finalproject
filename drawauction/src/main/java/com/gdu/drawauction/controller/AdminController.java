@@ -84,14 +84,6 @@ public class AdminController {
       redirectAttributes.addFlashAttribute("removeResult", removeResult);
       return "redirect:/admin/drawList.do";
     }
-    
-    
-    // 회원 검색
-    @GetMapping("/search.do")
-    public String Usersearch(HttpServletRequest request, Model model) {
-      adminService.loadUserSearchList(request, model);
-      return "admin/userList";
-    }
 
      
     @GetMapping("/adminAucList.do")
