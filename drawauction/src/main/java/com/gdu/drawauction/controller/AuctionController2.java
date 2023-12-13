@@ -111,12 +111,6 @@ public class AuctionController2 {
   return "redirect:/auction2/detail.do?auctionNo=" + request.getParameter("auctionNo");
   }
   
-  @PostMapping("/addBid.do")
-  public String addBid(HttpServletRequest request, RedirectAttributes redirectAttributes) {
-    int addBidResult = auctionService2.addBid(request);
-    
-    return "redirect:/auction2/detail.do?auctionNo=" + request.getParameter("auctionNo");
-  }
   
   
 }

@@ -389,15 +389,16 @@ public class AuctionServiceImpl2 implements AuctionService2 {
   
   @Transactional
   @Override
-  public int addBid(HttpServletRequest request) {
-    int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
-    int bidderNo = Integer.parseInt(request.getParameter("bidderNo"));
-    int bidMoney = Integer.parseInt(request.getParameter("bidMoney"));
-    Map<String, Object> bidMap = Map.of("auctionNo", auctionNo
-                                        , "bidderNo", bidderNo
-                                        , "price", bidMoney);
-    Map<String, Object> emoneyMap = Map.of("buyerNo", bidderNo
-                                          , "price", bidMoney);
+  public int addBid(BidDto bidDto) {
+    
+//    int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
+//    int bidderNo = Integer.parseInt(request.getParameter("bidderNo"));
+//    int bidMoney = Integer.parseInt(request.getParameter("bidMoney"));
+//    Map<String, Object> bidMap = Map.of("auctionNo", auctionNo
+//                                        , "bidderNo", bidderNo
+//                                        , "price", bidMoney);
+//    Map<String, Object> emoneyMap = Map.of("buyerNo", bidderNo
+//                                          , "price", bidMoney);
     
 //    System.out.println(auctionMapper2.getBidPrice(auctionNo));
     
@@ -409,12 +410,23 @@ public class AuctionServiceImpl2 implements AuctionService2 {
 //                                                 , "price", returnMoney);
     
 //    int returnResult = auctionMapper2.insertSellerEmoney(returnEmoneyMap);
-    int buyerResult = auctionMapper2.insertBuyerEmoney(emoneyMap);
-    int bidResult = auctionMapper2.insertBid(bidMap);
+//    int buyerResult = auctionMapper2.insertBuyerEmoney(emoneyMap);
+//    int bidResult = auctionMapper2.insertBid(bidMap);
+//    
+//    int bidResultSum = buyerResult + bidResult;
+//    
+//    return bidResultSum;
+    return auctionMapper2.insertBid(bidDto);
     
-    int bidResultSum = buyerResult + bidResult;
-    
-    return bidResultSum;
   }
+  
+  @Transactional
+  @Override
+  public int getBidPrice(int auctionNo) {
+    int bidprice = auctionMapper2.getBidPrice(auctionNo);
+    return bidprice;
+  }
+  
+  
   
 }

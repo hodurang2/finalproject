@@ -24,6 +24,7 @@ public interface AuctionService2 {
   public int removeAuction(int auctionNo);
   public void getEmoney(HttpServletRequest request, Model model);
   public int addMaxBid(HttpServletRequest request);
-  public int addBid(HttpServletRequest request);
+  public int addBid(BidDto bidDto);
+  public int getBidPrice(int parseInt);
   
 }

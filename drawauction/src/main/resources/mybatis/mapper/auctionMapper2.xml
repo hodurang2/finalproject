@@ -310,15 +310,13 @@
      WHERE AUCTION_NO = #{auctionNo}
   </update>
   
-  <select id="getBidPrice" parameterType="int" resultMap="BidMap">
-    SELECT PRICE
-         , BIDDER_NO AS USER_NO
-         , BID_NO
-      FROM BID_T
-     WHERE PRICE = (SELECT MAX(PRICE) FROM BID_T WHERE AUCTION_NO = #{auctionNO})
+  <select id="getBidPrice" parameterType="int" resultType="int">
+   SELECT NVL(MAX(PRICE), 0) 
+     FROM BID_T 
+    WHERE AUCTION_NO = #{auctionNo}
   </select>
   
-  <insert id="insertBid" parameterType="Map">
+  <insert id="insertBid" parameterType="BidDto">
   INSERT INTO BID_T (
         BID_NO
       , AUCTION_NO
