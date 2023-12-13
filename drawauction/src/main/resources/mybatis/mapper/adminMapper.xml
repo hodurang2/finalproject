@@ -5,37 +5,190 @@
 
 
 <mapper namespace="com.gdu.drawauction.dao.AdminMapper">
-
-	
-	<select id="getUserList" parameterType="Map" resultType="UserDto">
+  
+  <!-- AuctionDto에 대한 resultMap -->
+  <resultMap type="AuctionDto" id="AuctionMap">
+      <id column="AUCTION_NO"       property="auctionNo"/>
+      <result column="START_PRICE"  property="startPrice"/>
+      <result column="BUY_PRICE"    property="buyPrice"/>
+      <result column="START_AT"     property="startAt"/>
+      <result column="END_AT"       property="endAt"/>
+      <result column="STATUS"       property="status"/>
+      <result column="PRICE"        property="price"/>
+      <association javaType="ArtDto"      property="artDto">
+        <id column="ART_NO"         property="artNo"/>
+        <result column="TITLE"      property="title"/>
+        <result column="CONTENTS"   property="contents"/>
+        <result column="ART_TYPE"   property="artType"/>
+        <result column="WIDTH"      property="width"/>
+        <result column="HEIGHT"     property="height"/>
+        <association javaType="UserDto"    property="sellerDto">
+          <id column="USER_NO"              property="userNo"/>
+          <result column="EMAIL"            property="email"/>
+          <result column="PW"               property="pw"/>
+          <result column="NAME"             property="name"/>
+          <result column="MOBILE"           property="mobile"/>
+          <result column="GENDER"           property="gender"/>
+          <result column="AGREE"            property="agree"/>
+          <result column="STATE"            property="state"/>
+          <result column="JOINED_AT"        property="joinedAt"/>
+          <result column="POSTCODE"         property="postcode"/>
+          <result column="ROAD_ADDRESS"     property="roadAddress"/>
+          <result column="JIBUN_ADDRESS"    property="jibunAddress"/>
+          <result column="DETAIL_ADDRESS"   property="detailAddress"/>
+          <result column="NICKNAME"         property="nickname"/>
+          <result column="INTRODUCTION"     property="introduction"/>
+        </association>
+        <association javaType="CategoryDto" property="categoryDto">
+          <id        column="CATEGORY_NO"     property="categoryNo"/>
+          <result    column="CATEGORY_NAME"   property="categoryName" />
+        </association>
+      </association>
+  </resultMap>
+  
+  <resultMap type="DrawDto"      id="DrawMap">
+      <id      column="DRAW_NO"    property="drawNo"/>
+      <result  column="TITLE"        property="title"/>
+      <result  column="PRICE"        property="price"/>
+      <result  column="CONTENTS"     property="contents"/>
+      <result  column="WIDTH"  property="width"/>
+      <result  column="HEIGHT" property="height"/>
+      <result  column="WORK_TERM" property="workTerm"/>
+      <association javaType="CategoryDto" property="categoryDto">
+      <id        column="CATEGORY_NO"   property="categoryNo"/>
+      <result    column="CATEGORY_NAME"          property="categoryName" />
+    </association>
+      <association javaType="UserDto"      property="userDto">
+        <id        column="USER_NO"        property="userNo"/>
+        <result    column="EMAIL"          property="email" />
+        <result    column="PW"             property="pw" />
+        <result    column="NAME"           property="name" />
+        <result    column="MOBILE"         property="mobile" />
+        <result    column="GENDER"         property="gender" />
+        <result    column="AGREE"          property="agree" />
+        <result    column="STATE"          property="state" />
+        <result    column="JOINED_AT"      property="joinedAt" />
+        <result    column="POSTCODE"       property="postcode" />
+        <result    column="ROAD_ADDRESS"   property="roadAddress" />
+        <result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+        <result    column="DETAIL_ADDRESS" property="detailAddress" />
+        <result    column="NICKNAME" property="nickname" />
+        <result    column="INTRODUCTION" property="introduction" />
+      </association>
+    </resultMap>
+  
+  <select id="getUserList" parameterType="Map" resultType="UserDto">
     SELECT USER_NO, EMAIL, NAME, MOBILE, AGREE, STATE, JOINED_AT, NICKNAME, NUM
       FROM  (SELECT ROW_NUMBER() OVER(ORDER BY USER_NO DESC) AS RN, ROW_NUMBER() OVER(ORDER BY USER_NO ASC) AS NUM, USER_NO, EMAIL, NAME, MOBILE, AGREE, STATE, JOINED_AT, NICKNAME 
                FROM USER_T)
      WHERE RN BETWEEN #{begin} AND #{end}
   </select>
+  
+  
+  <!--전체 계정 가져오기 admin01@naver.com제외-->
+  <select id="getUserCount" resultType="int">
+    SELECT COUNT(*)
+      FROM USER_T
+  </select>
+  
+  
+  <select id="getUser" parameterType="int" resultType="UserDto">
+    SELECT USER_NO, EMAIL, NAME, MOBILE, AGREE, STATE, JOINED_AT, NICKNAME
+      FROM USER_T
+     WHERE USER_NO = #{userNo}
+  </select>
+  
+  
+  <!--유저 삭제-->
+  <delete id="deleteUser" parameterType="int">
+    DELETE 
+      FROM USER_T
+     WHERE USER_NO = #{userNo}
+  </delete>
+  
+  <!--Draw 영역 -->
+  <!--그려드림 전체 확인.-->
+  <select id="getDrawList" parameterType="Map" resultMap="DrawMap">
+    SELECT A.DRAW_NO, A.CATEGORY_NO, A.TITLE, A.PRICE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.WORK_TERM, A.USER_NO, A.NICKNAME, A.NAME, A.EMAIL, C.CATEGORY_NAME
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY DRAW_NO DESC) AS RN,
+                   D.DRAW_NO, D.CATEGORY_NO, D.TITLE, D.PRICE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.WORK_TERM,USR.USER_NO, USR.NICKNAME, USR.NAME, USR.EMAIL
+              FROM DRAW_T D LEFT OUTER JOIN USER_T USR
+                ON D.SELLER_NO = USR.USER_NO) A INNER JOIN CATEGORY_T C
+        ON A.CATEGORY_NO = C.CATEGORY_NO
+     WHERE A.RN BETWEEN #{begin} AND #{end}
+     ORDER BY A.DRAW_NO DESC
+  </select>
+  
+  <!--그려드림 확인-->
+  <select id="getDraw" parameterType="int" resultMap="DrawMap">
+    SELECT A.DRAW_NO, A.USER_NO, A.CATEGORY_NO, A.TITLE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.PRICE, A.WORK_TERM, C.CATEGORY_NAME, A.NICKNAME, A.EMAIL, A.NAME
+      FROM (SELECT D.DRAW_NO, D.SELLER_NO, D.CATEGORY_NO ,D.TITLE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.PRICE, D.WORK_TERM
+                   , USR.USER_NO, USR.EMAIL, USR.NAME, USR.NICKNAME
+            FROM USER_T USR RIGHT OUTER JOIN DRAW_T D
+                ON USR.USER_NO = D.SELLER_NO) A INNER JOIN CATEGORY_T C
+      ON A.CATEGORY_NO = C.CATEGORY_NO
+    WHERE A.DRAW_NO = #{drawNo}
+  </select>
+  
+  <!--그려드림 삭제-->
+  <delete id="deleteDraw" parameterType="int">
+    DELETE
+      FROM DRAW_T
+     WHERE DRAW_NO = #{drawNo}
+  </delete>
+
+<!--그려드림 전체 갯수-->
+  <select id="getDrawCount" resultType="int">
+    SELECT COUNT(*)
+      FROM DRAW_T
+  </select>
+  
+  
+  
+  <!--검색-->
+  
+  <select id="getSearchUserCount" parameterType="Map" resultType="int">
+    SELECT COUNT(*)
+      FROM USER_T
+     WHERE ${column} LIKE '%' || #{query} || '%'
+  </select>
+  
+  <!-- 검색 결과 목록 -->
+  <select id="getSearchUserList" parameterType="Map" resultType="UserDto">
+    SELECT USER_NO, EMAIL, NAME, MOBILE, AGREE, STATE, JOINED_AT, NICKNAME, NUM
+      FROM  (SELECT ROW_NUMBER() OVER(ORDER BY USER_NO DESC) AS RN, ROW_NUMBER() OVER(ORDER BY USER_NO ASC) AS NUM, USER_NO, EMAIL, NAME, MOBILE, AGREE, STATE, JOINED_AT, NICKNAME 
+               FROM USER_T
+              WHERE ${column} LIKE '%' || #{query} || '%')
+     WHERE RN BETWEEN #{begin} AND #{end}
+  </select>  
 	
-	
-	<!--전체 계정 가져오기 admin01@naver.com제외-->
-	<select id="getUserCount" resultType="int">
-		SELECT COUNT(*)
-		  FROM USER_T
-	</select>
-	
-	
-	<select id="getUser" parameterType="int" resultType="UserDto">
-		SELECT USER_NO, EMAIL, NAME, MOBILE, AGREE, STATE, JOINED_AT, NICKNAME
-		  FROM USER_T
-		 WHERE USER_NO = #{userNo}
-	</select>
-	
-	
-	<!--유저 삭제-->
-	<delete id="deleteUser" parameterType="int">
-		DELETE 
-		  FROM USER_T
-		 WHERE USER_NO = #{userNo}
-	</delete>
-	
-	
+	<!-- 경매 갯수 (페이지용) -->
+	<select id="getAdminAucCount" resultType="int">
+    SELECT COUNT(*)
+      FROM AUCTION_T
+  </select>
+
+  <!-- 경매 리스트 -->
+  <select id="getAdminAucList" parameterType="Map" resultMap="AuctionMap">
+    SELECT D.AUCTION_NO, D.START_PRICE, D.BUY_PRICE, D.START_AT, D.END_AT, D.STATUS, 
+           D.ART_NO, D.TITLE, D.CONTENTS, D.ART_TYPE, D.WIDTH, D.HEIGHT,
+           D.USER_NO, D.NICKNAME, D.NAME, D.EMAIL,
+           D.CATEGORY_NO, D.CATEGORY_NAME,
+           D.PRICE, D.BID_NO       
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY AUC.AUCTION_NO DESC) AS RN,
+                   AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS, 
+                   A.ART_NO, A.TITLE, A.CONTENTS, A.ART_TYPE, A.WIDTH, A.HEIGHT,
+                   U.USER_NO, U.NICKNAME, U.NAME, U.EMAIL,
+                   C.CATEGORY_NO, C.CATEGORY_NAME,
+                   B.BID_NO, B.PRICE
+              FROM AUCTION_T AUC, ART_T A, USER_T U, CATEGORY_T C, BID_T B
+             WHERE AUC.ART_NO = A.ART_NO
+               AND A.SELLER_NO = U.USER_NO
+               AND A.CATEGORY_NO = C.CATEGORY_NO 
+               AND AUC.AUCTION_NO = B.AUCTION_NO(+)
+               AND (B.PRICE IS NULL OR B.PRICE = (SELECT MAX(PRICE) FROM BID_T WHERE AUCTION_NO = AUC.AUCTION_NO))) D 
+      WHERE RN BETWEEN #{begin} AND #{end}
+  </select>
+  
 
 </mapper>

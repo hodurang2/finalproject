@@ -4,17 +4,25 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.ui.Model;
 
+import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.UserDto;
 
 public interface AdminService {
 
-//	public void login(HttpServletRequest request, HttpServletResponse response) throws Exception;
-//	public void logout(HttpServletRequest request, HttpServletResponse response);
-//	public AdminDto getAdminUser(String email);
-	
-	// 고객정보 mapper
-	public void loadUserList(HttpServletRequest request, Model model);
-	public UserDto getUser(int userNo, Model model);
-	
-	public int removeUser(HttpServletRequest request);
+  // 고객정보 mapper
+  public void loadUserList(HttpServletRequest request, Model model);
+  public UserDto getUser(int userNo, Model model);
+  public int removeUser(HttpServletRequest request);
+  
+  // 그려드림 mapper
+  public void loadDrawList(HttpServletRequest request, Model model);
+  public DrawDto getDraw(int drawNo, Model model);
+  public int removeDraw(HttpServletRequest request);
+  
+  // 회원검색
+  public void loadUserSearchList(HttpServletRequest request, Model model);
+  
+	// 경매정보가져오기
+	public void getAdminAucList(HttpServletRequest request, Model model);
+
 }
