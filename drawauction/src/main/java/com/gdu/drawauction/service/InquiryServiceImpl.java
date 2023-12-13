@@ -112,7 +112,7 @@ public class InquiryServiceImpl implements InquiryService{
       
       if(multipartFile != null && !multipartFile.isEmpty()) {
         
-        String path = myFileUtils.getUploadPath();
+        String path = myFileUtils.getInquiryPath();
         File dir = new File(path);
         if(!dir.exists()) {
           dir.mkdirs();
