@@ -34,4 +34,8 @@ public interface MypageService {
  
   public void getEmoneyList(HttpServletRequest request, Model model);   // E-MONEY 내역
   
+ // public Map<String, Object> getAuctionWishList(HttpServletRequest request);    // 경매 찜 목록
+  
+  //public Map<String, Object> controlAuctionWish(HttpServletRequest request);    // 경매 찜
+  
 }
