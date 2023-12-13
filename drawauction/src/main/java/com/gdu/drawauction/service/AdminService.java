@@ -6,10 +6,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.ui.Model;
 import com.gdu.drawauction.dto.AdminDto;
+
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.UserDto;
 
 public interface AdminService {
+
 
 	// 고객정보 mapper
 	public void loadUserList(HttpServletRequest request, Model model);
@@ -23,5 +25,10 @@ public interface AdminService {
 	
 	// 회원검색
 	public void loadUserSearchList(HttpServletRequest request, Model model);
-	
+
+  
+	// 경매정보가져오기
+	public void getAdminAucList(HttpServletRequest request, Model model);
+
+
 }

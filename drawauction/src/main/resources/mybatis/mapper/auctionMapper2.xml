@@ -5,45 +5,75 @@
 
 <mapper namespace="com.gdu.drawauction.dao.AuctionMapper2">
 
-<!-- AuctionDto에 대한 resultMap -->
-<resultMap type="AuctionDto" id="AuctionMap">
-    <id column="AUCTION_NO"       property="auctionNo"/>
-    <result column="START_PRICE"  property="startPrice"/>
-    <result column="BUY_PRICE"    property="buyPrice"/>
-    <result column="START_AT"     property="startAt"/>
-    <result column="END_AT"       property="endAt"/>
-    <result column="STATUS"       property="status"/>
-    <result column="PRICE"        property="price"/>
-    <association javaType="ArtDto"      property="artDto">
-      <id column="ART_NO"         property="artNo"/>
-      <result column="TITLE"      property="title"/>
-      <result column="CONTENTS"   property="contents"/>
-      <result column="ART_TYPE"   property="artType"/>
-      <result column="WIDTH"      property="width"/>
-      <result column="HEIGHT"     property="height"/>
-      <association javaType="UserDto"    property="sellerDto">
-        <id column="USER_NO"              property="userNo"/>
-        <result column="EMAIL"            property="email"/>
-        <result column="PW"               property="pw"/>
-        <result column="NAME"             property="name"/>
-        <result column="MOBILE"           property="mobile"/>
-        <result column="GENDER"           property="gender"/>
-        <result column="AGREE"            property="agree"/>
-        <result column="STATE"            property="state"/>
-        <result column="JOINED_AT"        property="joinedAt"/>
-        <result column="POSTCODE"         property="postcode"/>
-        <result column="ROAD_ADDRESS"     property="roadAddress"/>
-        <result column="JIBUN_ADDRESS"    property="jibunAddress"/>
-        <result column="DETAIL_ADDRESS"   property="detailAddress"/>
-        <result column="NICKNAME"         property="nickname"/>
-        <result column="INTRODUCTION"     property="introduction"/>
+  <!-- AuctionDto에 대한 resultMap -->
+  <resultMap type="AuctionDto" id="AuctionMap">
+      <id column="AUCTION_NO"       property="auctionNo"/>
+      <result column="START_PRICE"  property="startPrice"/>
+      <result column="BUY_PRICE"    property="buyPrice"/>
+      <result column="START_AT"     property="startAt"/>
+      <result column="END_AT"       property="endAt"/>
+      <result column="STATUS"       property="status"/>
+      <result column="PRICE"        property="price"/>
+      <association javaType="ArtDto"      property="artDto">
+        <id column="ART_NO"         property="artNo"/>
+        <result column="TITLE"      property="title"/>
+        <result column="CONTENTS"   property="contents"/>
+        <result column="ART_TYPE"   property="artType"/>
+        <result column="WIDTH"      property="width"/>
+        <result column="HEIGHT"     property="height"/>
+        <association javaType="UserDto"    property="sellerDto">
+          <id column="USER_NO"              property="userNo"/>
+          <result column="EMAIL"            property="email"/>
+          <result column="PW"               property="pw"/>
+          <result column="NAME"             property="name"/>
+          <result column="MOBILE"           property="mobile"/>
+          <result column="GENDER"           property="gender"/>
+          <result column="AGREE"            property="agree"/>
+          <result column="STATE"            property="state"/>
+          <result column="JOINED_AT"        property="joinedAt"/>
+          <result column="POSTCODE"         property="postcode"/>
+          <result column="ROAD_ADDRESS"     property="roadAddress"/>
+          <result column="JIBUN_ADDRESS"    property="jibunAddress"/>
+          <result column="DETAIL_ADDRESS"   property="detailAddress"/>
+          <result column="NICKNAME"         property="nickname"/>
+          <result column="INTRODUCTION"     property="introduction"/>
+        </association>
+        <association javaType="CategoryDto" property="categoryDto">
+          <id        column="CATEGORY_NO"     property="categoryNo"/>
+          <result    column="CATEGORY_NAME"   property="categoryName" />
+        </association>
       </association>
-      <association javaType="CategoryDto" property="categoryDto">
-        <id        column="CATEGORY_NO"     property="categoryNo"/>
-        <result    column="CATEGORY_NAME"   property="categoryName" />
-      </association>
+  </resultMap>
+  
+  <!-- BidDto에 대한 resultMap -->
+  <resultMap type="BidDto"        id="BidMap">
+    <id column="BID_NO"           property="bidNo"/>
+    <result column="PRICE"        property="price" />
+    <result column="BID_AT"       property="bidAt" />
+    <result column="POSTCODE"     property="postcode" />
+    <result column="ROAD_ADDRESS" property="roadAddress" />
+    <result column="JIBUN_ADDRESS" property="jibunAddress" />
+    <result column="DETAIL_ADDRESS" property="detailAddress" />
+    <association javaType="UserDto"    property="bidderDto">
+      <id column="USER_NO"              property="bidderNo"/>
+      <result column="EMAIL"            property="email"/>
+      <result column="PW"               property="pw"/>
+      <result column="NAME"             property="name"/>
+      <result column="MOBILE"           property="mobile"/>
+      <result column="GENDER"           property="gender"/>
+      <result column="AGREE"            property="agree"/>
+      <result column="STATE"            property="state"/>
+      <result column="JOINED_AT"        property="joinedAt"/>
+      <result column="POSTCODE"         property="postcode"/>
+      <result column="ROAD_ADDRESS"     property="roadAddress"/>
+      <result column="JIBUN_ADDRESS"    property="jibunAddress"/>
+      <result column="DETAIL_ADDRESS"   property="detailAddress"/>
+      <result column="NICKNAME"         property="nickname"/>
+      <result column="INTRODUCTION"     property="introduction"/>
+      <result column="MY_PRICE"         property="myPrice" />
     </association>
-</resultMap>
+  
+  </resultMap>
 
   
   <select id="getAuctionList" parameterType="Map" resultMap="AuctionMap">
@@ -272,6 +302,36 @@
       , #{receiveEmail}
       , #{auctionRequest}
     )
+  </insert>
+  
+  <update id="updateStatus" parameterType="int">
+    UPDATE AUCTION_T
+       SET STATUS = 1
+     WHERE AUCTION_NO = #{auctionNo}
+  </update>
+  
+  <select id="getBidPrice" parameterType="int" resultMap="BidMap">
+    SELECT PRICE
+         , BIDDER_NO AS USER_NO
+         , BID_NO
+      FROM BID_T
+     WHERE PRICE = (SELECT MAX(PRICE) FROM BID_T WHERE AUCTION_NO = #{auctionNO})
+  </select>
+  
+  <insert id="insertBid" parameterType="Map">
+  INSERT INTO BID_T (
+        BID_NO
+      , AUCTION_NO
+      , BIDDER_NO
+      , PRICE
+      , BID_AT
+    ) VALUES (
+        BID_SEQ.NEXTVAL
+      , #{auctionNo}
+      , #{bidderNo}
+      , #{price}
+      , SYSDATE
+    )  
   </insert>
   
   

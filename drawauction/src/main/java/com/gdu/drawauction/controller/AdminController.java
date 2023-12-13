@@ -53,21 +53,36 @@ public class AdminController {
 //    
     @GetMapping("/home.form")
     public String home() {
-    	return "admin/home";
+      return "admin/home";
     }
     
     @GetMapping("/userList.do")
     public String userList(HttpServletRequest request, Model model) {
-    	adminService.loadUserList(request, model);
-    	return "admin/userList";
+      adminService.loadUserList(request, model);
+      return "admin/userList";
     
     }
 
     @PostMapping("/removeUser.do")
     public String removeUser(HttpServletRequest request, RedirectAttributes redirectAttributes) {
-    	int removeResult = adminService.removeUser(request);
-    	redirectAttributes.addFlashAttribute("removeResult", removeResult);
-    	return "redirect:/admin/userList.do";
+      int removeResult = adminService.removeUser(request);
+      redirectAttributes.addFlashAttribute("removeResult", removeResult);
+      return "redirect:/admin/userList.do";
+    }
+    
+ 
+    // 그려드림
+    @GetMapping("/drawList.do")
+    public String drawList(HttpServletRequest request, Model model) {
+      adminService.loadDrawList(request, model);
+      return "admin/drawList";
+    }
+    
+    @PostMapping("/removeDraw.do")
+    public String removeDraw(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+      int removeResult = adminService.removeDraw(request);
+      redirectAttributes.addFlashAttribute("removeResult", removeResult);
+      return "redirect:/admin/drawList.do";
     }
     
  
@@ -94,4 +109,19 @@ public class AdminController {
     }
     
     
+    // 회원 검색
+    @GetMapping("/search.do")
+    public String Usersearch(HttpServletRequest request, Model model) {
+      adminService.loadUserSearchList(request, model);
+      return "admin/userList";
+    }
+
+     
+    @GetMapping("/adminAucList.do")
+    public String getAucList(HttpServletRequest request, Model model){
+      adminService.getAdminAucList(request, model);
+      return "admin/adminAucList";
+       
+    }
+
 }

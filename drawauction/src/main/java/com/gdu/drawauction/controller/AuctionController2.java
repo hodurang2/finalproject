@@ -105,10 +105,17 @@ public class AuctionController2 {
   }
   
   @PostMapping("/orderPayment.do")
-  public String addDrawOrder(HttpServletRequest request, RedirectAttributes redirectAttributes) {
-  int resultSum = auctionService2.addBid(request);
+  public String addMaxBid(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+  int resultSum = auctionService2.addMaxBid(request);
   redirectAttributes.addFlashAttribute("resultSum", resultSum);
   return "redirect:/auction2/detail.do?auctionNo=" + request.getParameter("auctionNo");
+  }
+  
+  @PostMapping("/addBid.do")
+  public String addBid(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    int addBidResult = auctionService2.addBid(request);
+    
+    return "redirect:/auction2/detail.do?auctionNo=" + request.getParameter("auctionNo");
   }
   
   

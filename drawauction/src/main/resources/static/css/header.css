@@ -46,6 +46,13 @@
     vertical-align: middle; /* li 요소를 행의 중간에 배치합니다. */
 }
 
+.ico_user_group li.admin-link {
+    order: -1; /* Move admin-link to the left */
+    margin-right:790px;
+}
+
+
+
 /* ///////////////////////// */
 /* 메뉴바 */
 .gnb_wrap {

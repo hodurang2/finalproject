@@ -1,5 +1,6 @@
 package com.gdu.drawauction.service;
 
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 
 import com.gdu.drawauction.dao.AdminMapper;
 import com.gdu.drawauction.dto.AdminDto;
+import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.util.MyPageUtils;
@@ -59,84 +61,111 @@ public class AdminServiceImpl implements AdminService {
 		return user;
 	}
 
+ 
 	// 유저 삭제.
-	@Override
-	public int removeUser(HttpServletRequest request) {
-		int userNo = Integer.parseInt(request.getParameter("userNo"));
-		return adminMapper.deleteUser(userNo);
-	}
+  @Override
+  	public int removeUser(HttpServletRequest request) {
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    return adminMapper.deleteUser(userNo);
+  }
+  
+  
+	/////////////////////////////
+	  // 그려드림 영역 //
+	/////////////////////////////
+	  
+	  @Override
+	  public void loadDrawList(HttpServletRequest request, Model model) {
 	
-	
-/////////////////////////////
-	// 그려드림 영역 //
-/////////////////////////////
-	
-	@Override
-	public void loadDrawList(HttpServletRequest request, Model model) {
+	    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+	    
+	    int page = Integer.parseInt(opt.orElse("1"));
+	    int total = adminMapper.getDrawCount();
+	    int display = 10;
+	    
+	    myPageUtils.setPaging(page, total, display);
+	    
+	    
+	    Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
+	                    , "end", myPageUtils.getEnd());
+	    
+	    List<DrawDto> drawList = adminMapper.getDrawList(map);
+	    
+	    model.addAttribute("drawList", drawList);
+	    model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/admin/drawList.do"));
+	      model.addAttribute("beginNo", total - (page - 1) * display);
+	    
+	    
+	  }
+	  
+	  @Override
+	  public DrawDto getDraw(int drawNo, Model model) {
+	    DrawDto draw = adminMapper.getDraw(drawNo);
+	    model.addAttribute("draw", draw);
+	    return draw;
+	  }
+	  
+	  // 그려드림 삭제
+	  @Override
+	  public int removeDraw(HttpServletRequest request) {
+	    int drawNo = Integer.parseInt(request.getParameter("drawNo"));
+	    return adminMapper.deleteDraw(drawNo);
+	  }
+	  
+	  @Override
+	  public void loadUserSearchList(HttpServletRequest request, Model model) {
+	    
+	        String column = request.getParameter("column");
+	        String query = request.getParameter("query");
+	        
+	        Map<String, Object> map = new HashMap();
+	        map.put("column", column);
+	        map.put("query", query);
+	        
+	        int total = adminMapper.getSearchUserCount(map);
+	        
+	        Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+	        String strPage = opt.orElse("1");
+	        int page = Integer.parseInt(strPage);
+	        int display = 10;
+	        
+	        myPageUtils.setPaging(page, total, display);
+	        
+	        map.put("begin", myPageUtils.getBegin());
+	        map.put("end", myPageUtils.getEnd());
+	        
+	        List<UserDto> serachUserList = adminMapper.getSearchUserList(map);
+	        
+	        model.addAttribute("serachUserList", serachUserList);
+	        model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/free/search.do", "column=" + column + "&query=" + query));
+	        model.addAttribute("beginNo", total - (page - 1) * display);  
+	    
+	  }
+		
+	  public void getAdminAucList(HttpServletRequest request, Model model) {
+	  Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(opt.orElse("1"));
+    int total = adminMapper.getAdminAucCount();
+    int display = 9;
 
-		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
-		
-		int page = Integer.parseInt(opt.orElse("1"));
-		int total = adminMapper.getDrawCount();
-		int display = 10;
-		
-		myPageUtils.setPaging(page, total, display);
-		
-		
-		Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
-										, "end", myPageUtils.getEnd());
-		
-		List<DrawDto> drawList = adminMapper.getDrawList(map);
-		
-		model.addAttribute("drawList", drawList);
-		model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/admin/drawList.do"));
-	    model.addAttribute("beginNo", total - (page - 1) * display);
-		
-		
-	}
+    myPageUtils.setPaging(page, total, display);
+    
+    int begin = myPageUtils.getBegin();
+    int end = myPageUtils.getEnd();
+    
+    Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
+                                   , "end", myPageUtils.getEnd());
+    
+    List<AuctionDto> adminAucList = adminMapper.getAdminAucList(map);
+
+    model.addAttribute("adminAucList", adminAucList);
+    model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/admin/adminAucList.do"));
+    model.addAttribute("beginNo", total - (page - 1) * display);
+
+  }
 	
-	@Override
-	public DrawDto getDraw(int drawNo, Model model) {
-		DrawDto draw = adminMapper.getDraw(drawNo);
-		model.addAttribute("draw", draw);
-		return draw;
-	}
-	
-	// 그려드림 삭제
-	@Override
-	public int removeDraw(HttpServletRequest request) {
-		int drawNo = Integer.parseInt(request.getParameter("drawNo"));
-		return adminMapper.deleteDraw(drawNo);
-	}
-	
-	@Override
-	public void loadUserSearchList(HttpServletRequest request, Model model) {
-		
-		  	String column = request.getParameter("column");
-		    String query = request.getParameter("query");
-		    
-		    Map<String, Object> map = new HashMap();
-		    map.put("column", column);
-		    map.put("query", query);
-		    
-		    int total = adminMapper.getSearchUserCount(map);
-		    
-		    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
-		    String strPage = opt.orElse("1");
-		    int page = Integer.parseInt(strPage);
-		    int display = 10;
-		    
-		    myPageUtils.setPaging(page, total, display);
-		    
-		    map.put("begin", myPageUtils.getBegin());
-		    map.put("end", myPageUtils.getEnd());
-		    
-		    List<UserDto> serachUserList = adminMapper.getSearchUserList(map);
-		    
-		    model.addAttribute("serachUserList", serachUserList);
-		    model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/free/search.do", "column=" + column + "&query=" + query));
-		    model.addAttribute("beginNo", total - (page - 1) * display);  
-		
-	}
+
 	
 }
+
+
