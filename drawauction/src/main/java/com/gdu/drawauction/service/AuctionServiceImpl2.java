@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.gdu.drawauction.dao.AuctionMapper2;
 import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.dto.AuctionImageDto;
+import com.gdu.drawauction.dto.BidDto;
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.util.MyFileUtils;
 import com.gdu.drawauction.util.MyPageUtils;
@@ -324,7 +325,7 @@ public class AuctionServiceImpl2 implements AuctionService2 {
   }
   
   @Override
-  public int addBid(HttpServletRequest request) {
+  public int addMaxBid(HttpServletRequest request) {
 
     int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
     int buyerNo = Integer.parseInt(request.getParameter("buyerNo"));    // 구매자 userNo
@@ -379,12 +380,41 @@ public class AuctionServiceImpl2 implements AuctionService2 {
     
     int buyerResult = auctionMapper2.insertBuyerEmoney(emoneyMap);
     int sellerResult = auctionMapper2.insertSellerEmoney(emoneyMap);
-    
-    int resultSum = buyerResult + sellerResult + addBidResult;
+    int changeStatusResult = auctionMapper2.updateStatus(auctionNo);
+    int resultSum = buyerResult + sellerResult + addBidResult + changeStatusResult;
     
     return resultSum;
     
   }
   
+  @Transactional
+  @Override
+  public int addBid(HttpServletRequest request) {
+    int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
+    int bidderNo = Integer.parseInt(request.getParameter("bidderNo"));
+    int bidMoney = Integer.parseInt(request.getParameter("bidMoney"));
+    Map<String, Object> bidMap = Map.of("auctionNo", auctionNo
+                                        , "bidderNo", bidderNo
+                                        , "price", bidMoney);
+    Map<String, Object> emoneyMap = Map.of("buyerNo", bidderNo
+                                          , "price", bidMoney);
+    
+//    System.out.println(auctionMapper2.getBidPrice(auctionNo));
+    
+    
+//    int receiveUserNo= bidDto.getBidderDto().getUserNo();
+//    System.out.println("receiveUserNo:" + receiveUserNo);
+//    int returnMoney = bidDto.getPrice();
+//    Map<String, Object> returnEmoneyMap = Map.of("userNo", receiveUserNo
+//                                                 , "price", returnMoney);
+    
+//    int returnResult = auctionMapper2.insertSellerEmoney(returnEmoneyMap);
+    int buyerResult = auctionMapper2.insertBuyerEmoney(emoneyMap);
+    int bidResult = auctionMapper2.insertBid(bidMap);
+    
+    int bidResultSum = buyerResult + bidResult;
+    
+    return bidResultSum;
+  }
   
 }
