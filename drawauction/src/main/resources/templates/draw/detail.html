@@ -344,10 +344,10 @@
     var nickname = $('.artist_info').text();
     function shareKakao() {
 
-     // 사용할 앱의 JavaScript 키 설정
-     Kakao.init('e2d75a3c7c1b1cd979109692b99fdb3c');
+     // JavaScript 키 설정
+     Kakao.init('53f0834692966b3b55a0b3d2f38afdda');
    
-     // 카카오링크 버튼 생성
+     // 카카오링크 생성
      Kakao.Link.createDefaultButton({
        container: '#btnKakao', // 카카오공유버튼ID
        objectType: 'feed',
@@ -355,8 +355,8 @@
          title: "들어옥션", // 보여질 제목
          description: "들어옥션 " + '[[${draw.userDto.nickname}]]' + "의 그려드림 상세보기 링크", // 보여질 설명
          imageUrl: "https://i.ibb.co/ZXqhV0w/image.png", // 이미지 URL
-         imageWidth: 200, // 이미지 폭
-          imageHeight: 100, // 이미지 높이
+         imageWidth: 200,
+          imageHeight: 100,
          link: {
             mobileWebUrl: "http://localhost:8080/draw/detail.do?drawNo=" +  drawNo,
             webUrl: "http://localhost:8080/draw/detail.do?drawNo=" +  drawNo

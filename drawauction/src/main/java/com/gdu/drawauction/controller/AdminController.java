@@ -1,12 +1,15 @@
 package com.gdu.drawauction.controller;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.ibatis.type.BigIntegerTypeHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gdu.drawauction.service.AdminService;
@@ -95,10 +98,19 @@ public class AdminController {
 
      
     @GetMapping("/adminAucList.do")
-    public String getAucList(HttpServletRequest request, Model model){
+    public String getAdminAucList(HttpServletRequest request, Model model){
       adminService.getAdminAucList(request, model);
       return "admin/adminAucList";
        
     }
+    
+    @PostMapping("/removeAdminAuc.do")
+    public String removeAdminAuc(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+      int removeResult = adminService.removeAdminAuc(request);
+      System.out.println("컨트롤러" + removeResult);
+      redirectAttributes.addFlashAttribute("removeResult", removeResult);
+      return "redirect:/admin/adminAucList.do";
+    }
+    
 
 }

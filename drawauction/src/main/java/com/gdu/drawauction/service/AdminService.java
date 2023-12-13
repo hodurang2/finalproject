@@ -1,9 +1,13 @@
 package com.gdu.drawauction.service;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.ui.Model;
 
+import com.gdu.drawauction.dto.AuctionImageDto;
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.UserDto;
 
@@ -24,5 +28,5 @@ public interface AdminService {
   
 	// 경매정보가져오기
 	public void getAdminAucList(HttpServletRequest request, Model model);
-
+	public int removeAdminAuc(HttpServletRequest request);
 }

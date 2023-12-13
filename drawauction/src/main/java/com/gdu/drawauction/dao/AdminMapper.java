@@ -3,11 +3,16 @@ package com.gdu.drawauction.dao;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.gdu.drawauction.dto.AuctionDto;
+import com.gdu.drawauction.dto.AuctionImageDto;
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.UserDto;
+
+import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 
 @Mapper
 public interface AdminMapper {
@@ -30,4 +35,6 @@ public interface AdminMapper {
 	// 경매정보
 	public int getAdminAucCount();
 	public List<AuctionDto> getAdminAucList(Map<String, Object> map);
+	public List<AuctionImageDto> getImageList(int auctionNo);
+	public int deleteAdminAuc(int auctionNo);
 }
