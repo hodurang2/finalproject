@@ -21,6 +21,7 @@ public class BidDto {
   private String detailAddress;
   private String receiveEmail;
   private String auctionRequest;
+  private int bidPrice;
   private AuctionDto auctionDto;
   private UserDto bidderDto;
 }

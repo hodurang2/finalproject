@@ -424,6 +424,7 @@ public class AuctionServiceImpl2 implements AuctionService2 {
   @Override
   public int getBidPrice(int auctionNo) {
     int bidprice = auctionMapper2.getBidPrice(auctionNo);
+    System.out.println("bidprice서비스" + bidprice);
     return bidprice;
   }
   

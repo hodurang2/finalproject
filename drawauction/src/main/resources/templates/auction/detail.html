@@ -417,6 +417,7 @@
             }
           }
             var formattedBidPrice = new Intl.NumberFormat('ko-KR').format(data.bidPrice);
+            console.log(formattedBidPrice);
             var onitem = `<span>현재 입찰가 : ${formattedBidPrice}P</span>`;
             nowPrice.innerHTML = onitem;
             nowPrice.scrollTop = nowPrice.scrollHeight;

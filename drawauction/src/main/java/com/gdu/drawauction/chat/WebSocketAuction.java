@@ -39,6 +39,7 @@ public class WebSocketAuction {
     
     auctionRooms.computeIfAbsent(auctionNo, k -> Collections.synchronizedSet(new HashSet<>())).add(s);
     int bidPrice = auctionService2.getBidPrice(Integer.parseInt(auctionNo));
+    System.out.println("bidPric웹소켓" + bidPrice);
     sendBidPriceToSession(s, bidPrice);
     System.out.println("session open : " + s);
   }
@@ -47,7 +48,7 @@ public class WebSocketAuction {
     try {
       // Create a BidDto to represent the bidPrice
       BidDto bidDto = new BidDto();
-      bidDto.setPrice(bidPrice);
+      bidDto.setBidPrice(bidPrice);
 
       // BidDto를 JSON 문자열로 변환
       String bidDtoJson = objectMapper.writeValueAsString(bidDto);
@@ -68,10 +69,11 @@ public class WebSocketAuction {
       System.out.println("받은 메시지 : " + msg);
       BidDto bidDto = objectMapper.readValue(msg, BidDto.class);
       auctionService2.addBid(bidDto);
-      System.out.println(bidDto.getAuctionDto().getAuctionNo());
-      int bidPrice = auctionService2.getBidPrice(bidDto.getAuctionDto().getAuctionNo());
-      System.out.println(bidDto);
-      bidDto.setPrice(bidPrice);
+      int auctionNo1 = bidDto.getAuctionDto().getAuctionNo();
+      System.out.println("auctionNo" + auctionNo1);
+      int bidPrice = auctionService2.getBidPrice(auctionNo1);
+      System.out.println("bidPric웹소켓" + bidPrice);
+      bidDto.setBidPrice(bidPrice);
 
       // BidDto를 JSON 문자열로 변환
       String bidDtoJson = objectMapper.writeValueAsString(bidDto);

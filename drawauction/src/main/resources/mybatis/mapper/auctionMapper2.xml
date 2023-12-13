@@ -311,7 +311,7 @@
   </update>
   
   <select id="getBidPrice" parameterType="int" resultType="int">
-   SELECT NVL(MAX(PRICE), 0) 
+   SELECT NVL(MAX(PRICE), 0) AS BIDPRICE
      FROM BID_T 
     WHERE AUCTION_NO = #{auctionNo}
   </select>
