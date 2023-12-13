@@ -1,0 +1,180 @@
+@charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css');
+
+
+.list_wrap {
+  width: 100%;
+  height: 50px;
+  border-bottom: 1px solid gray;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.mypage_list {
+  display: flex;
+  justify-content: space-between;
+  flex: 4;
+}
+.mypage_list li {
+  width: 100%;
+}
+.mypage_list a {
+  display: block;
+  width: 100%;
+  text-align: center;
+  line-height: 50px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.mypage_list a:hover {
+  background-color: rgb(84, 186, 125);
+  color: white;
+}
+.clicked {
+  background-color: rgb(84, 186, 125);
+  color: white;
+}
+
+/* 네모박스 */
+.draw {
+  cursor: pointer;
+  border: 1px solid grey;
+  width: 300px;
+  height: 360px;
+  border-radius: 5px;
+  text-align: left;
+  margin: 20px 15px;
+  float: left;
+  padding: 10px;
+}
+.draw:hover, .draw_order:hover, .received:hover {
+  -webkit-transform: scale(1.001);
+  transform: scale(1.001);
+  border: 1px solid darkgreen;
+  }
+ .draw_image_wrap {
+   width: 275px;
+   height: 200px;
+   margin: auto;
+   margin-bottom: 3px;
+ }
+  .image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.draw_info_wrap {
+  height: 145px;
+}
+.draw_info {
+  margin-left: 10px;
+  font-weight: 500;
+}
+.draw_value {
+  float: right;
+}
+
+
+.title_ellipsis {
+  width: 230px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 보여줄 줄 수 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.title_ellipsis_order {
+  width: 630px;
+}
+
+.draw_title {
+  height: 50px;
+}
+
+
+.draw_order, .received {
+  cursor: pointer;
+  border: 1px solid grey;
+  width: 100%;
+  height: 590px;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+.received_image {
+  width: 250px;
+  height: 200px;
+  margin: 25px 10px;
+}
+.received_image_wrap {
+   width: 270px;
+   height: 250px;
+   float: left;
+   padding: auto;
+}
+.received_draw_wrap {
+  width: 680px;
+  height: 220px;
+  margin: 25px 10px 5px;
+  float: left;
+}
+.received_category {
+  border: 1px solid grey;
+  font-size: 13px;
+  float: right;
+}
+.received_title {
+  font-size: 20px;
+}
+.received_size {
+  font-size: 13px;
+  text-align: center;
+}
+.received_contents {
+  margin-top: 20px;
+  width: 660px;
+  display: -webkit-box;
+  -webkit-line-clamp: 4; /* 보여줄 줄 수 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.received_buyer_wrap, .received_seller_wrap, .received_order_wrap {
+  width: 485px;
+  height: 300px;
+  float: left;
+  margin-top: 20px;
+}
+.received_buyer_info, .received_seller_info, .received_order_info {
+  width: 485px;
+  height: 290px;
+  margin: auto;
+  padding: 30px;
+}
+.received_info {
+  margin-top: 3px;
+}
+
+.draw_info_title, .buyer_info_title, .seller_info_title, .order_info_title {
+  margin-left: 30px;
+  font-weight: 600;
+}
+.draw_request {
+  width: 310px;
+  text-align: right;
+  display: -webkit-box;
+  -webkit-line-clamp: 5; /* 보여줄 줄 수 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.draw_basic_info, .received_contents {
+  margin-left: 30px;
+}
+
+.strong {
+  border: 2px solid darkgreen;
+}

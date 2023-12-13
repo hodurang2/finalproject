@@ -134,13 +134,19 @@
     </association>
   </resultMap>
   
-  <!-- DrawOrderDto에 대한 resultMap -->
-  <resultMap type="DrawOrderDto" id="DrawOrderMap">
+
+    <!-- DrawOrderDto2에 대한 resultMap -->
+  <resultMap type="DrawOrderDto2" id="DrawOrderMap2">
     <id   column="ORDER_NO" property="orderNo"/>
     <result column="ORDER_DATE" property="orderDate"/>
     <result column="PRICE" property="price"/>
     <result column="RECEIVE_EMAIL" property="receiveEmail"/>
-    <association javaType="DrawDto"    property="drawDto">
+    <result column="DRAW_REQUEST" property="drawRequest" />
+    <result column="BUYER_NO" property="buyerNo" />
+    <result column="BUYER_NICKNAME" property="buyerNickname" />
+    <result column="BUYER_EMAIL"    property="buyerEmail" />
+    <result column="BUYER_MOBILE"     property="buyerMobile" />
+    <association javaType="DrawDto2"    property="drawDto2">
       <id      column="DRAW_NO"      property="drawNo"/>
       <result  column="TITLE"        property="title"/>
       <result  column="PRICE"        property="price"/>
@@ -148,48 +154,16 @@
       <result  column="WIDTH"      property="width"/>
       <result  column="HEIGHT"     property="height"/>
       <result  column="WORK_TERM"    property="workTerm"/>
+      <result  column="SELLER_NO"    property="sellerNo" />
+      <result column="SELLER_NICKNAME" property="sellerNickname" />
+      <result column="SELLER_EMAIL"   property="sellerEmail" />
+      <result column="SELLER_MOBILE"  property="sellerMobile" />
       <association javaType="CategoryDto" property="categoryDto">
         <id        column="CATEGORY_NO"   property="categoryNo"/>
         <result    column="CATEGORY_NAME"          property="categoryName" />
       </association>
-      <association javaType="UserDto"      property="userDto">
-        <id        column="USER_NO"        property="userNo"/>
-        <result    column="EMAIL"          property="email" />
-        <result    column="PW"             property="pw" />
-        <result    column="NAME"           property="name" />
-        <result    column="MOBILE"         property="mobile" />
-        <result    column="GENDER"         property="gender" />
-        <result    column="AGREE"          property="agree" />
-        <result    column="STATE"          property="state" />
-        <result    column="JOINED_AT"      property="joinedAt" />
-        <result    column="POSTCODE"       property="postcode" />
-        <result    column="ROAD_ADDRESS"   property="roadAddress" />
-        <result    column="JIBUN_ADDRESS"  property="jibunAddress" />
-        <result    column="DETAIL_ADDRESS" property="detailAddress" />
-        <result    column="NICKNAME"     property="nickname" />
-        <result    column="INTRODUCTION"   property="introduction" />
-      </association>
-    </association>
-    <association javaType="UserDto"      property="userDto">
-      <id        column="USER_NO"        property="userNo"/>
-      <result    column="EMAIL"          property="email" />
-      <result    column="PW"             property="pw" />
-      <result    column="NAME"           property="name" />
-      <result    column="MOBILE"         property="mobile" />
-      <result    column="GENDER"         property="gender" />
-      <result    column="AGREE"          property="agree" />
-      <result    column="STATE"          property="state" />
-      <result    column="JOINED_AT"      property="joinedAt" />
-      <result    column="POSTCODE"       property="postcode" />
-      <result    column="ROAD_ADDRESS"   property="roadAddress" />
-      <result    column="JIBUN_ADDRESS"  property="jibunAddress" />
-      <result    column="DETAIL_ADDRESS" property="detailAddress" />
-      <result    column="NICKNAME"     property="nickname" />
-      <result    column="INTRODUCTION"   property="introduction" />
     </association>
   </resultMap>
-  
-  
 
   
   
@@ -219,6 +193,37 @@
      WHERE USER_NO = #{userNo}
   </update>
   
+  
+  <!--/*
+  <select id="getUser" parameterType="Map" resultType="UserDto">
+  SELECT USER_NO, EMAIL, PW, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION
+    FROM USER_T
+  <where>
+      <if test="email != null">EMAIL = #{email}</if>
+      <if test="pw != null">AND PW = #{pw}</if>
+      <if test="userNo != null">AND USER_NO = #{userNo}</if>
+    </where>
+  </select>
+
+  <insert id="insertLeaveUser" parameterType="UserDto">
+    INSERT INTO LEAVE_USER_T (
+        EMAIL
+      , JOINED_AT
+      , LEAVED_AT
+    ) VALUES (
+        #{email}
+      , #{joinedAt}
+      , SYSDATE
+    )
+  </insert>
+
+
+  <delete id="deleteUser" parameterType="UserDto">
+    DELETE
+      FROM USER_T
+     WHERE USER_NO = #{userNo}
+  </delete>
+  */-->
   
   <!--/*
   <insert id="insertUserImage" parameterType="UserImageDto">
@@ -370,19 +375,51 @@
       FROM DRAW_ORDER_T
      WHERE BUYER_NO = #{buyerNo}
   </select>
-   
-  <select id="getDrawOrderList" parameterType="Map" resultMap="DrawOrderMap">
-    SELECT A.DRAW_NO, A.CATEGORY_NO, C.CATEGORY_NAME, A.TITLE, A.CONTENTS, A.PRICE,
-           A.ORDER_NO, A.BUYER_NO, A.ORDER_DATE, A.RECEIVE_EMAIL
-      FROM (SELECT ROW_NUMBER() OVER(ORDER BY ORDER_DATE DESC) AS RN,
-                   D.DRAW_NO, D.CATEGORY_NO, D.TITLE, D.CONTENTS, D.PRICE,
-                   DO.ORDER_NO, DO.BUYER_NO, DO.ORDER_DATE, DO.RECEIVE_EMAIL
-              FROM DRAW_T D RIGHT OUTER JOIN DRAW_ORDER_T DO
-                ON D.DRAW_NO = DO.DRAW_NO
-             WHERE BUYER_NO = #{buyerNo}) A INNER JOIN CATEGORY_T C
-                ON A.CATEGORY_NO = C.CATEGORY_NO
+
+  <select id="getDrawOrderList" parameterType="Map" resultMap="DrawOrderMap2">
+     SELECT A.DRAW_NO, A.TITLE, A.PRICE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.WORK_TERM,
+           A.ORDER_NO, A.ORDER_DATE, A.RECEIVE_EMAIL, A.DRAW_REQUEST,
+           A.BUYER_NO, A.SELLER_NO, A.SELLER_NICKNAME, A.SELLER_MOBILE, A.SELLER_EMAIL,
+           A.CATEGORY_NO, A.CATEGORY_NAME
+      FROM (SELECT D.DRAW_NO, D.TITLE, D.PRICE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.WORK_TERM,
+                   DOR.ORDER_NO, DOR.ORDER_DATE, DOR.RECEIVE_EMAIL, DOR.DRAW_REQUEST,
+                   U1.USER_NO AS SELLER_NO, U2.USER_NO AS BUYER_NO,
+                   U1.NICKNAME AS SELLER_NICKNAME, U1.MOBILE AS SELLER_MOBILE, U1.EMAIL AS SELLER_EMAIL,
+                   C.CATEGORY_NO, C.CATEGORY_NAME,
+                   ROW_NUMBER() OVER(ORDER BY DOR.ORDER_DATE DESC) AS RN
+              FROM DRAW_T D RIGHT OUTER JOIN DRAW_ORDER_T DOR
+                ON D.DRAW_NO = DOR.DRAW_NO INNER JOIN USER_T U1
+                ON D.SELLER_NO = U1.USER_NO LEFT OUTER JOIN USER_T U2
+                ON DOR.BUYER_NO = U2.USER_NO INNER JOIN CATEGORY_T C
+                ON D.CATEGORY_NO = C.CATEGORY_NO
+             WHERE DOR.BUYER_NO = #{buyerNo}) A
      WHERE A.RN BETWEEN #{begin} AND #{end}
-     ORDER BY ORDER_DATE DESC
+  </select>
+  
+  <select id="getDrawReceivedOrderCount" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+      FROM DRAW_ORDER_T DO LEFT OUTER JOIN DRAW_T D
+        ON D.DRAW_NO = DO.DRAW_NO
+     WHERE SELLER_NO = #{sellerNo}
+  </select>
+   
+  <select id="getDrawReceivedOrderList" parameterType="Map" resultMap="DrawOrderMap2">
+    SELECT A.DRAW_NO, A.SELLER_NO, A.TITLE, A.PRICE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.WORK_TERM, A.SELLER_NICKNAME,
+           A.ORDER_NO, A.ORDER_DATE, A.RECEIVE_EMAIL, A.DRAW_REQUEST,
+           A.BUYER_NO, A.BUYER_NICKNAME, A.BUYER_MOBILE, A.BUYER_EMAIL,
+           A.CATEGORY_NO, A.CATEGORY_NAME
+      FROM (SELECT D.DRAW_NO, D.SELLER_NO, D.TITLE, D.PRICE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.WORK_TERM, U1.NICKNAME AS SELLER_NICKNAME,
+                   DOR.ORDER_NO, DOR.ORDER_DATE, DOR.RECEIVE_EMAIL, DOR.DRAW_REQUEST,
+                   DOR.BUYER_NO, U2.EMAIL AS BUYER_EMAIL, U2.NICKNAME AS BUYER_NICKNAME, U2.MOBILE AS BUYER_MOBILE, 
+                   C.CATEGORY_NO, C.CATEGORY_NAME,
+                   ROW_NUMBER() OVER(ORDER BY DOR.ORDER_DATE DESC) AS RN
+              FROM DRAW_T D RIGHT OUTER JOIN DRAW_ORDER_T DOR
+                ON D.DRAW_NO = DOR.DRAW_NO INNER JOIN USER_T U1
+                ON D.SELLER_NO = U1.USER_NO LEFT OUTER JOIN USER_T U2
+                ON DOR.BUYER_NO = U2.USER_NO INNER JOIN CATEGORY_T C
+                ON D.CATEGORY_NO = C.CATEGORY_NO
+             WHERE D.SELLER_NO = #{sellerNo}) A
+     WHERE A.RN BETWEEN #{begin} AND #{end}
   </select>
    
   <select id="getEmoneyCount" parameterType="int" resultType="int">

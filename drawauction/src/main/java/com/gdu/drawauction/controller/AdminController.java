@@ -1,15 +1,12 @@
 package com.gdu.drawauction.controller;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.ibatis.type.BigIntegerTypeHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gdu.drawauction.service.AdminService;
@@ -86,14 +83,6 @@ public class AdminController {
       int removeResult = adminService.removeDraw(request);
       redirectAttributes.addFlashAttribute("removeResult", removeResult);
       return "redirect:/admin/drawList.do";
-    }
-    
-    
-    // 회원 검색
-    @GetMapping("/search.do")
-    public String Usersearch(HttpServletRequest request, Model model) {
-      adminService.loadUserSearchList(request, model);
-      return "admin/userList";
     }
 
      

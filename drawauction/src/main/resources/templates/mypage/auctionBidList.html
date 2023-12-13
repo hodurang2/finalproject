@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{/layout/header::head('출품작품목록')}"></head>
-<link rel="stylesheet" th:href="@{/css/auctionList.css(ver=1.0)}" />
- 
+<head th:replace="~{layout/header::head('입찰작품목록')}"></head>
+<link rel="stylesheet" th:href="@{/css/myAuctionList.css(ver=1.0)}" />
+
 <style>
-  .bid {
+.bid {
   background-color: rgb(84, 186, 125);
   color: white;
 }
-</style> 
+</style>
 
 <body>
   
-  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
   <div class="wrap">
     <div th:replace="~{/mypage/menu::side-menu}"></div>
     
@@ -83,7 +83,7 @@
   </div>
   
   
-  <div th:replace="~{/layout/footer::footer}"></div>
+  <div th:replace="~{layout/footer::footer}"></div>
   
 </body>
 </html>

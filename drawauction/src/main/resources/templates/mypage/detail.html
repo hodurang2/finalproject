@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
  
-<head th:replace="~{/layout/header::head('마이페이지')}"></head>
+<head th:replace="~{layout/header::head('마이페이지')}"></head>
 
 <style>
   
@@ -48,12 +48,18 @@
   .three_wrap {
     display: flex;
   }
-  .one_wrap {
+  .one_wrap, .one_wrap_my, .one_wrap_draw, .one_wrap_received_draw {
     border: 1px solid grey;
     width: 300px;
-    height:350px;
+    height:370px;
     margin: 20px;
     cursor: pointer;
+  }
+  .one_wrap_draw {
+    height:400px;
+  }
+  .one_wrap_received_draw {
+    height:400px;
   }
   
   .info {
@@ -105,18 +111,34 @@
   .image {
      width: 280px;
      height: 200px;
-     margin-left: 10px;
+     margin: 5px;
   }
   .my_list_wrap {
     margin-top: 30px;
   }
+  .title_ellipsis {
+  width: 230px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 보여줄 줄 수 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
+.draw_title {
+  height: 50px;
+}
+.draw_info_wrap {
+  margin-top: 5px;
+}
 
   
 </style>
   
 <body>
   
-  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
   <div class="wrap">
     <div th:replace="~{/mypage/menu::side-menu}"></div>
   
@@ -133,15 +155,15 @@
         </thead>
         <tbody class="ing">
           <tr class="title">
-            <td class="delete_right">판매 중 경매</td>
             <td class="delete_right">입찰 중 경매</td>
+            <td class="delete_right">판매 중 경매</td>
             <td class="delete_right">찜한 경매</td>
             <td class="delete_right">찜한 그려드림</td>
             <td>E-MONEY</td>
           </tr>
             <tr class="val">
-              <td th:text="${artForSaleCount}"></td>
               <td th:text="${biddingCount}"></td>
+              <td th:text="${artForSaleCount}"></td>
               <td>3</td>
               <td>4</td>
               <td>5</td>
@@ -232,7 +254,7 @@
         <div id="my_draw_wrap" class="my_list_wrap">
           <h2>
             내가 올린 그려드림
-            <a th:href="@{/mypage/drawList.do}"class="arrow_btn">자세히보기 ></a>
+            <a th:href="@{/mypage/drawList.do?param=1}"class="arrow_btn">자세히보기 ></a>
           </h2>
           <hr>
           
@@ -243,11 +265,22 @@
         <div id="order_draw_wrap" class="my_list_wrap">
           <h2>
             주문한 그려드림
-            <a th:href="@{/mypage/drawList.do}"class="arrow_btn">자세히보기 ></a>
+            <a th:href="@{/mypage/drawList.do?param=2}"class="arrow_btn">자세히보기 ></a>
           </h2>
           <hr>
           
           <div class="three_wrap" id="order_draw_list"></div>
+          
+        </div>
+        
+        <div id="received_order_draw_wrap" class="my_list_wrap">
+          <h2>
+            주문받은 그려드림
+            <a th:href="@{/mypage/drawList.do?param=3}"class="arrow_btn">자세히보기 ></a>
+          </h2>
+          <hr>
+          
+          <div class="three_wrap" id="received_order_draw_list"></div>
           
         </div>
           
@@ -256,7 +289,7 @@
       
   </div>
   
-  <div th:replace="~{/layout/footer::footer}"></div>
+  <div th:replace="~{layout/footer::footer}"></div>
   
 
   <script th:inline="javascript">
@@ -267,6 +300,7 @@
      fnAuctionDetail();
      fnGetMyDrawList();
      fnGetDrawOrderList();
+     fnGetDrawReceivedOrderList();
      fnDrawDetail();
    })
     
@@ -283,7 +317,7 @@
     }
     
     const fnAuctionDetail = () => {
-      $(document).on('click', '.auction', function(ev) {
+      $(document).on('click', '.auction', function() {
         location.href = '/auction2/detail.do?auctionNo=' + $(this).data('auction_no');
       })
     }
@@ -305,10 +339,10 @@
           totalPage = resData.totalPage;
           $.each(resData.myDrawList,(i, draw) => {
             if(i < 3) {
-              let str = '<div class="one_wrap draw" data-draw_no="' + draw.drawNo + '">';
+              let str = '<div class="one_wrap_my draw" data-draw_no="' + draw.drawNo + '">';
               str +=   '<div class="draw_image_wrap"><img class="image" src="' + draw.image.path + '/s_' + draw.image.filesystemName + '"></div>';
               str +=   '<div class="draw_info_wrap">';
-              str +=     '<div class="draw_title"><span class="info">제목</span><span class="value">' + draw.title + '</span></div>';
+              str +=     '<div class="draw_title"><span class="info">제목</span><span class="value title_ellipsis">' + draw.title + '</span></div>';
               str +=     '<div class="draw_category"><span class="info">카테고리</span><span class="value">' + draw.categoryDto.categoryName + '</span></div>';
               str +=     '<div class="draw_workTerm"><span class="info">작업기간</span><span class="value">' + draw.workTerm + '일</span></div>';
               str +=     '<div class="draw_price"><span class="info">가격</span><span class="value">' + draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>';
@@ -334,11 +368,11 @@
           totalPage = resData.totalPage;
           $.each(resData.drawOrderList,(i, order) => {
             if(i < 3) {
-              let draw = order.drawDto;
-              let str = '<div class="one_wrap draw" data-draw_no="' + draw.drawNo + '">';
+              let draw = order.drawDto2;
+              let str = '<div class="one_wrap_draw draw" data-draw_no="' + draw.drawNo + '" data-order_no="' + order.orderNo + '" id="order' + order.orderNo + '">';
               str +=   '<div class="draw_image_wrap"><img class="image" src="' + draw.image.path + '/s_' + draw.image.filesystemName + '"></div>';
               str +=   '<div class="draw_info_wrap">';
-              str +=     '<div class="draw_title"><span class="info">제목</span><span class="value">' + draw.title + '</span></div>';
+              str +=     '<div class="draw_title"><span class="info">제목</span><span class="value title_ellipsis">' + draw.title + '</span></div>';
               str +=     '<div class="draw_category"><span class="info">카테고리</span><span class="value">' + draw.categoryDto.categoryName + '</span></div>';
               str +=     '<div class="draw_orderDate"><span class="info">주문날짜</span><span class="value">' + order.orderDate + '</span></div>';
               str +=     '<div class="draw_workTerm"><span class="info">작업기간</span><span class="value">' + draw.workTerm + '일</span></div>';
@@ -348,17 +382,65 @@
               str +=   '</div>';
               str += '</div>';
               $('#order_draw_list').append(str);
+              fnURLFragment1();
             }
           })
         }
       })
     }
     
+    
+    const fnGetDrawReceivedOrderList = () => {
+      $.ajax({
+        // 요청
+        type: 'get',
+        url: '/mypage/getDrawReceivedOrderList.do',
+        data: 'page=' + page,
+        // 응답
+        dataType: 'json',
+        success: (resData) => {
+          totalPage = resData.totalPage;
+          $.each(resData.drawReceivedOrderList,(i, r) => {
+            if(i < 3) {
+              let draw = r.drawDto2;
+              let str = '<div class="one_wrap_received_draw draw" data-draw_no="' + draw.drawNo + '" data-order_no="' + r.orderNo + '" id="order' + r.orderNo + '">';
+              str +=   '<div class="draw_image_wrap"><img class="image" src="' + draw.image.path + '/s_' + draw.image.filesystemName + '"></div>';
+              str +=   '<div class="draw_info_wrap">';
+              str +=     '<div class="draw_title"><span class="info">제목</span><span class="value title_ellipsis">' + draw.title + '</span></div>';
+              str +=     '<div class="draw_category"><span class="info">카테고리</span><span class="value">' + draw.categoryDto.categoryName + '</span></div>';
+              str +=     '<div class="draw_orderDate"><span class="info">주문날짜</span><span class="value">' + r.orderDate + '</span></div>';
+              str +=     '<div class="draw_workTerm"><span class="info">작업기간</span><span class="value">' + draw.workTerm + '일</span></div>';
+              str +=     '<div class="draw_email"><span class="info">수령이메일</span><span class="value">' + r.receiveEmail + '</span></div>';
+              str +=     '<div class="draw_price"><span class="info">가격</span><span class="value">' + draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>';
+              str +=     '<div id="drawNo" style="display:none">글번호: ' + draw.drawNo + '</div>';
+              str +=   '</div>';
+              str += '</div>';
+              $('#received_order_draw_list').append(str);
+              fnURLFragment2();
+            }
+          })
+        }
+      })
+    }
+    
+    
    const fnDrawDetail = () => {
-      $(document).on('click', '.draw', function(){
+      $(document).on('click', '.one_wrap_my', function() {
         location.href = '/draw/detail.do?drawNo=' + $(this).data('draw_no');
       })
     }
+    
+  const fnURLFragment1 = () => {
+    $(document).on('click', '.one_wrap_draw', function() {
+      location.href = '/mypage/drawList.do?param=2&orderNo=' + $(this).data('order_no');
+    })
+  }
+    
+  const fnURLFragment2 = () => {
+    $(document).on('click', '.one_wrap_received_draw', function() {
+      location.href = '/mypage/drawList.do?param=3&orderNo=' + $(this).data('order_no');
+    })
+  }
     
     
     
