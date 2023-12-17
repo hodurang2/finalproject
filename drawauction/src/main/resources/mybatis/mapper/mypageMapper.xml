@@ -165,7 +165,52 @@
     </association>
   </resultMap>
 
+  <!-- AuctionDto에 대한 resultMap -->
+  <resultMap type="AuctionDto" id="AuctionMap">
+    <id column="AUCTION_NO"       property="auctionNo"/>
+    <result column="START_PRICE"  property="startPrice"/>
+    <result column="BUY_PRICE"    property="buyPrice"/>
+    <result column="START_AT"     property="startAt"/>
+    <result column="END_AT"       property="endAt"/>
+    <result column="STATUS"       property="status"/>
+    <result column="PRICE"        property="price"/>
+    <association javaType="ArtDto"      property="artDto">
+      <id column="ART_NO"         property="artNo"/>
+      <result column="TITLE"      property="title"/>
+      <result column="CONTENTS"   property="contents"/>
+      <result column="ART_TYPE"   property="artType"/>
+      <result column="WIDTH"      property="width"/>
+      <result column="HEIGHT"     property="height"/>
+      <association javaType="UserDto"    property="sellerDto">
+        <id column="USER_NO"              property="userNo"/>
+        <result column="EMAIL"            property="email"/>
+        <result column="PW"               property="pw"/>
+        <result column="NAME"             property="name"/>
+        <result column="MOBILE"           property="mobile"/>
+        <result column="GENDER"           property="gender"/>
+        <result column="AGREE"            property="agree"/>
+        <result column="STATE"            property="state"/>
+        <result column="JOINED_AT"        property="joinedAt"/>
+        <result column="POSTCODE"         property="postcode"/>
+        <result column="ROAD_ADDRESS"     property="roadAddress"/>
+        <result column="JIBUN_ADDRESS"    property="jibunAddress"/>
+        <result column="DETAIL_ADDRESS"   property="detailAddress"/>
+        <result column="NICKNAME"         property="nickname"/>
+        <result column="INTRODUCTION"     property="introduction"/>
+      </association>
+      <association javaType="CategoryDto" property="categoryDto">
+        <id        column="CATEGORY_NO"     property="categoryNo"/>
+        <result    column="CATEGORY_NAME"   property="categoryName" />
+      </association>
+    </association>
+  </resultMap>
   
+  <resultMap type="AuctionWishlistDto" id="AuctionWishlistMap">
+    <id column="AUCTION_WISH_NO"       property="auctionWishNo"/>
+    <result column="WISHED_AT"         property="wishedAt"/>
+    <association resultMap="AuctionMap" property="auctionDto"/>
+    <association javaType="UserDto" property="userDto"/>
+  </resultMap>
   
   <update id="updateUser" parameterType="UserDto">
     UPDATE USER_T
@@ -225,8 +270,8 @@
   </delete>
   */-->
   
-  <!--/*
-  <insert id="insertUserImage" parameterType="UserImageDto">
+
+  <insert id="insertUserBasicImage" parameterType="UserImageDto">
     INSERT INTO USER_IMAGE_T (
       USER_IMAGE_NO
     , USER_NO
@@ -237,16 +282,16 @@
   ) VALUES (
       USER_IMAGE_SEQ.NEXTVAL
     , #{userNo}
-    , #{path}
-    , #{filesystemName}
+    , '/mybatis/static/image/'
+    , 'basic_profile.png'
     , #{imageOriginalName}
     , #{hasThumbnail}
   )
   </insert>
-  */-->
+
   
   
-  
+  <!-- 출품 중 경매 수 -->
   <select id="getArtForSaleCount" parameterType="int" resultType="int">
     SELECT COUNT(*)
       FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.CATEGORY_NO, ART.TITLE, ART.CONTENTS, ART.ART_TYPE, ART.WIDTH, ART.HEIGHT, 
@@ -256,6 +301,7 @@
              WHERE AUC.STATUS = 0 AND ART.SELLER_NO = #{sellerNo})
   </select>
   
+  <!-- 입찰 중 경매 수 -->
   <select id="getBiddingCount" parameterType="int" resultType="int">
     SELECT COUNT(DISTINCT ART_NO)
       FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.CATEGORY_NO, ART.TITLE, ART.CONTENTS, ART.ART_TYPE, ART.WIDTH, ART.HEIGHT,
@@ -267,14 +313,7 @@
              WHERE AUC.STATUS = 0 AND BID.BIDDER_NO = #{bidderNo})
   </select>
   
-  
-  
-  
-  
-  
-  
-  
-  
+  <!-- 경매 입찰 내역 -->
   <select id="getAuctionBidCount" parameterType="int" resultType="int">
   SELECT COUNT(*) FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
                                 AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,
@@ -312,6 +351,7 @@
 
   </select>
   
+  <!-- 경매 이미지 -->
   <select id="getMyAuctionImage" parameterType="int" resultType="AuctionImageDto">
     SELECT AUCTION_IMAGE_NO, AUCTION_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
       FROM AUCTION_IMAGE_T
@@ -320,7 +360,8 @@
                                  FROM AUCTION_IMAGE_T WHERE AUCTION_NO = #{auctionNo})
   </select>
   
-    <select id="getAuctionSalesCount" parameterType="int" resultType="int">
+  <!-- 경매 출품 내역 -->
+  <select id="getAuctionSalesCount" parameterType="int" resultType="int">
     SELECT COUNT(*) FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.CATEGORY_NO, ART.TITLE, ART.CONTENTS, ART.ART_TYPE, ART.WIDTH, ART.HEIGHT, 
                                  AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS
                             FROM ART_T ART INNER JOIN AUCTION_T AUC
@@ -341,6 +382,7 @@
    WHERE RN BETWEEN #{begin} AND #{end}
   </select>
   
+  <!-- 내가 올린 그려드림 -->
   <select id="getMyDrawCount" parameterType="int" resultType="int">
     SELECT COUNT(*)
       FROM (SELECT A.DRAW_NO, A.CATEGORY_NO, A.TITLE, A.PRICE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.WORK_TERM, A.SELLER_NO, C.CATEGORY_NAME
@@ -363,6 +405,7 @@
      ORDER BY A.DRAW_NO DESC
   </select>
   
+  <!-- 그려드림 이미지 -->
   <select id="getDrawImage" parameterType="int" resultType="DrawImageDto">
     SELECT DRAW_IMAGE_NO, DRAW_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
       FROM DRAW_IMAGE_T
@@ -370,6 +413,7 @@
        AND DRAW_IMAGE_NO = (SELECT MIN(DRAW_IMAGE_NO) FROM DRAW_IMAGE_T WHERE DRAW_NO = #{drawNo})
   </select>
  
+  <!-- 그려드림 주문한 내역 -->
   <select id="getDrawOrderCount" parameterType="int" resultType="int">
     SELECT COUNT(*)
       FROM DRAW_ORDER_T
@@ -396,6 +440,7 @@
      WHERE A.RN BETWEEN #{begin} AND #{end}
   </select>
   
+  <!-- 그려드림 받은 주문내역 -->
   <select id="getDrawReceivedOrderCount" parameterType="int" resultType="int">
     SELECT COUNT(*)
       FROM DRAW_ORDER_T DO LEFT OUTER JOIN DRAW_T D
@@ -421,7 +466,8 @@
              WHERE D.SELLER_NO = #{sellerNo}) A
      WHERE A.RN BETWEEN #{begin} AND #{end}
   </select>
-   
+  
+  <!-- E-MONEY -->
   <select id="getEmoneyCount" parameterType="int" resultType="int">
     SELECT COUNT(*)
     FROM (SELECT E.EMONEY_NO, E.USER_NO, E.EMONEY_HISTORY, E.EMONEY_DATE
@@ -448,5 +494,141 @@
              WHERE U.USER_NO = #{userNo})
      WHERE RN BETWEEN #{begin} AND #{end}
   </select>
+  
+  
+  <!-- 경매 찜 -->
+  <insert id="insertAuctionWish" parameterType="Map">
+    INSERT INTO AUCTION_WISHLIST_T (
+          AUCTION_WISH_NO,
+          AUCTION_NO,
+          USER_NO,
+          WISHED_AT
+        ) VALUES (
+          AUCTION_WISHLIST_SEQ.NEXTVAL,
+          #{auctionNo},
+          #{userNo},
+          SYSDATE
+    )
+  </insert>
+  
+  <delete id="deleteAuctionWish" parameterType="Map">
+    DELETE AUCTION_WISHLIST_T
+     WHERE AUCTION_NO = #{auctionNo}
+       AND USER_NO = #{userNo}
+  </delete>
+  
+  <select id="hasAuctionWish" resultType="int"  parameterType="Map">
+    SELECT COUNT(*)
+      FROM AUCTION_WISHLIST_T
+     WHERE AUCTION_NO = #{auctionNo}
+       AND USER_NO = #{userNo}
+  </select>
+  
+  <select id="getAuctionWishCount" parameterType="int">
+    SELECT COUNT(ART_NO)
+      FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.CATEGORY_NO, ART.TITLE, ART.CONTENTS,
+                   AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS,
+                   MAX(B.PRICE) AS PRICE,
+                   W.AUCTION_WISH_NO, W.USER_NO, W.WISHED_AT,
+                   ROW_NUMBER() OVER(ORDER BY WISHED_AT DESC) AS RN
+              FROM ART_T ART INNER JOIN AUCTION_T AUC
+                ON ART.ART_NO = AUC.ART_NO LEFT OUTER JOIN BID_T B
+                ON AUC.AUCTION_NO = B.AUCTION_NO INNER JOIN AUCTION_WISHLIST_T W
+                ON AUC.AUCTION_NO = W.AUCTION_NO
+             WHERE USER_NO = 3
+             GROUP BY ART.ART_NO, ART.SELLER_NO, ART.CATEGORY_NO, ART.TITLE, ART.CONTENTS, 
+                   AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS,
+                   W.AUCTION_WISH_NO, W.USER_NO, W.WISHED_AT)
+  </select>
+  
+  <select id="getAuctionWishList" parameterType="Map" resultMap="AuctionMap">
+    SELECT ART_NO, SELLER_NO, NICKNAME, CATEGORY_NO, CATEGORY_NAME, TITLE, CONTENTS, 
+           AUCTION_NO, START_PRICE, BUY_PRICE, START_AT, END_AT, STATUS,
+           PRICE,
+           AUCTION_WISH_NO, USER_NO, WISHED_AT
+      FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS,
+                   U.NICKNAME,
+                   C.CATEGORY_NO, C.CATEGORY_NAME,
+                   AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS,
+                   MAX(B.PRICE) AS PRICE,
+                   W.AUCTION_WISH_NO, W.USER_NO, W.WISHED_AT,
+                   ROW_NUMBER() OVER(ORDER BY WISHED_AT DESC) AS RN
+              FROM ART_T ART INNER JOIN AUCTION_T AUC
+                ON ART.ART_NO = AUC.ART_NO LEFT OUTER JOIN BID_T B
+                ON AUC.AUCTION_NO = B.AUCTION_NO INNER JOIN AUCTION_WISHLIST_T W
+                ON AUC.AUCTION_NO = W.AUCTION_NO INNER JOIN CATEGORY_T C
+                ON ART.CATEGORY_NO = C.CATEGORY_NO LEFT OUTER JOIN USER_T U
+                ON U.USER_NO = ART.SELLER_NO
+             WHERE W.USER_NO = #{userNo}
+             GROUP BY ART.ART_NO, ART.SELLER_NO, ART.CATEGORY_NO, ART.TITLE, ART.CONTENTS,
+                      U.NICKNAME,
+                      C.CATEGORY_NO, C.CATEGORY_NAME,
+                     AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS,
+                     W.AUCTION_WISH_NO, W.USER_NO, W.WISHED_AT) A
+     WHERE RN BETWEEN #{begin} AND #{end}
+  </select>
+  
+  
+  <!-- 그려드림 찜 -->
+  <insert id="insertDrawWish" parameterType="Map">
+    INSERT INTO DRAW_WISHLIST_T (
+      DRAW_WISH_NO
+    , DRAW_NO
+      , USER_NO
+    , WISHED_AT
+      ) VALUES (
+      DRAW_WISHLIST_SEQ.NEXTVAL
+    , #{drawNo}
+    , #{userNo}
+    , SYSDATE
+    )
+  </insert>
+  
+  <delete id="deleteDrawWish" parameterType="Map">
+    DELETE
+      FROM DRAW_WISHLIST_T
+     WHERE DRAW_NO = #{drawNo}
+       AND USER_NO = #{userNo}  
+  </delete>
+  
+  <select id="hasDrawWish" resultType="int"  parameterType="Map">
+    SELECT COUNT(*)
+      FROM DRAW_WISHLIST_T
+     WHERE DRAW_NO = #{drawNo}
+       AND USER_NO = #{userNo}
+  </select>
+  
+  <select id="getDrawWishCount" parameterType="int">
+    SELECT COUNT(*)
+      FROM (SELECT DW.DRAW_WISH_NO, DW.DRAW_NO, DW.USER_NO, DW.WISHED_AT,
+                   C.CATEGORY_NO, C.CATEGORY_NAME,
+                   D.TITLE, D.CONTENTS, D.PRICE, D.SELLER_NO,
+                   U.NICKNAME
+              FROM DRAW_WISHLIST_T DW INNER JOIN DRAW_T D
+                ON DW.DRAW_NO = D.DRAW_NO INNER JOIN CATEGORY_T C
+                ON D.CATEGORY_NO = C.CATEGORY_NO LEFT OUTER JOIN USER_T U
+                ON D.SELLER_NO = U.USER_NO
+             WHERE DW.USER_NO = #{userNo})
+  </select>
+  
+  <select id="getDrawWishList" parameterType="Map" resultMap="DrawMap">
+    SELECT A.DRAW_WISH_NO, A.DRAW_NO, A.USER_NO, A.WISHED_AT,
+           A.CATEGORY_NO, A.CATEGORY_NAME,
+           A.TITLE, A.CONTENTS, A.PRICE, A.SELLER_NO, A.WORK_TERM,
+           A.NICKNAME
+      FROM (SELECT DW.DRAW_WISH_NO, DW.DRAW_NO, DW.USER_NO, DW.WISHED_AT,
+                   C.CATEGORY_NO, C.CATEGORY_NAME,
+                   D.TITLE, D.CONTENTS, D.PRICE, D.SELLER_NO, D.WORK_TERM,
+                   U.NICKNAME,
+                   ROW_NUMBER() OVER(ORDER BY WISHED_AT DESC) AS RN
+              FROM DRAW_WISHLIST_T DW INNER JOIN DRAW_T D
+                ON DW.DRAW_NO = D.DRAW_NO INNER JOIN CATEGORY_T C
+                ON D.CATEGORY_NO = C.CATEGORY_NO LEFT OUTER JOIN USER_T U
+                ON D.SELLER_NO = U.USER_NO
+             WHERE DW.USER_NO = #{userNo}) A
+     WHERE A.RN BETWEEN #{begin} AND #{end}
+    </select>
+  
+  
    
 </mapper>
