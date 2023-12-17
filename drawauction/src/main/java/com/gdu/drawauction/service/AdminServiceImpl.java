@@ -1,7 +1,7 @@
 package com.gdu.drawauction.service;
 
 
-import java.util.HashMap;
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import com.gdu.drawauction.dao.AdminMapper;
-import com.gdu.drawauction.dto.AdminDto;
 import com.gdu.drawauction.dto.AuctionDto;
+import com.gdu.drawauction.dto.AuctionImageDto;
 import com.gdu.drawauction.dto.DrawDto;
 import com.gdu.drawauction.dto.UserDto;
 import com.gdu.drawauction.util.MyPageUtils;
@@ -132,6 +132,28 @@ public class AdminServiceImpl implements AdminService {
     model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/admin/adminAucList.do"));
     model.addAttribute("beginNo", total - (page - 1) * display);
 
+  }
+	
+	@Override
+  public int removeAdminAuc(HttpServletRequest request) {
+      // 파일 삭제
+	    int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
+      List<AuctionImageDto> imageList = adminMapper.getImageList(auctionNo);
+      for(AuctionImageDto image : imageList) {
+        
+        File file = new File(image.getPath(), image.getFilesystemName());
+        if(file.exists()) {
+          file.delete();
+        }
+        
+        if(image.getHasThumbnail() == 1) {
+          File thumbnail = new File(image.getPath(), "s_" + image.getFilesystemName());
+          if(thumbnail.exists()) {
+            thumbnail.delete();
+          }
+        }
+      }
+      return adminMapper.deleteAdminAuc(auctionNo);
   }
 	
 

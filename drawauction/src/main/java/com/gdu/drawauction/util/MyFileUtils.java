@@ -9,19 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class MyFileUtils {
 
-  // 블로그 작성시 사용된 이미지가 저장될 경로 반환하기
-  public String getBlogImagePath() {
-    LocalDate today = LocalDate.now();
-    return "/blog/" + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(today);
-  }
-  
-  // 블로그 이미지가 저장된 어제 경로를 반환
-  public String getBlogImagePathInYesterday() {
-    LocalDate date = LocalDate.now();
-    date = date.minusDays(1);  // 1일 전
-    return "/blog/" + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(date);
-  }
-  
   // 공지 작성시 사용된 이미지가 저장될 경로 반환하기
   public String getNoticeImagePath() {
     LocalDate today = LocalDate.now();
@@ -34,19 +21,13 @@ public class MyFileUtils {
     return "/inquiry/" + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(today);
   }
   
-  // 업로드 게시판 작성시 첨부한 파일이 저장될 경로 반환하기
-  public String getUploadPath() {
-    LocalDate today = LocalDate.now();
-    return "/upload/" + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(today);
-  }
-  
   // 프로필 이미지 등록 시 첨부한 파일이 저장될 경로 반환하기
   public String getUserImagePath() {
     LocalDate today = LocalDate.now();
     return "/user/" + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(today);
   }
   
-  //그려드림 게시판 작성시 첨부한 파일이 저장될 경로 반환하기
+  //경매 게시판 작성시 첨부한 파일이 저장될 경로 반환하기
   public String getAuctionImagePath() {
     LocalDate today = LocalDate.now();
     return "/auction/" + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(today);

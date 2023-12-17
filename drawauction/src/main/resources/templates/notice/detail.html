@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{layout/header::head(|${notice.noticeNo}번 게시글|)}"></head>
-
+<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
 
 <style>
 
@@ -22,6 +22,10 @@
 
  <div>
     <h1 th:text="${notice.title}"></h1>
+    <a id="btnKakao" class="link-icon kakao" href="javascript:shareKakao();">
+      <img th:src="@{/image/kakao아이콘.png}" width="20%" style="margin-left: 5px;">
+    </a>
+  
     <div th:text="|작성자  : 관리자|"></div>
     <div th:text="|작성일  : ${#dates.format(notice.createdAt, 'yyyy-MM-dd HH:mm:ss')}|"></div>
     <div>
@@ -66,6 +70,47 @@
         window.location.href = '/notice/list.do';
       });
     }
+
+
+      function shareKakao() {
+        Kakao.init('53f0834692966b3b55a0b3d2f38afdda')
+        Kakao.Link.sendDefault({
+          objectType: "feed",
+          content: {
+            title: "들어옥션",
+            description: "들어옥션 " + '[[${notice.title}]]' + "의 공지사항 링크", // 보여질 설명
+            imageUrl:'https://i.ibb.co/ZXqhV0w/image.png',
+            imageWidth:  200,
+            imageHeight: 100,
+            link: {
+              mobileWebUrl: "http://localhost:8080/notice/detail.do?noticeNo=" +  "[[${notice.noticeNo}]]",
+              webUrl: "http://localhost:8080/notice/detail.do?noticeNo=" +  "[[${notice.noticeNo}]]",
+            },
+          },
+          social: {
+            likeCount: 286,
+            commentCount: 45,
+            sharedCount: 845,
+          },
+          buttons: [
+            {
+              title: '웹으로 보기',
+              link: {
+                mobileWebUrl: "http://localhost:8080/notice/detail.do?noticeNo=" +  "[[${notice.noticeNo}]]",
+                webUrl: "http://localhost:8080/notice/detail.do?noticeNo=" +  "[[${notice.noticeNo}]]",
+              },
+            },
+            {
+              title: '앱으로 보기',
+              link: {
+                mobileWebUrl: "http://localhost:8080/notice/detail.do?noticeNo=" +  "[[${notice.noticeNo}]]",
+                webUrl: "http://localhost:8080/notice/detail.do?noticeNo=" +  "[[${notice.noticeNo}]]",
+              },
+            },
+          ],
+        })
+      }
+
   	
     fnEditNotice();
     fnRemoveNotice();
@@ -75,7 +120,7 @@
   
  </div>
   
-<div th:replace="~{/layout/footer::footer}"></div>
+<div th:replace="~{layout/footer::footer}"></div>
   
 </body>
 </html>

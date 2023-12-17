@@ -1,68 +1,111 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head></head>
+<head th:replace="~{/admin/menu::head('홈')}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>경매 관리</title>
+</head>
+
+<style>
+  
+  body {
+      font-family: 'Roboto', sans-serif;
+      background-color: white;
+      margin: 0;
+      padding: 0;
+  }
+  
+  table {
+    margin: 0px 0px 500px 350px;
+  }
+
+  table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+  }
+
+  th {
+      background-color:black;
+      color: #fff;
+  }
+
+  tbody tr:hover {
+      background-color: #f5f5f5;
+  }
+
+  .delete_btn {
+      background-color: #dc3545;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 4px;
+  }
+
+  .delete_btn:hover {
+      background-color: #c82333;
+  }
+
+  .frm_btn {
+      display: flex;
+      align-items: center;
+  }
+
+  #auction_list {
+      margin-top: 20px;
+  }
+  
+  .titleLink {
+    cursor :  pointer;
+    color  : #007bff;           
+  }
+  
+</style>
 
 <body>
-
+  
+  <div th:replace="~{/admin/menu::menu}"></div>
+  
     <div class="main_wrap">
-
         <div class="wrap wrap_3">
-          
-        <div class="text-center">
-        <div class="search">
-          <form id="search_frm">
-            <select class="form-select" name="categoryNo" id="categoryNo">
-              <option value="404">카테고리</option>  
-              <option value="1">포토그래픽</option>  
-              <option value="2">원화</option>  
-              <option value="3">드로잉</option>  
-              <option value="4">판화</option>  
-              <option value="5">서예</option>  
-              <option value="6">회화</option>  
-              <option value="7">동양화</option>  
-              <option value="8">공예</option>  
-              <option value="9">디지털아트</option>  
-              <option value="10">조각품</option>  
-              <option value="11">기타</option>  
-            </select>
-            <button type="button" id="btn_search" class="btn_search"><i class="fa-solid fa-magnifying-glass search_icon" style="color: #1937cc;">조회</i></button>
-          </form>
-        </div>
-
             <h2>경매 관리</h2>
-            <table border="1" class="table">
+            <table class="table">
                 <thead>
                     <tr>
                         <th>글번호</th>
                         <th>글제목</th>
+                        <th>글작성자</th>
                         <th>시작가</th>
                         <th>현재입찰가</th>
                         <th>즉시구매가</th>
                         <th>마감일</th>
+                        <th>삭제</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                  <th:block th:each="a,vx:${adminAucList}">
-                    
-                    <tr>
-                        <td th:text="${a.auctionNo}"></td>
-                        <td th:text="${a.artDto.title}"></td>
-                        <td th:text="${a.startPrice}"></td>
-                        <td th:text="${a.price}"></td>
-                        <td th:text="${a.buyPrice}"></td>
-                        <td th:text="${a.endAt}"></td>
-   
-                         <td>
-                            <form id="frm_btn" method="post">
-                              <input type="text" id="auctionNo" name="auctionNo" th:value="${a.auctionNo}">
-                              <button type="button" id="btn_remove" class="delete_btn">삭제</button>
-                            </form>
-                        </td> 
-
-                    </tr>
-                  </th:block>
+                    <th:block th:each="a,vx:${adminAucList}">
+                        <tr>
+                            <td th:text="${a.auctionNo}"></td>
+                            <td th:onclick="|fntitleLink('${a.auctionNo}')|" class="titleLink">
+                              <span th:text="${a.artDto.title}"></span>
+                            </td>
+                            <td th:text="${a.artDto.sellerDto.nickname}"></td>
+                            <td th:text="${a.startPrice}"></td>
+                            <td th:text="${a.price}"></td>
+                            <td th:text="${a.buyPrice}"></td>
+                            <td th:text="${a.endAt}"></td>
+                            <td>
+                                <form class="frm_btn">
+                                    <input type="hidden" class="auctionNo" name="auctionNo"
+                                        th:value="${a.auctionNo}">
+                                    <button type="button" class="delete_btn">삭제</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </th:block>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -72,29 +115,39 @@
             </table>
 
             <div id="auction_list" class="auction_list"></div>
-        
-       <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
-       <script th:inline="javascript">
-              
-        var frmBtn = $('#frm_btn');
-        
-        const fnRemove = () => {
-          $('.delete_btn').click(() => {
-            if(confirm('해당 게시글을 삭제할까요?')){
-              frmBtn.attr('action', '/auction2/removeAuction.do');
-              frmBtn.attr('method', 'post');
-              frmBtn.submit();
-            }
-          })
-        }
-              
-        fnRemove();
 
-       </script>
+            <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+            <script th:inline="javascript">
+                
+                // 제목 클릭시 해당하는 경매번호의 경매상세로 이동
+                const fntitleLink = (auctionNo) => {
+                  window.location.href = '/auction2/detail.do?auctionNo=' + auctionNo;
+                }
+                
+              
+                const fnRemove = () => {
+                    $('.delete_btn').click((ev) => {
+                        if (confirm('해당 게시글을 삭제할까요?')) {
+                            const auctionNo = $(ev.currentTarget).closest('.frm_btn').find('.auctionNo').val();
+                            const form = $('<form>', {
+                                action: '/admin/removeAdminAuc.do',
+                                method: 'post'
+                            }).append($('<input>', {
+                                type: 'hidden',
+                                name: 'auctionNo',
+                                value: auctionNo
+                            }));
+                            $('body').append(form);
+                            form.submit();
+                        }
+                        alert('게시글이 삭제되었습니다.');
+                    });
+                }
 
+                $(document).ready(fnRemove);
+            </script>
         </div>
     </div>
-
 </body>
 
 </html>

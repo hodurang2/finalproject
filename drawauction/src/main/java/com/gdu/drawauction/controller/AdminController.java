@@ -87,10 +87,19 @@ public class AdminController {
 
      
     @GetMapping("/adminAucList.do")
-    public String getAucList(HttpServletRequest request, Model model){
+    public String getAdminAucList(HttpServletRequest request, Model model){
       adminService.getAdminAucList(request, model);
       return "admin/adminAucList";
        
     }
+    
+    @PostMapping("/removeAdminAuc.do")
+    public String removeAdminAuc(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+      int removeResult = adminService.removeAdminAuc(request);
+      redirectAttributes.addFlashAttribute("removeResult", removeResult);
+      
+      return "redirect:/admin/adminAucList.do";
+    }
+    
 
 }

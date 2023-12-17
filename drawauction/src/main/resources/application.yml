@@ -4,7 +4,7 @@ spring:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
       jdbc-url: jdbc:log4jdbc:oracle:thin:@localhost:1521:xe
-      username: ENC(ZU7LTCk3FGR8Qa08QV2rXQ==)
+      username: ENC(tHDHU9EAs+WcLyygIiSyYA==)
       password: ENC(lIxn3gWmCLABH6W5+kWA9g==)
   mail:
     host: smtp.gmail.com
