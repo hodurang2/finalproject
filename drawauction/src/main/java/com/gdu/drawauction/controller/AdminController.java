@@ -96,8 +96,8 @@ public class AdminController {
     @PostMapping("/removeAdminAuc.do")
     public String removeAdminAuc(HttpServletRequest request, RedirectAttributes redirectAttributes) {
       int removeResult = adminService.removeAdminAuc(request);
-      System.out.println("컨트롤러" + removeResult);
       redirectAttributes.addFlashAttribute("removeResult", removeResult);
+      
       return "redirect:/admin/adminAucList.do";
     }
     
