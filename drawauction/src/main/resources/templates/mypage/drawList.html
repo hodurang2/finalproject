@@ -119,24 +119,26 @@
             str +=       '<div id="drawNo" style="display:none">글번호: ' + draw.drawNo + '</div>';
             str +=     '</div>';
             str +=   '</div>';
-            
             str += '</div>';
             $('#order_draw_list').append(str);
+
           })
         }
       })
     }
     
-    var jqxhr1 = $.ajax("/mypage/getDrawOrderList.do?param=2#").done(() => {
-                  fnHashPlus();
-                 }); 
+      var jqxhr1 = $.ajax("/mypage/getDrawOrderList.do?param=2#");
+      
+      jqxhr1.then(() => {
+          fnHashPlus();
+      });
                 
     
     const fnGetDrawReceivedOrderList = () => {
       $.ajax({
         // 요청
         type: 'get',
-        url: '/mypage/getDrawReceivedOrderList.do',
+        url: '/mypage/getDrawReceivedOrderList.do?param=3#',
         data: 'page=' + page,
         // 응답
         dataType: 'json',
@@ -191,7 +193,13 @@
         }
       })
     }
+    
+    var jqxhr2 = $.ajax("/mypage/getDrawReceivedOrderList.do?param=3#");
       
+      jqxhr2.then(() => {
+          fnHashPlus();
+      });
+    
     const fnDrawDetail = () => {
       $(document).on('click', '.draw', function(){
         location.href = '/draw/detail.do?drawNo=' + $(this).data('draw_no');
@@ -331,8 +339,8 @@
       if(!location.href.includes("#")) {
         location.href += '#order' + paramValue;
       } else {
-          const currentHashIndex = location.href.indexOf("#"); // 현재 해시 위치
-          const newUrl = location.href.slice(0, currentHashIndex); // 현재 해시를 제외한 URL
+          let currentHashIndex = location.href.indexOf("#"); // 현재 해시 위치
+          let newUrl = location.href.slice(0, currentHashIndex); // 현재 해시를 제외한 URL
           newUrl += '#order' + paramValue;
       }
       

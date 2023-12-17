@@ -59,19 +59,23 @@ public class MypageController {
   public ResponseEntity<Map<String, Object>> modifyIntroduction(HttpServletRequest request) {
     return mypageService.modifyIntroduction(request);
   }
-  /*
+
   @PostMapping("/leave.do")
   public void leave(HttpServletRequest request, HttpServletResponse response) {
     mypageService.leave(request, response);
   }
-  */
+
   
   /*
   @PostMapping(value="/addUserImage.do", produces="application/json")
   public Map<String, Object> addUserImage(MultipartHttpServletRequest multipartRequest) throws Exception {
     return mypageService.addUserImage(multipartRequest);
   }
-  */
+  @GetMapping("/getUserImage.do")
+  public Map<String, Object> getUserImage(HttpServletRequest request) {
+    return mypageService.getProfileImage(request);
+  }
+   */
   
   @GetMapping("/getAuctionBidList.do")
   public String getAuctionBidList(HttpServletRequest request, Model model) {

@@ -13,20 +13,26 @@ import com.gdu.drawauction.dto.DrawImageDto;
 import com.gdu.drawauction.dto.DrawOrderDto2;
 import com.gdu.drawauction.dto.EmoneyDto;
 import com.gdu.drawauction.dto.UserDto;
-import com.gdu.drawauction.dto.UserImageDto;
 
 @Mapper
 public interface MypageMapper {
 
-  // 회원
+  // 회원 정보 수정
   public int updateUser(UserDto user);                // 회원 정보 수정(ajax)
   public int updateUserIntroduction(UserDto user);    // 소개글 수정(ajax)
   public int updateUserPw(UserDto user);              // 비밀번호 변경
-  public int insertUserBasicImage(UserImageDto userImageDto);  // 사용자 기본 이미지 추가
-  //public int insertUserImage(UserImageDto image);
-  //public UserDto getUser(Map<String, Object> map);
-  //public int insertLeaveUser(UserDto user);   
-  //public int deleteUser(UserDto user);
+  
+  // 회원 탈퇴
+  public UserDto getUser(Map<String, Object> map);   // 사용자 가져오기
+  public int insertLeaveUser(UserDto user);          // 탈퇴회원 추가
+  public int deleteUser(UserDto user);               // 회원 삭제
+  
+  /*
+  // 프로필 이미지
+  public int insertUserBasicImage(String email);      // 사용자 기본 이미지 추가
+  public UserImageDto getUserImage(String email);     // 사용자 이미지 가져오기
+  public int insertUserImage(UserImageDto image);     // 사용자 이미지 추가
+  */
   
   // E-Money
   public int getEmoneyCount(int userNo);                          // E-Money 입출금수

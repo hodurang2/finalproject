@@ -212,6 +212,28 @@
     <association javaType="UserDto" property="userDto"/>
   </resultMap>
   
+  <!--/*
+  <resultMap type="UserDto2"    id="userDto">
+    <id column="USER_NO"              property="userNo"/>
+    <result column="EMAIL"            property="email"/>
+    <result column="PW"               property="pw"/>
+    <result column="NAME"             property="name"/>
+    <result column="MOBILE"           property="mobile"/>
+    <result column="GENDER"           property="gender"/>
+    <result column="AGREE"            property="agree"/>
+    <result column="STATE"            property="state"/>
+    <result column="JOINED_AT"        property="joinedAt"/>
+    <result column="POSTCODE"         property="postcode"/>
+    <result column="ROAD_ADDRESS"     property="roadAddress"/>
+    <result column="JIBUN_ADDRESS"    property="jibunAddress"/>
+    <result column="DETAIL_ADDRESS"   property="detailAddress"/>
+    <result column="NICKNAME"         property="nickname"/>
+    <result column="INTRODUCTION"     property="introduction"/>
+    <result column="MY_PRICE"         property="myPrice" />
+    <result column="USER_IMAGE_DTO"   property="userImageDto" />
+  </resultMap>
+  */-->
+  
   <update id="updateUser" parameterType="UserDto">
     UPDATE USER_T
        SET NAME = #{name}
@@ -239,7 +261,7 @@
   </update>
   
   
-  <!--/*
+
   <select id="getUser" parameterType="Map" resultType="UserDto">
   SELECT USER_NO, EMAIL, PW, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION
     FROM USER_T
@@ -268,27 +290,60 @@
       FROM USER_T
      WHERE USER_NO = #{userNo}
   </delete>
-  */-->
-  
 
-  <insert id="insertUserBasicImage" parameterType="UserImageDto">
+  
+  <!--/*
+  <insert id="insertUserBasicImage" parameterType="String">
     INSERT INTO USER_IMAGE_T (
       USER_IMAGE_NO
-    , USER_NO
+    , EMAIL
     , PATH
     , FILESYSTEM_NAME
     , IMAGE_ORIGINAL_NAME
     , HAS_THUMBNAIL
   ) VALUES (
       USER_IMAGE_SEQ.NEXTVAL
-    , #{userNo}
+    , #{email}
     , '/mybatis/static/image/'
     , 'basic_profile.png'
+    , 'basic_profile.png'
+    , 0
+  )
+  </insert>
+  
+  <insert id="insertUserImage" parameterType="UserImageDto">
+    INSERT INTO USER_IMAGE_T (
+      USER_IMAGE_NO
+    , EMAIL
+    , PATH
+    , FILESYSTEM_NAME
+    , IMAGE_ORIGINAL_NAME
+    , HAS_THUMBNAIL
+  ) VALUES (
+      USER_IMAGE_SEQ.NEXTVAL
+    , #{email}
+    , #{path}
+    , #{filesystemName}
     , #{imageOriginalName}
     , #{hasThumbnail}
   )
   </insert>
-
+  
+  <select id="getUser" parameterType="Map" resultType="UserDto2">
+    SELECT USER_NO, EMAIL, PW, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION
+      FROM USER_T
+    <where>
+        <if test="email != null">EMAIL = #{email}</if>
+        <if test="pw != null">AND PW = #{pw}</if>
+      </where>
+  </select>
+  
+  <select id="getUserImage" parameterType="String" resultType="UserImageDto">
+    SELECT USER_IMAGE_NO, EMAIL, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+      FROM USER_IMAGE_T
+     WHERE EMAIL = #{email}
+  </select>
+  */-->
   
   
   <!-- 출품 중 경매 수 -->

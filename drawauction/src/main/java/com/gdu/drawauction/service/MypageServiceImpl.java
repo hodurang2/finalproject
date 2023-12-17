@@ -1,6 +1,7 @@
 package com.gdu.drawauction.service;
 
 import java.io.PrintWriter;
+import java.lang.StackWalker.Option;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,7 +23,6 @@ import com.gdu.drawauction.dao.MypageMapper;
 import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.dto.BidDto;
 import com.gdu.drawauction.dto.DrawDto;
-import com.gdu.drawauction.dto.DrawOrderDto;
 import com.gdu.drawauction.dto.DrawOrderDto2;
 import com.gdu.drawauction.dto.EmoneyDto;
 import com.gdu.drawauction.dto.UserDto;
@@ -147,7 +147,7 @@ public class MypageServiceImpl implements MypageService {
     }
     
   }
-  /*
+  
   // 회원탈퇴
   @Override
   public void leave(HttpServletRequest request, HttpServletResponse response) {
@@ -198,7 +198,7 @@ public class MypageServiceImpl implements MypageService {
     }
     
   }
-  */
+  
   /*
   @Override
   public boolean addUserImage(MultipartHttpServletRequest multipartRequest) throws Exception {
@@ -263,7 +263,7 @@ public class MypageServiceImpl implements MypageService {
       
    }
   
-  // 그려드림 편집 이미지 추가
+
   @Override
   public Map<String, Object> addUserImage(MultipartHttpServletRequest multipartRequest) throws Exception {
       
@@ -415,8 +415,36 @@ public class MypageServiceImpl implements MypageService {
       
     }
   }
+  /*
+  @Override
+  public Map<String, Object> getProfileImage(HttpServletRequest request) {
+    
+    Map<String, Object> map = new HashMap<>();
+
+    HttpSession session = request.getSession();
+    UserDto user = (UserDto)session.getAttribute("user");
+
+    if(user != null) {
+    
+      String email = user.getEmail();
+      String pw = mySecurityUtils.getSHA256(user.getPw());
+
+      UserDto2 userDto = mypageMapper.getUser(Map.of("email", email,
+                                                     "pw", pw));
+      
+      userDto.setUserImageDto(mypageMapper.getUserImage(email));
+      
+      map.put("userDto", userDto);
+
+    } else {
+      
+      map.put("userDto", null);
+      
+    }
+    return map;
+  }
   
-  
+  */
   
   @Transactional(readOnly=true)
   @Override
@@ -553,17 +581,26 @@ public class MypageServiceImpl implements MypageService {
     
     if(user != null) {
       int userNo = user.getUserNo();
-      int total = mypageMapper.getEmoneyCount(userNo);
+      Optional<Integer> opt2 = Optional.ofNullable(mypageMapper.getEmoneyCount(userNo));
+      int total = Integer.parseInt(opt.orElse("0"));
       int display = 5;
       
       List<Integer> balanceList = new ArrayList<>();
-      for(int i = total; i > 0; i--) {
-        balanceList.add(mypageMapper.getEmoneyBalance(Map.of("userNo", userNo, "no", i)));
-      }
       
-      int balance = balanceList.get(total-1);
+      int balance;
       
-      Collections.reverse(balanceList);     // balanceList 역순으로 저장
+      if (total != 0) {
+        for (int i = total; i > 0; i--) {
+          balanceList.add(mypageMapper.getEmoneyBalance(Map.of("userNo", userNo, "no", i)));
+        }
+        int lastIndex = total - 1;
+        balance = balanceList.get(lastIndex);
+        Collections.reverse(balanceList);     // balanceList 역순으로 저장
+        
+    } else {
+        balanceList.add(0);
+        balance = 0;
+    }
       
       myPageUtils.setPaging(page, total, display);
       
