@@ -57,11 +57,6 @@
       margin-top: 20px;
   }
   
-  .titleLink {
-    cursor :  pointer;
-    color  : #007bff;           
-  }
-  
 </style>
 
 <body>
@@ -89,8 +84,8 @@
                     <th:block th:each="a,vx:${adminAucList}">
                         <tr>
                             <td th:text="${a.auctionNo}"></td>
-                            <td th:onclick="|fntitleLink('${a.auctionNo}')|" class="titleLink">
-                              <span th:text="${a.artDto.title}"></span>
+                            <td th:onclick="|fntitleLink('${a.auctionNo}')|">
+                              <span th:text="${a.artDto.title}" style="cursor: pointer; color: #007bff;"></span>
                             </td>
                             <td th:text="${a.artDto.sellerDto.nickname}"></td>
                             <td th:text="${a.startPrice}"></td>

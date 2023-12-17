@@ -5,9 +5,77 @@
 <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
 
 <style>
-
+  /* Reset some default styles */
+  body, h1, h2, h3, p {
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-color: white;
+    color: #333;
+  }
+  
+  .main_wrap {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
   
   
+  .link-icon {
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .link-icon:hover {
+    opacity: 0.8;
+  }
+  
+  .btn {
+    display: inline-block;
+    margin-right: 10px;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+  }
+  
+  .btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+  }
+  
+  .btn-dark {
+    background-color: #343a40;
+    color: #fff;
+    border: none;
+  }
+  
+  hr {
+    width: 750px;
+  }  
+  
+  .n-contents {
+    width: 740px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: white;
+  }
+    
 </style>
 
 <body>
@@ -22,10 +90,7 @@
 
  <div>
     <h1 th:text="${notice.title}"></h1>
-    <a id="btnKakao" class="link-icon kakao" href="javascript:shareKakao();">
-      <img th:src="@{/image/kakao아이콘.png}" width="20%" style="margin-left: 5px;">
-    </a>
-  
+    
     <div th:text="|작성자  : 관리자|"></div>
     <div th:text="|작성일  : ${#dates.format(notice.createdAt, 'yyyy-MM-dd HH:mm:ss')}|"></div>
     <div>
@@ -34,14 +99,18 @@
           <input type="hidden" name="noticeNo" th:value="${notice.noticeNo}">
           <input type="hidden" name="title"    th:value="${notice.title}">
           <input type="hidden" name="contents" th:value='${notice.contents}'>
-          <button type="button" id="btn_edit" class="btn btn-primary">편집</button>
-          <button type="button" id="btn_rmv"  class="btn btn-danger">삭제</button>
-          <button type="button" id="btn_list" class="btn btn-dark">목록</button>
-          
         </form>
       </th:block>
     </div>
-    <div th:utext="${notice.contents}"></div>
+    <div th:utext="${notice.contents}" class="n-contents"></div>
+    <div>
+      <button type="button" id="btn_edit" class="btn btn-primary">편집</button>
+      <button type="button" id="btn_rmv"  class="btn btn-danger">삭제</button>
+      <button type="button" id="btn_list" class="btn btn-dark">목록</button>
+      <a id="btnKakao" class="link-icon kakao" href="javascript:shareKakao();">
+      <img th:src="@{/image/kakao아이콘.png}" width="3%">
+      </a>
+    </div>    
   </div>
   
   <script th:inline="javascript">
@@ -78,7 +147,7 @@
           objectType: "feed",
           content: {
             title: "들어옥션",
-            description: "들어옥션 " + '[[${notice.title}]]' + "의 공지사항 링크", // 보여질 설명
+            description: "들어옥션 " + '[[${notice.title}]]' + "의 공지사항", // 보여질 설명
             imageUrl:'https://i.ibb.co/ZXqhV0w/image.png',
             imageWidth:  200,
             imageHeight: 100,
@@ -88,20 +157,13 @@
             },
           },
           social: {
-            likeCount: 286,
-            commentCount: 45,
-            sharedCount: 845,
+            likeCount: 50,
+            commentCount: 12,
+            sharedCount: 3,
           },
           buttons: [
             {
-              title: '웹으로 보기',
-              link: {
-                mobileWebUrl: "http://localhost:8080/notice/detail.do?noticeNo=" +  "[[${notice.noticeNo}]]",
-                webUrl: "http://localhost:8080/notice/detail.do?noticeNo=" +  "[[${notice.noticeNo}]]",
-              },
-            },
-            {
-              title: '앱으로 보기',
+              title: '자세히 보기',
               link: {
                 mobileWebUrl: "http://localhost:8080/notice/detail.do?noticeNo=" +  "[[${notice.noticeNo}]]",
                 webUrl: "http://localhost:8080/notice/detail.do?noticeNo=" +  "[[${notice.noticeNo}]]",
