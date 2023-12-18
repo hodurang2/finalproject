@@ -332,5 +332,22 @@
     )  
   </insert>
   
+    <insert id="insertBid2" parameterType="Map">
+  INSERT INTO BID_T (
+        BID_NO
+      , AUCTION_NO
+      , BIDDER_NO
+      , PRICE
+      , BID_AT
+    ) VALUES (
+        BID_SEQ.NEXTVAL
+      , #{auctionNo}
+      , #{bidderNo}
+      , #{price}
+      , SYSDATE
+    )  
+  </insert>
+  
+  
   
 </mapper>

@@ -34,4 +34,5 @@ public interface AuctionMapper2 {
   public int updateStatus(int auctionNo);
   public int getBidPrice(int auctionNo);
   public int insertBid(BidDto bidDto);
+  public int insertBid2(Map<String, Object> bidMap);
 }

@@ -69,7 +69,7 @@ public class WebSocketAuction {
       System.out.println("받은 메시지 : " + msg);
       BidDto bidDto = objectMapper.readValue(msg, BidDto.class);
       auctionService2.addBid(bidDto);
-      int auctionNo1 = bidDto.getAuctionDto().getAuctionNo();
+      int auctionNo1 = bidDto.getAuctionNo();
       System.out.println("auctionNo" + auctionNo1);
       int bidPrice = auctionService2.getBidPrice(auctionNo1);
       System.out.println("bidPric웹소켓" + bidPrice);
@@ -78,7 +78,7 @@ public class WebSocketAuction {
       // BidDto를 JSON 문자열로 변환
       String bidDtoJson = objectMapper.writeValueAsString(bidDto);
       // 같은 제품방에 있는 사람들모두에게 메세지를 보낸다.
-      String auctionNo = "" + bidDto.getAuctionDto().getAuctionNo();
+      String auctionNo = "" + bidDto.getAuctionNo();
       Set<Session> roomSessions = auctionRooms.getOrDefault(auctionNo, Collections.emptySet());
       for (Session s : roomSessions) {
         System.out.println("보낸 메시지 : " + bidDtoJson);

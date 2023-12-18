@@ -56,7 +56,7 @@ public class AuctionController2 {
   }
   
   @ResponseBody
-  @PostMapping(value="/controlWishlist.do", produces="application/json")
+  @GetMapping(value="/controlWishlist.do", produces="application/json")
   public Map<String, Object> controlAuctionWishlist (HttpServletRequest request){
     return auctionService2.controlAuctionWishlist(request);
   }
@@ -110,6 +110,13 @@ public class AuctionController2 {
   redirectAttributes.addFlashAttribute("resultSum", resultSum);
   return "redirect:/auction2/detail.do?auctionNo=" + request.getParameter("auctionNo");
   }
+  
+//  @PostMapping("/addBid.do")
+//  public String addBid(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+//    int addBidResult = auctionService2.addBid(request);
+//    
+//    return "redirect:/auction2/detail.do?auctionNo=" + request.getParameter("auctionNo");
+//  }
   
   
   

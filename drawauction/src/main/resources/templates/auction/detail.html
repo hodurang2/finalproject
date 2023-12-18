@@ -86,9 +86,8 @@
 			</div>
 
 			<div class="grid_2">
-        <div id="nowPrice"></div>
 				<div class="sub_title">현재입찰가</div>
-				<div th:text="|${#numbers.formatInteger(auction.price, 1, 'COMMA')}P|" class="sub_contents"></div>
+        <div id="nowPrice"></div>
 			</div>	
 
 			<div class="grid_2">
@@ -156,8 +155,7 @@
           <div class="sub_title">시작가</div>
           <div th:text="|${#numbers.formatInteger(auction.startPrice, 1, 'COMMA')}P|" class="sub_contents"></div>
           <div class="sub_title">현재입찰가</div>
-          <div th:text="|${#numbers.formatInteger(auction.price, 1, 'COMMA')}P|" class="sub_contents"></div>
-          <div id="nowPrice"></div>
+          <div id="nowPrice2" class="sub_contents"></div>
           <div class="sub_title">마감일</div>
           <div th:text="| ${auction.endAt}"></div>
           <div id="countDown"></div>
@@ -396,6 +394,7 @@
       var auctionNo = getId('auctionNo2');
       var bidderNo = /*[[${session.user.userNo}]]*/ null;
       var nowPrice = getId('nowPrice');
+      var nowPrice2 = getId('nowPrice2');
       var countdown = getId('countDown');
       var deadline = new Date(/*[[${auction.endAt}]]*/ null);
       var bidPrice;
@@ -418,9 +417,12 @@
           }
             var formattedBidPrice = new Intl.NumberFormat('ko-KR').format(data.bidPrice);
             console.log(formattedBidPrice);
-            var onitem = `<span>현재 입찰가 : ${formattedBidPrice}P</span>`;
+            var onitem = `<span>  ${formattedBidPrice}P</span>`;
             nowPrice.innerHTML = onitem;
             nowPrice.scrollTop = nowPrice.scrollHeight;
+            nowPrice2.innerHTML = onitem;
+            nowPrice2.scrollTop = nowPrice.scrollHeight;
+            
         }
       ws.onclose = function(ev){
       console.log('웹소켓 닫힘');
@@ -453,8 +455,9 @@
       console.log('temp:' + temp);
       bidPrice = price.value;
       price.value ='';
-      sendDetailUpdateMessage();
+      //sendDetailUpdateMessage();
     }
+    /*
     function sendDetailUpdateMessage(){
       var listSocket = new WebSocket("ws://" + location.host + "/auctionList");
       listSocket.onopen = function(msg) {
@@ -478,6 +481,7 @@
           console.log('에러 ');
       };
     }
+    */
     function calculateTimeRemaining() {
     var now = new Date();
     var timeDifference = deadline - now;

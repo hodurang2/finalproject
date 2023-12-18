@@ -399,16 +399,16 @@ public class AuctionServiceImpl2 implements AuctionService2 {
 //                                        , "price", bidMoney);
 //    Map<String, Object> emoneyMap = Map.of("buyerNo", bidderNo
 //                                          , "price", bidMoney);
-    
+//    
 //    System.out.println(auctionMapper2.getBidPrice(auctionNo));
-    
-    
+//    
+//    
 //    int receiveUserNo= bidDto.getBidderDto().getUserNo();
 //    System.out.println("receiveUserNo:" + receiveUserNo);
 //    int returnMoney = bidDto.getPrice();
 //    Map<String, Object> returnEmoneyMap = Map.of("userNo", receiveUserNo
 //                                                 , "price", returnMoney);
-    
+//    
 //    int returnResult = auctionMapper2.insertSellerEmoney(returnEmoneyMap);
 //    int buyerResult = auctionMapper2.insertBuyerEmoney(emoneyMap);
 //    int bidResult = auctionMapper2.insertBid(bidMap);
@@ -416,7 +416,21 @@ public class AuctionServiceImpl2 implements AuctionService2 {
 //    int bidResultSum = buyerResult + bidResult;
 //    
 //    return bidResultSum;
-    return auctionMapper2.insertBid(bidDto);
+    
+    int bidResult = auctionMapper2.insertBid(bidDto);
+    
+    int auctionNo = bidDto.getAuctionNo();
+    int bidderNo = bidDto.getBidderNo();
+    int bidMoney = bidDto.getPrice();    
+    System.out.println("price" + bidDto.getPrice() + "bidPrice" +bidDto.getBidPrice());
+    Map<String, Object> emoneyMap = Map.of("buyerNo", bidderNo
+                                         , "price", bidMoney);
+    
+    int buyerResult = auctionMapper2.insertBuyerEmoney(emoneyMap);
+
+    int totalResult = buyerResult + bidResult;
+    
+    return totalResult;
     
   }
   
