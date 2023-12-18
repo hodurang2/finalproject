@@ -1,0 +1,113 @@
+@charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css');
+
+.main_wrap {
+  width: 100%;
+  min-height: 500px;
+  
+}
+ .wrap_9{
+    width: 100%;
+    text-align: left;
+  }
+  .text-center{
+    margin-left:1%;
+  }
+  
+  .draw_list {
+    margin: 10px auto; /* 위아래 여백은 유지하면서 좌우 여백을 auto로 설정하여 가운데 정렬 */
+    width: 100%; /* 추가: 전체 폭을 100%로 설정 */
+    
+  }
+  .wish_list {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    justify-content: space-between;
+    text-align: center;
+    padding-right: 10px;
+    padding-top: 10px;
+    float: right;
+  }
+  .wish_list i {
+    color: #e11414;
+  }
+  
+  .draw_category {
+    margin-left: 10px;
+    color: grey;
+    font-size: 11px;
+  }
+  
+  .draw_title {
+    margin-left: 10px;
+    font-weight: 600;
+    font-size: 18px;
+  }
+  
+ 	.draw_nickname {
+    margin-left: 10px;
+    color: grey;
+    font-size: 13px;
+  }
+  
+  
+   .draw div {
+    margin-bottom: 5px;
+  }
+
+  .draw_list {
+    margin: 10px auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* 가로 방향으로 가운데 정렬 */
+    gap: 10px; /* 애들 사이 간격 설정 */
+   }
+   
+	.draw_image{
+		text-align: center;
+	}  
+   
+   
+	.draw_image img {
+	    width: 260px;
+	    height: 170px; 
+	    text-align: center;
+	    margin-bottom: 5%;
+	    object-fit: cover; /* 이미지를 꽉 채우도록 설정 */
+	    border: 1px lightgray solid;
+	    border-radius: 7px; /* 이미지를 감싸는 컨테이너의 모서리를 둥글게 만듭니다. (선택사항) */
+	}
+
+	.draw_list::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+
+  .draw {
+    width: 268px;
+    height: 40%;
+    border-radius: 5px;
+    text-align: left;
+    margin: 1.5%;
+  }
+  
+  .btn_search {
+    background-color: transparent !important;
+    border: none !important;
+  }
+
+
+.form-select {
+  width: 120px;
+}
+#search_frm {
+  display: inline-flex;
+}
+.text-center {
+  display: inline-flex;
+}

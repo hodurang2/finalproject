@@ -22,12 +22,6 @@
 		font-size: 100%;
 		text-align: center;
 	}
-	
-	
-	img{
-		width: 80px;
-		height: 80px;
-	}
 
 
 </style>
@@ -90,13 +84,13 @@
 
 			<div style="margin-bottom: 20%; text-align: center;">
 				<!--/* 네이버 로그인 */-->
-			    <a th:href="${naverLoginURL}"><img th:src="@{/image/naver아이콘.png}"></a>
+			    <a th:href="${naverLoginURL}"><img th:src="@{/image/naver아이콘.png}" width="80px" height="80px"></a>
 			
 			    <!--/* 간격 조절 */-->
 			    <span style="margin-right: 10px;"></span>
 			
 			    <!--/* 카카오 로그인 */-->
-			    <a th:href="${kakaoLoginURL}"><img th:src="@{/image/kakao아이콘.png}"></a>
+			    <a th:href="${kakaoLoginURL}"><img th:src="@{/image/kakao아이콘.png}" width="80px" height="80px"></a>
 			
 		</div>
 
