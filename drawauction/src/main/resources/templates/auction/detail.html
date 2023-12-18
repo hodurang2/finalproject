@@ -64,6 +64,7 @@
 		  </div>
 		<div class="grid_item"> <!--작품명, 시작가 등등..-->
   		<div class="grid_2" style="text-align: right;">
+        <input type="hidden" id="auctionStatus" th:value="${auction.status}">
         <th:block th:if="${auction.status == 0}">
           <div class="auction_ongoing">경매진행중</div>        
         </th:block>
@@ -285,6 +286,11 @@
               return;
             }
           }
+          if($('#auctionStatus').val() == 1) {
+          alert('경매가 끝난작품입니다.');
+          e.preventDefault();
+          return;
+          }
           if(userNo != auctionUserNo) {
             $('#frm_buy_chat').attr('action', '/auction2/orderPayment.form');
             $('#frm_buy_chat').attr('method', 'get');
@@ -319,6 +325,11 @@
       
       btnModalBid.addEventListener("click", e => {
         if(userNo === 0){
+          e.preventDefault();
+          return;
+        }
+        if($('#auctionStatus').val() == 1) {
+          alert('경매가 끝난작품입니다.');
           e.preventDefault();
           return;
         }
@@ -392,12 +403,14 @@
       var bid = getId('bid');
       var price = getId('price');
       var auctionNo = getId('auctionNo2');
-      var bidderNo = /*[[${session.user.userNo}]]*/ null;
+      var bidderNo = /*[[${session.user != null ? session.user.userNo : null}]]*/ null;
       var nowPrice = getId('nowPrice');
       var nowPrice2 = getId('nowPrice2');
       var countdown = getId('countDown');
       var deadline = new Date(/*[[${auction.endAt}]]*/ null);
+      var status = getId('auctionStatus'); 
       var bidPrice;
+      
       
       function fnConnect() {
         var ws = new WebSocket("ws://" + location.host + "/auction/[[${auction.auctionNo}]]");
