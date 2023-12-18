@@ -46,14 +46,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
     .addResourceLocations("file:/drawauction/auction/");
     registry.addResourceHandler("/drawauction/inquiry/**")
     .addResourceLocations("file:/drawauction/inquiry/");
-    registry.addResourceHandler("/drawauction/mypage/**")
-    .addResourceLocations("file:/drawauction/mypage/");
-    registry.addResourceHandler("/draw/**")
-      .addResourceLocations("file:/draw/");
-    registry.addResourceHandler("/auction/**")
-    .addResourceLocations("file:/auction/");
-    registry.addResourceHandler("/inquiry/**")
-    .addResourceLocations("file:/inquiry/");
+    registry.addResourceHandler("/drawauction/draw/**")
+      .addResourceLocations("file:/drawauction/draw/");
+    registry.addResourceHandler("/drawauction/auction/**")
+    .addResourceLocations("file:/drawauction/auction/");
+    registry.addResourceHandler("/drawauction/inquiry/**")
+    .addResourceLocations("file:/drawauction/inquiry/");
   }
   
 }
