@@ -153,14 +153,13 @@
           <h2>입찰</h2>
         </div>
         <div class="close-area">X</div>
-        <div class="content">
+        <div>
           <div class="sub_title">시작가</div>
           <div th:text="|${#numbers.formatInteger(auction.startPrice, 1, 'COMMA')}P|" class="sub_contents"></div>
           <div class="sub_title">현재입찰가</div>
           <div id="nowPrice2" class="sub_contents"></div>
           <div class="sub_title">마감일</div>
-          <div th:text="| ${auction.endAt}"></div>
-          <div id="countDown"></div>
+          <div id="countDown2"></div>
           <div class="sub_title">입찰 상황</div>
           <div th:text="| ${bidCount}"></div>
           <form id="frm_bid">
@@ -412,6 +411,7 @@
       var nowPrice = getId('nowPrice');
       var nowPrice2 = getId('nowPrice2');
       var countdown = getId('countDown');
+      var countdown2 = getId('countDown2');
       var deadline = new Date(/*[[${auction.endAt}]]*/ null);
       var status = getId('auctionStatus'); 
       var bidPrice;
@@ -528,6 +528,11 @@
 
     // 결과를 표시할 요소에 접근해서 표시
     countdown.innerHTML = ` 
+                            ${timeRemaining.days} 일 
+                            ${timeRemaining.hours} 시  
+                            ${timeRemaining.minutes} 분  
+                            ${timeRemaining.seconds} 초`;
+    countdown2.innerHTML = ` 
                             ${timeRemaining.days} 일 
                             ${timeRemaining.hours} 시  
                             ${timeRemaining.minutes} 분  
