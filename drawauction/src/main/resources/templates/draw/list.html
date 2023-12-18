@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{layout/header::head('그려드림 게시판')}"></head>
-<link rel="stylesheet" th:href="@{/css/drawlist.css(ver=1.2)}" />
+<link rel="stylesheet" th:href="@{/css/drawlist.css(ver=1.3)}" />
 
 
 
@@ -71,7 +71,7 @@
 	        let str = '<div class="draw" data-draw_no="' + draw.drawNo + '">';
 			str += '<div class="draw_image" data-draw_no="' + draw.drawNo + '"><img src="' + draw.image.path + '/s_' + draw.image.filesystemName + '"></div>';
 	        str += '<div class="wish_list"><i class="' + draw.heart + ' fa-heart fa-2xl heart" style="color: #ff0000;"></i></div>';
-	        str += '<div><span class="draw_category"> ' + draw.categoryDto.categoryName + '</span></div>';
+	        str += '<div style="max-width: 200px"><span class="draw_category"> ' + draw.categoryDto.categoryName + '</span></div>';
 	        str += '<div><span class="draw_title"> ' + title + '</span></div>';
 	        str += '<div><span class="draw_nickname"> ' + draw.userDto.nickname + '</span></div>';
 	        str += '<div class="draw_end_wrap">';

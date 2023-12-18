@@ -3,66 +3,15 @@
 
 <head th:replace="~{admin/menu::head('경매관리')}"></head>
 
-<style>
-  
-  body {
-      font-family: 'Roboto', sans-serif;
-      background-color: white;
-      margin: 0;
-      padding: 0;
-  }
-  
-  table {
-    margin: 0px 0px 500px 350px;
-  }
-
-  table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-  }
-
-  th {
-      background-color:black;
-      color: #fff;
-  }
-
-  tbody tr:hover {
-      background-color: #f5f5f5;
-  }
-
-  .delete_btn {
-      background-color: #dc3545;
-      color: #fff;
-      border: none;
-      padding: 8px 12px;
-      cursor: pointer;
-      border-radius: 4px;
-  }
-
-  .delete_btn:hover {
-      background-color: #c82333;
-  }
-
-  .frm_btn {
-      display: flex;
-      align-items: center;
-  }
-
-  #auction_list {
-      margin-top: 20px;
-  }
-  
-</style>
 
 <body>
   
   <div th:replace="~{admin/menu::menu}"></div>
   
-    <div class="main_wrap">
-        <div class="wrap wrap_3">
-            <h2>경매 관리</h2>
-            <table class="table">
+ 
+        <div style="margin-left: 20%; margin-top: 5%;">
+            <h4 style=" margin-bottom: 2%; font-weight: 700;">경매관리</h4>
+            <table border="1" class="table">
                 <thead>
                     <tr>
                         <th>글번호</th>
@@ -92,7 +41,7 @@
                                 <form class="frm_btn">
                                     <input type="hidden" class="auctionNo" name="auctionNo"
                                         th:value="${a.auctionNo}">
-                                    <button type="button" class="delete_btn">삭제</button>
+                                    <button type="button" class="btn btn-danger">삭제</button>
                                 </form>
                             </td>
                         </tr>
@@ -117,7 +66,7 @@
                 
               
                 const fnRemove = () => {
-                    $('.delete_btn').click((ev) => {
+                    $('.btn-danger').click((ev) => {
                         if (confirm('해당 게시글을 삭제할까요?')) {
                             const auctionNo = $(ev.currentTarget).closest('.frm_btn').find('.auctionNo').val();
                             const form = $('<form>', {

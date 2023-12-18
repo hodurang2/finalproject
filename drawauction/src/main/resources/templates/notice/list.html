@@ -11,7 +11,8 @@
     color: #333;
     margin-bottom: 20px;
   }
-  .wrap {
+  
+  .notice_st {
     max-width: 1170px;
     position: relative;
     margin: 0 auto;
@@ -89,20 +90,16 @@
 
 <body>
   
-  <div th:replace="~{layout/header::header}"></div>
   
-  <div class="main_wrap">
+   <div th:replace="~{layout/header::header}"></div>
+  
   
   <div class="wrap">
 	  <div class="support_title" style="float: left; margin-left: 1%; margin-top: 2%; font-weight: 600;">고객센터</div>  
   </div>
   
-
-    <div class="wrap">
-
-      
-      
        <div class="wrap">
+		<div class="notice_st">
         <div class="support_left_wrap">
             <div class="left_menu">
                 <ul class="btn_support">
@@ -110,7 +107,13 @@
                   <li><a th:href="@{/inquiry/list.do}"><span>1:1문의</span></a></li>
                 </ul>
             </div>
-        </div>
+        </div>			
+			
+		</div>   
+		   
+		   
+		   
+
     
         <div class="support_right_wrap">
             <div class="notice_head">
