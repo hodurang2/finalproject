@@ -115,9 +115,9 @@
               str += '<div><span class="auction_nickname">' + auction.artDto.sellerDto.nickname       + '</span></div>';
               str += '<div class="auction_end_wrap">';
               str += '<div><span class="first_auction">시작가</span><span class="last_auction">'         + auction.startPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
-              str += '<div><span class="first_auction">현재입찰가</span><span class="last_auction">'     + auction.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+              str += '<div id="bidPrice"><span class="first_auction">현재입찰가</span><span id="bidPrice" class="last_auction">'     + auction.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
               str += '<div><span class="first_auction">즉시 구매가</span><span class="last_auction">'    + auction.buyPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
-              str += '<div><span class="first_auction">마감일</span><span class="last_auction"> '        + auction.endAt + '</span></div>'; // 상품가격 1000단위 콤마찍기
+              str += '<div id="endAt"><span class="first_auction">마감일</span><span id="endAt" class="last_auction countdown"> '        + auction.endAt + '</span></div>'; // 상품가격 1000단위 콤마찍기
               str += '</div>';
               str += '</div>';
               $('#auction_list').append(str);
@@ -125,16 +125,20 @@
           }
         })
       }
-     
+      const fnClickSearch = () => {
+        $('#btn_search').on('click', () => { 
+          console.log('검색전');
+          page = 1;
+          $('#auction_list').empty();
+          fnSearchAuctionList();
+        }) 
+      }
       const fnSearchAuctionList = () => {
-        
-         $('#btn_search').on('click', () => {
             let searchWord = $('#searchWord').val();
             let auctionType = $('#auctionType option:selected').val(); 
             let categoryNo = $('#categoryNo option:selected').val(); 
             let status = $('#status option:selected').val();
-            page = 1; 
-           $('#auction_list').empty();
+           
            $.ajax({
               type: 'GET',
               dataType: 'json',
@@ -147,7 +151,6 @@
                 status: status
               },
              success: (resData) => {
-               $('#auction_list').empty();
                totalPage = resData.totalPage;
                $.each(resData.searchList,(i, auction) => {
                 let str = '<div class="auction" data-auction_no="' + auction.auctionNo + '">';
@@ -163,9 +166,9 @@
                 str += '<div><span class="auction_nickname">' + auction.artDto.sellerDto.nickname       + '</span></div>';
                 str += '<div class="auction_end_wrap">';
                 str += '<div><span class="first_auction">시작가</span><span class="last_auction">'         + auction.startPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
-                str += '<div><span class="first_auction">현재입찰가</span><span class="last_auction">'     + auction.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
+                str += '<div id="bidPrice"><span class="first_auction">현재입찰가</span><span class="last_auction">'     + auction.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
                 str += '<div><span class="first_auction">즉시 구매가</span><span class="last_auction">'    + auction.buyPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
-                str += '<div><span class="first_auction">마감일</span><span class="last_auction"> '        + auction.endAt + '</span></div>'; // 상품가격 1000단위 콤마찍기
+                str += '<div id="endAt"><span class="first_auction">마감일</span><span class="last_auction countdown"> '        + auction.endAt + '</span></div>'; // 상품가격 1000단위 콤마찍기
                 str += '</div>';
                 str += '</div>';
                 $('#auction_list').append(str);
@@ -173,8 +176,6 @@
                
              } 
            })
-         }) 
-        
       } 
       const fnHeart = () => {
         $(document).on('click', '.auction_heart', function(event) {
@@ -246,6 +247,7 @@
               page++;
               if(searchWord === '' && auctionType === 'all' && categoryNo === '404' && status === '404'){
                 fnGetAuctionList();
+                return;
               }
               fnSearchAuctionList();
             }
@@ -282,14 +284,14 @@
 
      
       
-     
+
       fnGetAuctionList();
       fnAuctionDetail();
       fnScroll();
       fnAddResult();
       fnRemoveResult();
       fnHeart();
-      fnSearchAuctionList();
+      fnClickSearch();
     </script>
 
   </div>

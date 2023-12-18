@@ -389,32 +389,59 @@ public class AuctionServiceImpl2 implements AuctionService2 {
   
   @Transactional
   @Override
-  public int addBid(HttpServletRequest request) {
-    int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
-    int bidderNo = Integer.parseInt(request.getParameter("bidderNo"));
-    int bidMoney = Integer.parseInt(request.getParameter("bidMoney"));
-    Map<String, Object> bidMap = Map.of("auctionNo", auctionNo
-                                        , "bidderNo", bidderNo
-                                        , "price", bidMoney);
-    Map<String, Object> emoneyMap = Map.of("buyerNo", bidderNo
-                                          , "price", bidMoney);
+  public int addBid(BidDto bidDto) {
     
+//    int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
+//    int bidderNo = Integer.parseInt(request.getParameter("bidderNo"));
+//    int bidMoney = Integer.parseInt(request.getParameter("bidMoney"));
+//    Map<String, Object> bidMap = Map.of("auctionNo", auctionNo
+//                                        , "bidderNo", bidderNo
+//                                        , "price", bidMoney);
+//    Map<String, Object> emoneyMap = Map.of("buyerNo", bidderNo
+//                                          , "price", bidMoney);
+//    
 //    System.out.println(auctionMapper2.getBidPrice(auctionNo));
-    
-    
+//    
+//    
 //    int receiveUserNo= bidDto.getBidderDto().getUserNo();
 //    System.out.println("receiveUserNo:" + receiveUserNo);
 //    int returnMoney = bidDto.getPrice();
 //    Map<String, Object> returnEmoneyMap = Map.of("userNo", receiveUserNo
 //                                                 , "price", returnMoney);
-    
+//    
 //    int returnResult = auctionMapper2.insertSellerEmoney(returnEmoneyMap);
+//    int buyerResult = auctionMapper2.insertBuyerEmoney(emoneyMap);
+//    int bidResult = auctionMapper2.insertBid(bidMap);
+//    
+//    int bidResultSum = buyerResult + bidResult;
+//    
+//    return bidResultSum;
+    
+    int bidResult = auctionMapper2.insertBid(bidDto);
+    
+    int auctionNo = bidDto.getAuctionNo();
+    int bidderNo = bidDto.getBidderNo();
+    int bidMoney = bidDto.getPrice();    
+    System.out.println("price" + bidDto.getPrice() + "bidPrice" +bidDto.getBidPrice());
+    Map<String, Object> emoneyMap = Map.of("buyerNo", bidderNo
+                                         , "price", bidMoney);
+    
     int buyerResult = auctionMapper2.insertBuyerEmoney(emoneyMap);
-    int bidResult = auctionMapper2.insertBid(bidMap);
+
+    int totalResult = buyerResult + bidResult;
     
-    int bidResultSum = buyerResult + bidResult;
+    return totalResult;
     
-    return bidResultSum;
   }
+  
+  @Transactional
+  @Override
+  public int getBidPrice(int auctionNo) {
+    int bidprice = auctionMapper2.getBidPrice(auctionNo);
+    System.out.println("bidprice서비스" + bidprice);
+    return bidprice;
+  }
+  
+  
   
 }
