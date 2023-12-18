@@ -22,7 +22,6 @@ import com.gdu.drawauction.dao.MypageMapper;
 import com.gdu.drawauction.dto.AuctionDto;
 import com.gdu.drawauction.dto.BidDto;
 import com.gdu.drawauction.dto.DrawDto;
-import com.gdu.drawauction.dto.DrawOrderDto;
 import com.gdu.drawauction.dto.DrawOrderDto2;
 import com.gdu.drawauction.dto.EmoneyDto;
 import com.gdu.drawauction.dto.UserDto;
@@ -147,7 +146,7 @@ public class MypageServiceImpl implements MypageService {
     }
     
   }
-  /*
+  
   // 회원탈퇴
   @Override
   public void leave(HttpServletRequest request, HttpServletResponse response) {
@@ -198,7 +197,7 @@ public class MypageServiceImpl implements MypageService {
     }
     
   }
-  */
+  
   /*
   @Override
   public boolean addUserImage(MultipartHttpServletRequest multipartRequest) throws Exception {
@@ -263,7 +262,7 @@ public class MypageServiceImpl implements MypageService {
       
    }
   
-  // 그려드림 편집 이미지 추가
+
   @Override
   public Map<String, Object> addUserImage(MultipartHttpServletRequest multipartRequest) throws Exception {
       
@@ -332,14 +331,17 @@ public class MypageServiceImpl implements MypageService {
     UserDto user = (UserDto)session.getAttribute("user");
     
     if(user != null) {
-      int sellerNo = user.getUserNo();
-      int bidderNo = user.getUserNo();
+      int userNo = user.getUserNo();
       
-      int artForSaleCount = mypageMapper.getArtForSaleCount(sellerNo);
-      int biddingCount = mypageMapper.getBiddingCount(bidderNo);
+      int artForSaleCount = mypageMapper.getArtForSaleCount(userNo);
+      int biddingCount = mypageMapper.getBiddingCount(userNo);
+      int wishAuctionCount = mypageMapper.getAuctionWishCount(userNo);
+      int wishDrawCount = mypageMapper.getDrawWishCount(userNo);
       
       model.addAttribute("artForSaleCount", artForSaleCount);
       model.addAttribute("biddingCount", biddingCount);
+      model.addAttribute("wishAuctionCount", wishAuctionCount);
+      model.addAttribute("wishDrawCount", wishDrawCount);
       
     }
     
@@ -412,8 +414,36 @@ public class MypageServiceImpl implements MypageService {
       
     }
   }
+  /*
+  @Override
+  public Map<String, Object> getProfileImage(HttpServletRequest request) {
+    
+    Map<String, Object> map = new HashMap<>();
+
+    HttpSession session = request.getSession();
+    UserDto user = (UserDto)session.getAttribute("user");
+
+    if(user != null) {
+    
+      String email = user.getEmail();
+      String pw = mySecurityUtils.getSHA256(user.getPw());
+
+      UserDto2 userDto = mypageMapper.getUser(Map.of("email", email,
+                                                     "pw", pw));
+      
+      userDto.setUserImageDto(mypageMapper.getUserImage(email));
+      
+      map.put("userDto", userDto);
+
+    } else {
+      
+      map.put("userDto", null);
+      
+    }
+    return map;
+  }
   
-  
+  */
   
   @Transactional(readOnly=true)
   @Override
@@ -550,17 +580,26 @@ public class MypageServiceImpl implements MypageService {
     
     if(user != null) {
       int userNo = user.getUserNo();
-      int total = mypageMapper.getEmoneyCount(userNo);
+      Optional<Integer> opt2 = Optional.ofNullable(mypageMapper.getEmoneyCount(userNo));
+      int total = Integer.parseInt(opt.orElse("0"));
       int display = 5;
       
       List<Integer> balanceList = new ArrayList<>();
-      for(int i = total; i > 0; i--) {
-        balanceList.add(mypageMapper.getEmoneyBalance(Map.of("userNo", userNo, "no", i)));
-      }
       
-      int balance = balanceList.get(total-1);
+      int balance;
       
-      Collections.reverse(balanceList);     // balanceList 역순으로 저장
+      if (total != 0) {
+        for (int i = total; i > 0; i--) {
+          balanceList.add(mypageMapper.getEmoneyBalance(Map.of("userNo", userNo, "no", i)));
+        }
+        int lastIndex = total - 1;
+        balance = balanceList.get(lastIndex);
+        Collections.reverse(balanceList);     // balanceList 역순으로 저장
+        
+    } else {
+        balanceList.add(0);
+        balance = 0;
+    }
       
       myPageUtils.setPaging(page, total, display);
       
@@ -579,7 +618,9 @@ public class MypageServiceImpl implements MypageService {
       model.addAttribute("beginNo", total - (page - 1) * display);
     }
   }
-  /*
+
+  
+  
   @Override
   public Map<String, Object> getAuctionWishList(HttpServletRequest request) {
     
@@ -589,66 +630,144 @@ public class MypageServiceImpl implements MypageService {
     HttpSession session = request.getSession();
     UserDto user = (UserDto)session.getAttribute("user");
 
-    if(user != null) {
-    
+    Map<String, Object> map = new HashMap<>();
 
-    if(session.getAttribute("user") == null) {
+    if(user != null) {
       
       int userNo = user.getUserNo();
-      int total = mypageMapper.getAuctionWishCount();
+      int total = mypageMapper.getAuctionWishCount(userNo);
       int display = 9;
       
       myPageUtils.setPaging(page, total, display);
-      
-      
-      Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
-          , "end", myPageUtils.getEnd() 
-          , "userNo", userNo);
-      
-      List<AuctionDto> auctionWishList = mypageMapper.getAuctionWishList(map);
+  
+      List<AuctionDto> auctionWishList = mypageMapper.getAuctionWishList(Map.of("begin", myPageUtils.getBegin()
+                                                                              , "end", myPageUtils.getEnd() 
+                                                                              , "userNo", userNo));
 
-      for(AuctionDto auctionDto : auctionList) {
-        auctionDto.setHeartClass("fa-regular");
-      }
-    } else {
-      UserDto user = (UserDto) session.getAttribute("user");
-      userNo = user.getUserNo();
-      for(AuctionDto auctionDto : auctionList) {
-        Map<String, Object> wishMap = Map.of("auctionNo", auctionDto.getAuctionNo(), "userNo", userNo);
-        int hasAuctionWishlist = auctionMapper.hasAuctionWishlist(wishMap);
+      for(AuctionDto auctionDto : auctionWishList) {
+        
+        Map<String, Object> auctionWishMap = Map.of("auctionNo", auctionDto.getAuctionNo(),
+                                                    "userNo", userNo);
+        
+        int hasAuctionWish = mypageMapper.hasAuctionWish(auctionWishMap);
+        
         String heartClass;
-        if(hasAuctionWishlist == 0) {
+        if(hasAuctionWish == 0) {
           heartClass = "fa-regular";
         } else {
           heartClass = "fa-solid";
         }
         auctionDto.setHeartClass(heartClass);
       }
+      
+      for(AuctionDto auctionDto : auctionWishList) {
+        auctionDto.setImage(mypageMapper.getMyAuctionImage(auctionDto.getAuctionNo()));
+      }
+      
+      map.put("auctionWishList", auctionWishList);
+      map.put("totalPage", myPageUtils.getTotalPage());
+      
+    } else {
+      
+      map.put("auctionWishList", null);
+      
     }
     
-    for(AuctionDto auctionDto : auctionList) {
-      auctionDto.setImage(auctionMapper.getAuctionimage(auctionDto.getAuctionNo()));
-    }
-    
-    
-    return Map.of("auctionList", auctionList
-                , "totalPage", myPageUtils.getTotalPage());
-  } else {
-    
-    map.put("auctionWishList", null);
+    return map;
     
   }
+  
+  @Override
+  public Map<String, Object> controlAuctionWish(HttpServletRequest request) {
+    int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
+    HttpSession session = request.getSession();
+    UserDto user = (UserDto) session.getAttribute("user");
+    int userNo = user.getUserNo();
     
-  return map;
+    Map<String, Object> map = Map.of("auctionNo", auctionNo, "userNo", userNo);
+    
+    int hasAuctionWish = mypageMapper.hasAuctionWish(map);
+    if(hasAuctionWish == 0) {
+      mypageMapper.insertAuctionWish(map);
+    } else if(hasAuctionWish == 1) {
+      mypageMapper.deleteAuctionWish(map);
+    }
+    return Map.of("hasAuctionWish", hasAuctionWish);
+  }
+
+  @Override
+  public Map<String, Object> getDrawWishList(HttpServletRequest request) {
+    
+    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(opt.orElse("1"));
+    
+    HttpSession session = request.getSession();
+    UserDto user = (UserDto)session.getAttribute("user");
+
+    Map<String, Object> map = new HashMap<>();
+
+    if(user != null) {
+      
+      int userNo = user.getUserNo();
+      int total = mypageMapper.getDrawWishCount(userNo);
+      int display = 9;
+      
+      myPageUtils.setPaging(page, total, display);
   
-}
+      List<DrawDto> drawWishList = mypageMapper.getDrawWishList(Map.of("begin", myPageUtils.getBegin()
+                                                                     , "end", myPageUtils.getEnd() 
+                                                                     , "userNo", userNo));
+
+      for(DrawDto drawDto : drawWishList) {
+        
+        Map<String, Object> drawWishMap = Map.of("drawNo", drawDto.getDrawNo()
+                                               , "userNo", userNo);
+        
+        int hasDrawWish = mypageMapper.hasDrawWish(drawWishMap);
+        
+        String heart;
+        if(hasDrawWish == 0) {
+          heart = "fa-regular";
+        } else {
+          heart = "fa-solid";
+        }
+        drawDto.setHeart(heart);
+      }
+      
+      for(DrawDto drawDto : drawWishList) {
+        drawDto.setImage(mypageMapper.getDrawImage(drawDto.getDrawNo()));
+      }
+      
+      map.put("drawWishList", drawWishList);
+      map.put("totalPage", myPageUtils.getTotalPage());
+      
+    } else {
+      
+      map.put("drawWishList", null);
+      
+    }
+    
+    return map;
+    
+  }
   
-  
-  
-  
-  */
-  
-  
+  @Override
+  public Map<String, Object> controlDrawWish(HttpServletRequest request) {
+    int drawNo = Integer.parseInt(request.getParameter("drawNo"));
+    HttpSession session = request.getSession();
+    UserDto user = (UserDto) session.getAttribute("user");
+    int userNo = user.getUserNo();
+    
+    Map<String, Object> map = Map.of("drawNo", drawNo, "userNo", userNo);
+    
+    int hasDrawWish = mypageMapper.hasDrawWish(map);
+    if(hasDrawWish == 0) {
+      mypageMapper.insertDrawWish(map);
+    } else if(hasDrawWish == 1) {
+      mypageMapper.deleteDrawWish(map);
+    }
+    return Map.of("hasDrawWish", hasDrawWish);
+  }
   
 
 }

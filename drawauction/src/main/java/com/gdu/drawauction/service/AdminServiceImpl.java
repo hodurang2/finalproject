@@ -138,9 +138,7 @@ public class AdminServiceImpl implements AdminService {
   public int removeAdminAuc(HttpServletRequest request) {
       // 파일 삭제
 	    int auctionNo = Integer.parseInt(request.getParameter("auctionNo"));
-	    System.out.println("서비스임플" + auctionNo);
       List<AuctionImageDto> imageList = adminMapper.getImageList(auctionNo);
-      System.out.println("이미지리스트" + imageList);
       for(AuctionImageDto image : imageList) {
         
         File file = new File(image.getPath(), image.getFilesystemName());

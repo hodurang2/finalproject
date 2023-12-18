@@ -55,7 +55,7 @@
           <li>│</li>
           <li><a th:href="@{/user/agree.form}">회원가입</a></li>
           <li>│</li>
-          <li><a th:href="@{/notice/list.do}"> 고객센터</a></li>
+          <li><a th:href="@{/notice/list.do}" class="customer_service"> 고객센터</a></li>
         </ul>
       </th:block>
       <th:block th:if="${session.user != null}">
@@ -108,6 +108,22 @@
 
 	<!--아이콘-->
 	<script th:inline="javascript">
+        
+        // 고객센터 로그인
+    const fnCustomerService = () => {
+        $(document).on('click', '.customer_service', function(event) {
+            let user = /*[[${session.user}]]*/ null;
+            if (user === null) {
+                if (confirm('로그인이 필요한 기능입니다. 로그인하시겠습니까?')) {
+                    location.href = '/user/login.form';
+                }
+        
+                event.preventDefault();
+                return;
+            }
+        });
+    };
+    
     const fnIconsClickEvent = () => {
         $(document).on('click', '.mypage_event', function(event) {
             let user = /*[[${session.user}]]*/ null;
@@ -236,6 +252,7 @@
 	modalOn();
 	isModalOn();
 	modalOff();
+	  fnCustomerService();
     fnIconsClickEvent(); // 함수 호출
     fnMyPage();
     fnGetAlarmList();

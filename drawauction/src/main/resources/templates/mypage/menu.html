@@ -9,9 +9,9 @@
 
   <aside class="my_wrap" th:fragment="side-menu">
   
-    <div class="my_profile">    
+    <div class="my_profile">
       <div id="profile_image">
-        <h2>프로필사진</h2>       <!--/* 사용자 프로필 사진 넣어야 함 */-->
+        <h2 style="text-align: center;">프로필</h2>       <!--/* 사용자 프로필 사진 넣어야 함 */-->
         <!--/*
         <form id="frm_profile_image" method="post" th:action="@{/mypage/addProfileImage.do}" enctype="multipart/form-data">
           <input type="hidden" name="userNo" th:value="${session.user.userNo}">
@@ -23,6 +23,7 @@
             <button type="submit" class="btn_profile_image">프로필 이미지 변경</button>
           </div>
         </form>
+        <div class="user_image" id="user_image"></div>
         */-->
       </div>
       <div th:text="${session.user.nickname}" style="text-align: center;"></div>
@@ -45,8 +46,6 @@
         <li><a th:href="@{/mypage/drawList.do}">그려드림 내역</a></li>
         <li><a th:href="@{/mypage/getEmoneyList.do}">E-MONEY</a></li>
         <li><a th:href="@{/mypage/getWishList.do}">찜목록</a></li>
-        <li><a th:href="@{/mypage/inquiryList.do}">1:1 문의</a></li>
-        <li><a th:href="@{/mypage/reviewList.do}">리뷰</a></li>
         <li><a th:href="@{/mypage/modify.form}">회원정보</a></li>
       </ul>
     </div>     
@@ -56,8 +55,9 @@
       $(() => {
         fnModifyIntroduction();
         fnMenuColor();
+        //fnGetUserImage();
       })
-          
+        
         const fnModifyIntroduction = () => {
           $(document).on('click', '#btn_modify_introduction', () => {
             $.ajax({
@@ -85,6 +85,23 @@
           $(ev.target).addClass('on');
         })
       }
+      
+      /*
+      const fnGetUserImage = () => {
+        $.ajax({
+          type: 'get',
+          url: '/mypage/getUserImage.do',
+          // 응답
+          dataType: 'json',
+          success: (resData) => {
+            let str = '<div class="profile_wrap" data-email="' + userDto.email + '">';
+            str += '<div class="user_image_wrap"><img class="image" th:src="' + userDto.userImageDto.path + '/' + userDto.userImageDto.filesystemName + '"></div>';
+            str += '</div>';
+            $('#user_image').append(str);
+          }
+        })
+      }
+      */
       
     </script>
   

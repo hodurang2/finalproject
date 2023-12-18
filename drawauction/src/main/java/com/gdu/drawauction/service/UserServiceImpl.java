@@ -372,6 +372,7 @@ public class UserServiceImpl implements UserService {
     
     int joinResult = userMapper.insertUser(user);    
     userMapper.insertDefaultEmoney();
+    // mypageMapper.insertUserBasicImage(user.getEmail());
     try {
       
       response.setContentType("text/html; charset=UTF-8");
