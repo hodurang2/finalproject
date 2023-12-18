@@ -169,7 +169,7 @@
   <div th:replace="~{layout/header::header}"></div>
   <div class="wrap">
     
-    <div th:replace="~{/mypage/menu::side-menu}"></div>
+    <div th:replace="~{mypage/menu::side-menu}"></div>
     
     <div class="right_wrap">
       <h3>찜목록</h3>
@@ -203,7 +203,7 @@
       $.ajax({
         // 요청
         type: 'get',
-        url: '/mypage/getWishList.do',
+        url: 'mypage/getWishList.do',
         data: {
                 page: page
                 },

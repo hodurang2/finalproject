@@ -580,7 +580,7 @@ public class UserServiceImpl implements UserService {
 	  
 	  String apiURL = "https://kauth.kakao.com/oauth/authorize";
 	    String response_type = "code";
-	    String redirect_uri = URLEncoder.encode("http://localhost:8080" + request.getContextPath() + "/user/kakao/getKakaoAccessToken.do", "UTF-8");
+	    String redirect_uri = URLEncoder.encode("http://192.168.0.214.9092" + request.getContextPath() + "/user/kakao/getKakaoAccessToken.do", "UTF-8");
 	    String state = new BigInteger(130, new SecureRandom()).toString();
 	  
 	    StringBuilder sb = new StringBuilder();

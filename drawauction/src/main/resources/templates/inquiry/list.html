@@ -90,13 +90,17 @@
 
 <body>
   
-  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
   
   <div class="main_wrap">
   
+  	 <div class="wrap">
+	  <div class="support_title" style="float: left; margin-left: 1%; margin-top: 2%; font-weight: 600;">고객센터</div>  
+  </div>
+  
+  
+  
     <div class="wrap wrap_3">
-
-      <div class="support_title">고객센터</div>
       
        <div class="wrap">
         <div class="support_left_wrap">
@@ -157,7 +161,7 @@
      </div>
   </div>
   
-<div th:replace="~{/layout/footer::footer}"></div>
+<div th:replace="~{layout/footer::footer}"></div>
 
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{/layout/header::head('Home')}"></head>
-<link rel="stylesheet" th:href="@{/css/main.css(ver=1.2)}" />
+<link rel="stylesheet" th:href="@{/css/main.css(ver=1.3)}" />
 
 <style>
  
@@ -31,8 +31,30 @@
 			<div id="auction_list" class="auction_list"></div>
 		</div>
 			
+			
+<div class="textline" style="margin-top:10%; display: flex; align-items: center;">
+    <div style="margin-left: 10px;">
+		 <div style="color:  rgb(84, 186, 125);">●</div>
+        <div class="title" style="font-size: 140%; font-weight: 700; text-align: left; margin-bottom: 1%;">모두에게 그려드림!</div>
+        <div class="title" style="font-size: 60%; color: darkgray; text-align: left;">개성있는 작가들에게 그림을 의뢰해보세요!</div>	
+    </div>
+    	<div style="margin-left: auto;"><a th:href="@{/draw/list.do}" style="color: gray;">전체그려드림보기    ></a></div>
+	</div>
+	
+		<div class="wrap_9">
+			
+			<div id="draw_list" class="draw_list" style="margin-bottom: 10%;"></div>
+		</div>
+			
 		</div>
 
+			
+			
+			
+		</div>
+
+		
+		
 		
 	</div>
 
@@ -116,17 +138,75 @@
         })
       }
       
+      const fnGetDrawList = () => {
+	  $.ajax({
+	    type: 'get',
+	    url: '/draw/getList.do',
+	    data: {
+	      page: page
+	    },
+	    dataType: 'json',
+	    success: (resData) => {
+	      totalPage = resData.totalPage;
+	      $.each(resData.drawList, (i, draw) => {
+		    // 최대 표시 글자 수
+			var maxTitleLength = 19; // 여기에 원하는 글자 수를 넣어주세요.
+			// draw.title이 최대 표시 글자 수보다 길면 ...으로 줄이기
+			var title = draw.title.length > maxTitleLength ? draw.title.substring(0, maxTitleLength) + "..." : draw.title;
+	        let drawNo = draw.drawNo;
+	        let str = '<div class="draw" data-draw_no="' + draw.drawNo + '">';
+			str += '<div class="draw_image" data-draw_no="' + draw.drawNo + '"><img src="' + draw.image.path + '/s_' + draw.image.filesystemName + '"></div>';
+	        
+	        str += '<div class="wish_list"><i class="' + draw.heart + ' fa-heart fa-2xl heart" style="color: #ff0000;"></i></div>';
+	        str += '<div><span class="draw_category"> ' + draw.categoryDto.categoryName + '</span></div>';
+	        str += '<div><span class="draw_title"> ' + title + '</span></div>';
+	        str += '<div><span class="draw_nickname"> ' + draw.userDto.nickname + '</span></div>';
+	        str += '<div class="draw_end_wrap">';
+	        str += '<div><span class="draw_price">가격</span><span class="draw_price2">' +  draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' P</span></div>';
+	        str += '<div id="drawNo" style="display:none">글번호: ' + draw.drawNo + '</div>';
+	        str += '</div>';
+	        str += '</div>';
+	        $('#draw_list').append(str);
+	      })
+	    }
+	  })
+	}
       
-       const fnAuctionDetail = () => {
-        $(document).on('click', '.auction', function(ev) {
-          location.href = '/auction2/detail.do?auctionNo=' + $(this).data('auction_no');
-        })
-        
-      }
+	const fnDrawDetail = () => {
+	  $(document).on('click', '.draw_image', function(){
+	    location.href = '/draw/detail.do?drawNo=' + $(this).data('draw_no');
+	  })
+	}
       
-      fnAuctionDetail();
+      
+    const fnWishListControll = () => {
+	  $(document).off('click', '.heart').on('click', '.heart', function() {
+	    var self = $(this); // Wrap this in jQuery to ensure consistent behavior
+	    $.ajax({
+	      type: 'post',
+	      url: '/draw/WishListControll.do',
+	      data: {
+	        drawNo: self.closest('.draw').data('draw_no')
+	      },
+	      dataType: 'json',
+	      success: (resData) => {
+	        if (resData.addWishResult == 1) {
+	          self.removeClass('fa-regular');
+	          self.addClass('fa-solid');
+	        } else if (resData.removeWishResult == 1) {
+	          self.removeClass('fa-solid');
+	          self.addClass('fa-regular');
+	        }
+	      }
+	    })
+	  })
+	}
+      
       fnGetAuctionList();
       fnHeart();
+      fnGetDrawList();
+      fnDrawDetail();
+      fnWishListControll();
       </script>
   
   

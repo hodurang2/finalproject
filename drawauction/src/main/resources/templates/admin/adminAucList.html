@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head></head>
+<head th:replace="~{admin/menu::head('경매글관리')}"></head>
 
 <body>
 
+	<div th:replace="~{admin/menu::menu}"></div>
     <div class="main_wrap">
 
-        <div class="wrap wrap_3">
+        <div div style="margin-left: 20%; margin-top: 5%;">
           
-            <h2>경매 관리</h2>
+            <h4 style="  margin-bottom: 2%; font-weight: 700;">경매 관리</h4>
             <table border="1" class="table">
                 <thead>
                     <tr>
@@ -24,22 +25,19 @@
 
                 <tbody>
                   <th:block th:each="a,vx:${adminAucList}">
-                    
                     <tr>
-                        <td th:text="${a.auctionNo}"></td>
-                        <td th:text="${a.artDto.title}"></td>
-                        <td th:text="${a.startPrice}"></td>
-                        <td th:text="${a.price}"></td>
-                        <td th:text="${a.buyPrice}"></td>
-                        <td th:text="${a.endAt}"></td>
-   
-                         <td>
-                            <form class="frm_btn">
-                              <input type="hidden" id="auctionNo" name="auctionNo" th:value="${a.auctionNo}">
-                              <button type="button" id="btn_remove" class="delete_btn">삭제</button>
-                            </form>
-                        </td> 
-
+                      <td th:text="${a.auctionNo}"></td>
+                      <td th:text="${a.artDto.title}"></td>
+                      <td th:text="${a.startPrice}"></td>
+                      <td th:text="${a.price}"></td>
+                      <td th:text="${a.buyPrice}"></td>
+                      <td th:text="${a.endAt}"></td>
+                      <td>
+                        <form class="frm_btn">
+                          <input type="hidden" class="auctionNo" name="auctionNo" th:value="${a.auctionNo}">
+                          <button type="button" class="delete_btn">삭제</button>
+                        </form>
+                      </td>
                     </tr>
                   </th:block>
                 </tbody>
@@ -55,19 +53,32 @@
        <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
        <script th:inline="javascript">
               
-        var frmBtn = $('.frm_btn');
+        
         
         const fnRemove = () => {
-          $('.delete_btn').click(() => {
-            if(confirm('해당 게시글을 삭제할까요?')){
-              frmBtn.attr('action', '/admin/removeAdminAuc.do');
-              frmBtn.attr('method', 'post');
-              frmBtn.submit();
+          $('.delete_btn').click((ev) => {
+            if (confirm('해당 게시글을 삭제할까요?')) {
+              // 클릭한 삭제 버튼의 부모 폼에서 경매 번호를 가져옴
+              const auctionNo = $(ev.currentTarget).closest('.frm_btn').find('.auctionNo').val();
+              // 동적으로 폼을 생성하고 경매 번호를 포함시킴
+              const form = $('<form>', {
+                action: '/admin/removeAdminAuc.do',
+                method: 'post'
+              }).append($('<input>', {
+                type: 'hidden',
+                name: 'auctionNo',
+                value: auctionNo
+              }));
+               // 폼을 body에 추가하고 서버로 제출
+              $('body').append(form);
+              form.submit();
             }
-          })
+              alert('게시글이 삭제되었습니다.');
+          });
         }
-              
-        fnRemove();
+    
+      // 페이지가 로드되면 삭제 이벤트를 연결
+      $(document).ready(fnRemove);
 
        </script>
 
