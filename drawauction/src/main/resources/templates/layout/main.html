@@ -148,7 +148,7 @@
 	    dataType: 'json',
 	    success: (resData) => {
 	      totalPage = resData.totalPage;
-	      $.each(resData.drawList, (i, draw) => {
+	      $.each(resData.drawList.slice(0, 4), (i, draw) => {
 		    // 최대 표시 글자 수
 			var maxTitleLength = 19; // 여기에 원하는 글자 수를 넣어주세요.
 			// draw.title이 최대 표시 글자 수보다 길면 ...으로 줄이기

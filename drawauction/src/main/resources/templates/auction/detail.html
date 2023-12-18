@@ -13,19 +13,19 @@
   <div class="main_wrap">
 
   <div class="wrap">
-		
+      
     <div class="wrap wrap_2">
 
     <div class="grid-container">
-		<div class="grid-item1">
-			<div class="artist">
-			        <div>작가사진</div>
-			        <div th:text="|${auction.artDto.sellerDto.nickname}|" th:value="${session.user.nickname}" id="nickname" class="nick"></div>
-			        <div th:text="|${auction.artDto.sellerDto.introduction}|" class="intro"></div>
-			</div>
-		</div>
-		<div class="grid_item">
-		  <div class="mody_delete">
+      <div class="grid-item1">
+         <div class="artist">
+                 <div>작가사진</div>
+                 <div th:text="|${auction.artDto.sellerDto.nickname}|" th:value="${session.user.nickname}" id="nickname" class="nick"></div>
+                 <div th:text="|${auction.artDto.sellerDto.introduction}|" class="intro"></div>
+         </div>
+      </div>
+      <div class="grid_item">
+        <div class="mody_delete">
         <th:block th:if="${session.user != null}">
             <th:block th:if="${session.user.userNo == auction.artDto.sellerDto.userNo}">
                 <th:block th:if="${bidCount == 0}">
@@ -37,10 +37,10 @@
                   </th:block>
               </th:block>
           </th:block>
-		    </div>
-		</div>
-		</div>
-		
+          </div>
+      </div>
+      </div>
+      
     <div class="text-center mb-5">
        
     </div>
@@ -48,7 +48,7 @@
     <!-- 첫 번째 그리드 -->
     <div class="grid-container">
       <div class="grid-item1">
-       	<div>
+          <div>
           <th:block th:if="${#lists.isEmpty(imageList)}">
             <div>첨부 없음</div>          
           </th:block>
@@ -60,10 +60,10 @@
             </th:block>
           </th:block>
         </div>
-	
-		  </div>
-		<div class="grid_item"> <!--작품명, 시작가 등등..-->
-  		<div class="grid_2" style="text-align: right;">
+   
+        </div>
+      <div class="grid_item"> <!--작품명, 시작가 등등..-->
+        <div class="grid_2" style="text-align: right;">
         <input type="hidden" id="auctionStatus" th:value="${auction.status}">
         <th:block th:if="${auction.status == 0}">
           <div class="auction_ongoing">경매진행중</div>        
@@ -74,59 +74,59 @@
         <div>
           <i id="wish_list" class="fa-regular fa-heart fa-2xl" style="color: rgb(84, 186, 125); margin-bottom: 15%;"></i>      
         </div>
-  		</div>
-			
-			<div th:text="|${auction.artDto.title}|" class="art_title"></div> 
-			
-			<div th:text="${auction.artDto.categoryDto.categoryName}|" class="category"></div>
-			
-			
-			<div class="grid_2">
-				<div class="sub_title">시작가</div>
-				<div th:text="|${#numbers.formatInteger(auction.startPrice, 1, 'COMMA')}P|" class="sub_contents"></div>
-				<input type="hidden" id="startPrice" th:value="${auction.startPrice}">
-			</div>
+        </div>
+         
+         <div th:text="|${auction.artDto.title}|" class="art_title"></div> 
+         
+         <div th:text="${auction.artDto.categoryDto.categoryName}|" class="category"></div>
+         
+         
+         <div class="grid_2">
+            <div class="sub_title">시작가</div>
+            <div th:text="|${#numbers.formatInteger(auction.startPrice, 1, 'COMMA')}P|" class="sub_contents"></div>
+            <input type="hidden" id="startPrice" th:value="${auction.startPrice}">
+         </div>
 
-			<div class="grid_2">
-				<div class="sub_title">현재입찰가</div>
+         <div class="grid_2">
+            <div class="sub_title">현재입찰가</div>
         <div id="nowPrice"></div>
-			</div>	
+         </div>   
 
-			<div class="grid_2">
-			    <div class="sub_title">즉시구매가</div>
-			    <div th:text="| ${#numbers.formatInteger(auction.buyPrice, 1, 'COMMA')}P|" class="sub_contents_now"></div>
-			    <input type="hidden" id="buyPrice" th:value="${auction.buyPrice}">
-			</div>
-			
-			<div class="grid_2">
-				<div class="sub_title">마감일</div>
+         <div class="grid_2">
+             <div class="sub_title">즉시구매가</div>
+             <div th:text="| ${#numbers.formatInteger(auction.buyPrice, 1, 'COMMA')}P|" class="sub_contents_now"></div>
+             <input type="hidden" id="buyPrice" th:value="${auction.buyPrice}">
+         </div>
+         
+         <div class="grid_2">
+            <div class="sub_title">마감일</div>
         <div id="countDown"></div>
-			</div>
-			
-			<div class="grid_2">
-				<div class="sub_title">작품유형</div>
-				<th:block th:if="${auction.artDto.artType} == 0">
+         </div>
+         
+         <div class="grid_2">
+            <div class="sub_title">작품유형</div>
+            <th:block th:if="${auction.artDto.artType} == 0">
           <div th:text="디지털"></div>
         </th:block>
-				<th:block th:if="${auction.artDto.artType} == 1">
+            <th:block th:if="${auction.artDto.artType} == 1">
           <div th:text="실물"></div>
         </th:block>
-			</div>
-			
-			<form id="frm_buy_chat">
-    		<div style="margin-top: 10%;">
+         </div>
+         
+         <form id="frm_buy_chat">
+          <div style="margin-top: 10%;">
           <input type="hidden" id="auctionNo" name="auctionNo" th:value="${auction.auctionNo}">
           <th:block th:if="${session.user != null}">
             <input type="hidden" name="userNo" id="userNo" th:value="${session.user.userNo}">
           </th:block>
-    			<button class="btn_buy" id="btn_orderPayment" type="submit" style="background-color: rgb(84, 186, 125);">즉시구매</button>
-    			<button class="btn_buy" id="btn_orderBid" type="button" style="background-color: black; color: white;">입찰하기</button>
-    		</div>
+             <button class="btn_buy" id="btn_orderPayment" type="submit" style="background-color: rgb(84, 186, 125);">즉시구매</button>
+             <button class="btn_buy" id="btn_orderBid" type="button" style="background-color: black; color: white;">입찰하기</button>
+          </div>
       </form>
 
-		</div>
-		
-	  <div style="margin-top: 10%; margin-bottom: 40%;">
+      </div>
+      
+     <div style="margin-top: 10%; margin-bottom: 40%;">
       <div class="art_detail">작품정보</div>
         <div th:text="|작품 가로길이(cm) : ${auction.artDto.width}|"></div>
         <div th:text="|작품 세로길이(cm) : ${auction.artDto.height}|"></div>
@@ -139,8 +139,8 @@
         <th:block th:if="${not #strings.isEmpty(auction.artDto.contents)}">
           <div th:text="${auction.artDto.contents}"></div>
         </th:block>
-			
-		</div>
+         
+      </div>
     </div>
 
  
@@ -153,7 +153,7 @@
           <h2>입찰</h2>
         </div>
         <div class="close-area">X</div>
-        <div class="content">
+        <div>
           <div class="sub_title">시작가</div>
           <div th:text="|${#numbers.formatInteger(auction.startPrice, 1, 'COMMA')}P|" class="sub_contents"></div>
           <div class="sub_title">현재입찰가</div>
@@ -273,7 +273,7 @@
           }
         })
       }
-  	  
+       
       const fnOrderPayment = () => {
         $('#btn_orderPayment').click((ev) => {
           if(user === null){
@@ -364,15 +364,7 @@
               return;
             }
           }
-          console.log(price2);
-          console.log(startPrice);
-          console.log(buyPrice);
-          if($('#price').val() < startPrice) {
-            alert('시작가보다는 높게 입찰해야합니다.');
-            ev.preventDefault();
-            return;
-          }
-          fnSend();
+
         })
       }
           
@@ -415,9 +407,9 @@
       var deadline = new Date(/*[[${auction.endAt}]]*/ null);
       var status = getId('auctionStatus'); 
       var bidPrice;
-      var startPrice = $('#startPrice').val();
-      var buyPrice = $('#buyPrice').val();
-      var price2 = $('#price').val();
+      var startPrice = parseInt($('#startPrice').val(), 10);
+      var buyPrice = parseInt($('#buyPrice').val(), 10);
+      var price = parseInt($('#price').val(), 10);
       
       function fnConnect() {
         var ws = new WebSocket("ws://" + location.host + "/auction/[[${auction.auctionNo}]]");
@@ -454,16 +446,37 @@
     price.onkeyup = function(ev){
       console.log('ev.keyCode:' + ev.keyCode);      
       if(ev.keyCode == 13){
+        if($('#price').val() < startPrice) {
+            alert('시작가보다는 높게 입찰해야합니다.');
+            ev.preventDefault();
+            return;
+          }else if(buyPrice != 0 && $('#price').val() > buyPrice){
+            alert('즉시 구매가보다는 낮게 입찰해야합니다.');
+            ev.preventDefault();
+            return;
+          }
+        
         fnSend();
       }
     }
     
-    btnSend.onclick = function(){
+    btnSend.onclick = function(ev){
+      console.log($('#price').val());
+      console.log(startPrice);
+      if($('#price').val() < startPrice) {
+            alert('시작가보다는 높게 입찰해야합니다.');
+            ev.preventDefault();
+            return;
+         } else if(buyPrice != 0 && $('#price').val() > buyPrice){
+            alert('즉시 구매가보다는 낮게 입찰해야합니다.');
+            ev.preventDefault();
+            return;
+          }
       fnSend();
     }
     
     function fnSend(){
-      if(price.value.trim() != ''){
+      if(price.value != ''){
         data.nickname = nickname.value;
         data.auctionNo = auctionNo.value;
         data.bidderNo = bidderNo;
