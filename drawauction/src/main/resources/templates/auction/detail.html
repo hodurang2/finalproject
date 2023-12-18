@@ -20,7 +20,7 @@
 		<div class="grid-item1">
 			<div class="artist">
 			        <div>작가사진</div>
-			        <div th:text="|${auction.artDto.sellerDto.nickname}|" class="nick"></div>
+			        <div th:text="|${auction.artDto.sellerDto.nickname}|" th:value="${session.user.nickname}" id="nickname" class="nick"></div>
 			        <div th:text="|${auction.artDto.sellerDto.introduction}|" class="intro"></div>
 			</div>
 		</div>
@@ -64,6 +64,7 @@
 		  </div>
 		<div class="grid_item"> <!--작품명, 시작가 등등..-->
   		<div class="grid_2" style="text-align: right;">
+        <input type="hidden" id="auctionStatus" th:value="${auction.status}">
         <th:block th:if="${auction.status == 0}">
           <div class="auction_ongoing">경매진행중</div>        
         </th:block>
@@ -87,7 +88,7 @@
 
 			<div class="grid_2">
 				<div class="sub_title">현재입찰가</div>
-				<div th:text="|${#numbers.formatInteger(auction.price, 1, 'COMMA')}P|" class="sub_contents"></div>
+        <div id="nowPrice"></div>
 			</div>	
 
 			<div class="grid_2">
@@ -96,6 +97,7 @@
 			</div>
 			
 			<div class="grid_2">
+        <div id="countDown"></div>
 				<div class="sub_title">마감일</div>
 				<div th:text="| ${auction.endAt}"></div>
 			</div>
@@ -154,14 +156,16 @@
           <div class="sub_title">시작가</div>
           <div th:text="|${#numbers.formatInteger(auction.startPrice, 1, 'COMMA')}P|" class="sub_contents"></div>
           <div class="sub_title">현재입찰가</div>
-          <div th:text="|${#numbers.formatInteger(auction.price, 1, 'COMMA')}P|" class="sub_contents"></div>
+          <div id="nowPrice2" class="sub_contents"></div>
           <div class="sub_title">마감일</div>
           <div th:text="| ${auction.endAt}"></div>
+          <div id="countDown"></div>
           <div class="sub_title">입찰 상황</div>
           <div th:text="| ${bidCount}"></div>
           <form id="frm_bid">
             <label for="bidMoney" class="sub_title">입찰 가격 입력하기</label>
             <input type="number" name="bidMoney" id="bidMoney" th:value="${auction.price}" step="100">
+            <input type="number" id="price" th:value="${price}">
             <button id="btn_addBid" type="button" style="background-color: black; color: white;">입찰하기</button>
             <input type="hidden" name="auctionNo" id="auctionNo" th:value="${auction.auctionNo}">
             <th:block th:if="${session.user != null}">
@@ -282,6 +286,11 @@
               return;
             }
           }
+          if($('#auctionStatus').val() == 1) {
+          alert('경매가 끝난작품입니다.');
+          e.preventDefault();
+          return;
+          }
           if(userNo != auctionUserNo) {
             $('#frm_buy_chat').attr('action', '/auction2/orderPayment.form');
             $('#frm_buy_chat').attr('method', 'get');
@@ -316,6 +325,11 @@
       
       btnModalBid.addEventListener("click", e => {
         if(userNo === 0){
+          e.preventDefault();
+          return;
+        }
+        if($('#auctionStatus').val() == 1) {
+          alert('경매가 끝난작품입니다.');
           e.preventDefault();
           return;
         }
@@ -374,7 +388,7 @@
     </script>
     
     </div>
-    <!--/*
+    
     <script th:inline="javascript">
     
       function getId(id){
@@ -385,79 +399,139 @@
       
       var socket = null;
       var nickname = getId('nickname');
-      var btnSend = getId('btnSend');
+      var btnSend = getId('btn_addBid');
       var bid = getId('bid');
       var price = getId('price');
       var auctionNo = getId('auctionNo2');
-      var bidderNo = /*[[${session.user.userNo}]]*/ null;
+      var bidderNo = /*[[${session.user != null ? session.user.userNo : null}]]*/ null;
+      var nowPrice = getId('nowPrice');
+      var nowPrice2 = getId('nowPrice2');
+      var countdown = getId('countDown');
+      var deadline = new Date(/*[[${auction.endAt}]]*/ null);
+      var status = getId('auctionStatus'); 
+      var bidPrice;
+      
       
       function fnConnect() {
         var ws = new WebSocket("ws://" + location.host + "/auction/[[${auction.auctionNo}]]");
-        console.log(auctionNo.value);
         socket = ws;
         ws.onopen = function() {
-          var datas = {
-            auctionNo: auctionNo.value
-        };
-        socket.send(JSON.stringify(datas));
-        console.log('웹소켓 연결됨');
-        } 
+          console.log('웹소켓 연결됨');
+        }
         ws.onmessage = function(msg){
           var data = JSON.parse(msg.data);
-          var css;
-        
-          console.log('data:' + data);
-          console.log('data.nickname:' + data.nickname);
-          if(data.nickname == nickname.value){
-            css = 'class=me';
-          } else {
-            css = 'class=other';
+          if (data.nickname !== null) {
+            var css;
+            if (data.nickname == nickname.value) {
+                css = 'class=me';
+            } else {
+                css = 'class=other';
+            }
           }
-          
-          var item = `<div ${css} >
-                          <span><b>${data.nickname}</b></span> [ ${data.bidAt} ]<br/>
-                            <span>현재 가격${data.bidPrice} P</span><br/><span>입력한 가격 ${data.price} P</span> 
-                  </div>`;
-          console.log('bid.innerHTML:' + bid.innerHTML);      
-          bid.innerHTML = item;
-          bid.scrollTop=bid.scrollHeight;//스크롤바 하단으로 이동
+            var formattedBidPrice = new Intl.NumberFormat('ko-KR').format(data.bidPrice);
+            console.log(formattedBidPrice);
+            var onitem = `<span>  ${formattedBidPrice}P</span>`;
+            nowPrice.innerHTML = onitem;
+            nowPrice.scrollTop = nowPrice.scrollHeight;
+            nowPrice2.innerHTML = onitem;
+            nowPrice2.scrollTop = nowPrice.scrollHeight;
+            
         }
       ws.onclose = function(ev){
-        console.log('웹소켓 닫힘');
-        setTimeout( function(){ fnConnect(); }, 1000);
+      console.log('웹소켓 닫힘');
+      setTimeout( function(){ fnConnect(); }, 1000);
       };
-      ws.onerror = function(ev){console.log('에러: ', err); }; 
-      }
+      ws.onerror = function(ev){console.log('에러 '); }; 
+    }
     
-      price.onkeyup = function(ev){
-        console.log('ev.keyCode:' + ev.keyCode);      
-        if(ev.keyCode == 13){
-          send();
-        }
+    price.onkeyup = function(ev){
+      console.log('ev.keyCode:' + ev.keyCode);      
+      if(ev.keyCode == 13){
+        fnSend();
       }
+    }
     
-      btnSend.onclick = function(){
-        send();
-      }
+    btnSend.onclick = function(){
+      fnSend();
+    }
     
-      function send(){
-        if(price.value.trim() != ''){
-          data.nickname = nickname.value;
-          data.auctionNo = auctionNo.value;
-          data.bidderNo = bidderNo;
-          data.price = price.value;
-          data.bidAt = new Date().toLocaleString();
-          var temp = JSON.stringify(data);
-          socket.send(temp);
-        }
-        console.log('temp:' + temp);
-        price.value ='';
+    function fnSend(){
+      if(price.value.trim() != ''){
+        data.nickname = nickname.value;
+        data.auctionNo = auctionNo.value;
+        data.bidderNo = bidderNo;
+        data.price = price.value;
+        data.bidAt = new Date().toLocaleString();
+        var temp = JSON.stringify(data);
+        socket.send(temp);
       }
-      
-    fnConnect();
-            
+      console.log('temp:' + temp);
+      bidPrice = price.value;
+      price.value ='';
+      //sendDetailUpdateMessage();
+    }
+    /*
+    function sendDetailUpdateMessage(){
+      var listSocket = new WebSocket("ws://" + location.host + "/auctionList");
+      listSocket.onopen = function(msg) {
+        console.log('웹소켓 연결됨');
+        data = {};
+        data.auctionNo = auctionNo.value;
+        data.bidPrice = bidPrice;
+        data.endAt = deadline;
+        var temp2 = JSON.stringify(data);
+        listSocket.send(temp2);
+      };
+      listSocket.onmessage = function(msg) {
+        console.log('웹소켓 메세지: ' + JSON.parse(msg.data));
+          
+      };
+      listSocket.onclose = function(ev) {
+          console.log('웹소켓 닫힘');
+          setTimeout(function() { fnConnect(); }, 1000);
+      };
+      listSocket.onerror = function(ev) {
+          console.log('에러 ');
+      };
+    }
+    */
+    function calculateTimeRemaining() {
+    var now = new Date();
+    var timeDifference = deadline - now;
+    if (timeDifference <= 0) {
+        // 마감일이 지났을 경우
+        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    }
+
+    // 차이를 시, 분, 초로 변환
+    var seconds = Math.floor(timeDifference / 1000);
+    var minutes = Math.floor(seconds / 60);
+    var hours = Math.floor(minutes / 60);
+    var days = Math.floor(hours / 24);
+
+    hours %= 24;
+    minutes %= 60;
+    seconds %= 60;
+
+    return { days, hours, minutes, seconds };
+    }
+
+    function updateCountdown() {
+    var timeRemaining = calculateTimeRemaining();
+
+    // 결과를 표시할 요소에 접근해서 표시
+    countdown.innerHTML = ` 마감일 : 
+                            ${timeRemaining.days} 일 
+                            ${timeRemaining.hours} 시  
+                            ${timeRemaining.minutes} 분  
+                            ${timeRemaining.seconds} 초`;
+    }
+    
+    setInterval(updateCountdown, 1000); // 1초마다 업데이트
+    updateCountdown();                  // 초기에 한번 호출하여 초기 상태를 표시 
+    fnConnect();  
+        
   </script>
-  */-->
     
   </div>
   

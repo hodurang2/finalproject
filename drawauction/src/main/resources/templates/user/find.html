@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{/layout/header::head('아이디/비밀번호 찾기')}"></head>
+<head th:replace="~{layout/header::head('아이디/비밀번호 찾기')}"></head>
 
 <style>
 	
@@ -14,13 +14,13 @@
 
 <body>
   
-  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
   
   <div class="main_wrap">
 	  
 	  <div class="wrap wrap_5">
 		  <form method="post" th:action="@{/user/findId.do}">
-		  <h2 class="title">아이디 찾기</h2>
+		  <h2 class="title" style="margin-top: 10%;">아이디 찾기</h2>
 		        <div class="mb-3 row">
         <label for="name" class="col-sm-3 col-form-label">이름</label>
         <div class="col-sm-9"><input type="text" name="name" id="name" placeholder="이름" class="form-control"></div>
@@ -58,7 +58,7 @@
 </div>
 
 	<div class="d-grid gap-2 mb-3">
-		<button class="btn btn-outline-success btn-lg" type="button" id="btn_findPw">비밀번호 찾기</button>
+		<button class="btn btn-outline-success btn-lg" type="button" id="btn_findPw" style="margin-bottom: 10%;">비밀번호 찾기</button>
 	</div> 
 	      
 		  
@@ -94,7 +94,7 @@
 </script>
 
 
-  <div th:replace="~{/layout/footer::footer}"></div>
+  <div th:replace="~{layout/footer::footer}"></div>
 
 </body>
 </html>

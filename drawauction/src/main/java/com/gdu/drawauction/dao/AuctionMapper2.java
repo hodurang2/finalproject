@@ -32,6 +32,7 @@ public interface AuctionMapper2 {
   public int insertRealBid(Map<String, Object> bidMap);
   public int insertDigitalBid(Map<String, Object> bidMap);
   public int updateStatus(int auctionNo);
-  public BidDto getBidPrice(int auctionNo);
-  public int insertBid(Map<String, Object> bidMap);
+  public int getBidPrice(int auctionNo);
+  public int insertBid(BidDto bidDto);
+  public int insertBid2(Map<String, Object> bidMap);
 }

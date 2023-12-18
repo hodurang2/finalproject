@@ -1,29 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{/admin/menu::head('홈')}"></head>
+<head th:replace="~{admin/menu::head('홈')}"></head>
 
 
 <body>
 	
-    <div th:replace="~{/admin/menu::menu}"></div>
+    <div th:replace="~{admin/menu::menu}"></div>
 
 
-	<div class="wrap">
+	<div style="margin-left: 20%; margin-top: 5%;">
 
-<div class="text-center my-3">
-    <form method="get" th:action="@{/admin/search.do}">
-        <div class="input-group mb-3">
-            <select class="form-select" name="column">
-                <option value="EMAIL">이메일</option>
-                <option value="NAME">이름</option>
-            </select>
-            <input type="text" name="query" class="form-control" placeholder="검색어 입력">
-            <button type="submit" class="btn btn-outline-primary btn-sm">검색</button>
-        </div>
-    </form>
-</div>
-
+<h4 style=" margin-bottom: 2%; font-weight: 700;">사용자관리</h4>
       
  <table border="1" class="table">
         <thead>
@@ -74,7 +62,6 @@
 
 		
 	</div>
-   			<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 		   <script th:inline="javascript">
 	   
 				    var frmBtn = $('#frm_btn');

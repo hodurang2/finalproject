@@ -16,21 +16,12 @@
     margin-left:1%;
   }
   
-  .draw_list {
+  .auction_list, .draw_list {
     margin: 10px auto; /* 위아래 여백은 유지하면서 좌우 여백을 auto로 설정하여 가운데 정렬 */
-    text-align: center;
     width: 100%; /* 추가: 전체 폭을 100%로 설정 */
     
   }
-  
-  .auction_list {
-    margin: 10px auto; /* 위아래 여백은 유지하면서 좌우 여백을 auto로 설정하여 가운데 정렬 */
-    text-align: center;
-    width: 100%; /* 추가: 전체 폭을 100%로 설정 */
-    
-  }
-  
-  .auction_heart_div {
+  .auction_heart_div, .wish_list {
     width: 30px;
     height: 30px;
     display: inline-flex;
@@ -40,71 +31,24 @@
     padding-top: 10px;
     float: right;
   }
-  .auction_heart_div i {
+  .auction_heart_div, .wish_list i {
     color: #e11414;
   }
-  
-  .wish_list {
-    width: 24px;
-    height: 24px;
-    display: inline-flex;
-    justify-content: space-between;
-    text-align: center;
-    padding-right: 10px;
-    padding-top: 10px;
-    float: right;
-  }
-  
-  .heart i {
-    color: blue;
-  }
-  
-  
-  .auction_category {
+  .auction_category, .draw_category {
     margin-left: 10px;
     color: grey;
     font-size: 11px;
   }
-  
-  .draw_category{
-	margin-left: 10px;
-    color: grey;
-    font-size: 11px;
-  }
-  
-  
-  .auction_title {
+  .auction_title, .draw_title {
     margin-left: 10px;
     font-weight: 600;
     font-size: 18px;
   }
-  
-  .draw_title {
-    margin-left: 10px;
-    font-weight: 600;
-    font-size: 18px;	  
-  }
-  
-  .auction_nickname {
+  .auction_nickname, .draw_nickname {
     margin-left: 10px;
     color: grey;
     font-size: 13px;
   }
-  
-   .draw_nickname {
-    margin-left: 10px;
-    color: grey;
-    font-size: 13px;	   
-   }
-  
-   .draw_price {
-    margin-left: 10px;
-    color: grey;
-    font-size: 13px;	
-	   
-   }
-   
-  
   .first_auction {
     margin-left: 10px;
     font-weight: 550;
@@ -119,12 +63,12 @@
     justify-content: center; /* 가로 방향으로 가운데 정렬 */
     gap: 10px; /* 애들 사이 간격 설정 */
    }
- 
+   
 .auction_image{
 	text-align: center;
-} 
- 
- 
+}  
+   
+   
 .auction_image img {
     width: 260px;
     height: 170px; 
@@ -143,18 +87,10 @@
     margin: 1.5%;
   }
   
-    .draw {
-    width: 268px;
-    height: 40%;
-    border-radius: 5px;
-    text-align: left;
-    margin: 1.5%;
-  }
-  
   .auction div {
     margin-bottom: 2%;
   }
- 
+  s
   .auction_end_wrap div {
     font-size: 13px;
     margin-right: 10px;
@@ -199,30 +135,9 @@
     border-radius: 4px;
     margin-left: 10px;
   }
-  .searchWord {
-  width: 250px;
-  display :inline-block;
-  text-align: left;
-}
-.search {
-  width: 350px;
-  margin-right: 400px;
-  margin-top: 40px;
-  display: inline-flex;
-}
 
-.btn_search {
-  width: 37px;
-  height: 37px;
-  background-color: #f8f9fa;
-  border: none;
-}
-.search_icon {
-  width: 40px;
-  height: 40px;
-  padding-right: 20px;
-  padding-top: 10px;
-}
+
+
 .form-select {
   width: 120px;
 }
@@ -232,70 +147,3 @@
 .text-center {
   display: inline-flex;
 }
-
-
-  .draw_list {
-    margin: 10px auto; /* 위아래 여백은 유지하면서 좌우 여백을 auto로 설정하여 가운데 정렬 */
-    text-align: center;
-    width: 100%; /* 추가: 전체 폭을 100%로 설정 */
-    
-  }
-  
-  .draw_category {
-    margin-left: 10px;
-    color: grey;
-    font-size: 11px;
-  }
-  .draw_title {
-    margin-left: 10px;
-    font-weight: 600;
-    font-size: 18px;
-  }
-  .draw_nickname {
-    margin-left: 10px;
-    color: grey;
-    font-size: 13px;
-  }
-  
-  .draw_list {
-    margin: 10px auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center; /* 가로 방향으로 가운데 정렬 */
-    gap: 10px; /* 애들 사이 간격 설정 */
-   }
- 
-.draw_image{
-	text-align: center;
-} 
- 
- 
-.draw_image img {
-    width: 260px;
-    height: 170px; 
-    text-align: center;
-    margin-bottom: 5%;
-    object-fit: cover; /* 이미지를 꽉 채우도록 설정 */
-    border: 1px lightgray solid;
-    border-radius: 7px; /* 이미지를 감싸는 컨테이너의 모서리를 둥글게 만듭니다. (선택사항) */
-}
-
-  .draw {
-    width: 268px;
-    height: 40%;
-    border-radius: 5px;
-    text-align: left;
-    margin: 1.5%;
-  }
-  
-  .draw div {
-    margin-bottom: 2%;
-  }
-
-
-  .draw:hover {
-    background-color: silver;
-    cursor: pointer;
-  }
-
- 

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 	
-<head th:replace="~{/layout/header::head('로그인')}"></head>
+<head th:replace="~{layout/header::head('로그인')}"></head>
 
 <style>
 	
-		.atag {
+	.atag {
 			font-size: 85%;
 	  color: gray;
 	  text-decoration: none; /* Remove underline */
@@ -23,13 +23,18 @@
 		text-align: center;
 	}
 	
+	
+	img{
+		width: 80px;
+		height: 80px;
+	}
 
 
 </style>
 
 <body>
   
-  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
   
   <div class="main_wrap">
 
@@ -83,15 +88,15 @@
 
 			<div class="socialTitle" style="margin: 7%; margin-bottom: 10%;">소셜 로그인</div>
 
-			<div class="text-center" style="margin-bottom: 20%;">
+			<div style="margin-bottom: 20%; text-align: center;">
 				<!--/* 네이버 로그인 */-->
-			    <a th:href="${naverLoginURL}"><img th:src="@{/image/naver아이콘.png}" width="16%"></a>
+			    <a th:href="${naverLoginURL}"><img th:src="@{/image/naver아이콘.png}"></a>
 			
 			    <!--/* 간격 조절 */-->
-			    <span style="margin-right: 20px;"></span>
+			    <span style="margin-right: 10px;"></span>
 			
 			    <!--/* 카카오 로그인 */-->
-			    <a th:href="${kakaoLoginURL}"><img th:src="@{/image/kakao아이콘.png}" width="16%"></a>
+			    <a th:href="${kakaoLoginURL}"><img th:src="@{/image/kakao아이콘.png}"></a>
 			
 		</div>
 
@@ -100,7 +105,7 @@
     
   </div>
   
-  	<div th:replace="~{/layout/footer::footer}"></div>
+  	<div th:replace="~{layout/footer::footer}"></div>
   
   </body>
   </html>

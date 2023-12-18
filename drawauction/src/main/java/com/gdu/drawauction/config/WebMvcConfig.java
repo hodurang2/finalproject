@@ -24,7 +24,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     registry.addInterceptor(requiredLoginInterceptor)
       .addPathPatterns("/user/mypage.form", "/user/modifyPw.form")
       .addPathPatterns("/draw/write.form", "/draw/edit.form", "/draw/remove.do", "/draw/WishListControll.do", "/draw/orderPayment.form")
-      .addPathPatterns("/auction/write.form")
+      .addPathPatterns("/auction/write.form", "/auction2/detail.do")
       .addPathPatterns("/mypage/detail.do", "/mypage/modify.form", "/mypage/modifyPw.form", "/mypage/getAuctionBidList.do", "/mypage/getAuctionSalesList.do"
                      , "/mypage/drawList.do", "/mypage/getMyDrawList.do", "/mypage/getDrawOrderList.do", "/mypage/getDrawReceivedOrderList.do"
                      , "/mypage/charge.do", "/mypage/getEmoneyList.do"
@@ -40,12 +40,18 @@ public class WebMvcConfig implements WebMvcConfigurer {
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
     registry.addResourceHandler("/**")
       .addResourceLocations("classpath:/static/", "classpath:/templates/");
-    registry.addResourceHandler("/draw/**")
-      .addResourceLocations("file:/draw/");
-    registry.addResourceHandler("/auction/**")
-    .addResourceLocations("file:/auction/");
-    registry.addResourceHandler("/inquiry/**")
-    .addResourceLocations("file:/inquiry/");
+    registry.addResourceHandler("/drawauction/draw/**")
+      .addResourceLocations("file:/drawauction/draw/");
+    registry.addResourceHandler("/drawauction/auction/**")
+    .addResourceLocations("file:/drawauction/auction/");
+    registry.addResourceHandler("/drawauction/inquiry/**")
+    .addResourceLocations("file:/drawauction/inquiry/");
+    registry.addResourceHandler("/drawauction/draw/**")
+      .addResourceLocations("file:/drawauction/draw/");
+    registry.addResourceHandler("/drawauction/auction/**")
+    .addResourceLocations("file:/drawauction/auction/");
+    registry.addResourceHandler("/drawauction/inquiry/**")
+    .addResourceLocations("file:/drawauction/inquiry/");
   }
   
 }

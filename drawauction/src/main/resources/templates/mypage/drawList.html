@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{/layout/header::head('그려드림내역')}"></head>
-<link rel="stylesheet" th:href="@{/css/myDrawList.css(ver=1.1)}" />
+<head th:replace="~{layout/header::head('그려드림내역')}"></head>
+<link rel="stylesheet" th:href="@{/css/myDrawList.css(ver=1.0)}" />
 
 <body>
   
-  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
   <div class="wrap">
-    <div th:replace="~{/mypage/menu::side-menu}"></div>
+    <div th:replace="~{mypage/menu::side-menu}"></div>
     
     <div class="right_wrap">
       <h3>그려드림 내역</h3>
@@ -369,7 +369,7 @@
     
   </script>
   
-  <div th:replace="~{/layout/footer::footer}"></div>
+  <div th:replace="~{layout/footer::footer}"></div>
 
 </body>
 </html>
