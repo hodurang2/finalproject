@@ -84,6 +84,7 @@
 			<div class="grid_2">
 				<div class="sub_title">시작가</div>
 				<div th:text="|${#numbers.formatInteger(auction.startPrice, 1, 'COMMA')}P|" class="sub_contents"></div>
+				<input type="hidden" id="startPrice" th:value="${auction.startPrice}">
 			</div>
 
 			<div class="grid_2">
@@ -94,12 +95,12 @@
 			<div class="grid_2">
 			    <div class="sub_title">즉시구매가</div>
 			    <div th:text="| ${#numbers.formatInteger(auction.buyPrice, 1, 'COMMA')}P|" class="sub_contents_now"></div>
+			    <input type="hidden" id="buyPrice" th:value="${auction.buyPrice}">
 			</div>
 			
 			<div class="grid_2">
-        <div id="countDown"></div>
 				<div class="sub_title">마감일</div>
-				<div th:text="| ${auction.endAt}"></div>
+        <div id="countDown"></div>
 			</div>
 			
 			<div class="grid_2">
@@ -164,8 +165,7 @@
           <div th:text="| ${bidCount}"></div>
           <form id="frm_bid">
             <label for="bidMoney" class="sub_title">입찰 가격 입력하기</label>
-            <input type="number" name="bidMoney" id="bidMoney" th:value="${auction.price}" step="100">
-            <input type="number" id="price" th:value="${price}">
+            <input type="number" id="price" th:value="${auction.price}" step="100">
             <button id="btn_addBid" type="button" style="background-color: black; color: white;">입찰하기</button>
             <input type="hidden" name="auctionNo" id="auctionNo" th:value="${auction.auctionNo}">
             <th:block th:if="${session.user != null}">
@@ -356,18 +356,23 @@
         $('#btn_addBid').click((ev) => {
           if(user === null){
             if(confirm('로그인이 필요한 기능입니다. 로그인하시겠습니까?')){
-              event.preventDefault();
+              ev.preventDefault();
               location.href = '/user/login.form';
               return;
             } else {
-              event.preventDefault();
+              ev.preventDefault();
               return;
             }
           }
-          let frmBid = $('#frm_bid');
-          frmBid.attr('action', '/auction2/addBid.do');
-          frmBid.attr('method', 'post');
-          frmBid.submit();
+          console.log(price2);
+          console.log(startPrice);
+          console.log(buyPrice);
+          if($('#price').val() < startPrice) {
+            alert('시작가보다는 높게 입찰해야합니다.');
+            ev.preventDefault();
+            return;
+          }
+          fnSend();
         })
       }
           
@@ -410,7 +415,9 @@
       var deadline = new Date(/*[[${auction.endAt}]]*/ null);
       var status = getId('auctionStatus'); 
       var bidPrice;
-      
+      var startPrice = $('#startPrice').val();
+      var buyPrice = $('#buyPrice').val();
+      var price2 = $('#price').val();
       
       function fnConnect() {
         var ws = new WebSocket("ws://" + location.host + "/auction/[[${auction.auctionNo}]]");
@@ -520,7 +527,7 @@
     var timeRemaining = calculateTimeRemaining();
 
     // 결과를 표시할 요소에 접근해서 표시
-    countdown.innerHTML = ` 마감일 : 
+    countdown.innerHTML = ` 
                             ${timeRemaining.days} 일 
                             ${timeRemaining.hours} 시  
                             ${timeRemaining.minutes} 분  
