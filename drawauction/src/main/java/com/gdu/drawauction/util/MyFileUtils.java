@@ -21,12 +21,6 @@ public class MyFileUtils {
     return "/inquiry/" + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(today);
   }
   
-  // 프로필 이미지 등록 시 첨부한 파일이 저장될 경로 반환하기
-  public String getUserImagePath() {
-    LocalDate today = LocalDate.now();
-    return "/mypage/" + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(today);
-  }
-  
   //경매 게시판 작성시 첨부한 파일이 저장될 경로 반환하기
   public String getAuctionImagePath() {
     LocalDate today = LocalDate.now();

@@ -16,14 +16,14 @@
 .my_menu {
   border: 1px solid gray;
   width: 200px;
-  height: 250px;
+  height: 270px;
 }
 .my_menu ul {
   list-style-type: none;
   padding: 0;
   margin: 0;
   width: 200px;
-  height: 250px;
+  height: 270px;
 }
 
 .my_menu li a {
