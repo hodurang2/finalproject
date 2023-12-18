@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{/admin/menu::head('홈')}">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>경매 관리</title>
-</head>
+<head th:replace="~{admin/menu::head('경매관리')}"></head>
 
 <style>
   
@@ -61,7 +57,7 @@
 
 <body>
   
-  <div th:replace="~{/admin/menu::menu}"></div>
+  <div th:replace="~{admin/menu::menu}"></div>
   
     <div class="main_wrap">
         <div class="wrap wrap_3">
@@ -111,7 +107,7 @@
 
             <div id="auction_list" class="auction_list"></div>
 
-            <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+            
             <script th:inline="javascript">
                 
                 // 제목 클릭시 해당하는 경매번호의 경매상세로 이동
