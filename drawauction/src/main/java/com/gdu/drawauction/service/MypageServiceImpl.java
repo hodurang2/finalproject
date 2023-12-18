@@ -580,8 +580,7 @@ public class MypageServiceImpl implements MypageService {
     
     if(user != null) {
       int userNo = user.getUserNo();
-      Optional<Integer> opt2 = Optional.ofNullable(mypageMapper.getEmoneyCount(userNo));
-      int total = Integer.parseInt(opt.orElse("0"));
+      int total = mypageMapper.getEmoneyCount(userNo);
       int display = 5;
       
       List<Integer> balanceList = new ArrayList<>();
@@ -591,6 +590,7 @@ public class MypageServiceImpl implements MypageService {
       if (total != 0) {
         for (int i = total; i > 0; i--) {
           balanceList.add(mypageMapper.getEmoneyBalance(Map.of("userNo", userNo, "no", i)));
+          System.out.println(mypageMapper.getEmoneyBalance(Map.of("userNo", userNo, "no", i)));
         }
         int lastIndex = total - 1;
         balance = balanceList.get(lastIndex);
@@ -606,7 +606,6 @@ public class MypageServiceImpl implements MypageService {
       Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
                                      , "end", myPageUtils.getEnd()
                                      , "userNo", userNo);
-      
       List<EmoneyDto> emoneyList = mypageMapper.getEmoneyList(map);
       
       model.addAttribute("page", page);
