@@ -16,9 +16,12 @@ public interface MypageService {
   
   public ResponseEntity<Map<String, Object>> modifyIntroduction(HttpServletRequest request);  // 소개글 수정
 
-  //public void leave(HttpServletRequest request, HttpServletResponse response);    // 회원 탈퇴
+  public void leave(HttpServletRequest request, HttpServletResponse response);    // 회원 탈퇴
   
   //public Map<String, Object> addUserImage(MultipartHttpServletRequest multipartRequest) throws Exception;
+  
+ // public Map<String, Object> getProfileImage(HttpServletRequest request); // 프로필 이미지 가져오기
+  
   
   public void getCount(HttpServletRequest request, Model model);   // 갯수
   
@@ -34,8 +37,12 @@ public interface MypageService {
  
   public void getEmoneyList(HttpServletRequest request, Model model);   // E-MONEY 내역
   
- // public Map<String, Object> getAuctionWishList(HttpServletRequest request);    // 경매 찜 목록
+  public Map<String, Object> getAuctionWishList(HttpServletRequest request);    // 경매 찜 목록
   
-  //public Map<String, Object> controlAuctionWish(HttpServletRequest request);    // 경매 찜
+  public Map<String, Object> controlAuctionWish(HttpServletRequest request);    // 경매 찜
+  
+  public Map<String, Object> getDrawWishList(HttpServletRequest request);    // 그려드림 찜 목록
+  
+  public Map<String, Object> controlDrawWish(HttpServletRequest request);    // 그려드림 찜
   
 }

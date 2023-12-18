@@ -30,6 +30,7 @@ public class MypageController {
     mypageService.getCount(request, model);
     mypageService.getAuctionBidList(request, model);
     mypageService.getAuctionSalesList(request, model);
+    mypageService.getEmoneyList(request, model);
     return "mypage/detail";
   }
   
@@ -57,19 +58,23 @@ public class MypageController {
   public ResponseEntity<Map<String, Object>> modifyIntroduction(HttpServletRequest request) {
     return mypageService.modifyIntroduction(request);
   }
-  /*
+
   @PostMapping("/leave.do")
   public void leave(HttpServletRequest request, HttpServletResponse response) {
     mypageService.leave(request, response);
   }
-  */
+
   
   /*
   @PostMapping(value="/addUserImage.do", produces="application/json")
   public Map<String, Object> addUserImage(MultipartHttpServletRequest multipartRequest) throws Exception {
     return mypageService.addUserImage(multipartRequest);
   }
-  */
+  @GetMapping("/getUserImage.do")
+  public Map<String, Object> getUserImage(HttpServletRequest request) {
+    return mypageService.getProfileImage(request);
+  }
+   */
   
   @GetMapping("/getAuctionBidList.do")
   public String getAuctionBidList(HttpServletRequest request, Model model) {
@@ -117,11 +122,12 @@ public class MypageController {
     return "mypage/emoneyList";
   }
   
-  /*
+  
   @GetMapping("/getWishList.do")
   public String getWishList() {
     return "mypage/wishList";
   }
+  
   @ResponseBody
   @GetMapping(value="/getAuctionWishList.do", produces="application/json")
   public Map<String, Object> getAuctionWishList(HttpServletRequest request){
@@ -130,8 +136,19 @@ public class MypageController {
   
   @ResponseBody
   @GetMapping(value="/controlAuctionWish.do", produces="application/json")
-  public Map<String, Object> controlAuctionWish (HttpServletRequest request){
+  public Map<String, Object> controlAuctionWish(HttpServletRequest request){
     return mypageService.controlAuctionWish(request);
   }
-  */
+  
+  @ResponseBody
+  @GetMapping(value="/getDrawWishList.do", produces="application/json")
+  public Map<String, Object> getDrawWishList(HttpServletRequest request){
+    return mypageService.getDrawWishList(request);
+  }
+  
+  @ResponseBody
+  @GetMapping(value="/controlDrawWish.do", produces="application/json")
+  public Map<String, Object> controlDrawWish(HttpServletRequest request){
+    return mypageService.controlDrawWish(request);
+  }
 }

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{layout/header::head('출품작품목록')}"></head>
+<head th:replace="~{layout/header::head('찜목록')}"></head>
 
 <style>
     body {
@@ -13,26 +13,12 @@
       align-items: center;
       justify-content: center;
   }
-  .wrap_9{
-    width: 90%;
-    margin: 0 auto;
-    text-align: left;
-  }
   .text-center{
     margin-left:90px;
   }
-  .auction_write {
-   margin-top: 40px;
-   margin-left: 280px; 
-  }
-  .auction_list {
-    width: 90%;
-    margin: 0 auto;
-    text-align: center;
-  }
-  .auction_heart_div {
-    width: 30px;
-    height: 30px;
+  .auction_heart_div, .draw_heart_div {
+    width: 35px;
+    height: 35px;
     display: inline-flex;
     justify-content: space-between;
     text-align: center;
@@ -40,20 +26,22 @@
     padding-top: 10px;
     float: right;
   }
-  .auction_heart_div i {
+  .auction_heart_div i, .draw_heart_div i {
+    width: 35px;
+    height: 35px;
     color: #e11414;
   }
-  .auction_category {
+  .auction_category, .draw_category {
     margin-left: 10px;
     color: grey;
     font-size: 11px;
   }
-  .auction_title {
+  .auction_title, .draw_title {
     margin-left: 10px;
     font-weight: 600;
     font-size: 18px;
   }
-  .auction_nickname {
+  .auction_nickname, .draw_nickname {
     margin-left: 10px;
     color: grey;
     font-size: 13px;
@@ -65,31 +53,38 @@
   .last_auction {
     float: right;
   }
-  .auction_list {
+  .auction_wish_list, .draw_wish_list {
     margin: 10px auto;
     display: flex;
     flex-wrap: wrap;
    }
-   .auction_image img {
+   .auction_image img, .draw_image img{
      width: 260px;
      height: 200px;
      object-fit: contain;
    }
   .auction {
     width: 262px;
-    height: 440px;
+    height: 450px;
     border-radius: 5px;
     text-align: left;
     margin: 20px 15px;
   }
-  .auction div {
+  .draw {
+    width: 262px;
+    height: 350px;
+    border-radius: 5px;
+    text-align: left;
+    margin: 20px 15px;
+  }
+  .auction div, .draw div{
     margin-bottom: 5px;
   }
   .auction_end_wrap div {
     font-size: 13px;
     margin-right: 10px;
   }
-  .auction:hover {
+  .auction:hover, .draw:hover {
     background-color: silver;
     cursor: pointer;
   }
@@ -129,39 +124,55 @@
     border-radius: 4px;
     margin-left: 10px;
   }
-  .searchWord {
-  width: 250px;
-  display :inline-block;
-  text-align: left;
+  
+  .draw_price {
+    text-align: right;
+    font-size: 20px;
+    float: right;
+    margin-right: 20px;
+  }
+  .draw_category_div {
+    width: 50px;
+  }
+  
+  
+  
+.list_wrap {
+  width: 90%;
+  height: 50px;
+  border-bottom: 1px solid gray;
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
-.search {
-  width: 350px;
-  margin-right: 400px;
-  margin-top: 40px;
-  display: inline-flex;
+.mypage_list {
+  display: flex;
+  justify-content: space-between;
+  flex: 4;
+}
+.mypage_list li {
+  width: 100%;
+}
+.mypage_list a {
+  display: block;
+  width: 100%;
+  text-align: center;
+  line-height: 50px;
+  cursor: pointer;
+  font-size: 20px;
 }
 
-.btn_search {
-  width: 37px;
-  height: 37px;
-  background-color: #f8f9fa;
-  border: none;
+.mypage_list a:hover {
+  background-color: rgb(84, 186, 125);
+  color: white;
 }
-.search_icon {
-  width: 40px;
-  height: 40px;
-  padding-right: 20px;
-  padding-top: 10px;
+.clicked {
+  background-color: rgb(84, 186, 125);
+  color: white;
 }
-.form-select {
-  width: 120px;
-}
-#search_frm {
-  display: inline-flex;
-}
-.text-center {
-  display: inline-flex;
-}
+
+
+
+
 </style>
 
 <body>
@@ -176,8 +187,8 @@
      
       <div class="list_wrap">
         <ul class="mypage_list">
-          <li><a href="javascript:fnShowWishAuction()" id="auction">경매</a></li>
-          <li><a href="javascript:fnShowWishDraw()" id="draw">그려드림</a></li>
+          <li><a href="javascript:fnShowWishAuction()" id="fn_auction">경매</a></li>
+          <li><a href="javascript:fnShowWishDraw()" id="fn_draw">그려드림</a></li>
         </ul>
       </div>
       
@@ -186,9 +197,6 @@
   
     </div>
   </div>
-  
-  
-  <div th:replace="~{layout/footer::footer}"></div>
   
   <script>
 
@@ -199,11 +207,12 @@
     
     
    
-    const fnGetAuctionList = () => {
+    const fnGetAuctionWishList = () => {
       $.ajax({
         // 요청
         type: 'get',
         url: 'mypage/getWishList.do',
+        url: '/mypage/getAuctionWishList.do',
         data: {
                 page: page
                 },
@@ -212,6 +221,10 @@
         success: (resData) => {  
           totalPage = resData.totalPage;
           $.each(resData.auctionWishList,(i, auction) => {
+            // 최대 표시 글자 수
+            var maxTitleLength = 19; // 여기에 원하는 글자 수를 넣어주세요.
+            // draw.title이 최대 표시 글자 수보다 길면 ...으로 줄이기
+            var title = auction.artDto.title.length > maxTitleLength ? auction.artDto.title.substring(0, maxTitleLength) + "..." : auction.artDto.title;
             let str = '<div class="auction" data-auction_no="' + auction.auctionNo + '">';
             str += '<div class="auction_image"><img src="' + auction.image.path + '/s_' + auction.image.filesystemName + '"></div>';
             if(auction.status === 0){
@@ -221,7 +234,7 @@
             }
             str += '<div class="auction_heart_div"><i class="' + auction.heartClass + ' fa-heart fa-xl auction_heart"></i></div>';
             str += '<div><span class="auction_category">' + auction.artDto.categoryDto.categoryName + '</span></div>';
-            str += '<div><span class="auction_title">'    + auction.artDto.title                    + '</span></div>';
+            str += '<div><span class="auction_title">'    + title                                   + '</span></div>';
             str += '<div><span class="auction_nickname">' + auction.artDto.sellerDto.nickname       + '</span></div>';
             str += '<div class="auction_end_wrap">';
             str += '<div><span class="first_auction">시작가</span><span class="last_auction">'         + auction.startPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>'; // 상품가격 1000단위 콤마찍기
@@ -236,39 +249,28 @@
       })
     }
 
-    const fnHeart = () => {
-      $(document).on('click', '.auction_heart', function(event) {
-        event.stopPropagation();
-        let user = /*[[${session.user}]]*/ null;
-          if(user === null) {
-            if(confirm('로그인이 필요한 기능입니다. 로그인하시겠습니까?')){
-              location.href = '/user/login.form';
+    const fnAuctionHeart = () => {
+      $(document).on('click', '.auction_heart', function(ev) {
+        ev.stopPropagation();
+        $.ajax({
+          // 요청
+          type: 'get',
+          url: '/mypage/controlAuctionWish.do',
+          data: {
+            auctionNo: $(this).closest('div .auction').data('auction_no')
+            },
+          // 응답
+          dataType: 'json',
+          success: (resData) => {
+             if(resData.hasAuctionWish === 0){
+                $(this).removeClass('fa-regular');  
+                $(this).addClass('fa-solid');
+                return;
+              }
+              $(this).removeClass('fa-solid');
+              $(this).addClass('fa-regular');
             }
-            event.preventDefault();
-            return;
-          }
-            $.ajax({
-                // 요청
-                type: 'get',
-                url: '/auction/controlAuctionWishlist.do',
-                data: {
-                  auctionNo: $(this).closest('div .auction').data('auction_no')
-                  },
-                // 응답
-                dataType: 'json',
-                success: (resData) => {
-                  console.log(resData);
-                   if(resData.hasAuctionWishlist === 0){
-                      $(this).removeClass('fa-regular');  
-                      $(this).addClass('fa-solid');
-                      console.log('하트 채우기');
-                      return;
-                    }
-                    $(this).removeClass('fa-solid');
-                    $(this).addClass('fa-regular');
-                    console.log('하트 비우기');
-                  }
-                })
+          })
       })
     }
     
@@ -278,53 +280,152 @@
       })
       
     }
-  
+    
+    const fnGetDrawWishList = () => {
+      $.ajax({
+        // 요청
+        type: 'get',
+        url: '/mypage/getDrawWishList.do',
+        data: {
+                page: page
+                },
+        // 응답
+        dataType: 'json',
+        success: (resData) => {
+          totalPage = resData.totalPage;
+          $.each(resData.drawWishList, (i, draw) => {
+            // 최대 표시 글자 수
+            var maxTitleLength = 19; // 여기에 원하는 글자 수를 넣어주세요.
+            // draw.title이 최대 표시 글자 수보다 길면 ...으로 줄이기
+            var title = draw.title.length > maxTitleLength ? draw.title.substring(0, maxTitleLength) + "..." : draw.title;
+            let str = '<div class="draw" data-draw_no="' + draw.drawNo + '">';
+            str += '<div class="draw_image" data-draw_no="' + draw.drawNo + '"><img src="' + draw.image.path + '/s_' + draw.image.filesystemName + '"></div>';
+            str += '<div class="draw_heart_div"><i class="' + draw.heart + ' fa-heart fa-xl draw_heart"></i></div>';
+            str += '<div class="draw_category_div"><span class="draw_category"> ' + draw.categoryDto.categoryName + '</span></div>';
+            str += '<div><span class="draw_title"> ' + title + '</span></div>';
+            str += '<div><span class="draw_nickname"> ' + draw.userDto.nickname + '</span></div>';
+            str += '<div class="draw_end_wrap">';
+            str += '<div><span class="draw_price">' +  draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' P</span></div>';
+            str += '<div id="drawNo" style="display:none">글번호: ' + draw.drawNo + '</div>';
+            str += '</div>';
+            str += '</div>';
+            $('#draw_wish_list').append(str);
+          })
+        }
+      })
+    }
+    
+    const fnDrawHeart = () => {
+      $(document).on('click', '.draw_heart', function(ev) {
+        ev.stopPropagation();
+        var self = $(this);
+        $.ajax({
+          type: 'get',
+          url: '/mypage/controlDrawWish.do',
+          data: {
+            drawNo: self.closest('.draw').data('draw_no')
+          },
+          dataType: 'json',
+          success: (resData) => {
+            if (resData.hasDrawWish === 0) {
+              self.removeClass('fa-regular');
+              self.addClass('fa-solid');
+              return;
+            }
+              self.removeClass('fa-solid');
+              self.addClass('fa-regular');
+          }
+        })
+      })
+    }
+    
+  const fnDrawDetail = () => {
+    $(document).on('click', '.draw', function(ev){
+      location.href = '/draw/detail.do?drawNo=' + $(this).data('draw_no');
+    })
+  }
+    
     const fnScroll = () => {
-      
-      var timerId;  // 최초 undefined 상태
-      
-      $(window).on('scroll', () => {
-        let searchWord = $('#searchWord').val();
-        let auctionType = $('#auctionType option:selected').val(); 
-        let categoryNo = $('#categoryNo option:selected').val(); 
-        let status = $('#status option:selected').val();
         
+      var timerId;  // 최초 undefined 상태
+        
+      $(window).on('scroll', () => {
+          
         if(timerId){  // timerId가 undefined이면 false로 인식, timerId가 값을 가지면 true로 인식
           clearTimeout(timerId);
         }
-        
-        timerId = setTimeout(() => {  // setTimeout 실행 전에는 timerId가 undefined 상태, setTimeout이 한 번이라도 동작하면 timerId가 값을 가짐
           
+        timerId = setTimeout(() => {  // setTimeout 실행 전에는 timerId가 undefined 상태, setTimeout이 한 번이라도 동작하면 timerId가 값을 가짐
+            
           let scrollTop = $(window).scrollTop();     // 스크롤바 위치(스크롤 된 길이)
           let windowHeight = $(window).height();     // 화면 전체 크기
           let documentHeight = $(document).height(); // 문서 전체 크기
-          
-          if((scrollTop + windowHeight + 100) >= documentHeight) {  // 스크롤이 바닥에 닿기 100px 전에 true가 됨
+            
+          if((scrollTop + windowHeight + 1000) >= documentHeight) {  // 스크롤이 바닥에 닿기 100px 전에 true가 됨
             if(page > totalPage){  // 마지막 페이지를 보여준 이후에 true가 됨
               return;              // 마지막 페이지를 보여준 이후에는 아래 코드를 수행하지 말 것 
             }
             page++;
-            if(searchWord === '' && auctionType === 'all' && categoryNo === '404' && status === '404'){
-              fnGetAuctionList();
-            }
-            fnSearchAuctionList();
+            if ($('#auction_wish_list').is(':visible')) {
+              fnShowWishAuction();
+            } else if ($('#draw_wish_list').is(':visible')) {
+              fnShowWishDraw();
+            } 
+
           }
-          
+            
         }, 200);  // 200밀리초(0.2초) 후 동작(시간은 임의로 조정 가능함)
-        
       })
-      
     }
 
-   
+    const fnFirstWindow = () => {
+      // 초기에는 #auction_wish_list가 보이도록 설정
+      $('#auction_wish_list').show();
+      $('#draw_wish_list').hide();
+      
+      $('#fn_draw').removeClass('clicked');
+      $('#fn_auction').addClass('clicked');
+
+    }
     
-   
-    fnGetAuctionList();
-    fnAuctionDetail();
-    fnScroll();
-    fnHeart();
+    const fnShowWishAuction = () => {
+
+      $('#draw_wish_list').hide();
+      $('#fn_draw').removeClass('clicked');
+      
+      // fnGetDrawWishList()에서 추가한 내용 보이기
+      $('#auction_wish_list').show();
+      $('#fn_auction').addClass('clicked');
+
+    }
+    
+    const fnShowWishDraw = () => {
+
+      $('#auction_wish_list').hide();
+      $('#fn_auction').removeClass('clicked');
+      
+      // fnGetDrawWishList()에서 추가한 내용 보이기
+      $('#draw_wish_list').show();
+      $('#fn_draw').addClass('clicked');
+
+    }
+    
+    
+  fnFirstWindow();
+  
+  fnGetAuctionWishList();
+  fnAuctionDetail();
+  fnAuctionHeart();
+  
+  fnGetDrawWishList();
+  fnDrawDetail();
+  fnDrawHeart();
+  
+  fnScroll();
     
   </script>
+    
+  <div th:replace="~{layout/footer::footer}"></div>
   
 </body>
 </html>

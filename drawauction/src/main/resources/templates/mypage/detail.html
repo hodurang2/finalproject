@@ -6,6 +6,8 @@
 <style>
   
   table, tr{
+    width: 1000px;
+    margin-bottom: 50px;
     border-collapse:collapse;
     border: 1px solid grey;
     text-align:center;
@@ -19,6 +21,8 @@
     text-align: left;
     padding-left: 20px;
     height: 50px;
+    font-size: large;
+    width: 700px;
   }
 
   .ing {
@@ -32,11 +36,16 @@
     border-top: none;
     vertical-align: top;
   }
-  .ing > tr > td {
+  .title > td {
     width: 160px;
+    font-size: 20px;
   }
-  table {
-    margin-bottom: 50px;
+  .val > td {
+    font-weight: 900;
+  }
+  .my_btn {
+    width: 140px;
+    height: 50px;
   }
   
   .arrow_btn {
@@ -44,6 +53,8 @@
     float: right;
     font-size: 14px;
     text-decoration: none;
+    margin-top: 20px;
+    margin-right: 3px;
   }
   .three_wrap {
     display: flex;
@@ -51,9 +62,13 @@
   .one_wrap, .one_wrap_my, .one_wrap_draw, .one_wrap_received_draw {
     border: 1px solid grey;
     width: 300px;
-    height:370px;
+    height:390px;
     margin: 20px;
     cursor: pointer;
+    border-radius: 5px;
+  }
+  .one_wrap_my {
+    height: 350px;
   }
   .one_wrap_draw {
     height:400px;
@@ -108,10 +123,14 @@
     margin-left: 10px;
   }
   
-  .image {
-     width: 280px;
-     height: 200px;
-     margin: 5px;
+  .auction_image > img, .image {
+    width: 280px;
+    height: 170px; 
+    text-align: center;
+    object-fit: cover; /* 이미지를 꽉 채우도록 설정 */
+    border: 1px lightgray solid;
+    border-radius: 7px;
+    margin-left: 6px;
   }
   .my_list_wrap {
     margin-top: 30px;
@@ -132,6 +151,14 @@
 .draw_info_wrap {
   margin-top: 5px;
 }
+.draw:hover {
+  background-color: silver;
+  cursor: pointer;
+}
+.auction_status2 {
+  width: 100px;
+  float: right;
+}
 
   
 </style>
@@ -149,27 +176,27 @@
         <thead>
           <tr>
             <td colspan="4" id="my_info_text">내 정보</td>
-            <td><button class="btn btn-primary" id="btn_modify">회원정보수정</button></td>
-            <td><button class="btn btn-primary" id="btn_charge">E-MONEY 충전</button></td>
+            <td class="my_btn"><button class="btn btn-primary  me-md-2" id="btn_modify">회원정보수정</button></td>
+            <td class="my_btn"><button class="btn btn-primary  me-md-2" id="btn_charge">E-MONEY 충전</button></td>
           </tr>      
         </thead>
         <tbody class="ing">
           <tr class="title">
-            <td class="delete_right">입찰 중 경매</td>
-            <td class="delete_right">판매 중 경매</td>
-            <td class="delete_right">찜한 경매</td>
-            <td class="delete_right">찜한 그려드림</td>
-            <td>E-MONEY</td>
+            <td class="my_title">입찰 중 경매</td>
+            <td class="my_title">판매 중 경매</td>
+            <td class="my_title">찜한 경매</td>
+            <td class="my_title">찜한 그려드림</td>
+            <td class="my_emoney" colspan="2">E-MONEY</td>
           </tr>
-            <tr class="val">
-              <td th:text="${biddingCount}"></td>
-              <td th:text="${artForSaleCount}"></td>
-              <td>3</td>
-              <td>4</td>
-              <td>5</td>
-            </tr>
-          </tbody>
-        </table>
+          <tr class="val">
+            <td th:text="${biddingCount}"></td>
+            <td th:text="${artForSaleCount}"></td>
+            <td th:text="${wishAuctionCount}"></td>
+            <td th:text="${wishDrawCount}"></td>
+            <td colspan="2" th:text="|${#numbers.formatInteger(balance, 1, 'COMMA')} P|"></td>
+          </tr>
+        </tbody>
+      </table>
         
         <div id="bid_wrap" class="my_list_wrap">
           <h2>
@@ -182,11 +209,6 @@
             <th:block th:each="b,vs:${bidList}" th:if="${vs.index<3}">
               <div class="one_wrap auction" th:attr="data-auction_no=${b.auctionDto.auctionNo}">
                 <div class="auction_image"><img th:src="|${b.auctionDto.image.path}/s_${b.auctionDto.image.filesystemName}|" class="image" alt="썸네일"></div>
-                <div class="auction_title"><span class="info">제목</span><span class="value" th:text="${b.auctionDto.artDto.title}"></span></div>
-                <div class="auction_price"><span class="info">내입찰가</span><span class="value" th:text="${#numbers.formatInteger(b.bidderDto.myPrice, 1, 'COMMA')}"></span></div>
-                <div class="auction_price"><span class="info">현재입찰가</span>
-                <span class="value" th:text="${#numbers.formatInteger(b.price, 1, 'COMMA')}"></span></div>
-                
                 <th:block th:if="${b.auctionDto.status == 0}">
                   <div class="auction_status1 auction_ongoing" th:text="경매진행중"><span class="info" style="display:none">진행상태</span></div>
                   <th:block th:if="${b.price > b.bidderDto.myPrice}">
@@ -206,6 +228,10 @@
                     <div class="auction_status2" th:text="낙찰성공"><span class="info" style="display:none">낙찰상태</span></div>
                   </th:block>
                 </th:block>
+                <div class="auction_title"><span class="info">제목</span><span class="value" th:text="${b.auctionDto.artDto.title}"></span></div>
+                <div class="auction_price"><span class="info">내입찰가</span><span class="value" th:text="|${#numbers.formatInteger(b.bidderDto.myPrice, 1, 'COMMA')} P|"></span></div>
+                <div class="auction_price"><span class="info">현재입찰가</span><span class="value" th:text="|${#numbers.formatInteger(b.price, 1, 'COMMA')} P|"></span></div>
+                
     
                 <div class="auction_date"><span class="info">종료</span><span class="value" th:text="${b.auctionDto.endAt}"></span></div>
               </div>
@@ -225,13 +251,9 @@
             <th:block th:each="s,vs:${salesList}" th:if="${vs.index<3}">
               <div class="one_wrap auction" th:attr="data-auction_no=${s.auctionDto.auctionNo}">
                 <div class="auction_image"><img th:src="|${s.auctionDto.image.path}/s_${s.auctionDto.image.filesystemName}|" class="image" alt="썸네일"></div>
-                <div class="auction_title"><span class="info">제목</span><span class="value" th:text="${s.auctionDto.artDto.title}"></span></div>
-                <div class="auction_price"><span class="info">시작가</span><span class="value" th:text="${#numbers.formatInteger(s.auctionDto.startPrice, 1, 'COMMA')}"></span></div>
-                <div class="auction_price"><span class="info">현재입찰가</span><span class="value" th:text="${#numbers.formatInteger(s.price, 1, 'COMMA')}"></span></div>
-                
                 <th:block th:if="${s.auctionDto.status == 0}">
                   <div class="auction_status1 auction_ongoing" th:text="경매진행중"><span class="info" style="display:none">진행상태</span></div>
-                  <div class="auction_status2" th:text="판매진행중"><span class="info" style="display:none">판매상태</span></div>
+                  <div class="auction_status2" th:text="판매진행중" style="display:none"><span class="info" style="display:none">판매상태</span></div>
                 </th:block>
                 
                 <th:block th:if="${s.auctionDto.status == 1}">
@@ -243,6 +265,10 @@
                     <div class="auction_status2" th:text="판매완료"><span class="info" style="display:none">판매상태</span></div>
                   </th:block>
                 </th:block>
+                <div class="auction_title"><span class="info">제목</span><span class="value" th:text="${s.auctionDto.artDto.title}"></span></div>
+                <div class="auction_price"><span class="info">시작가</span><span class="value" th:text="|${#numbers.formatInteger(s.auctionDto.startPrice, 1, 'COMMA')} P|"></span></div>
+                <div class="auction_price"><span class="info">현재입찰가</span><span class="value" th:text="|${#numbers.formatInteger(s.price, 1, 'COMMA')} P|"></span></div>
+                
     
                 <div class="auction_date"><span class="info">종료</span><span class="value" th:text="${s.auctionDto.endAt}"></span></div>
               </div>
@@ -433,6 +459,7 @@
   const fnURLFragment1 = () => {
     $(document).on('click', '.one_wrap_draw', function() {
       location.href = '/mypage/drawList.do?param=2&orderNo=' + $(this).data('order_no');
+      console.log($(this).data('order_no'));
     })
   }
     
@@ -442,36 +469,6 @@
     })
   }
     
-    
-    
-    /*
-    setInterval(function(){
-
-      var now = new Date();               // 2023-08-30
-      var rest = $('')
-      var dday = new Date(2023, 10, 16);  // 2023-11-16(주의!)
-      
-      var timestamp = dday.getTime() - now.getTime(); // dday - now로 계산해도 타임스탬프 결과가 나옴
-      var totalSecond = parseInt(timestamp / 1000);   // 밀리초를 초 단위로 변환함(parseInt : 소수점 제거됨)
-      var restDay = parseInt(totalSecond / 60 / 60/ 24);    // 초 -> 분 -> 시간 -> 남은 일
-      var restHour = parseInt(totalSecond / 60 / 60) % 24;  // 초 -> 분 -> 남은 시간
-      var restMinute = parseInt(totalSecond / 60) % 60;     // 초 -> 남은 분
-
-      var str = 'D';
-      if(totalSecond > 0){
-        str += '-';
-        if(restDay >= 1){
-          str += restDay + '&nbsp;';
-        } else{ str += 'DAY&nbsp;'}
-        str += String(restHour).padStart(2, '0') + ':' + String(restMinute).padStart(2, '0');
-      } else {
-        str += ''
-      }
-
-      document.getElementById('dday').innerHTML = '<h1>' + str + '</h1>';
-
-    }, 1000);
-    */
   </script>
   
 

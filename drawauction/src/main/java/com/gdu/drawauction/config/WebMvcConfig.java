@@ -27,7 +27,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
       .addPathPatterns("/auction/write.form")
       .addPathPatterns("/mypage/detail.do", "/mypage/modify.form", "/mypage/modifyPw.form", "/mypage/getAuctionBidList.do", "/mypage/getAuctionSalesList.do"
                      , "/mypage/drawList.do", "/mypage/getMyDrawList.do", "/mypage/getDrawOrderList.do", "/mypage/getDrawReceivedOrderList.do"
-                     , "/mypage/charge.do", "/mypage/getEmoneyList.do");
+                     , "/mypage/charge.do", "/mypage/getEmoneyList.do"
+                     , "/mypage/getWishList.do", "/mypage/getAuctionWishList.do"
+                     , "/mypage/controlAuctionWish.do", "/mypage/getDrawWishList.do"
+                     , "/mypage/controlDrawWish.do");
       
     registry.addInterceptor(shouldNotLoginInterceptor)
       .addPathPatterns("/user/agree.form", "/user/join.form", "/user/login.form");
@@ -45,6 +48,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
     .addResourceLocations("file:/drawauction/inquiry/");
     registry.addResourceHandler("/drawauction/mypage/**")
     .addResourceLocations("file:/drawauction/mypage/");
+    registry.addResourceHandler("/draw/**")
+      .addResourceLocations("file:/draw/");
+    registry.addResourceHandler("/auction/**")
+    .addResourceLocations("file:/auction/");
+    registry.addResourceHandler("/inquiry/**")
+    .addResourceLocations("file:/inquiry/");
   }
   
 }

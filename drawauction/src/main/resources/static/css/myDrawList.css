@@ -72,19 +72,7 @@
   margin-left: 10px;
   font-weight: 500;
 }
-.draw_value {
-  float: right;
-}
 
-
-.title_ellipsis {
-  width: 230px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2; /* 보여줄 줄 수 */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
 .title_ellipsis_order {
   width: 630px;
@@ -93,7 +81,6 @@
 .draw_title {
   height: 50px;
 }
-
 
 .draw_order, .received {
   cursor: pointer;
@@ -177,4 +164,8 @@
 
 .strong {
   border: 2px solid darkgreen;
+}
+
+.draw_value {
+  float: right;
 }
