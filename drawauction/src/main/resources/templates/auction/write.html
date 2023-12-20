@@ -232,7 +232,7 @@
         $('#height').focus();
           ev.preventDefault();
         return;  
-      } else if($("#buyPrice").val() > 0 && $("#startPrice").val() < $("#buyPrice").val()){
+      } else if($("#buyPrice").val() > 0 && $("#startPrice").val() > $("#buyPrice").val()){
         alert('시작가가 즉시구매가보다 높을수 없습니다.');
         $('#startPrice').focus();
           ev.preventDefault();

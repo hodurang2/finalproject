@@ -580,8 +580,7 @@ public class MypageServiceImpl implements MypageService {
     
     if(user != null) {
       int userNo = user.getUserNo();
-      Optional<Integer> opt2 = Optional.ofNullable(mypageMapper.getEmoneyCount(userNo));
-      int total = Integer.parseInt(opt.orElse("0"));
+      int total = mypageMapper.getEmoneyCount(userNo);
       int display = 5;
       
       List<Integer> balanceList = new ArrayList<>();
