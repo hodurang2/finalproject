@@ -125,6 +125,7 @@
                         <td>글번호</td>
                         <td>제목</td>
                         <td>작성일자</td>
+                        <td>답변상태</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -137,6 +138,10 @@
                                 <a class="inquiry_list_title" th:href="@{/inquiry/detail.do(inquiryNo=${i.inquiryNo})}" th:text="${i.title}"></a>
                             </td>
                             <td th:utext="${i.inquiryCreatedAt}"></td>
+                            <td>
+                              <span th:if="${i.status == 0}">답변대기중</span>
+                              <span th:if="${i.status == 1}">답변완료</span>
+                            </td>
                         </tr>
                         </th:block>
                     </th:block>

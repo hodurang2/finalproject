@@ -17,5 +17,6 @@ public class InquiryDto {
   private String content;
   private Date inquiryCreatedAt;
   private String inquiryType;
+  private int status;
   private UserDto userDto;
 }

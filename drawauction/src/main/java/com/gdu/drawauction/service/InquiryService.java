@@ -16,7 +16,6 @@ public interface InquiryService {
   public void loadInquiryList(HttpServletRequest request, Model model);
   public InquiryDto getInquiry(int inquiryNo, Model model);
   public boolean addInquiry(MultipartHttpServletRequest multipartRequest) throws Exception;
-  
   public Map<String, Object> addAnswer(HttpServletRequest request);
   public Map<String, Object> loadAnswerList(HttpServletRequest request);
   public Map<String, Object> removeAnswer(int inquiryNo);

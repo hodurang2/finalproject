@@ -11,6 +11,7 @@
     <result column="CONTENT"      property="content"/>
     <result column="INQUIRY_CREATED_AT"   property="inquiryCreatedAt"/>
     <result column="INQUIRY_TYPE"         property="inquiryType"/>
+    <result column="STATUS"               property="status"/>
     <association  javaType="UserDto"          property="userDto">
       <id         column="USER_NO"            property="userNo" />
       <result     column="EMAIL"              property="email" />
@@ -64,7 +65,7 @@
   <!-- 1:1문의 리스트 -->
   <select id="getInquiryList" parameterType="Map" resultMap="InquiryMap">
     SELECT INQUIRY_NO, USER_NO, TITLE, CONTENT, INQUIRY_CREATED_AT, INQUIRY_TYPE
-      FROM (SELECT ROW_NUMBER() OVER(ORDER BY INQUIRY_NO DESC) AS RN, INQUIRY_NO, U.USER_NO, TITLE, CONTENT, INQUIRY_CREATED_AT, INQUIRY_TYPE
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY INQUIRY_NO DESC) AS RN, I.INQUIRY_NO, U.USER_NO, I.TITLE, I.CONTENT, I.INQUIRY_CREATED_AT, INQUIRY_TYPE
               FROM INQUIRY_T I INNER JOIN USER_T U
                 ON I.USER_NO = U.USER_NO)
      WHERE RN BETWEEN #{begin} AND #{end}
@@ -73,7 +74,7 @@
   <!-- 개별 1:1문의 상세 -->
   <select id="getInquiry" parameterType="int" resultMap="InquiryMap">
     SELECT IU.INQUIRY_NO, IU.USER_NO, IU.NICKNAME, IU.TITLE, IU.CONTENT, IU.INQUIRY_CREATED_AT, IU.INQUIRY_TYPE
-      FROM (SELECT INQUIRY_NO, I.USER_NO, U.NICKNAME, TITLE, CONTENT, INQUIRY_CREATED_AT, INQUIRY_TYPE
+      FROM (SELECT INQUIRY_NO, I.USER_NO, U.NICKNAME, I.TITLE, I.CONTENT, I.INQUIRY_CREATED_AT, I.INQUIRY_TYPE
               FROM INQUIRY_T I INNER JOIN USER_T U
                 ON I.USER_NO = U.USER_NO) IU
      WHERE INQUIRY_NO = #{inquiryNo}

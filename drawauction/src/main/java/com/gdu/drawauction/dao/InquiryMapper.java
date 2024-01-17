@@ -16,7 +16,6 @@ public interface InquiryMapper {
   public List<InquiryDto> getInquiryList(Map<String, Object> map);
   public InquiryDto getInquiry(int inquiryNo);
   public int insertInquiry(InquiryDto inquiry);
-  
   public int insertInquiryAttach(InquiryAttachDto attach);
   public List<InquiryAttachDto> getInquiryAttachList(int inquiryNo);
   public InquiryAttachDto getInquiryAttach(int inquiryAttachNo);

@@ -91,6 +91,7 @@ public class InquiryServiceImpl implements InquiryService{
                                     .userNo(userNo)
                                     .build())
                           .inquiryType(inquiryType)
+                          .status(0)  // 0 = 답변대기중
                           .build();
                           
     
