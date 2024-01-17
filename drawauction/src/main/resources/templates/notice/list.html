@@ -4,15 +4,14 @@
 <head th:replace="~{layout/header::head('공지사항')}"></head>
 
 <style>
- .support_title {
+  .support_title {
     text-align: center;
     font-size: 1.75rem;
     font-weight: 500;
     color: #333;
     margin-bottom: 20px;
   }
-  
-  .notice_st {
+  .wrap {
     max-width: 1170px;
     position: relative;
     margin: 0 auto;
@@ -86,20 +85,23 @@
     border-right: 0;
     border-collapse: collapse;
   }
+  
 </style>
 
 <body>
   
   
-   <div th:replace="~{layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
   
+  <div class="main_wrap">
   
   <div class="wrap">
 	  <div class="support_title" style="float: left; margin-left: 1%; margin-top: 2%; font-weight: 600;">고객센터</div>  
   </div>
   
-       <div class="wrap">
-		<div class="notice_st">
+    <div class="wrap wrap_3">
+  
+    <div class="wrap">
         <div class="support_left_wrap">
             <div class="left_menu">
                 <ul class="btn_support">
@@ -108,12 +110,6 @@
                 </ul>
             </div>
         </div>			
-			
-		</div>   
-		   
-		   
-		   
-
     
         <div class="support_right_wrap">
             <div class="notice_head">
