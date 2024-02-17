@@ -1,4 +1,4 @@
-![image](https://github.com/hodurang2/finalproject/assets/137992194/2df0272d-daaa-4d2e-83b6-400da8343546)🖥️  DrawAuction 들어옥션
+🖥️  DrawAuction 들어옥션
 -------------
 ### 누구나 그림 작가가 될 수 있는 그림 경매 사이트
 
